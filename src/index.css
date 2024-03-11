@@ -1,0 +1,60 @@
+@font-face {
+  font-family: SourceSans3_Black;
+  src: url("./assets/fonts/SourceSans3-Black.ttf");
+}
+@font-face {
+  font-family: SourceSans3_Bold;
+  src: url("./assets/fonts/SourceSans3-Bold.ttf");
+}
+@font-face {
+  font-family: SourceSans3_Medium;
+  src: url("./assets/fonts/SourceSans3-Medium.ttf");
+}
+@font-face {
+  font-family: SourceSans3_Regular;
+  src: url("./assets/fonts/SourceSans3-Regular.ttf");
+}
+
+body {
+  margin: 0;
+  font-family: SourceSans3_Regular, SourceSans3_Black, SourceSans3_Bold, SourceSans3_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.MuiTableRow-root td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top: 1px solid #F0F0F0;
+  border-left: 1px solid #F0F0F0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.MuiTableRow-root td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top: 1px solid #F0F0F0;
+  border-right: 1px solid #F0F0F0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.MuiTableRow-head th:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top: 1px solid #F0F0F0;
+  border-left: 1px solid #F0F0F0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.MuiTableRow-head th:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top: 1px solid #F0F0F0;
+  border-right: 1px solid #F0F0F0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.MuiStepConnector-root {
+  display: none;
+}
+
