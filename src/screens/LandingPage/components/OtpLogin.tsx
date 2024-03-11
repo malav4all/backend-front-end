@@ -86,6 +86,7 @@ const OtpLogin = () => {
               userId: res?.verifyOtpLogin?.data?._id,
               roleName: res?.verifyOtpLogin?.data?.roleId?.name,
               tenantId: res?.verifyOtpLogin?.data?.account?.tenantId,
+              apiKey: "",
             })
           );
           history.push("/dashboard");
