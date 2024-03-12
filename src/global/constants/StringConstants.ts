@@ -100,6 +100,7 @@ export class StringConstants {
   TICKETS = "Tickets";
   SETTINGS = "Settings";
   DEVICEHISTORY = "Device History";
+  ASSERTASSINGMENT = "Assert Assingment"
 
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
