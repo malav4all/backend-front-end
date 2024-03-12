@@ -43,6 +43,14 @@ declare global {
     __forceSmoothScrollPolyfill__: boolean;
   }
 }
+
+declare global {
+  interface Window {
+    __forceSmoothScrollPolyfill__: boolean;
+    H: any;
+  }
+}
+
 window.__forceSmoothScrollPolyfill__ = true;
 smoothscroll.polyfill();
 

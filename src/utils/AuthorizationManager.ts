@@ -1,6 +1,7 @@
 import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
+  geoZoneSvg,
   getGroupIcon,
   getHistoryIcon,
   getHomeIcon,
@@ -48,6 +49,18 @@ const ListOfMenus = () =>
       text: "Settings",
       link: `${"/settings"}`,
       pageName: strings.SETTINGS,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
+
+    {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Geozone",
+      link: `${"/geozone"}`,
+      pageName: strings.GEOZONE,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],

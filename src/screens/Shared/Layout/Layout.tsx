@@ -21,6 +21,7 @@ import { useIdleTimer } from "react-idle-timer";
 import { onLogout } from "../../LandingPage/landingPageService";
 import { store } from "../../../utils/store";
 import history from "../../../utils/history";
+import Geozone from "../../Geozone/Geozone";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -72,6 +73,14 @@ const Layout = () => {
             path={"/settings"}
             component={Settings}
             componentName={strings.SETTINGS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/geozone"}
+            component={Geozone}
+            componentName={strings.GEOZONE}
           />
 
           <PrivateRoute

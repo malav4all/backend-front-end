@@ -232,6 +232,8 @@ export class StringConstants {
   // Email Campaign Types
   EMAIL_REGULAR_CAMPAIGN = "regular";
   EMAIL_AB_CAMPAIGN = "ab";
+
+  GEOZONE = "Geozone";
 }
 
 let strings = new StringConstants();
