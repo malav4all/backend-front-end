@@ -11,11 +11,7 @@ import layoutStyles from "./Layout.styles";
 import { useMediaQuery, useTheme } from "@mui/material";
 
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
-import {
-  addIsManager,
-  logOutAction,
-  selectAuthenticated,
-} from "../../../redux/authSlice";
+import { logOutAction, selectAuthenticated } from "../../../redux/authSlice";
 import PageNotFound from "../../PageNotFound/PageNotFound";
 import strings from "../../../global/constants/StringConstants";
 
@@ -77,7 +73,7 @@ const Layout = () => {
             component={Settings}
             componentName={strings.SETTINGS}
           />
-          
+
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -99,7 +95,6 @@ const Layout = () => {
         <Box sx={classes.root}>
           {isDesktop && <AppDrawer />}
           {getContent()}
-          
         </Box>
       </>
     );

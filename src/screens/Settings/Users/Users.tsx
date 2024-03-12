@@ -32,7 +32,7 @@ import strings from "../../../global/constants/StringConstants";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { useTitle } from "../../../utils/UseTitle";
-import { hasAccessTo } from "../../../utils/AuthorizationManager";
+
 import {
   getRelativeFontSize,
   primaryHeadingColor,
@@ -71,18 +71,6 @@ const Users = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
-  const hasUserUpdateAccess = hasAccessTo(
-    strings.campaigner,
-    strings.updatePermission
-  );
-  const hasUserAddAccess = hasAccessTo(
-    strings.campaigner,
-    strings.addPermission
-  );
-
-  useEffect(() => {
-    fetchRole();
-  }, []);
 
   useEffect(() => {
     if (searchCampaigner === "") {
@@ -119,9 +107,7 @@ const Users = () => {
         firstName: usersData?.firstName,
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
-        accountId: usersData?.accountId?.accountName,
-        roleId: usersData?.roleId?.name,
-        industryType: usersData?.accountId.industryType?.name,
+        roleId: usersData?.roleId,
         status: (
           <Chip
             label={usersData.status}
@@ -185,8 +171,6 @@ const Users = () => {
     },
     [edit]
   );
-
-  const fetchRole = async () => {};
 
   const getUsersDetailTable = async () => {
     try {
@@ -377,10 +361,7 @@ const Users = () => {
           spacing={1}
         >
           {getSearchBar()}
-          {(store.getState().auth.account === "Master Admin" ||
-            store.getState().auth.account === "Super Admin" ||
-            store.getState().auth.account === "Admin") &&
-            addUserButton()}
+          {addUserButton()}
         </Stack>
       </Stack>
 

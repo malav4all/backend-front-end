@@ -53,69 +53,7 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
-
-    {
-      icon: getIntegrationIcon("#666"),
-      activeIcon: getIntegrationIcon(pinkDarkColor),
-      text: "LoginActivity",
-      link: `${"/loginActivity"}`,
-      pageName: strings.LOGINACTIVITY,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
-    },
-
-    {
-      icon: getHistoryIcon("#666"),
-      activeIcon: getHistoryIcon(pinkDarkColor),
-      text: "Device History",
-      link: `${"/device-history"}`,
-      pageName: strings.DEVICEHISTORY,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
-    },
-
-    {
-      icon: getGroupIcon("#666"),
-      activeIcon: getGroupIcon(pinkDarkColor),
-      text: "Device Onboarding",
-      link: `${"/device-onboarding"}`,
-      pageName: strings.DEVICEONBOARDING,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
-    },
   ] as any;
-
-const checkAccessToResource = (accessToResource: any) => {
-  const resources = store.getState().auth.resources;
-  console.log("Resources : ", resources);
-  const hasAccess = accessToResource?.some(
-    (accessToResource: AccessToResource) => {
-      if (!resources.hasOwnProperty(accessToResource.resource)) {
-        return false;
-      }
-
-      const permissions = resources[accessToResource.resource];
-      const hasAllPermissions = accessToResource.permissions?.every(
-        (indPermission: string) => permissions.includes(indPermission)
-      );
-
-      if (accessToResource.allPermissionRequired && hasAllPermissions) {
-        return true;
-      }
-
-      return accessToResource.permissions?.some((indPermission: string) =>
-        permissions.includes(indPermission)
-      );
-    }
-  );
-  return hasAccess;
-};
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
   const generatedMenu: ListOfMenusType[] = [];
@@ -143,11 +81,6 @@ export const doesUserHasAccessTo = (componentName: string) => {
     let hasAccessToSubMenu: boolean = false;
     for (const menuItem of mainMenu) {
       subMenuItem = findMenuItem(menuItem.subMenu);
-      if (isTruthy(subMenuItem)) {
-        hasAccessToSubMenu = checkAccessToResource(
-          subMenuItem!.accessToResource
-        );
-      }
     }
     return hasAccessToSubMenu;
   };
@@ -163,26 +96,11 @@ export const doesUserHasAccessTo = (componentName: string) => {
 
   const accessToResource = doesComponentExist.accessToResource;
 
-  return isAdmin() || checkAccessToResource(accessToResource);
-};
-
-export const hasAccessTo = (resourceName: string, permission: string) => {
-  console.log(resourceName, permission);
-  if (isAdmin()) {
-    console.log("If Condition");
-    return true;
-  }
-
-  const resources = store.getState().auth.resources;
-
-  return (
-    resources.hasOwnProperty(resourceName) &&
-    resources[resourceName].includes(permission)
-  );
+  return isAdmin();
 };
 
 export const isAdmin = () => {
-  const roleId = store.getState().auth.roleId;
+  const roleId = store.getState().auth.role;
 
-  return roleId === "Master Admin";
+  return roleId === "Admin";
 };

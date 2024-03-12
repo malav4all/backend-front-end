@@ -12,18 +12,12 @@ export const userTableHeader = [
     name: "User Email",
     field: "email",
   },
-  {
-    name: "Account Name",
-    field: "accountId",
-  },
+
   {
     name: "Role Name",
     field: "roleId",
   },
-  {
-    name: "Industry",
-    field: "industryType",
-  },
+
   {
     name: "Contact Number",
     field: "mobileNumber",
@@ -126,7 +120,7 @@ const isPhoneValid = (phone: string) => {
 export const validateAddUserForm = (userFormFields: any) => {
   let isValid = true;
   let errors = { ...userFormFields };
-  
+
   if (!errors.firstName.value) {
     errors.firstName.error = "Please enter first name";
     isValid = false;

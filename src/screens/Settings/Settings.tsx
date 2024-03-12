@@ -5,7 +5,7 @@ import { Box, Grid, Stack, Typography } from "@mui/material";
 import CustomTabs from "../../global/components/CustomTabs/CustomTabs";
 import strings from "../../global/constants/StringConstants";
 import { latestTabConfig, tabConfig } from "./SettingsHelpers";
-import { hasAccessTo, isAdmin } from "../../utils/AuthorizationManager";
+import { isAdmin } from "../../utils/AuthorizationManager";
 import UnauthorizedPage from "../UnauthorizedPage/UnauthorizedPage";
 
 import Users from "./Users/Users";
@@ -14,7 +14,6 @@ import { validateTabValue } from "../../helpers/methods";
 import { store } from "../../utils/store";
 
 const Settings = () => {
-  console.log(tabConfig, "TabConfig");
   const classes = SettingStyles;
   const urlParams = new URLSearchParams(useLocation().search);
   const tabValueName = validateTabValue(urlParams.get("tabValue"));

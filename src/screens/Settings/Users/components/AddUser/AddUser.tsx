@@ -78,10 +78,10 @@ const AddUser = (props: CustomProps) => {
     }
   }, [props.selectedUserRowData]);
 
-  useEffect(() => {
-    fetchAccountData();
-    fetchRoleData();
-  }, []);
+  // useEffect(() => {
+  //   fetchAccountData();
+  //   fetchRoleData();
+  // }, []);
 
   const handleValidation = () => {
     const { isValid, errors } = validateAddUserForm(userFormFields);
@@ -184,14 +184,7 @@ const AddUser = (props: CustomProps) => {
           mobileNumber: userFormFields.mobileNumber?.value || "",
           userName: userFormFields.userName?.value?.trim() || "",
           password: userFormFields.password?.value || "",
-          accountId: userFormFields.accountId?.value || "",
           roleId: userFormFields.roleId?.value || "",
-          industryType: userFormFields.industryType?.value || "",
-          parentUserId:
-            store.getState().auth.account === "Master Admin" ||
-            store.getState().auth.account === "Super Admin"
-              ? ""
-              : store.getState().auth.userId,
           status: userFormFields.status?.value || "",
         };
 
@@ -429,37 +422,15 @@ const AddUser = (props: CustomProps) => {
                   userFormFields.roleId?.error.length !== 0
                 }
               >
-                {roleData
-                  .filter((item: any) => {
-                    const loggedInRoleName = store.getState().auth.roleName;
-                    if (
-                      loggedInRoleName === "Master Admin" &&
-                      item.name === "Master Admin"
-                    ) {
-                      return false;
-                    } else if (
-                      loggedInRoleName === "Super Admin" &&
-                      item.name === "Super Admin"
-                    ) {
-                      return false;
-                    } else if (loggedInRoleName === "Admin") {
-                      return (
-                        item.name !== "Admin" &&
-                        item.name !== "Super Admin" &&
-                        item.name !== "Admin Assistant"
-                      );
-                    }
-                    return true;
-                  })
-                  .map((item: any, index: any) => (
-                    <MenuItem
-                      key={index}
-                      value={item._id}
-                      sx={classes.dropDownOptionsStyle}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  ))}
+                {["Admin", "User", "Editor"].map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item._id}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.name}
+                  </MenuItem>
+                ))}
               </Select>
             </Stack>
             {!isTruthy(userFormFields.accountId.value) && (

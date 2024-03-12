@@ -30,7 +30,6 @@ import showPasswordIcon from "../../../assets/images/Show.svg";
 import { useTitle } from "../../../utils/UseTitle";
 import _ from "lodash";
 import { changeStatus, onLogin } from "../landingPageService";
-import OtpLogin from "./OtpLogin";
 
 const loginType: any = {
   ["login"]: {
@@ -108,50 +107,19 @@ const Login = () => {
         const password = formFields.password.value;
         setIsLoading(true);
         const user: any = await onLogin({ input: { email, password } });
-        if (user) {
-          localStorage.setItem(
-            "userId",
-            user?.loginUser?.data?.data?.user?._id
-          );
-        }
-        if (user?.loginUser?.data?.success === 0) {
-          setLoginAttempts((prev) => prev + 1);
-          openErrorNotification(user?.loginUser?.data?.message);
-          setIsLoading(false);
-
-          if (loginAttempts > 4) {
-            const status = "InActive";
-            await changeStatus({
-              input: { email, status },
-            });
-            setLoginAttempts(0);
-            openErrorNotification(user?.loginUser?.data?.message);
-          }
-        } else {
-          const formattedResources = convertResourceToObjectFormat(
-            user?.loginUser?.data?.data?.user.roleId.resources
-          );
-          dispatch(
-            loginAction({
-              email,
-              authenticated: true,
-              accessToken: user?.loginUser?.data?.data?.user.accessToken,
-              userName: user?.loginUser?.data?.data?.user.name,
-              role: user?.loginUser?.data?.data?.user.role,
-              resources: formattedResources,
-              roleId: user?.loginUser?.data?.data?.user.roleId.name,
-              account: user?.loginUser?.data?.data?.user.roleId.name,
-              accountId: user?.loginUser?.data?.data?.user?.account?._id,
-              userId: user?.loginUser?.data?.data?.user?._id,
-              roleName: user?.loginUser?.data?.data?.user.roleId.name,
-              tenantId: user?.loginUser?.data?.data?.user?.account?.tenantId,
-              apiKey: user?.loginUser?.data?.data?.user?.accountApiKey,
-            })
-          );
-          setIsLoading(false);
-          history.push("/dashboard");
-          openSuccessNotification(user?.loginUser?.data?.message);
-        }
+        dispatch(
+          loginAction({
+            email,
+            authenticated: true,
+            accessToken: user?.loginUser?.data?.data?.user.accessToken,
+            userName: user?.loginUser?.data?.data?.user.name,
+            role: user?.loginUser?.data?.data?.user?.roleId,
+            userId: user?.loginUser?.data?.data?.user?._id,
+          })
+        );
+        setIsLoading(false);
+        history.push("/dashboard");
+        openSuccessNotification(user?.loginUser?.data?.message);
       }
     } catch (error: any) {
       setIsLoading(false);
@@ -294,10 +262,6 @@ const Login = () => {
   const screenHandler = () => {
     switch (loginTypeTab) {
       case "login":
-        return getLoginScreen();
-      case "Otp":
-        return <OtpLogin />;
-      default:
         return getLoginScreen();
     }
   };
