@@ -41,7 +41,7 @@ export const FETCH_USER = gql`
 
 export const ADD_USER = gql`
   mutation ($input: CreateUserInput!) {
-    createUser(input: $input) {
+    addUser(input: $input) {
       success
       message
     }

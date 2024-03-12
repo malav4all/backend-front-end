@@ -287,14 +287,9 @@ const AppDrawer = (props: CustomProps) => {
   };
 
   const handleLogout = () => {
-    const _id = localStorage.getItem("userId");
-    onLogout({ input: { _id } });
-    localStorage.removeItem("userId");
-
-    setTimeout(() => {
-      history.push("/");
-      store.dispatch(logOutAction());
-    }, 1000);
+    history.push("/");
+    store.dispatch(logOutAction());
+    localStorage.clear();
   };
 
   const getLogoutButton = () => {

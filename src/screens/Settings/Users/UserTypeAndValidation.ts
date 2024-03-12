@@ -42,7 +42,7 @@ export const initialUserData = {
   confirmPassword: "",
 };
 
-export const insertUserField = (data?: any, edit?: boolean) => {
+export const insertUserField = (data?: any) => {
   return {
     firstName: {
       value: data?.firstName ?? "",
@@ -64,28 +64,12 @@ export const insertUserField = (data?: any, edit?: boolean) => {
       value: data?.userName ?? "",
       error: "",
     },
-    avatar: {
-      value: "",
-      error: "",
-    },
-    password: {
-      value: "",
-      error: "",
-    },
     createdBy: {
       value: store.getState().auth.userName,
       error: "",
     },
     roleId: {
-      value: data?.roleId?._id ?? (data?.roleId?.name || ""),
-      error: "",
-    },
-    accountId: {
-      value: data?.accountId?._id ?? (data?.accountId?.accountName || ""),
-      error: "",
-    },
-    industryType: {
-      value: "",
+      value: data?.roleId ?? "",
       error: "",
     },
     status: {
@@ -117,59 +101,49 @@ const isPhoneValid = (phone: string) => {
   }
 };
 
-export const validateAddUserForm = (userFormFields: any) => {
+export const validateAddUserForm = (userFormFields: any, edit = false) => {
   let isValid = true;
-  let errors = { ...userFormFields };
+  let errors: any = { ...userFormFields };
 
-  if (!errors.firstName.value) {
+  if (!errors.firstName?.value) {
     errors.firstName.error = "Please enter first name";
     isValid = false;
   }
 
-  if (!errors.lastName.value) {
+  if (!errors.lastName?.value) {
     errors.lastName.error = "Please enter last name";
     isValid = false;
   }
 
-  if (!errors.email.value) {
+  if (!errors.email?.value) {
     errors.email.error = "Please enter email";
     isValid = false;
   }
 
-  if (!errors.mobileNumber.value) {
+  if (!errors.mobileNumber?.value) {
     errors.mobileNumber.error = "Please enter mobile number";
     isValid = false;
   }
 
-  if (!errors.userName.value) {
+  if (!errors.userName?.value) {
     errors.userName.error = "Please enter username";
     isValid = false;
   }
 
-  if (!errors.password.value) {
+  if (!errors.password?.value) {
     errors.password.error = "Please enter password";
     isValid = false;
   }
 
-  if (!errors.accountId.value) {
-    errors.accountId.error = "Please select account";
-    isValid = false;
-  }
-
-  if (!errors.roleId.value) {
+  if (!errors.roleId?.value) {
     errors.roleId.error = "Please select role";
     isValid = false;
   }
 
-  if (!errors.status.value) {
+  if (!errors.status?.value) {
     errors.status.error = "Please select status";
     isValid = false;
   }
-
-  // if (!strings.regex.test(errors.email.value)) {
-  //   errors.emailId.error = "Please enter valid email id";
-  //   isValid = false;
-  // }
 
   return { isValid, errors };
 };
