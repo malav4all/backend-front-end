@@ -48,16 +48,10 @@ const getBaseUrl = (env: any) => {
   }
 };
 const authLink = setContext(async (_, { headers }) => {
-  const apiKey = store.getState().auth.apiKey;
-  const authorizationHeader = apiKey
-    ? { "x-api-key": apiKey }
-    : { Authorization: `Bearer ${store.getState().auth.accessToken}` };
-
   return {
     headers: {
       ...headers,
-      ...authorizationHeader,
-      "x-tenant-id": store.getState().auth.tenantId || "",
+      Authorization: `Bearer ${store.getState().auth.accessToken}`,
     },
   };
 });
@@ -67,48 +61,54 @@ const UploadLink = createUploadLink({
   fetch: customFetch,
 });
 
-// const errorLink = onError(
-//   ({ graphQLErrors, networkError, operation, forward }: any) => {
-//     if (graphQLErrors) {
-//       for (let err of graphQLErrors) {
-//         switch (err.extensions.exception?.status) {
-//           case 401:
-//             const observable = new Observable<FetchResult<Record<string, any>>>(
-//               (observer) => {
-//                 (async () => {
-//                   try {
-//                     const accessToken = await refreshToken();
-//                     const subscriber = {
-//                       next: observer.next.bind(observer),
-//                       error: observer.error.bind(observer),
-//                       complete: observer.complete.bind(observer),
-//                     };
+const errorLink = onError(
+  ({ graphQLErrors, networkError, operation, forward }: any) => {
+    if (graphQLErrors) {
+      for (let err of graphQLErrors) {
+        switch (err.extensions.exception?.status) {
+          case 401:
+            const observable = new Observable<FetchResult<Record<string, any>>>(
+              (observer) => {
+                (async () => {
+                  try {
+                    const accessToken = await refreshToken();
+                    const subscriber = {
+                      next: observer.next.bind(observer),
+                      error: observer.error.bind(observer),
+                      complete: observer.complete.bind(observer),
+                    };
 
-//                     const oldHeaders = operation.getContext().headers;
-//                     operation.setContext({
-//                       headers: {
-//                         ...oldHeaders,
-//                         Authorization: `Bearer ${accessToken}`,
-//                       },
-//                     });
-//                     return forward(operation).subscribe(subscriber);
-//                   } catch (err) {
-//                     observer.error(err);
-//                   }
-//                 })();
-//               }
-//             );
+                    const oldHeaders = operation.getContext().headers;
+                    operation.setContext({
+                      headers: {
+                        ...oldHeaders,
+                        Authorization: `Bearer ${accessToken}`,
+                      },
+                    });
+                    return forward(operation).subscribe(subscriber);
+                  } catch (err) {
+                    observer.error(err);
+                  }
+                })();
+              }
+            );
 
-//             return observable;
-//           default:
-//             break;
-//         }
-//       }
-//     }
+            return observable;
+          default:
+            break;
+        }
+      }
+    }
 
-//     if (networkError) console.log(`[Network error]: ${networkError}`);
-//   }
-// );
+    if (networkError) {
+      if (networkError.message === "Failed to fetch") {
+        alert("Backend Server is not responding. Please try again later.");
+      } else {
+        alert(`[Network error]: ${networkError}`);
+      }
+    }
+  }
+);
 
 const refreshToken = async () => {
   try {
@@ -126,7 +126,7 @@ const refreshToken = async () => {
 };
 
 export const client = new ApolloClient({
-  link: authLink.concat(from([UploadLink])),
+  link: authLink.concat(from([UploadLink, errorLink])),
   cache: new InMemoryCache(),
 });
 
