@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "global"],
     "target": "es5",
     "lib": [
       "dom",
