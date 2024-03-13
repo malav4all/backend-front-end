@@ -97,13 +97,13 @@ const Geozone = () => {
       }
     );
 
-    window.addEventListener("resize", () => initialMap.getViewPort().resize());
+    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
 
     new window.H.mapevents.Behavior(
       new window.H.mapevents.MapEvents(initialMap)
     );
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    addCircleToMap(initialMap);
+    // addCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
     createResizableCircle(initialMap);
