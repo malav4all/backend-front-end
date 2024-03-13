@@ -117,6 +117,13 @@ const Geozone = () => {
   }, []);
 
   useEffect(() => {
+    if (mapCheck) {
+      mapCheck.removeObjects(mapCheck.getObjects()); // Remove all existing circles
+      addCircleToMap(mapCheck); // Add updated circles
+    }
+  }, [geozoneData]);
+
+  useEffect(() => {
     fetchGeozone();
   }, []);
 
