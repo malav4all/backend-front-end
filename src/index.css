@@ -17,7 +17,8 @@
 
 body {
   margin: 0;
-  font-family: SourceSans3_Regular, SourceSans3_Black, SourceSans3_Bold, SourceSans3_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: SourceSans3_Regular, SourceSans3_Black, SourceSans3_Bold,
+    SourceSans3_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -25,36 +26,35 @@ body {
 .MuiTableRow-root td:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  border-top: 1px solid #F0F0F0;
-  border-left: 1px solid #F0F0F0;
-  border-bottom: 1px solid #F0F0F0;
+  border-top: 1px solid #f0f0f0;
+  border-left: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .MuiTableRow-root td:last-child {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-top: 1px solid #F0F0F0;
-  border-right: 1px solid #F0F0F0;
-  border-bottom: 1px solid #F0F0F0;
+  border-top: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .MuiTableRow-head th:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  border-top: 1px solid #F0F0F0;
-  border-left: 1px solid #F0F0F0;
-  border-bottom: 1px solid #F0F0F0;
+  border-top: 1px solid #f0f0f0;
+  border-left: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .MuiTableRow-head th:last-child {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  border-top: 1px solid #F0F0F0;
-  border-right: 1px solid #F0F0F0;
-  border-bottom: 1px solid #F0F0F0;
+  border-top: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .MuiStepConnector-root {
   display: none;
 }
-

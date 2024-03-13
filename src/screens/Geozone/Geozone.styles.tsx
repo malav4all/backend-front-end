@@ -4,6 +4,7 @@ import {
   theme,
   centerItemFlex,
   boldFont,
+  inputLabelRequiredColor,
 } from "../../utils/styles";
 
 const geozoneStyle = {
@@ -40,6 +41,68 @@ const geozoneStyle = {
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",
+    },
+  },
+
+  inputLabel: {
+    display: "flex",
+    color: "#212121",
+    fontSize: getRelativeFontSize(7),
+    fontColor: theme.palette.common.black + " !important",
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
+  star: {
+    color: inputLabelRequiredColor,
+  },
+
+  emailDropDownStyle: {
+    "& .MuiOutlinedInput-root": {
+      padding: "0, 9px",
+      height: "47px",
+      borderRadius: "12px !important",
+      "&.Mui-focused fieldset": {
+        borderColor: "#4B0150",
+      },
+    },
+  },
+
+  select: {
+    "& .MuiOutlinedInput-root": {
+      height: "47px",
+      borderRadius: "12px",
+      fontSize: getRelativeFontSize(),
+
+      "&.Mui-focused fieldset": {
+        borderColor: "#4B0150",
+      },
+      "& .MuiAutocomplete-input  ": {
+        padding: "0px",
+      },
+    },
+  },
+  label: {
+    ...boldFont,
+    marginBottom: "8px",
+  },
+  testAreaStyle: {
+    borderColor: "rgba(0,0,0,0.2)",
+    width: "100%",
+    background: "none",
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "12px !important",
     },
   },
 } as const;

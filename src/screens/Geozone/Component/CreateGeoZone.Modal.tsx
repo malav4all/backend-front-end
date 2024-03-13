@@ -1,4 +1,11 @@
-import { Box, Grid, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Grid,
+  InputLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
 import {
   CustomButton,
   CustomDialog,
@@ -6,21 +13,37 @@ import {
 } from "../../../global/components";
 import addGeozone from "../../../assets/images/uploadUser.svg";
 import geozoneStyle from "../Geozone.styles";
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { openErrorNotification } from "../../../helpers/methods";
+import strings from "../../../global/constants/StringConstants";
+import { getAddressDetailsByPincode } from "../service/geozone.service";
+import _ from "lodash";
 
 interface GeoZoneProps {
   isOpenModal: boolean;
   handleUpdateDialogClose: Function;
   setFormField: any;
   formField: any;
+  addGeozoneHandler: any;
 }
 const CreateGeoZone = ({
   isOpenModal,
   handleUpdateDialogClose,
   setFormField,
   formField,
+  addGeozoneHandler,
 }: GeoZoneProps) => {
   const classes = geozoneStyle;
+  const [zipCodeDate, setZipCodeData] = useState([]);
+
+  const fetchZipCodeHandler = async (value: any) => {
+    try {
+      const res = await getAddressDetailsByPincode(value);
+      setZipCodeData(res);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
 
   const updateUserDialogTitle = () => {
     return (
@@ -66,7 +89,7 @@ const CreateGeoZone = ({
           <CustomButton
             id="update_user_submit_button"
             label="Save"
-            onClick={() => {}}
+            onClick={addGeozoneHandler}
           />
         </Box>
       </Grid>
@@ -76,55 +99,198 @@ const CreateGeoZone = ({
   const geoZoneBody = () => {
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
-            label="Circle Name"
+            label="Name"
             id="circleName"
             placeHolder="Enter Circle Name"
-            name="circleName"
-            value={formField.circleName.value}
+            name="name"
+            value={formField.name.value}
             onChange={handleOnChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
-            label="Circle Radius"
-            id="circleRadius"
-            name="circleRadius"
-            placeHolder="Enter Circle Radius"
-            value={formField.circleRadius.value}
+            label="Center No"
+            id="mobileNo"
+            name="centerNo"
+            placeHolder="Enter Center No"
+            value={formField.centerNo.value}
             onChange={handleOnChange}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
+            type="number"
             label="Mobile No"
             id="mobileNo"
-            name="mobileNo"
+            name="mobileNumber"
             placeHolder="Enter Mobile No"
-            value={formField.mobileNo.value}
+            value={formField.mobileNumber.value}
+            onChange={handleOnChange}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            label="Type"
+            id="type"
+            name="type"
+            placeHolder="Enter Type"
+            value={formField.type.value}
             onChange={handleOnChange}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Box>
+            <InputLabel sx={classes.inputLabel} shrink>
+              Zip Code
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+            <Autocomplete
+              sx={classes.emailDropDownStyle}
+              id="update_user_manager_field"
+              options={
+                zipCodeDate?.map((item: any) => ({
+                  label: `${item.Pincode} - ${item.Country} - ${item.State} - ${item.Name} - ${item.Block} - ${item.District}`,
+                  value: item,
+                })) || []
+              }
+              onChange={(event, newValue) => {
+                setFormField({
+                  ...formField,
+                  country: {
+                    value: newValue?.value?.Country,
+                  },
+                  state: {
+                    value: newValue?.value?.State,
+                  },
+                  area: {
+                    value: newValue?.value?.Name,
+                  },
+                  district: {
+                    value: newValue?.value?.District,
+                  },
+                  city: {
+                    value: newValue?.value?.Block,
+                  },
+                  zipCode: {
+                    value: newValue?.value?.Pincode,
+                  },
+                  address: {
+                    value: `${newValue?.value?.Country} - ${newValue?.value?.State}-${newValue?.value?.Name}-${newValue?.value?.District}-${newValue?.value?.Block}`,
+                  },
+                });
+              }}
+              value={formField.zipCode.value}
+              renderInput={(params) => (
+                <TextField
+                  sx={classes.select}
+                  {...params}
+                  value={formField.zipCode.value}
+                  name="assignBy"
+                  placeholder="Search Zipcode...."
+                  onSelect={() => {}}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFormField({
+                      ...formField,
+                      zipCode: {
+                        value: value,
+                        error: "",
+                      },
+                    });
+                    if (value.length >= 6) {
+                      fetchZipCodeHandler(value);
+                    }
+                  }}
+                />
+              )}
+            />
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
-            label="Client Name"
-            id="clientName"
-            name="clientName"
-            placeHolder="Enter Client Name"
-            value={formField.clientName.value}
-            onChange={handleOnChange}
+            label="Country"
+            id="country"
+            name="country"
+            placeHolder="Enter Country"
+            value={formField.country.value}
+            disabled={true}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            label="State"
+            id="state"
+            name="state"
+            placeHolder="Enter State"
+            value={formField.state.value}
+            disabled={true}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            label="Area"
+            id="area"
+            name="area"
+            placeHolder="Enter Area"
+            value={formField.area.value}
+            disabled={true}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            label="City"
+            id="city"
+            name="city"
+            placeHolder="Enter City"
+            value={formField.city.value}
+            disabled={true}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            label="District"
+            id="district"
+            name="district"
+            placeHolder="Enter District"
+            value={formField.district.value}
+            disabled={true}
+          />
+        </Grid>
+        <Grid xs={12} sm={12} md={6} lg={6} xl={6} item>
+          <Box display={"flex"}>
+            <Typography sx={classes.label}>Address</Typography>
+            <Typography sx={classes.star}>*</Typography>
+          </Box>
+          <TextField
+            multiline
+            minRows={3}
+            inputProps={{ maxLength: 500 }}
+            sx={classes.testAreaStyle}
+            name="address"
+            id="address"
+            placeholder="Enter your Address"
+            value={formField.address.value}
+            onChange={(event: any) => handleOnChange(event)}
           />
         </Grid>
       </Grid>
     );
   };
-
-  console.log(formField);
 
   const geoZone = () => {
     return (
@@ -137,7 +303,7 @@ const CreateGeoZone = ({
         dialogTitleContent={updateUserDialogTitle()}
         dialogBodyContent={geoZoneBody()}
         dialogFooterContent={updateUserDialogFooter()}
-        width={"400px"}
+        width={"650px"}
       />
     );
   };

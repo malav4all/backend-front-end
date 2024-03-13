@@ -1,35 +1,36 @@
 import { Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
+import {
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../helpers/methods";
+import { store } from "../../utils/store";
+import { createGeozone, fetchGeozoneHandler } from "./service/geozone.service";
+import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 
 const Geozone = () => {
+  const mapRef = useRef<any>(null);
   const [selectedShape, setSelectedShape] = useState<any>("");
   const [isOpen, setOpenModal] = useState<boolean>(false);
   const [mapCheck, setMapCheck] = useState<any>(null);
   const [mapKey, setMapKey] = useState<number>(0);
+  const [page, setpage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [geozoneData, setGeozoneData] = useState([]);
   const [circles, setCircles] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [formField, setFormField] = useState<any>({
-    circleName: {
+    name: {
       value: "",
       error: "",
     },
-    circleRadius: {
+    type: {
       value: "",
       error: "",
     },
-    mobileNo: {
-      value: "",
-      error: "",
-    },
-    clientName: {
-      value: "",
-      error: "",
-    },
-    latitude: {
-      value: "",
-      error: "",
-    },
-    longitude: {
+    centerNo: {
       value: "",
       error: "",
     },
@@ -37,7 +38,197 @@ const Geozone = () => {
       value: "",
       error: "",
     },
+    mobileNumber: {
+      value: "",
+      error: "",
+    },
+    address: {
+      value: "",
+      error: "",
+    },
+    zipCode: {
+      value: "",
+      error: "",
+    },
+    country: {
+      value: "",
+      error: "",
+    },
+    state: {
+      value: "",
+      error: "",
+    },
+    area: {
+      value: "",
+      error: "",
+    },
+    city: {
+      value: "",
+      error: "",
+    },
+    district: {
+      value: "",
+      error: "",
+    },
+    lat: {
+      value: "",
+      error: "",
+    },
+    long: {
+      value: "",
+      error: "",
+    },
   });
+
+  useEffect(() => {
+    const platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+    });
+    const defaultLayers = platform.createDefaultLayers();
+
+    const initialMap = new window.H.Map(
+      document.getElementById("map"),
+      defaultLayers.vector.normal.map,
+      {
+        center: { lat: 28.495831757053296, lng: 77.07923644083718 },
+        zoom: 5,
+        pixelRatio: window.devicePixelRatio || 1,
+        key: mapKey,
+      }
+    );
+
+    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
+
+    new window.H.mapevents.Behavior(
+      new window.H.mapevents.MapEvents(initialMap)
+    );
+    window.H.ui.UI.createDefault(initialMap, defaultLayers);
+    // addCircleToMap(initialMap);
+    addMarkersToMap(initialMap);
+    setMapCheck(initialMap);
+    createResizableCircle(initialMap);
+
+    return () => {
+      window.removeEventListener("resize", () =>
+        initialMap.getViewPort().resize()
+      );
+      initialMap.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (mapCheck) {
+      mapCheck.removeObjects(mapCheck.getObjects()); // Remove all existing circles
+      addCircleToMap(mapCheck); // Add updated circles
+    }
+  }, [geozoneData]);
+
+  useEffect(() => {
+    fetchGeozone();
+  }, []);
+
+  const fetchGeozone = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchGeozoneHandler({
+        input: {
+          page,
+          limit,
+        },
+      });
+      setGeozoneData(res?.listGeozone?.data);
+      setLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const addGeozoneHandler = async () => {
+    try {
+      const payload = {
+        name: formField.name.value,
+        radius: formField.radius.value,
+        centerNo: formField.centerNo.value,
+        type: formField.type.value,
+        mobileNumber: Number(formField.mobileNumber.value),
+        address: formField.address.value,
+        zipCode: formField.zipCode.value,
+        country: formField.country.value,
+        state: formField.state.value,
+        area: formField.area.value,
+        city: formField.city.value,
+        district: formField.district.value,
+        lat: formField.lat.value,
+        long: formField.long.value,
+      };
+      const res = await createGeozone({
+        input: { ...payload, createdBy: store.getState().auth.userName },
+      });
+      openSuccessNotification(res.addGeozone.message);
+      await handleCloseDialog();
+      setFormField({
+        name: {
+          value: "",
+          error: "",
+        },
+        type: {
+          value: "",
+          error: "",
+        },
+        centerNo: {
+          value: "",
+          error: "",
+        },
+        radius: {
+          value: "",
+          error: "",
+        },
+        mobileNumber: {
+          value: "",
+          error: "",
+        },
+        address: {
+          value: "",
+          error: "",
+        },
+        zipCode: {
+          value: "",
+          error: "",
+        },
+        country: {
+          value: "",
+          error: "",
+        },
+        state: {
+          value: "",
+          error: "",
+        },
+        area: {
+          value: "",
+          error: "",
+        },
+        city: {
+          value: "",
+          error: "",
+        },
+        district: {
+          value: "",
+          error: "",
+        },
+        lat: {
+          value: "",
+          error: "",
+        },
+        long: {
+          value: "",
+          error: "",
+        },
+      });
+      await fetchGeozone();
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
 
   let circle: any;
   let circleOutline: any;
@@ -104,10 +295,10 @@ const Geozone = () => {
           }
           setFormField({
             ...formField,
-            latitude: {
+            lat: {
               value: latLng.lat,
             },
-            longitude: {
+            long: {
               value: latLng.lng,
             },
             radius: {
@@ -177,73 +368,23 @@ const Geozone = () => {
     map.addObject(parisMarker);
   };
 
-  // function addCircleToMap(map: any) {
-  //   dummyData.map((item) =>
-  //     map.addObject(
-  //       new window.H.map.Circle(
-  //         // The central point of the circle
-  //         { lat: item.lat, lng: item.log },
-  //         // The radius of the circle in meters
-  //         item.radius,
-  //         {
-  //           style: {
-  //             strokeColor: "rgba(55, 85, 170, 0.6)",
-  //             lineWidth: 2,
-  //             fillColor: "rgba(0, 128, 0, 0.7)",
-  //           },
-  //         }
-  //       )
-  //     )
-  //   );
-  // }
-
-  useEffect(() => {
-    const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
-    });
-    const defaultLayers = platform.createDefaultLayers();
-
-    const initialMap = new window.H.Map(
-      document.getElementById("map"),
-      defaultLayers.vector.normal.map,
-      {
-        center: { lat: 28.495831757053296, lng: 77.07923644083718 },
-        zoom: 5,
-        pixelRatio: window.devicePixelRatio || 1,
-        key: mapKey,
-      }
+  const addCircleToMap = (map: any) => {
+    geozoneData.map((item: any) =>
+      map.addObject(
+        new window.H.map.Circle(
+          { lat: item.lat, lng: item.long },
+          item.radius,
+          {
+            style: {
+              strokeColor: "rgba(0, 0, 255, 0.5)",
+              lineWidth: 2,
+              fillColor: "rgba(0, 0, 255, 0.5)",
+            },
+          }
+        )
+      )
     );
-
-    window.addEventListener("resize", () => initialMap.getViewPort().resize());
-
-    new window.H.mapevents.Behavior(
-      new window.H.mapevents.MapEvents(initialMap)
-    );
-    window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    setMapCheck(initialMap);
-    addMarkersToMap(initialMap);
-    // addCircleToMap(initialMap);
-    createResizableCircle(initialMap);
-    // createResizablePolygon(initialMap);
-
-    // Event listener for map clicks to create shapes
-    initialMap.addEventListener("tap", function (evt: any) {
-      if (selectedShape === "circle") {
-        // Create circle
-      } else if (selectedShape === "polygon") {
-        // Create polygon
-      } else if (selectedShape === "rectangle") {
-        // Create rectangle
-      }
-    });
-
-    return () => {
-      window.removeEventListener("resize", () =>
-        initialMap.getViewPort().resize()
-      );
-      initialMap.dispose();
-    };
-  }, []);
+  };
 
   const handleCloseDialog = () => {
     setOpenModal(false);
@@ -264,6 +405,7 @@ const Geozone = () => {
           handleUpdateDialogClose={handleCloseDialog}
           setFormField={setFormField}
           formField={formField}
+          addGeozoneHandler={addGeozoneHandler}
         />
       </>
     );
@@ -282,7 +424,9 @@ const Geozone = () => {
           </button>
         </Box>
       </Box>
+
       {createGeozoneModal()}
+      <CustomLoader isLoading={loading} />
     </>
   );
 };
