@@ -8,10 +8,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import usersStyles from "./Users.styles";
+import AssetAssingmentStyles from "./AssetAssingment.styles";
 import CustomButton from "../../../global/components/CustomButton/CustomButton";
-import AddUser from "./components/AddUser/AddUser";
-import { RowData, UserData } from "../../../models/interfaces";
+import AddUser from "./components/AddAsset/AddAssertAssingment";
+import { AssetAssingmentData, RowData } from "../../../models/interfaces";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   debounceEventHandler,
@@ -26,8 +26,7 @@ import {
   CustomInput,
   CustomTable,
 } from "../../../global/components";
-import UpdateUser from "./components/UpdateUser/UpdateUser";
-import { userTableHeader } from "./UserTypeAndValidation";
+import { assetAssingmentTableHeader } from "./AssetAssingmentTypeAndValidation";
 import strings from "../../../global/constants/StringConstants";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import notifiers from "../../../global/constants/NotificationConstants";
@@ -38,20 +37,30 @@ import {
   primaryHeadingColor,
   boldFont,
 } from "../../../utils/styles";
-import { fetchUserDataHandler, searchUser } from "./service/user.service";
-import { store } from "../../../utils/store";
-import ChangePassword from "./components/ChangePassword/ChangePassword";
 
-const Users = () => {
-  useTitle(strings.UsersTitle);
-  const classes = usersStyles;
+import AddAssetAssingment from "./components/AddAsset/AddAssertAssingment";
+import {
+  fetchAssetAssingmentDataHandler,
+  searchAssetAssingment,
+} from "./service/AssetAssingment.service";
+import UpdateAssetAssingment from "./components/UpdateAsset/UpdateAssetAssingment";
+
+const AssetAssingment = () => {
+  useTitle(strings.AssetAssingmentTitle);
+  const classes = AssetAssingmentStyles;
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
+  const [addAssetAssingmentDialogHandler, setAddAssetAssingmentDialogHandler] =
+    useState(false);
   const [changePasswordDialogHandler, setChangePasswordDialogHandler] =
     useState(false);
-  const [updateUserDialogHandler, setUpdateUserDialogHandler] = useState(false);
-  const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
+  const [
+    updateAssetAssingmentDialogHandler,
+    setUpdateAssetAssingmentDialogHandler,
+  ] = useState(false);
+  const [assetAssingmentDataSource, setAssetAssingmentDataSource] = useState<
+    AssetAssingmentData[]
+  >([]);
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
   const [roles, setRoles] = useState([]);
   const [count, setCount] = useState(1);
@@ -61,16 +70,17 @@ const Users = () => {
     allowedEmailCount: "",
     title: "",
   });
-  const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
-  const [selectedEmailData, setSelectedEmailData] = useState<any>({
-    email: "",
-  });
+  const [selectedAssetAssingmentRowData, setSelectedAssetAssingmentRowData] =
+    useState<any>({});
+  // const [selectedEmailData, setSelectedEmailData] = useState<any>({
+  //   email: "",
+  // });
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
-  const [changePasswordModal, setChangePasswordModal] = useState(false);
+  // const [changePasswordModal, setChangePasswordModal] = useState(false);
 
   useEffect(() => {
     if (searchCampaigner === "") {
@@ -84,7 +94,7 @@ const Users = () => {
     if (searchCampaigner) {
       getSearchData();
     } else {
-      getUsersDetailTable();
+      getAssetAssingmentDetailTable();
     }
   }, [searchCampaigner, pageNumber, perPageData, searchPageNumber]);
 
@@ -100,89 +110,39 @@ const Users = () => {
     setPerPageData(event.target.value);
   };
 
-  const tableDataShowHandler = (usersData: any) => {
-    const source = usersData.map((usersData: any) => {
+  const tableDataShowHandler = (assetAssingmentData: any) => {
+    const source = assetAssingmentData?.map((assetAssingmentData: any) => {
       return {
-        email: <Typography sx={classes.rowColor}>{usersData.email}</Typography>,
-        firstName: usersData?.firstName,
-        mobileNumber: usersData?.mobileNumber,
-        createdBy: usersData?.createdBy,
-        roleId: usersData?.roleId,
-        status: (
-          <Chip
-            label={usersData.status}
-            sx={{
-              backgroundColor: usersData.status === "Active" ? "green" : "red",
-              color: "white",
-              animation: "pulse 2s infinite",
-              "@keyframes pulse": {
-                "0%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-                "50%": {
-                  transform: "scale(1.05)",
-                  opacity: 0.75,
-                },
-                "100%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-              },
-            }}
-            variant="filled"
-          />
-        ),
-        action: (
-          <>
-            <Tooltip title="Change Password">
-              <LockResetIcon
-                htmlColor={"#0F2167"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                onClick={() => {
-                  setChangePasswordModal(true);
-                  setSelectedEmailData(usersData.email);
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editUser(usersData);
-              }}
-            >
-              <EditIcon
-                htmlColor={"#0F2167"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-              />
-            </Tooltip>
-          </>
-        ),
+        imei: assetAssingmentData?.imei,
+        labelName: assetAssingmentData?.labelName,
+        // journey: assetAssingmentData?.journey,
+        boxSet: assetAssingmentData?.boxSet,
+        createdBy: assetAssingmentData?.createdBy,
       };
     });
-    setUserDataSource([...source]);
+    setAssetAssingmentDataSource([...source]);
   };
 
-  const editUser = React.useCallback(
+  const editAssetAssingment = React.useCallback(
     (rowdata: any) => {
-      setAddUserDialogHandler(true);
-      setSelectedUserRowData(rowdata);
+      setAddAssetAssingmentDialogHandler(true);
+      setSelectedAssetAssingmentRowData(rowdata);
       setEdit(true);
     },
     [edit]
   );
 
-  const getUsersDetailTable = async () => {
+  const getAssetAssingmentDetailTable = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchUserDataHandler({
+      const res = await fetchAssetAssingmentDataHandler({
         input: {
           page: pageNumber,
           limit: perPageData,
         },
       });
-      tableDataShowHandler(res?.userListAll?.data);
-      setCount(res?.userListAll?.paginatorInfo?.count);
+      tableDataShowHandler(res?.fetchAssertAssingmentModule?.data);
+      setCount(res?.fetchAssertAssingmentModule?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -195,15 +155,15 @@ const Users = () => {
   const getSearchData = async () => {
     try {
       setIsLoading(true);
-      const res = await searchUser({
+      const res = await searchAssetAssingment({
         input: {
           search: searchCampaigner,
           page: pageNumber,
           limit: perPageData,
         },
       });
-      tableDataShowHandler(res?.searchUsers?.data);
-      setCount(res?.searchUsers?.paginatorInfo?.count);
+      tableDataShowHandler(res?.searchAssetAssingment?.data);
+      setCount(res?.searchAssetAssingment?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -224,8 +184,8 @@ const Users = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search user ..."
-        id="users_search_field"
+        placeHolder="Search asset..."
+        id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
           strings.SEARCH_TIME_OUT
@@ -241,12 +201,12 @@ const Users = () => {
     );
   };
 
-  const addUserButton = () => {
+  const addAssetAssingmentButton = () => {
     return (
       <CustomButton
-        id="users_add_button"
-        label={"Add User"}
-        onClick={() => setAddUserDialogHandler(true)}
+        id="assetAssingment_add_button"
+        label={"Add Asset"}
+        onClick={() => setAddAssetAssingmentDialogHandler(true)}
         customClasses={{
           width: "150px",
         }}
@@ -254,15 +214,17 @@ const Users = () => {
     );
   };
 
-  const addUserDialogBox = () => {
+  const addAssetAssingmentDialogBox = () => {
     return (
-      <AddUser
-        openAddUserDialog={addUserDialogHandler}
-        handleCloseAddUserDialog={closeAddUserDialogHandler}
+      <AddAssetAssingment
+        openAddAssetAssingmentDialog={addAssetAssingmentDialogHandler}
+        handleCloseAddAssetAssingmentDialog={
+          closeAddAssetAssingmentDialogHandler
+        }
         managerMail={activeCampaigner}
         roles={roles}
-        tableData={getUsersDetailTable}
-        selectedUserRowData={selectedUserRowData}
+        tableData={getAssetAssingmentDetailTable}
+        selectedAssetAssingmentRowData={selectedAssetAssingmentRowData}
         isLoading={isLoading}
         edit={edit}
         setEdit={setEdit}
@@ -270,38 +232,27 @@ const Users = () => {
     );
   };
 
-  const changePasswordDialogBox = () => {
-    return (
-      <ChangePassword
-        openChangePasswordDialog={changePasswordModal}
-        handleCloseChangePasswordDialog={setChangePasswordModal}
-        tableData={selectedEmailData}
-        isLoading={isLoading}
-      />
-    );
+  const closeAddAssetAssingmentDialogHandler = () => {
+    setAddAssetAssingmentDialogHandler(false);
+    setSelectedAssetAssingmentRowData(null);
   };
 
-  const closeAddUserDialogHandler = () => {
-    setAddUserDialogHandler(false);
-    setSelectedUserRowData(null);
-  };
-
-  const updateUserDialogBox = () => {
-    return (
-      <UpdateUser
-        updateUserDialogOpen={updateUserDialogHandler}
-        handleUpdateDialogClose={updateDialogCloseHandler}
-        selectedRowData={selectedRowData}
-        managerMail={activeCampaigner}
-        tableData={getUsersDetailTable}
-        getSearchData={getSearchData}
-        searchCampaigner={searchCampaigner}
-      />
-    );
-  };
+  // const updateAssetAssingmentDialogBox = () => {
+  //   return (
+  //     <UpdateAssetAssingment
+  //       updateAssetAssingmentDialogOpen={updateAssetAssingmentDialogHandler}
+  //       handleUpdateDialogClose={updateDialogCloseHandler}
+  //       selectedRowData={selectedRowData}
+  //       managerMail={activeCampaigner}
+  //       tableData={getAssetAssingmentDetailTable}
+  //       getSearchData={getSearchData}
+  //       searchCampaigner={searchCampaigner}
+  //     />
+  //   );
+  // };
 
   const updateDialogCloseHandler = () => {
-    setUpdateUserDialogHandler(false);
+    setUpdateAssetAssingmentDialogHandler(false);
   };
 
   const handleSearchChangePage = (
@@ -314,12 +265,12 @@ const Users = () => {
 
   const campaignerTable = () => {
     return (
-      <Box id="users_display_table" sx={classes.campaignerTable}>
+      <Box id="assetAssingment_display_table" sx={classes.campaignerTable}>
         <CustomTable
-          headers={userTableHeader}
-          rows={userDataSource}
+          headers={assetAssingmentTableHeader}
+          rows={assetAssingmentDataSource}
           paginationCount={count}
-          // handleRowClick={updateUserDetails}
+          // handleRowClick={updateAssetAssingmentDetails}
           handlePageChange={
             searchCampaigner ? handleSearchChangePage : handleChangePage
           }
@@ -336,7 +287,7 @@ const Users = () => {
     );
   };
 
-  const getUser = () => (
+  const getAssetAssingment = () => (
     <Box>
       <Stack
         px={4}
@@ -352,7 +303,7 @@ const Users = () => {
             color: primaryHeadingColor,
           }}
         >
-          Users
+          AssetAssingment
         </Typography>
 
         <Stack
@@ -361,7 +312,7 @@ const Users = () => {
           spacing={1}
         >
           {getSearchBar()}
-          {addUserButton()}
+          {addAssetAssingmentButton()}
         </Stack>
       </Stack>
 
@@ -373,15 +324,14 @@ const Users = () => {
         }}
       >
         {campaignerTable()}
-        {addUserDialogBox()}
-        {updateUserDialogBox()}
-        {changePasswordDialogBox()}
+        {addAssetAssingmentDialogBox()}
+        {/* {updateAssetAssingmentDialogBox()} */}
       </Box>
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
 
-  return getUser();
+  return getAssetAssingment();
 };
 
-export default Users;
+export default AssetAssingment;

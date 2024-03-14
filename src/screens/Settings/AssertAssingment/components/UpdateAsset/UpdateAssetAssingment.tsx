@@ -13,7 +13,6 @@ import {
   CustomDialog,
   CustomInput,
 } from "../../../../../global/components";
-import usersStyles from "../../Users.styles";
 import {
   getFormattedNumbers,
   isTruthy,
@@ -21,18 +20,15 @@ import {
   openSuccessNotification,
 } from "../../../../../helpers/methods";
 // import { editCampaigner } from "../../UserService";
-import { RowData } from "../../../../../models/interfaces";
-import {
-  updateUserValidation,
-  updateUserValidationForm,
-} from "../../UserTypeAndValidation";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import userUpdateImg from "../../../../../assets/images/userUpdateImg.svg";
 import strings from "../../../../../global/constants/StringConstants";
 import _ from "lodash";
+import AssetAssingmentStyles from "../../AssetAssingment.styles";
+import { updateAssetAssingmentValidation } from "../../AssetAssingmentTypeAndValidation";
 
 interface customProps {
-  updateUserDialogOpen: boolean;
+  updateAssetAssingmentDialogOpen: boolean;
   handleUpdateDialogClose: Function;
   selectedRowData: any;
   managerMail: string[];
@@ -41,14 +37,14 @@ interface customProps {
   searchCampaigner: string;
 }
 
-const UpdateUser = (props: customProps) => {
-  const classes = usersStyles;
+const UpdateAssetAssingment = (props: customProps) => {
+  const classes = AssetAssingmentStyles;
   const [rowData, setRowData] = useState(
-    updateUserValidation(props.selectedRowData)
+    updateAssetAssingmentValidation(props.selectedRowData)
   );
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
-    setRowData(updateUserValidation(props.selectedRowData));
+    setRowData(updateAssetAssingmentValidation(props.selectedRowData));
   }, [props.selectedRowData]);
 
   const formData = (
@@ -64,8 +60,8 @@ const UpdateUser = (props: customProps) => {
   };
 
   const handleValidation = () => {
-    const { errors, isValid } = updateUserValidationForm(rowData);
-    setRowData({ ...errors });
+    const { errors, isValid } = updateAssetAssingmentValidation(rowData);
+    setRowData({ errors });
     return isValid;
   };
 
@@ -73,18 +69,18 @@ const UpdateUser = (props: customProps) => {
     return _.uniq(props.managerMail)?.includes(rowData?.assignBy?.value);
   };
 
-  const updateUserDetail = async () => {
+  const updateAssetAssingmentDetail = async () => {
     setLoading(true);
     if (handleValidation() && checkValidMangerEmail()) {
-      let insertUserBody = {
+      let insertAssetAssingmentBody = {
         emailId: rowData?.emailId?.value,
         allowedEmailCount: rowData?.allowedEmailCount?.value,
         assignBy: rowData?.assignBy?.value,
         title: rowData?.title?.value.trim(),
       };
       if (
-        insertUserBody.title.length > 0 &&
-        insertUserBody.assignBy.length > 0
+        insertAssetAssingmentBody.title.length > 0 &&
+        insertAssetAssingmentBody.assignBy.length > 0
       ) {
         try {
           // await editCampaigner(insertUserBody);
@@ -105,15 +101,15 @@ const UpdateUser = (props: customProps) => {
     setLoading(false);
   };
 
-  const updateUserDialogTitle = () => {
+  const updateAssetAssingmentDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Update User</Typography>
+        <Typography sx={classes.boldFonts}>Update AssetAssingment</Typography>
       </Box>
     );
   };
 
-  const updateUserDialogBody = () => {
+  const updateAssetAssingmentDialogBody = () => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -137,7 +133,7 @@ const UpdateUser = (props: customProps) => {
             </InputLabel>
             <Autocomplete
               sx={classes.emailDropDownStyle}
-              id="update_user_manager_field"
+              id="update_asset_assingment_manager_field"
               options={props?.managerMail?.map((item: string) => item)}
               value={rowData?.assignBy?.value}
               renderInput={(params) => (
@@ -163,9 +159,9 @@ const UpdateUser = (props: customProps) => {
           <CustomInput
             label="Title"
             required
-            id="update_user_title_field"
+            id="update_asset_assingment_title_field"
             name="title"
-            placeHolder="Enter user title"
+            placeHolder="Enter asset title"
             value={rowData?.title?.value}
             onChange={formData}
             error={!isTruthy(rowData?.title?.value) && rowData?.title?.error}
@@ -182,7 +178,7 @@ const UpdateUser = (props: customProps) => {
           <CustomInput
             label="Allowed Email Count/Day"
             required
-            id="update_user_allowed_email_field"
+            id="update_asset_assingment_allowed_email_field"
             InputProps={{ type: "number", min: 0 }}
             name="allowedEmailCount"
             placeHolder="Allowed email count/day"
@@ -207,46 +203,46 @@ const UpdateUser = (props: customProps) => {
     props.handleUpdateDialogClose();
   };
 
-  const updateUserDialogFooter = () => {
+  const updateAssetAssingmentDialogFooter = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
         <Box sx={classes.dialogFooter}>
           <CustomButton
-            id="update_user_cancel_button"
+            id="update_asset_assingment_cancel_button"
             label="Cancel"
             onClick={handleCancelUpdateModal}
             customClasses={classes.cancelButtonStyle}
           />
           <CustomButton
-            id="update_user_submit_button"
+            id="update_asset_assingment_submit_button"
             label="Update"
-            onClick={() => updateUserDetail()}
+            onClick={() => updateAssetAssingmentDetail()}
             loading={loading}
           />
         </Box>
       </Grid>
     );
   };
-
-  const modalHeader = () => {
-    return (
-      <Box display={"flex"}>
-        <img src={userUpdateImg} alt="Update user image not found!" />
-      </Box>
-    );
-  };
+  
+  // const modalHeader = () => {
+  //   return (
+  //     <Box display={"flex"}>
+  //       <img src={userUpdateImg} alt="Update user image not found!" />
+  //     </Box>
+  //   );
+  // };
 
   const updateCampaigner = () => {
     return (
       <CustomDialog
-        isDialogOpen={props.updateUserDialogOpen}
+        isDialogOpen={props.updateAssetAssingmentDialogOpen}
         closable
         closeButtonVisibility
         handleDialogClose={props.handleUpdateDialogClose}
-        dialogHeaderContent={modalHeader()}
-        dialogTitleContent={updateUserDialogTitle()}
-        dialogBodyContent={updateUserDialogBody()}
-        dialogFooterContent={updateUserDialogFooter()}
+        // dialogHeaderContent={modalHeader()}
+        dialogTitleContent={updateAssetAssingmentDialogTitle()}
+        dialogBodyContent={updateAssetAssingmentDialogBody()}
+        dialogFooterContent={updateAssetAssingmentDialogFooter()}
         width={"870px"}
       />
     );
@@ -255,4 +251,4 @@ const UpdateUser = (props: customProps) => {
   return <Box>{updateCampaigner()}</Box>;
 };
 
-export default UpdateUser;
+export default UpdateAssetAssingment;

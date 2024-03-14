@@ -13,7 +13,7 @@ import {
   purpleThemedSelectComponent,
 } from "../../../utils/styles";
 
-const usersStyles = {
+const AssetAssingmentStyles = {
   mainSection: {
     padding: theme.spacing(2),
     paddingTop: "2px",
@@ -251,4 +251,4 @@ const usersStyles = {
   },
 } as const;
 
-export default usersStyles;
+export default AssetAssingmentStyles;
