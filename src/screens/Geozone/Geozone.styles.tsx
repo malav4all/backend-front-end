@@ -79,6 +79,11 @@ const geozoneStyle = {
     },
   },
 
+  button: {
+    padding: "1rem",
+    backgroundColor: "white",
+  },
+
   select: {
     "& .MuiOutlinedInput-root": {
       height: "47px",

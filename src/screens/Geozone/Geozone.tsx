@@ -1,6 +1,8 @@
 import {
   Avatar,
   Box,
+  Button,
+  ButtonGroup,
   InputAdornment,
   List,
   ListItem,
@@ -19,13 +21,16 @@ import { store } from "../../utils/store";
 import { createGeozone, fetchGeozoneHandler } from "./service/geozone.service";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import ImageIcon from "@mui/icons-material/MoveToInbox";
-import WorkIcon from "@mui/icons-material/MoveToInbox";
 import SearchIcon from "@mui/icons-material/Search";
-import BeachAccessIcon from "@mui/icons-material/MoveToInbox";
 import { CustomInput } from "../../global/components";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import geozoneStyle from "./Geozone.styles";
+import DrawIcon from "@mui/icons-material/Draw";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+
 const Geozone = () => {
+  // const classes = geozoneStyle;
   const mapRef = useRef<any>(null);
   const [selectedShape, setSelectedShape] = useState<any>("");
   const [isOpen, setOpenModal] = useState<boolean>(false);
@@ -38,7 +43,7 @@ const Geozone = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>("");
   const [isCircleActive, setIsCircleActive] = useState(false);
-
+  const [geozonesVisible, setGeozonesVisible] = useState(true);
   const [formField, setFormField] = useState<any>({
     name: {
       value: "",
@@ -96,6 +101,11 @@ const Geozone = () => {
       value: "",
       error: "",
     },
+  });
+  const [geozoneStyle, setGeozoneStyle] = useState({
+    strokeColor: "rgba(0, 0, 255, 0.5)",
+    lineWidth: 2,
+    fillColor: "rgba(0, 0, 255, 0.5)",
   });
 
   const handleCircleButtonClick = () => {
@@ -165,6 +175,13 @@ const Geozone = () => {
   useEffect(() => {
     fetchGeozone();
   }, []);
+
+  // useEffect(() => {
+  //   if (geozonesVisible) {
+  //     setGeozoneData([]);
+  //   } else {
+  //   }
+  // });
 
   const fetchGeozone = async () => {
     try {
@@ -415,21 +432,29 @@ const Geozone = () => {
   };
 
   const addCircleToMap = (map: any) => {
-    geozoneData.map((item: any) =>
-      map.addObject(
-        new window.H.map.Circle(
-          { lat: item.lat, lng: item.long },
-          item.radius,
-          {
-            style: {
-              strokeColor: "rgba(0, 0, 255, 0.5)",
-              lineWidth: 2,
-              fillColor: "rgba(0, 0, 255, 0.5)",
-            },
-          }
-        )
-      )
-    );
+    geozoneData.forEach((item: any) => {
+      if (geozonesVisible) {
+        map.addObject(
+          new window.H.map.Circle(
+            { lat: item.lat, lng: item.long },
+            item.radius,
+            {
+              style: geozoneStyle,
+            }
+          )
+        );
+      } else {
+      }
+    });
+  };
+
+  const toggleGeozonesVisibility =  async() => {
+    setGeozonesVisible((prevVisibility) => !prevVisibility); 
+    if (!geozonesVisible) {
+     await fetchGeozone()
+    } else {
+      mapCheck.removeObjects(mapCheck.getObjects());
+    }
   };
 
   const handleCloseDialog = () => {
@@ -461,13 +486,22 @@ const Geozone = () => {
     <>
       <Box component={"div"} id="map" style={{ width: "100%", height: "100%" }}>
         <Box
-          style={{ position: "absolute", bottom: 0, left: "303px", zIndex: 1 }}
+          style={{
+            position: "absolute",
+            bottom: 25,
+            left: "50vw",
+            zIndex: 1,
+            backgroundColor: "white",
+            padding: "0.5rem",
+            borderRadius: "0.2rem",
+          }}
         >
-          <button onClick={handleCircleButtonClick}>Circle</button>
-          <button onClick={() => setSelectedShape("polygon")}>Polygon</button>
-          <button onClick={() => setSelectedShape("rectangle")}>
-            Rectangle
-          </button>
+          <Button onClick={handleCircleButtonClick}>
+            <DrawIcon />
+          </Button>
+          <Button onClick={toggleGeozonesVisibility}>
+            <RemoveRedEyeIcon />
+          </Button>
         </Box>
       </Box>
       <Box
@@ -479,7 +513,7 @@ const Geozone = () => {
           padding: "0.5rem",
           backgroundColor: "white",
           boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-          borderRadius: "16px",
+          borderRadius: "0.3rem",
         }}
       >
         <Box sx={{ margin: "5px 5px", width: "350px" }}>
@@ -504,7 +538,6 @@ const Geozone = () => {
             sx={{
               height: "auto",
               maxHeight: "350px",
-              // overflowY: "scroll",
             }}
           >
             <List
@@ -538,7 +571,7 @@ const Geozone = () => {
                         >
                           {item.name}
                         </ListItemText>
-                        <ListItemText style={{ fontSize: "12px" }}>
+                        <ListItemText style={{ fontSize: "8px" }}>
                           {item.address}
                         </ListItemText>
                       </Box>
