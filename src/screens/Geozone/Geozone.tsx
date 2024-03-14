@@ -129,6 +129,58 @@ const Geozone = () => {
     };
   }, [isCircleActive, mapCheck]);
 
+  function setUpClickListener(map: any, platform: any) {
+    let currentMarker: any = null; // Variable to keep track of the current marker
+
+    map.addEventListener("tap", function (evt: any) {
+      var coord = map.screenToGeo(
+        evt.currentPointer.viewportX,
+        evt.currentPointer.viewportY
+      );
+
+      // Remove the previous marker if it exists
+      if (currentMarker) {
+        map.removeObject(currentMarker);
+      }
+
+      var geocoder = platform.getSearchService();
+
+      geocoder.reverseGeocode(
+        {
+          at: `${coord.lat},${coord.lng}`,
+        },
+        (result: any) => {
+          var locationName = result.items[0].address.label;
+          var marker = new window.H.map.Marker(coord);
+          map.addObject(marker);
+
+          alert(
+            `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
+              4
+            )}\nLongitude: ${coord.lng.toFixed(4)}`
+          );
+
+          currentMarker = marker; // Update the current marker
+          setFormField({
+            ...formField,
+            lat: {
+              value: coord.lat.toFixed(4),
+            },
+            long: {
+              value: coord.lng.toFixed(4),
+            },
+            radius: {
+              value: circle.getRadius(),
+            },
+          });
+        },
+        (error: any) => {
+          console.error(error);
+        }
+      );
+    });
+  }
+
   useEffect(() => {
     const platform = new window.H.service.Platform({
       apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
@@ -155,7 +207,7 @@ const Geozone = () => {
     // addCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
-    // createResizableCircle(initialMap);
+    setUpClickListener(initialMap, platform);
 
     return () => {
       window.removeEventListener("resize", () =>
@@ -193,7 +245,6 @@ const Geozone = () => {
         },
       });
       setGeozoneData(res?.listGeozone?.data);
-      console.log(res);
       setLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -332,8 +383,6 @@ const Geozone = () => {
           .distance(mapCheck.screenToGeo(pointer.viewportX, pointer.viewportY));
 
         if (distanceFromCenterInMeters < circle.getRadius()) {
-          document.body.style.cursor = "zoom-in"; // Change cursor to plus sign inside the circle
-        } else {
           document.body.style.cursor = "default"; // Change cursor back to default outside the circle
         }
       },
@@ -410,10 +459,10 @@ const Geozone = () => {
     );
     setFormField({
       ...formField,
-      latitude: {
+      lat: {
         value: latLng.lat,
       },
-      longitude: {
+      long: {
         value: latLng.lng,
       },
       radius: {
@@ -518,7 +567,7 @@ const Geozone = () => {
       >
         <Box sx={{ margin: "5px 5px", width: "350px" }}>
           <CustomInput
-            placeHolder="Search user ..."
+            placeHolder="Search....."
             id="users_search_field"
             onChange={(e: any) => {
               setSearchText(e.target.value);
@@ -547,7 +596,7 @@ const Geozone = () => {
                 .filter((item: any) => {
                   if (searchText.trim() !== "") {
                     return (
-                      item.name.trim().toLowerCase() ===
+                      item.name.trim().toLowerCase() ==
                       searchText.trim().toLowerCase()
                     );
                   } else {
