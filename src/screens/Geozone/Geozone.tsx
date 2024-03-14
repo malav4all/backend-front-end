@@ -20,6 +20,7 @@ const Geozone = () => {
   const [geozoneData, setGeozoneData] = useState([]);
   const [circles, setCircles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isCircleActive, setIsCircleActive] = useState(false);
 
   const [formField, setFormField] = useState<any>({
     name: {
@@ -80,6 +81,27 @@ const Geozone = () => {
     },
   });
 
+  const handleCircleButtonClick = () => {
+    setIsCircleActive(true);
+  };
+
+  useEffect(() => {
+    if (!isCircleActive && mapCheck) {
+      mapCheck.removeEventListener("tap", createCircle);
+    }
+  }, [isCircleActive, mapCheck]);
+
+  useEffect(() => {
+    if (isCircleActive && mapCheck) {
+      mapCheck.addEventListener("tap", createCircle);
+    }
+    return () => {
+      if (mapCheck) {
+        mapCheck.removeEventListener("tap", createCircle);
+      }
+    };
+  }, [isCircleActive, mapCheck]);
+
   useEffect(() => {
     const platform = new window.H.service.Platform({
       apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
@@ -106,7 +128,7 @@ const Geozone = () => {
     // addCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
-    createResizableCircle(initialMap);
+    // createResizableCircle(initialMap);
 
     return () => {
       window.removeEventListener("resize", () =>
@@ -236,128 +258,134 @@ const Geozone = () => {
   let circleMarker: any;
   let resizingTimeout: NodeJS.Timeout;
 
-  const createResizableCircle = (map: any) => {
-    map.addEventListener("tap", function (evt: any) {
-      var pointer = evt.currentPointer;
-      var latLng = map.screenToGeo(pointer.viewportX, pointer.viewportY);
+  const createCircle = (evt: any) => {
+    if (!isCircleActive) {
+      return;
+    }
+    var pointer = evt.currentPointer;
+    var latLng = mapCheck.screenToGeo(pointer.viewportX, pointer.viewportY);
 
-      circle = new window.H.map.Circle(latLng, 100, {
-        style: { fillColor: "rgba(0, 0, 255, 0.5)", lineWidth: 0 },
-      });
-      circleOutline = new window.H.map.Polyline(
-        circle.getGeometry().getExterior(),
-        {
-          style: { lineWidth: 8, strokeColor: "rgba(0, 0, 255, 0.7)" },
-        }
-      );
-      circleGroup = new window.H.map.Group({
-        volatility: true,
-        objects: [circle, circleOutline],
-      });
-
-      circleMarker = new window.H.map.Marker(latLng);
-
-      circle.draggable = true;
-      circleOutline.draggable = true;
-
-      circleOutline
-        .getGeometry()
-        .pushPoint(circleOutline.getGeometry().extractPoint(0));
-
-      circleGroup.addEventListener(
-        "pointermove",
-        function (evt: any) {
-          if (evt.target instanceof window.H.map.Polyline) {
-            document.body.style.cursor = "pointer";
-          } else {
-            document.body.style.cursor = "default";
-          }
-        },
-        true
-      );
-
-      circleGroup.addEventListener(
-        "drag",
-        function (evt: any) {
-          var pointer = evt.currentPointer;
-          var distanceFromCenterInMeters = circle
-            .getCenter()
-            .distance(map.screenToGeo(pointer.viewportX, pointer.viewportY));
-
-          if (evt.target instanceof window.H.map.Polyline) {
-            circle.setRadius(distanceFromCenterInMeters);
-
-            var outlineLinestring = circle.getGeometry().getExterior();
-            outlineLinestring.pushPoint(outlineLinestring.extractPoint(0));
-            circleOutline.setGeometry(outlineLinestring);
-            circleMarker.setGeometry(circle.getCenter());
-            evt.stopPropagation();
-          }
-          setFormField({
-            ...formField,
-            lat: {
-              value: latLng.lat,
-            },
-            long: {
-              value: latLng.lng,
-            },
-            radius: {
-              value: circle.getRadius(),
-            },
-          });
-          if (resizingTimeout) {
-            clearTimeout(resizingTimeout);
-          }
-
-          // Set new timeout to check if resizing is complete
-          resizingTimeout = setTimeout(() => {
-            setOpenModal(true);
-          }, 500);
-        },
-        true
-      );
-
-      map.addObject(circleGroup);
-      map.addObject(circleMarker);
-
-      circleGroup.addEventListener(
-        "pointerenter",
-        function (evt: any) {
-          var currentStyle = circleOutline.getStyle();
-          var newStyle = currentStyle.getCopy({
-            strokeColor: "rgb(255, 0, 0)",
-          });
-          circleOutline.setStyle(newStyle);
-        },
-        true
-      );
-
-      circleGroup.addEventListener(
-        "pointerleave",
-        function (evt: any) {
-          var currentStyle = circleOutline.getStyle();
-          var newStyle = currentStyle.getCopy({
-            strokeColor: "rgba(255, 0, 0, 0)",
-          });
-
-          circleOutline.setStyle(newStyle);
-        },
-        true
-      );
-      setFormField({
-        ...formField,
-        latitude: {
-          value: latLng.lat,
-        },
-        longitude: {
-          value: latLng.lng,
-        },
-        radius: {
-          value: circle.getRadius(),
-        },
-      });
-      setCircles([...circles, { circleGroup, circleMarker }]);
+    circle = new window.H.map.Circle(latLng, 100, {
+      style: { fillColor: "rgba(0, 0, 255, 0.5)", lineWidth: 0 },
     });
+    circleOutline = new window.H.map.Polyline(
+      circle.getGeometry().getExterior(),
+      {
+        style: { lineWidth: 8, strokeColor: "rgba(0, 0, 255, 0.7)" },
+      }
+    );
+    circleGroup = new window.H.map.Group({
+      volatility: true,
+      objects: [circle, circleOutline],
+    });
+
+    circleMarker = new window.H.map.Marker(latLng);
+
+    circle.draggable = true;
+    circleOutline.draggable = true;
+
+    circleOutline
+      .getGeometry()
+      .pushPoint(circleOutline.getGeometry().extractPoint(0));
+
+    circleGroup.addEventListener(
+      "pointermove",
+      function (evt: any) {
+        var pointer = evt.currentPointer;
+        var distanceFromCenterInMeters = circle
+          .getCenter()
+          .distance(mapCheck.screenToGeo(pointer.viewportX, pointer.viewportY));
+
+        if (distanceFromCenterInMeters < circle.getRadius()) {
+          document.body.style.cursor = "zoom-in"; // Change cursor to plus sign inside the circle
+        } else {
+          document.body.style.cursor = "default"; // Change cursor back to default outside the circle
+        }
+      },
+      true
+    );
+
+    circleGroup.addEventListener(
+      "drag",
+      function (evt: any) {
+        var pointer = evt.currentPointer;
+        var distanceFromCenterInMeters = circle
+          .getCenter()
+          .distance(mapCheck.screenToGeo(pointer.viewportX, pointer.viewportY));
+
+        if (evt.target instanceof window.H.map.Polyline) {
+          circle.setRadius(distanceFromCenterInMeters);
+
+          var outlineLinestring = circle.getGeometry().getExterior();
+          outlineLinestring.pushPoint(outlineLinestring.extractPoint(0));
+          circleOutline.setGeometry(outlineLinestring);
+          circleMarker.setGeometry(circle.getCenter());
+          evt.stopPropagation();
+        }
+        setFormField({
+          ...formField,
+          lat: {
+            value: latLng.lat,
+          },
+          long: {
+            value: latLng.lng,
+          },
+          radius: {
+            value: circle.getRadius(),
+          },
+        });
+        if (resizingTimeout) {
+          clearTimeout(resizingTimeout);
+        }
+
+        // Set new timeout to check if resizing is complete
+        resizingTimeout = setTimeout(() => {
+          setOpenModal(true);
+        }, 500);
+      },
+      true
+    );
+
+    mapCheck.addObject(circleGroup);
+    mapCheck.addObject(circleMarker);
+
+    circleGroup.addEventListener(
+      "pointerenter",
+      function (evt: any) {
+        var currentStyle = circleOutline.getStyle();
+        var newStyle = currentStyle.getCopy({
+          strokeColor: "rgb(255, 0, 0)",
+        });
+        circleOutline.setStyle(newStyle);
+      },
+      true
+    );
+
+    circleGroup.addEventListener(
+      "pointerleave",
+      function (evt: any) {
+        var currentStyle = circleOutline.getStyle();
+        var newStyle = currentStyle.getCopy({
+          strokeColor: "rgba(255, 0, 0, 0)",
+        });
+
+        circleOutline.setStyle(newStyle);
+      },
+      true
+    );
+    setFormField({
+      ...formField,
+      latitude: {
+        value: latLng.lat,
+      },
+      longitude: {
+        value: latLng.lng,
+      },
+      radius: {
+        value: circle.getRadius(),
+      },
+    });
+    setCircles([...circles, { circleGroup, circleMarker }]);
   };
 
   const addMarkersToMap = (map: any) => {
@@ -417,7 +445,7 @@ const Geozone = () => {
         <Box
           style={{ position: "absolute", bottom: 0, left: "303px", zIndex: 1 }}
         >
-          <button onClick={() => setSelectedShape("circle")}>Circle</button>
+          <button onClick={handleCircleButtonClick}>Circle</button>
           <button onClick={() => setSelectedShape("polygon")}>Polygon</button>
           <button onClick={() => setSelectedShape("rectangle")}>
             Rectangle
