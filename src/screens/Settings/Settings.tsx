@@ -12,6 +12,7 @@ import Users from "./Users/Users";
 import { useLocation } from "react-router-dom";
 import { validateTabValue } from "../../helpers/methods";
 import { store } from "../../utils/store";
+import AssetAssingment from "./AssertAssingment/AssetAssingment";
 
 const Settings = () => {
   const classes = SettingStyles;
@@ -50,15 +51,14 @@ const Settings = () => {
 
   const viewTabDataHandler = () => {
     switch (tabValue) {
-      // case strings.profile:
-      //   return <ProfilePage />;
       case strings.USERS:
         return isAdmin() ? (
           <Users />
         ) : (
           <UnauthorizedPage pageName={strings.USERS} />
         );
-
+      case strings.ASSERTASSINGMENT:
+        return <AssetAssingment />;
       default:
         return <Users />;
     }

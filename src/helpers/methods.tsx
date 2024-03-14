@@ -193,11 +193,7 @@ export const validateTabValue = (statusFromUrl: any) => {
   if (
     ![
       strings.USERS,
-      strings.roleManagement,
-      strings.INDUSTRY,
-      strings.MODULE,
-      strings.ACCOUNT,
-      strings.DEVICEMODULE,
+      strings.ASSERTASSINGMENT
     ].includes(statusFromUrl)
   ) {
     return strings.USERS;

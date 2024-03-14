@@ -89,6 +89,21 @@ export interface UserData {
   };
 }
 
+export interface AssetAssingmentData {
+  imei: number,
+  labelName: string,
+  // journey: string,
+  boxSet: string,
+  createdBy: string
+}
+
+export interface AssetAssingmentFields {
+  [key: string]: {
+    value: string;
+    error: string;
+  };
+}
+
 export interface RowData {
   emailId: string;
   assignBy: string;

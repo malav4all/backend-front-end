@@ -5,6 +5,10 @@ export const tabConfig = () => [
     label: strings.USERS,
     count: 0,
   },
+  {
+    label: strings.ASSERTASSINGMENT,
+    count: 0,
+  },
 ];
 
 export const latestTabConfig: any = {
