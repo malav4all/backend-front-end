@@ -1,6 +1,16 @@
-import { Box } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import "react-perfect-scrollbar/dist/css/styles.css";
 import {
   openErrorNotification,
   openSuccessNotification,
@@ -8,7 +18,13 @@ import {
 import { store } from "../../utils/store";
 import { createGeozone, fetchGeozoneHandler } from "./service/geozone.service";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
-
+import ImageIcon from "@mui/icons-material/MoveToInbox";
+import WorkIcon from "@mui/icons-material/MoveToInbox";
+import SearchIcon from "@mui/icons-material/Search";
+import BeachAccessIcon from "@mui/icons-material/MoveToInbox";
+import { CustomInput } from "../../global/components";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 const Geozone = () => {
   const mapRef = useRef<any>(null);
   const [selectedShape, setSelectedShape] = useState<any>("");
@@ -20,6 +36,7 @@ const Geozone = () => {
   const [geozoneData, setGeozoneData] = useState([]);
   const [circles, setCircles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
 
   const [formField, setFormField] = useState<any>({
     name: {
@@ -137,6 +154,7 @@ const Geozone = () => {
         },
       });
       setGeozoneData(res?.listGeozone?.data);
+      console.log(res);
       setLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -423,6 +441,101 @@ const Geozone = () => {
             Rectangle
           </button>
         </Box>
+      </Box>
+      <Box
+        style={{
+          position: "absolute",
+          top: 25,
+          right: "25px",
+          zIndex: 1,
+          padding: "0.5rem",
+          backgroundColor: "white",
+          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+          borderRadius: "16px",
+        }}
+      >
+        <Box sx={{ margin: "5px 5px", width: "350px" }}>
+          <CustomInput
+            placeHolder="Search user ..."
+            id="users_search_field"
+            onChange={(e: any) => {
+              setSearchText(e.target.value);
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
+        <PerfectScrollbar>
+          <Box
+            sx={{
+              height: "auto",
+              maxHeight: "350px",
+              // overflowY: "scroll",
+            }}
+          >
+            <List
+              sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+            >
+              {geozoneData
+                .filter((item: any) => {
+                  if (searchText.trim() !== "") {
+                    return (
+                      item.name.trim().toLowerCase() ===
+                      searchText.trim().toLowerCase()
+                    );
+                  } else {
+                    return true;
+                  }
+                })
+                .map((item: any, index) => (
+                  <ListItem key={item._id}>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <ImageIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+
+                    <ListItemText
+                      sx={{ display: "flex", flexDirection: "row" }}
+                    >
+                      <Box>
+                        <ListItemText
+                          style={{ fontSize: "12px", fontWeight: "bold" }}
+                        >
+                          {item.name}
+                        </ListItemText>
+                        <ListItemText style={{ fontSize: "12px" }}>
+                          {item.address}
+                        </ListItemText>
+                      </Box>
+                    </ListItemText>
+                    <ListItemAvatar>
+                      <EditIcon
+                        htmlColor={"#0F2167"}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                      />
+                    </ListItemAvatar>
+                    <ListItemAvatar>
+                      <DeleteIcon
+                        htmlColor={"#0F2167"}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                      />
+                    </ListItemAvatar>
+                  </ListItem>
+                ))}
+            </List>
+          </Box>
+        </PerfectScrollbar>
       </Box>
 
       {createGeozoneModal()}
