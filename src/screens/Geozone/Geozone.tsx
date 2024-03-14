@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
@@ -497,10 +498,10 @@ const Geozone = () => {
     });
   };
 
-  const toggleGeozonesVisibility =  async() => {
-    setGeozonesVisible((prevVisibility) => !prevVisibility); 
+  const toggleGeozonesVisibility = async () => {
+    setGeozonesVisible((prevVisibility) => !prevVisibility);
     if (!geozonesVisible) {
-     await fetchGeozone()
+      await fetchGeozone();
     } else {
       mapCheck.removeObjects(mapCheck.getObjects());
     }
@@ -546,10 +547,14 @@ const Geozone = () => {
           }}
         >
           <Button onClick={handleCircleButtonClick}>
-            <DrawIcon />
+            <Tooltip title="Draw Circle" placement="top" arrow>
+              <DrawIcon />
+            </Tooltip>
           </Button>
           <Button onClick={toggleGeozonesVisibility}>
-            <RemoveRedEyeIcon />
+            <Tooltip title="Geofence View" placement="top" arrow>
+              <RemoveRedEyeIcon />
+            </Tooltip>
           </Button>
         </Box>
       </Box>
