@@ -195,6 +195,7 @@ const Geozone = () => {
 
         currentMarker = marker; // Update the current marker
         mapCheck.addObject(marker);
+        setOpenModal(true);
       },
       (error: any) => {
         console.error(error);
@@ -357,8 +358,13 @@ const Geozone = () => {
   let circleGroup: any;
   let circleMarker: any;
   let resizingTimeout: NodeJS.Timeout;
+  let currentCircle: any = null;
 
   const createCircle = (evt: any) => {
+    if (currentCircle) {
+      mapCheck.removeObject(circleGroup);
+      mapCheck.removeObject(circleMarker);
+    }
     if (!isCircleActive) {
       return;
     }
@@ -446,7 +452,7 @@ const Geozone = () => {
 
     mapCheck.addObject(circleGroup);
     mapCheck.addObject(circleMarker);
-
+    currentCircle = { circleGroup, circleMarker };
     circleGroup.addEventListener(
       "pointerenter",
       function (evt: any) {
