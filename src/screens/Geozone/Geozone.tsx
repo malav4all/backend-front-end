@@ -109,9 +109,10 @@ const Geozone = () => {
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
+    setPointCheck(false);
+    mapCheck.removeEventListener("tap", setUpClickListener);
+    mapCheck.removeObjects(mapCheck.getObjects());
   };
-
-
 
   useEffect(() => {
     if (!isCircleActive && mapCheck) {
@@ -161,7 +162,6 @@ const Geozone = () => {
     };
   }, [pointCheck, mapCheck]);
 
-
   let currentMarker: any = null;
   const setUpClickListener = (evt: any) => {
     const platform = new window.H.service.Platform({
@@ -184,7 +184,6 @@ const Geozone = () => {
         at: `${coord.lat},${coord.lng}`,
       },
       (result: any) => {
-        console.log({ result });
         var locationName = result.items[0].address.label;
         var marker = new window.H.map.Marker(coord);
 
@@ -249,13 +248,6 @@ const Geozone = () => {
   useEffect(() => {
     fetchGeozone();
   }, []);
-
-  // useEffect(() => {
-  //   if (geozonesVisible) {
-  //     setGeozoneData([]);
-  //   } else {
-  //   }
-  // });
 
   const fetchGeozone = async () => {
     try {
@@ -479,7 +471,7 @@ const Geozone = () => {
       },
       true
     );
-    
+
     setFormField({
       ...formField,
       lat: {
@@ -571,7 +563,11 @@ const Geozone = () => {
         >
           <Button
             onClick={handleCircleButtonClick}
-            className={buttonisActive ? "classes.activeButton" : "classes.nonActiveButton"}
+            className={
+              buttonisActive
+                ? "classes.activeButton"
+                : "classes.nonActiveButton"
+            }
           >
             <Tooltip title="Draw Circle" placement="top" arrow>
               <DrawIcon />
@@ -582,7 +578,19 @@ const Geozone = () => {
               <RemoveRedEyeIcon />
             </Tooltip>
           </Button>
-          <Button onClick={() => setPointCheck(!pointCheck)}>
+          <Button
+            onClick={() => {
+              setPointCheck(!pointCheck);
+              setIsCircleActive(false);
+              circles.forEach(({ circleGroup, circleMarker }) => {
+                if (mapCheck) {
+                  mapCheck.removeObject(circleGroup);
+                  mapCheck.removeObject(circleMarker);
+                }
+              });
+              setCircles([]);
+            }}
+          >
             <Tooltip title="Find location" placement="top" arrow>
               <PinDropIcon />
             </Tooltip>

@@ -1,0 +1,156 @@
+[33mcommit d7ec5e43c6f92329c335a6606669bdde729b9bc5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelopment[m[33m, [m[1;31morigin/development[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 17:58:13 2024 +0530
+
+    some changes
+
+[33mcommit f9ea920ac0e4c0aa427eab30b4ee4a18e85648a8[m
+Merge: ae36bf4 e9b85e0
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 17:50:16 2024 +0530
+
+    Merge branch 'development' of https://git.imz.world/event-console/console into development
+
+[33mcommit ae36bf4a7d451412841c63e86ab1a490b41f12f7[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 17:50:01 2024 +0530
+
+    ui changes to map
+
+[33mcommit e9b85e07ac790e8176f002e71e856ea580c32f7f[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Thu Mar 14 17:02:40 2024 +0530
+
+    geozone added in point
+
+[33mcommit e39e14a6cff9f725a792aecbd8e7e7a6c8d2d9ab[m
+Merge: ad9ec37 5a2425f
+Author: malav <malav.naagar@imzcorporate.com>
+Date:   Thu Mar 14 07:55:45 2024 +0000
+
+    Merge branch 'featureAA' into 'development'
+    
+    Feature aa
+    
+    See merge request event-console/console!2
+
+[33mcommit 5a2425f32c9d1c43d3de20a8c7fa28fafa3556b0[m
+Merge: b354027 ad9ec37
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 13:24:46 2024 +0530
+
+    conflic error fixed
+
+[33mcommit b354027b5384a629ca3d9fc146119a3653d52c5f[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 13:22:43 2024 +0530
+
+    ui changes
+
+[33mcommit ad9ec37c450118006ae089c39fb3d28f040a8169[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Thu Mar 14 13:22:02 2024 +0530
+
+    some chnages
+
+[33mcommit 3e3921b7903d713c42bf9f9676ab740f37dc73d3[m
+Merge: 6e263bb 9d4a0a6
+Author: malav <malav.naagar@imzcorporate.com>
+Date:   Thu Mar 14 05:28:49 2024 +0000
+
+    Merge branch 'featureAA' into 'development'
+    
+    Feature aa
+    
+    See merge request event-console/console!1
+
+[33mcommit 9d4a0a68dd173cf5636c551d1cc5e0d0da02e292[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Thu Mar 14 10:56:09 2024 +0530
+
+    made frontend for assert assingment
+
+[33mcommit fa30d48f3f18b49230a9a502a7cec16866e9a657[m
+Merge: 7d39fe9 6e263bb
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Wed Mar 13 18:10:34 2024 +0530
+
+    Merge branch 'development' of https://git.imz.world/event-console/console into featureAA
+
+[33mcommit 6e263bbb124b715f9c6a07fafd9903d6e0f91f0f[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Wed Mar 13 18:04:22 2024 +0530
+
+    some changes
+
+[33mcommit 3c410789098ee7cc5dca371309438e4fc6376f22[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Wed Mar 13 17:14:43 2024 +0530
+
+    map issue fixed
+
+[33mcommit fd5487c5c445d72f4813bbeba22c454236ae0956[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Wed Mar 13 16:32:14 2024 +0530
+
+    geozone added and fetch
+
+[33mcommit 7d39fe9e12a77e9e62d95d82d2a777d9a121a39e[m[33m ([m[1;31morigin/featureAA[m[33m)[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Tue Mar 12 18:27:07 2024 +0530
+
+    starting assert
+
+[33mcommit 8412548f4e99e2147dc05e07882f4e1403392720[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Tue Mar 12 12:33:03 2024 +0530
+
+    user add and update done
+
+[33mcommit fc90ef826112cb1a09f380c100e7011eb8356148[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Tue Mar 12 11:23:34 2024 +0530
+
+    geozone added
+
+[33mcommit 9419c865bcbc759e4384bb50081dcb7bd9d2fdc6[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Tue Mar 12 11:13:37 2024 +0530
+
+    user login done
+
+[33mcommit 7b84e5cdda92910c5aa0b3aaefeb57882daebc55[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Tue Mar 12 10:01:49 2024 +0530
+
+    rest api template added
+
+[33mcommit b51422ba25c9ebe9a3fc605cced664d0b15a4267[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Tue Mar 12 09:54:33 2024 +0530
+
+    apolor-client update
+
+[33mcommit a09e3464105373fd27723b8333ba99da3e7db726[m
+Author: Malav <malav.naagar@imzcorporate.com>
+Date:   Mon Mar 11 17:42:05 2024 +0530
+
+    some changes
+
+[33mcommit 292f9faace914c5bf834fd708bced7cb6fa33db3[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Mon Mar 11 17:38:20 2024 +0530
+
+    included models
+
+[33mcommit 5eed3a765433400b46ea9ef0382ea40a346c3df5[m
+Author: tanishkpandey <pandeytanishk@gmail.com>
+Date:   Mon Mar 11 17:23:45 2024 +0530
+
+    boiler plate ready
+
+[33mcommit 102a7990d7d4cf7af56f62a25d38389a48e1b585[m
+Author: Devops <devops@imzcorporate.com>
+Date:   Mon Mar 11 10:37:08 2024 +0000
+
+    Initial commit
