@@ -79,9 +79,16 @@ const geozoneStyle = {
     },
   },
 
-  button: {
-    padding: "1rem",
-    backgroundColor: "white",
+  activeButton: {
+    backgroundColor: "green",
+    color: "white",
+    border: "1px solid green"
+  },
+
+  nonActiveButton: {
+    backgroundColor: "gray",
+    color: "black",
+    border: "1px solid gray"
   },
 
   select: {

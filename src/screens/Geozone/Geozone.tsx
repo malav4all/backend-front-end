@@ -29,9 +29,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import geozoneStyle from "./Geozone.styles";
 import DrawIcon from "@mui/icons-material/Draw";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import PinDropIcon from "@mui/icons-material/PinDrop";
 
 const Geozone = () => {
-  // const classes = geozoneStyle;
+  const classes = geozoneStyle;
   const mapRef = useRef<any>(null);
   const [selectedShape, setSelectedShape] = useState<any>("");
   const [isOpen, setOpenModal] = useState<boolean>(false);
@@ -45,6 +46,7 @@ const Geozone = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isCircleActive, setIsCircleActive] = useState(false);
   const [geozonesVisible, setGeozonesVisible] = useState(true);
+  const [pointCheck, setPointCheck] = useState(false);
   const [formField, setFormField] = useState<any>({
     name: {
       value: "",
@@ -103,19 +105,23 @@ const Geozone = () => {
       error: "",
     },
   });
-  const [geozoneStyle, setGeozoneStyle] = useState({
-    strokeColor: "rgba(0, 0, 255, 0.5)",
-    lineWidth: 2,
-    fillColor: "rgba(0, 0, 255, 0.5)",
-  });
+  const [buttonisActive, setButtonisActive] = useState(false);
 
   const handleCircleButtonClick = () => {
-    setIsCircleActive(true);
+    setIsCircleActive(!isCircleActive);
   };
+
+
 
   useEffect(() => {
     if (!isCircleActive && mapCheck) {
       mapCheck.removeEventListener("tap", createCircle);
+    }
+  }, [isCircleActive, mapCheck]);
+
+  useEffect(() => {
+    if (!pointCheck && mapCheck) {
+      mapCheck.removeEventListener("tap", setUpClickListener);
     }
   }, [isCircleActive, mapCheck]);
 
@@ -126,61 +132,76 @@ const Geozone = () => {
     return () => {
       if (mapCheck) {
         mapCheck.removeEventListener("tap", createCircle);
+        circles.forEach(({ circleGroup, circleMarker }) => {
+          if (mapCheck) {
+            mapCheck.removeObject(circleGroup);
+            mapCheck.removeObject(circleMarker);
+          }
+        });
+        setCircles([]);
       }
     };
   }, [isCircleActive, mapCheck]);
 
-  function setUpClickListener(map: any, platform: any) {
-    let currentMarker: any = null; // Variable to keep track of the current marker
-
-    map.addEventListener("tap", function (evt: any) {
-      var coord = map.screenToGeo(
-        evt.currentPointer.viewportX,
-        evt.currentPointer.viewportY
-      );
-
-      // Remove the previous marker if it exists
-      if (currentMarker) {
-        map.removeObject(currentMarker);
+  useEffect(() => {
+    if (pointCheck && mapCheck) {
+      mapCheck.addEventListener("tap", setUpClickListener);
+    }
+    return () => {
+      if (mapCheck) {
+        mapCheck.removeEventListener("tap", setUpClickListener);
+        circles.forEach(({ circleGroup, circleMarker }) => {
+          if (mapCheck) {
+            mapCheck.removeObject(circleGroup);
+            mapCheck.removeObject(circleMarker);
+          }
+        });
+        setCircles([]);
       }
+    };
+  }, [pointCheck, mapCheck]);
 
-      var geocoder = platform.getSearchService();
 
-      geocoder.reverseGeocode(
-        {
-          at: `${coord.lat},${coord.lng}`,
-        },
-        (result: any) => {
-          var locationName = result.items[0].address.label;
-          var marker = new window.H.map.Marker(coord);
-          map.addObject(marker);
-
-          alert(
-            `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
-              4
-            )}\nLongitude: ${coord.lng.toFixed(4)}`
-          );
-
-          currentMarker = marker; // Update the current marker
-          setFormField({
-            ...formField,
-            lat: {
-              value: coord.lat.toFixed(4),
-            },
-            long: {
-              value: coord.lng.toFixed(4),
-            },
-            radius: {
-              value: circle.getRadius(),
-            },
-          });
-        },
-        (error: any) => {
-          console.error(error);
-        }
-      );
+  let currentMarker: any = null;
+  const setUpClickListener = (evt: any) => {
+    const platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
     });
-  }
+    var coord = mapCheck.screenToGeo(
+      evt.currentPointer.viewportX,
+      evt.currentPointer.viewportY
+    );
+
+    // Remove the previous marker if it exists
+    if (currentMarker) {
+      mapCheck.removeObject(currentMarker);
+    }
+
+    var geocoder = platform.getSearchService();
+
+    geocoder.reverseGeocode(
+      {
+        at: `${coord.lat},${coord.lng}`,
+      },
+      (result: any) => {
+        console.log({ result });
+        var locationName = result.items[0].address.label;
+        var marker = new window.H.map.Marker(coord);
+
+        alert(
+          `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
+            4
+          )}\nLongitude: ${coord.lng.toFixed(4)}`
+        );
+
+        currentMarker = marker; // Update the current marker
+        mapCheck.addObject(marker);
+      },
+      (error: any) => {
+        console.error(error);
+      }
+    );
+  };
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -208,7 +229,7 @@ const Geozone = () => {
     // addCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
-    setUpClickListener(initialMap, platform);
+    // setUpClickListener(initialMap, platform);
 
     return () => {
       window.removeEventListener("resize", () =>
@@ -458,6 +479,7 @@ const Geozone = () => {
       },
       true
     );
+    
     setFormField({
       ...formField,
       lat: {
@@ -516,6 +538,7 @@ const Geozone = () => {
       }
     });
     setCircles([]);
+    setIsCircleActive(false);
   };
 
   const createGeozoneModal = () => {
@@ -546,7 +569,10 @@ const Geozone = () => {
             borderRadius: "0.2rem",
           }}
         >
-          <Button onClick={handleCircleButtonClick}>
+          <Button
+            onClick={handleCircleButtonClick}
+            className={buttonisActive ? "classes.activeButton" : "classes.nonActiveButton"}
+          >
             <Tooltip title="Draw Circle" placement="top" arrow>
               <DrawIcon />
             </Tooltip>
@@ -554,6 +580,11 @@ const Geozone = () => {
           <Button onClick={toggleGeozonesVisibility}>
             <Tooltip title="Geofence View" placement="top" arrow>
               <RemoveRedEyeIcon />
+            </Tooltip>
+          </Button>
+          <Button onClick={() => setPointCheck(!pointCheck)}>
+            <Tooltip title="Find location" placement="top" arrow>
+              <PinDropIcon />
             </Tooltip>
           </Button>
         </Box>
