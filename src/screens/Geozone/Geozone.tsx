@@ -30,6 +30,7 @@ import geozoneStyle from "./Geozone.styles";
 import DrawIcon from "@mui/icons-material/Draw";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Geozone = () => {
   const classes = geozoneStyle;
@@ -105,7 +106,7 @@ const Geozone = () => {
       error: "",
     },
   });
-  const [buttonisActive, setButtonisActive] = useState(false);
+  const [location, setLocation] = useState("");
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
@@ -193,6 +194,8 @@ const Geozone = () => {
           )}\nLongitude: ${coord.lng.toFixed(4)}`
         );
 
+        setLocation(locationName);
+
         currentMarker = marker; // Update the current marker
         mapCheck.addObject(marker);
         setOpenModal(true);
@@ -201,7 +204,9 @@ const Geozone = () => {
         console.error(error);
       }
     );
+
   };
+
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -548,6 +553,7 @@ const Geozone = () => {
           setFormField={setFormField}
           formField={formField}
           addGeozoneHandler={addGeozoneHandler}
+          // location={location}
         />
       </>
     );
@@ -569,21 +575,25 @@ const Geozone = () => {
         >
           <Button
             onClick={handleCircleButtonClick}
-            className={
-              buttonisActive
-                ? "classes.activeButton"
-                : "classes.nonActiveButton"
-            }
+            style={{
+              backgroundColor: isCircleActive ? "#cef2ff" : "white",
+              marginRight: "0.3rem",
+            }}
           >
             <Tooltip title="Draw Circle" placement="top" arrow>
               <DrawIcon />
             </Tooltip>
           </Button>
-          <Button onClick={toggleGeozonesVisibility}>
-            <Tooltip title="Geofence View" placement="top" arrow>
+
+          <Button
+            onClick={toggleGeozonesVisibility}
+            style={{ backgroundColor: geozonesVisible ? "#cef2ff" : "white" }}
+          >
+            <Tooltip title="Show Geofence View" placement="top" arrow>
               <RemoveRedEyeIcon />
             </Tooltip>
           </Button>
+
           <Button
             onClick={() => {
               setPointCheck(!pointCheck);
@@ -595,6 +605,17 @@ const Geozone = () => {
                 }
               });
               setCircles([]);
+              if (pointCheck === true) {
+                // Remove all markers from the map
+                mapCheck.getObjects().forEach((object: any) => {
+                  if (object !== circleGroup) {
+                    mapCheck.removeObject(object);
+                  }
+                });
+              }
+            }}
+            style={{
+              backgroundColor: pointCheck ? "#cef2ff" : "white",
             }}
           >
             <Tooltip title="Find location" placement="top" arrow>
@@ -603,6 +624,7 @@ const Geozone = () => {
           </Button>
         </Box>
       </Box>
+
       <Box
         style={{
           position: "absolute",
