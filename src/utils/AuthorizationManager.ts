@@ -1,3 +1,4 @@
+/* eslint-disable */
 import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
@@ -71,7 +72,7 @@ const ListOfMenus = () =>
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
   const generatedMenu: ListOfMenusType[] = [];
 
-  mainMenus.forEach((menu: ListOfMenusType) => {
+  mainMenus?.forEach((menu: ListOfMenusType) => {
     if (menu.visibleInSidebar) {
       generatedMenu.push(menu);
     }

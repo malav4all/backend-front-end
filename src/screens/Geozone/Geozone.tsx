@@ -56,11 +56,15 @@ const Geozone = () => {
       value: "",
       error: "",
     },
-    centerNo: {
+    propertyName: {
+      name: "",
+      error: "",
+    },
+    locationType: {
       value: "",
       error: "",
     },
-    radius: {
+    description: {
       value: "",
       error: "",
     },
@@ -186,16 +190,54 @@ const Geozone = () => {
       (result: any) => {
         var locationName = result.items[0].address.label;
         var marker = new window.H.map.Marker(coord);
-
         alert(
           `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
             4
           )}\nLongitude: ${coord.lng.toFixed(4)}`
         );
 
-        currentMarker = marker; // Update the current marker
+        currentMarker = marker;
         mapCheck.addObject(marker);
         setOpenModal(true);
+        setFormField({
+          ...formField,
+          propertyName: {
+            value: locationName,
+          },
+          type: {
+            value: "Point",
+          },
+          lat: {
+            value: coord.lat.toFixed(4),
+          },
+          long: {
+            value: coord.lng.toFixed(4),
+          },
+          radius: {
+            value: 100,
+          },
+          zipCode: {
+            value: result.items[0].address.postalCode,
+          },
+          country: {
+            value: result.items[0].address.countryName,
+          },
+          state: {
+            value: result.items[0].address.state,
+          },
+          area: {
+            value: result.items[0].address.subdistrict,
+          },
+          city: {
+            value: result.items[0].address.city,
+          },
+          district: {
+            value: result.items[0].address.district,
+          },
+          address: {
+            value: `${result.items[0].address.countryName} - ${result.items[0].address.state}-${result.items[0].address.subdistrict}-${result.items[0].address.district}-${result.items[0].address.postalCode}`,
+          },
+        });
       },
       (error: any) => {
         console.error(error);
@@ -226,7 +268,7 @@ const Geozone = () => {
       new window.H.mapevents.MapEvents(initialMap)
     );
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    // addCircleToMap(initialMap);
+    addCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
     // setUpClickListener(initialMap, platform);
@@ -269,20 +311,33 @@ const Geozone = () => {
   const addGeozoneHandler = async () => {
     try {
       const payload = {
-        name: formField.name.value,
-        radius: formField.radius.value,
-        centerNo: formField.centerNo.value,
-        type: formField.type.value,
-        mobileNumber: Number(formField.mobileNumber.value),
-        address: formField.address.value,
-        zipCode: formField.zipCode.value,
-        country: formField.country.value,
-        state: formField.state.value,
-        area: formField.area.value,
-        city: formField.city.value,
-        district: formField.district.value,
-        lat: formField.lat.value,
-        long: formField.long.value,
+        name: formField.name?.value,
+        description: formField.description?.value,
+        locationType: formField.locationType?.value,
+        mobileNumber: Number(formField.mobileNumber?.value),
+        geoCodeData: {
+          type: "Feature",
+          geometry: {
+            type: formField.type?.value,
+            radius: Number(formField.radius?.value),
+            coordinates: [
+              Number(formField.lat?.value),
+              Number(formField.long?.value),
+            ],
+          },
+          properties: {
+            name: formField.propertyName?.value,
+          },
+        },
+        address: {
+          zipCode: formField.zipCode?.value,
+          country: formField.country?.value,
+          state: formField.state?.value,
+          area: formField.area?.value,
+          city: formField.city?.value,
+          district: formField.district?.value,
+        },
+        finalAddress: formField?.address?.value,
       };
       const res = await createGeozone({
         input: { ...payload, createdBy: store.getState().auth.userName },
@@ -428,6 +483,9 @@ const Geozone = () => {
         }
         setFormField({
           ...formField,
+          type: {
+            value: "Geozone",
+          },
           lat: {
             value: latLng.lat,
           },
@@ -436,6 +494,9 @@ const Geozone = () => {
           },
           radius: {
             value: circle.getRadius(),
+          },
+          propertyName: {
+            value: null,
           },
         });
         if (resizingTimeout) {
@@ -506,20 +567,22 @@ const Geozone = () => {
       if (geozonesVisible) {
         map.addObject(
           new window.H.map.Circle(
-            { lat: item.lat, lng: item.long },
-            item.radius,
+            {
+              lat: item?.geoCodeData?.geometry?.coordinates[0],
+              lng: item?.geoCodeData?.geometry?.coordinates[1],
+            },
+            item?.geoCodeData?.geometry?.radius,
             {
               style: geozoneStyle,
             }
           )
         );
-      } else {
       }
     });
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible((prevVisibility) => !prevVisibility);
+    setGeozonesVisible(prevVisibility => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -603,7 +666,7 @@ const Geozone = () => {
           </Button>
         </Box>
       </Box>
-      <Box
+      {/* <Box
         style={{
           position: "absolute",
           top: 25,
@@ -696,7 +759,7 @@ const Geozone = () => {
             </List>
           </Box>
         </PerfectScrollbar>
-      </Box>
+      </Box> */}
 
       {createGeozoneModal()}
       <CustomLoader isLoading={loading} />
