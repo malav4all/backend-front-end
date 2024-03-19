@@ -25,6 +25,7 @@ interface GeoZoneProps {
   setFormField: any;
   formField: any;
   addGeozoneHandler: any;
+  zipcode: string;
 }
 const CreateGeoZone = ({
   isOpenModal,
@@ -32,6 +33,7 @@ const CreateGeoZone = ({
   setFormField,
   formField,
   addGeozoneHandler,
+  zipcode,
 }: GeoZoneProps) => {
   const classes = geozoneStyle;
   const [zipCodeDate, setZipCodeData] = useState([]);
@@ -99,6 +101,7 @@ const CreateGeoZone = ({
   const geoZoneBody = () => {
     return (
       <Grid container spacing={2}>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -110,6 +113,7 @@ const CreateGeoZone = ({
             onChange={handleOnChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -121,6 +125,7 @@ const CreateGeoZone = ({
             onChange={handleOnChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -133,6 +138,7 @@ const CreateGeoZone = ({
             onChange={handleOnChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -144,6 +150,7 @@ const CreateGeoZone = ({
             onChange={handleOnChange}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
@@ -187,14 +194,14 @@ const CreateGeoZone = ({
                   },
                 });
               }}
-              value={formField.zipCode.value}
+              value={{ label: zipcode, value: zipcode }}
               renderInput={(params) => (
                 <TextField
                   sx={classes.select}
                   {...params}
-                  value={formField.zipCode.value}
+                  value={formField.zipCode.value} 
                   name="assignBy"
-                  placeholder="Search Zipcode...."
+                  placeholder="Enter zipcode here....."
                   onSelect={() => {}}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -214,6 +221,7 @@ const CreateGeoZone = ({
             />
           </Box>
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -225,6 +233,7 @@ const CreateGeoZone = ({
             disabled={true}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -236,6 +245,7 @@ const CreateGeoZone = ({
             disabled={true}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -271,6 +281,7 @@ const CreateGeoZone = ({
             disabled={true}
           />
         </Grid>
+
         <Grid xs={12} sm={12} md={6} lg={6} xl={6} item>
           <Box display={"flex"}>
             <Typography sx={classes.label}>Address</Typography>

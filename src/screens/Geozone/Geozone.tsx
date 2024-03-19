@@ -48,6 +48,7 @@ const Geozone = () => {
   const [isCircleActive, setIsCircleActive] = useState(false);
   const [geozonesVisible, setGeozonesVisible] = useState(true);
   const [pointCheck, setPointCheck] = useState(false);
+  const [zipcode, setZipcode] = useState("");
   const [formField, setFormField] = useState<any>({
     name: {
       value: "",
@@ -106,7 +107,6 @@ const Geozone = () => {
       error: "",
     },
   });
-  const [location, setLocation] = useState("");
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
@@ -164,6 +164,7 @@ const Geozone = () => {
   }, [pointCheck, mapCheck]);
 
   let currentMarker: any = null;
+
   const setUpClickListener = (evt: any) => {
     const platform = new window.H.service.Platform({
       apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
@@ -186,27 +187,27 @@ const Geozone = () => {
       },
       (result: any) => {
         var locationName = result.items[0].address.label;
+        var zipcode = result.items[0].address.postalCode;
+        console.log(result)
         var marker = new window.H.map.Marker(coord);
+        setZipcode(zipcode);
 
         alert(
           `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
             4
-          )}\nLongitude: ${coord.lng.toFixed(4)}`
+          )}\nLongitude: ${coord.lng.toFixed(4)}\nZipcode: ${zipcode}`
         );
-
-        setLocation(locationName);
 
         currentMarker = marker; // Update the current marker
         mapCheck.addObject(marker);
+
         setOpenModal(true);
       },
       (error: any) => {
         console.error(error);
       }
     );
-
   };
-
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -553,7 +554,7 @@ const Geozone = () => {
           setFormField={setFormField}
           formField={formField}
           addGeozoneHandler={addGeozoneHandler}
-          // location={location}
+          zipcode={zipcode}
         />
       </>
     );
@@ -565,63 +566,87 @@ const Geozone = () => {
         <Box
           style={{
             position: "absolute",
-            bottom: 25,
-            left: "50vw",
+            top: "42%",
+            left: "17vw",
             zIndex: 1,
             backgroundColor: "white",
             padding: "0.5rem",
             borderRadius: "0.2rem",
+            boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
           }}
         >
-          <Button
-            onClick={handleCircleButtonClick}
+          <Box
             style={{
-              backgroundColor: isCircleActive ? "#cef2ff" : "white",
-              marginRight: "0.3rem",
+              display: "flex",
+              flexDirection: "column",
+              width: "40px",
+              padding: "0.5rem 0rem",
+              borderRadius: "0.2rem",
+              overflow: "hidden",
+              gap: "0.5 rem"
             }}
           >
-            <Tooltip title="Draw Circle" placement="top" arrow>
-              <DrawIcon />
-            </Tooltip>
-          </Button>
+            <Button
+              onClick={handleCircleButtonClick}
+              style={{
+                backgroundColor: isCircleActive ? "#cef2ff" : "white",
+                marginRight: "0.3rem",
+                marginLeft: "-12px",
+              }}
+            >
+              <Tooltip title="Draw Circle Polygon" placement="right" arrow>
+                <DrawIcon />
+              </Tooltip>
+            </Button>
 
-          <Button
-            onClick={toggleGeozonesVisibility}
-            style={{ backgroundColor: geozonesVisible ? "#cef2ff" : "white" }}
-          >
-            <Tooltip title="Show Geofence View" placement="top" arrow>
-              <RemoveRedEyeIcon />
-            </Tooltip>
-          </Button>
+            <Button
+              onClick={toggleGeozonesVisibility}
+              style={{
+                backgroundColor: geozonesVisible ? "#cef2ff" : "white",
+                marginLeft: "-12px",
+              }}
+            >
+              {geozonesVisible ? (
+                <Tooltip title="Hide Geofence View" placement="right" arrow>
+                  <RemoveRedEyeIcon />
+                </Tooltip>
+              ) : (
+                <Tooltip title="Show Geofence View" placement="right" arrow>
+                  <RemoveRedEyeIcon />
+                </Tooltip>
+              )}
+            </Button>
 
-          <Button
-            onClick={() => {
-              setPointCheck(!pointCheck);
-              setIsCircleActive(false);
-              circles.forEach(({ circleGroup, circleMarker }) => {
-                if (mapCheck) {
-                  mapCheck.removeObject(circleGroup);
-                  mapCheck.removeObject(circleMarker);
-                }
-              });
-              setCircles([]);
-              if (pointCheck === true) {
-                // Remove all markers from the map
-                mapCheck.getObjects().forEach((object: any) => {
-                  if (object !== circleGroup) {
-                    mapCheck.removeObject(object);
+            <Button
+              onClick={() => {
+                setPointCheck(!pointCheck);
+                setIsCircleActive(false);
+                circles.forEach(({ circleGroup, circleMarker }) => {
+                  if (mapCheck) {
+                    mapCheck.removeObject(circleGroup);
+                    mapCheck.removeObject(circleMarker);
                   }
                 });
-              }
-            }}
-            style={{
-              backgroundColor: pointCheck ? "#cef2ff" : "white",
-            }}
-          >
-            <Tooltip title="Find location" placement="top" arrow>
-              <PinDropIcon />
-            </Tooltip>
-          </Button>
+                setCircles([]);
+                if (pointCheck === true) {
+                  // Remove all markers from the map
+                  mapCheck.getObjects().forEach((object: any) => {
+                    if (object !== circleGroup) {
+                      mapCheck.removeObject(object);
+                    }
+                  });
+                }
+              }}
+              style={{
+                backgroundColor: pointCheck ? "#cef2ff" : "white",
+                marginLeft: "-12px",
+              }}
+            >
+              <Tooltip title="Draw Point" placement="right" arrow>
+                <PinDropIcon />
+              </Tooltip>
+            </Button>
+          </Box>
         </Box>
       </Box>
 
