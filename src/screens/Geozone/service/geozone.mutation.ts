@@ -20,18 +20,24 @@ export const FETCH_GEOZONE = gql`
       data {
         _id
         name
-        radius
-        lat
-        long
-        country
-        address
-        state
-        city
-        area
-        district
-        zipCode
-        centerNo
-        type
+        description
+        locationType
+        address {
+          country
+          state
+          city
+          area
+          district
+          zipCode
+        }
+        geoCodeData {
+          type
+          geometry {
+            type
+            coordinates
+            radius
+          }
+        }
       }
     }
   }

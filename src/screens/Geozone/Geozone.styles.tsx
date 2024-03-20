@@ -5,6 +5,9 @@ import {
   centerItemFlex,
   boldFont,
   inputLabelRequiredColor,
+  purpleThemedSelectComponent,
+  regularFont,
+  pinkThemedMenuItems,
 } from "../../utils/styles";
 
 const geozoneStyle = {
@@ -16,6 +19,29 @@ const geozoneStyle = {
       marginTop: theme.spacing(3),
     },
   },
+  dropDownStyle: {
+    height: "47px",
+    borderRadius: "12px",
+    ...purpleThemedSelectComponent,
+
+    "& .MuiInputBase-input": {
+      borderColor: "#0675f9",
+      fontSize: getRelativeFontSize(),
+    },
+  },
+  dropDownOptionsStyle: {
+    ...regularFont,
+    ...pinkThemedMenuItems,
+  },
+  menuProps: {
+    PaperProps: {
+      style: {
+        maxHeight: "150px",
+        Overflow: "auto",
+      },
+    },
+  },
+
   boldFonts: {
     ...boldFont,
     fontSize: getRelativeFontSize(13),
@@ -82,13 +108,13 @@ const geozoneStyle = {
   activeButton: {
     backgroundColor: "green",
     color: "white",
-    border: "1px solid green"
+    border: "1px solid green",
   },
 
   nonActiveButton: {
     backgroundColor: "gray",
     color: "black",
-    border: "1px solid gray"
+    border: "1px solid gray",
   },
 
   select: {
@@ -108,6 +134,13 @@ const geozoneStyle = {
   label: {
     ...boldFont,
     marginBottom: "8px",
+  },
+  formInput: {
+    width: "100%",
+    "& .MuiDropzoneArea-root": {
+      width: "100%",
+      minHeight: "10px",
+    },
   },
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",

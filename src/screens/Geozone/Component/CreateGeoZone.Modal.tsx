@@ -3,6 +3,9 @@ import {
   Box,
   Grid,
   InputLabel,
+  MenuItem,
+  Select,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -14,7 +17,7 @@ import {
 import addGeozone from "../../../assets/images/uploadUser.svg";
 import geozoneStyle from "../Geozone.styles";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { openErrorNotification } from "../../../helpers/methods";
+import { isTruthy, openErrorNotification } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import { getAddressDetailsByPincode } from "../service/geozone.service";
 import _ from "lodash";
@@ -103,29 +106,75 @@ const CreateGeoZone = ({
       <Grid container spacing={2}>
 
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            label="Name"
-            id="circleName"
-            placeHolder="Enter Circle Name"
-            name="name"
-            value={formField.name.value}
-            onChange={handleOnChange}
-          />
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Location Type
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_status_dropdown"
+                name="locationType"
+                value={formField.locationType?.value}
+                onChange={handleOnChange}
+                MenuProps={classes.menuProps}
+                displayEmpty
+                renderValue={() =>
+                  formField.locationType?.value || "Select Location Type"
+                }
+                error={
+                  !isTruthy(formField.locationType?.value) &&
+                  formField.locationType?.error
+                }
+              >
+                {["PointA", "PointB"].map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    value={item}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
-            label="Center No"
-            id="mobileNo"
-            name="centerNo"
-            placeHolder="Enter Center No"
-            value={formField.centerNo.value}
+            label="Name"
+            id="Name"
+            placeHolder="Enter Name"
+            name="name"
+            value={formField.name?.value}
             onChange={handleOnChange}
           />
         </Grid>
 
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
+            <Box display={"flex"}>
+              <Typography sx={classes.label}>Description </Typography>
+              <Typography sx={classes.star}>*</Typography>
+            </Box>
+            <TextField
+              multiline
+              minRows={3}
+              inputProps={{ maxLength: 500 }}
+              sx={classes.testAreaStyle}
+              name="description"
+              id="comment"
+              placeholder="Enter your description"
+              value={formField.description?.value}
+              onChange={handleOnChange}
+            />
+          </Box>
+        </Grid>
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -134,19 +183,7 @@ const CreateGeoZone = ({
             id="mobileNo"
             name="mobileNumber"
             placeHolder="Enter Mobile No"
-            value={formField.mobileNumber.value}
-            onChange={handleOnChange}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            label="Type"
-            id="type"
-            name="type"
-            placeHolder="Enter Type"
-            value={formField.type.value}
+            value={formField.mobileNumber?.value}
             onChange={handleOnChange}
           />
         </Grid>
@@ -194,16 +231,16 @@ const CreateGeoZone = ({
                   },
                 });
               }}
-              value={{ label: zipcode, value: zipcode }}
-              renderInput={(params) => (
+              value={formField.zipCode.value}
+              renderInput={params => (
                 <TextField
                   sx={classes.select}
                   {...params}
-                  value={formField.zipCode.value} 
+                  value={formField.zipCode?.value}
                   name="assignBy"
                   placeholder="Enter zipcode here....."
                   onSelect={() => {}}
-                  onChange={(e) => {
+                  onChange={e => {
                     const value = e.target.value;
                     setFormField({
                       ...formField,
@@ -229,7 +266,7 @@ const CreateGeoZone = ({
             id="country"
             name="country"
             placeHolder="Enter Country"
-            value={formField.country.value}
+            value={formField.country?.value}
             disabled={true}
           />
         </Grid>
@@ -241,7 +278,7 @@ const CreateGeoZone = ({
             id="state"
             name="state"
             placeHolder="Enter State"
-            value={formField.state.value}
+            value={formField.state?.value}
             disabled={true}
           />
         </Grid>
@@ -253,7 +290,7 @@ const CreateGeoZone = ({
             id="area"
             name="area"
             placeHolder="Enter Area"
-            value={formField.area.value}
+            value={formField.area?.value}
             disabled={true}
           />
         </Grid>
@@ -265,7 +302,7 @@ const CreateGeoZone = ({
             id="city"
             name="city"
             placeHolder="Enter City"
-            value={formField.city.value}
+            value={formField.city?.value}
             disabled={true}
           />
         </Grid>
@@ -277,7 +314,7 @@ const CreateGeoZone = ({
             id="district"
             name="district"
             placeHolder="Enter District"
-            value={formField.district.value}
+            value={formField.district?.value}
             disabled={true}
           />
         </Grid>
@@ -295,7 +332,7 @@ const CreateGeoZone = ({
             name="address"
             id="address"
             placeholder="Enter your Address"
-            value={formField.address.value}
+            value={formField.address?.value}
             onChange={(event: any) => handleOnChange(event)}
           />
         </Grid>
