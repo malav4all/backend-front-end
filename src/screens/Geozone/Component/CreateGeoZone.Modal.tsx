@@ -28,7 +28,7 @@ interface GeoZoneProps {
   setFormField: any;
   formField: any;
   addGeozoneHandler: any;
-  zipcode: string;
+  locationType: any;
 }
 const CreateGeoZone = ({
   isOpenModal,
@@ -36,7 +36,7 @@ const CreateGeoZone = ({
   setFormField,
   formField,
   addGeozoneHandler,
-  zipcode,
+  locationType,
 }: GeoZoneProps) => {
   const classes = geozoneStyle;
   const [zipCodeDate, setZipCodeData] = useState([]);
@@ -104,7 +104,6 @@ const CreateGeoZone = ({
   const geoZoneBody = () => {
     return (
       <Grid container spacing={2}>
-
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
@@ -130,13 +129,13 @@ const CreateGeoZone = ({
                   formField.locationType?.error
                 }
               >
-                {["PointA", "PointB"].map((item, index) => (
+                {locationType.map((item: any, index: number) => (
                   <MenuItem
                     key={index}
-                    value={item}
+                    value={item.type}
                     sx={classes.dropDownOptionsStyle}
                   >
-                    {item}
+                    {item.type}
                   </MenuItem>
                 ))}
               </Select>
@@ -232,7 +231,7 @@ const CreateGeoZone = ({
                 });
               }}
               value={formField.zipCode.value}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   sx={classes.select}
                   {...params}
@@ -240,7 +239,7 @@ const CreateGeoZone = ({
                   name="assignBy"
                   placeholder="Enter zipcode here....."
                   onSelect={() => {}}
-                  onChange={e => {
+                  onChange={(e) => {
                     const value = e.target.value;
                     setFormField({
                       ...formField,

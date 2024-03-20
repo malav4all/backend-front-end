@@ -9,53 +9,11 @@ export const tabConfig = () => [
     label: strings.ASSERTASSINGMENT,
     count: 0,
   },
+  {
+    label: strings.LOCATIONTYPE,
+    count: 0,
+  },
 ];
-
-export const latestTabConfig: any = {
-  "Super Admin": [
-    {
-      label: strings.USERS,
-      count: 0,
-    },
-
-    {
-      label: strings.ACCOUNT,
-      count: 0,
-    },
-  ],
-  "Master Admin": [
-    {
-      label: strings.USERS,
-      count: 0,
-    },
-    {
-      label: strings.INDUSTRY,
-      count: 0,
-    },
-    {
-      label: strings.MODULE,
-      count: 0,
-    },
-    {
-      label: strings.roleManagement,
-      count: 0,
-    },
-    {
-      label: strings.ACCOUNT,
-      count: 0,
-    },
-    {
-      label: strings.DEVICEMODULE,
-      count: 0,
-    },
-  ],
-  User: [
-    {
-      label: strings.USERS,
-      count: 0,
-    },
-  ],
-};
 
 export const getTabLabelFromUrl = (tabUrl: any) => {
   switch (tabUrl) {

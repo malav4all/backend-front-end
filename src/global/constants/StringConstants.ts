@@ -100,7 +100,8 @@ export class StringConstants {
   TICKETS = "Tickets";
   SETTINGS = "Settings";
   DEVICEHISTORY = "Device History";
-  ASSERTASSINGMENT = "Assert Assingment"
+  ASSERTASSINGMENT = "Assert Assingment";
+  LOCATIONTYPE = "Location Type";
 
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
@@ -235,7 +236,7 @@ export class StringConstants {
   EMAIL_REGULAR_CAMPAIGN = "regular";
   EMAIL_AB_CAMPAIGN = "ab";
 
-  GEOZONE = "Geozone";
+  LOCATION = "Location";
 }
 
 let strings = new StringConstants();

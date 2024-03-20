@@ -78,9 +78,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/geozone"}
+            path={"/location"}
             component={Geozone}
-            componentName={strings.GEOZONE}
+            componentName={strings.LOCATION}
           />
 
           <PrivateRoute

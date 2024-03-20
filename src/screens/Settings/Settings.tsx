@@ -4,15 +4,15 @@ import SettingStyles from "./Setting.styles";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import CustomTabs from "../../global/components/CustomTabs/CustomTabs";
 import strings from "../../global/constants/StringConstants";
-import { latestTabConfig, tabConfig } from "./SettingsHelpers";
+import { tabConfig } from "./SettingsHelpers";
 import { isAdmin } from "../../utils/AuthorizationManager";
 import UnauthorizedPage from "../UnauthorizedPage/UnauthorizedPage";
 
 import Users from "./Users/Users";
 import { useLocation } from "react-router-dom";
 import { validateTabValue } from "../../helpers/methods";
-import { store } from "../../utils/store";
 import AssetAssingment from "./AssertAssingment/AssetAssingment";
+import LocationType from "./LocationType/LocationType";
 
 const Settings = () => {
   const classes = SettingStyles;
@@ -59,6 +59,8 @@ const Settings = () => {
         );
       case strings.ASSERTASSINGMENT:
         return <AssetAssingment />;
+      case strings.LOCATIONTYPE:
+        return <LocationType />;
       default:
         return <Users />;
     }

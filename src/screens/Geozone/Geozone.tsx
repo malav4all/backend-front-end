@@ -31,6 +31,7 @@ import DrawIcon from "@mui/icons-material/Draw";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { fetchLocationType } from "../Settings/LocationType/service/location-type.service";
 
 const Geozone = () => {
   const classes = geozoneStyle;
@@ -48,7 +49,8 @@ const Geozone = () => {
   const [isCircleActive, setIsCircleActive] = useState(false);
   const [geozonesVisible, setGeozonesVisible] = useState(true);
   const [pointCheck, setPointCheck] = useState(false);
-  const [zipcode, setZipcode] = useState("");
+  const [locationType, setLocationType] = useState([]);
+
   const [formField, setFormField] = useState<any>({
     name: {
       value: "",
@@ -111,6 +113,20 @@ const Geozone = () => {
       error: "",
     },
   });
+
+  const fetchLocationTypeHandler = async () => {
+    try {
+      const res = await fetchLocationType({
+        input: {
+          page: -1,
+          limit: 0,
+        },
+      });
+      setLocationType(res.fetchLocationType.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
@@ -192,7 +208,6 @@ const Geozone = () => {
       (result: any) => {
         var locationName = result.items[0].address.label;
         var zipcode = result.items[0].address.postalCode;
-        console.log(result);
         var marker = new window.H.map.Marker(coord);
         alert(
           `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
@@ -295,6 +310,7 @@ const Geozone = () => {
 
   useEffect(() => {
     fetchGeozone();
+    fetchLocationTypeHandler();
   }, []);
 
   const fetchGeozone = async () => {
@@ -616,7 +632,7 @@ const Geozone = () => {
           setFormField={setFormField}
           formField={formField}
           addGeozoneHandler={addGeozoneHandler}
-          zipcode={zipcode}
+          locationType={locationType}
         />
       </>
     );

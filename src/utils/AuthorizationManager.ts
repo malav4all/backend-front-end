@@ -59,9 +59,9 @@ const ListOfMenus = () =>
     {
       icon: geoZoneSvg("#666"),
       activeIcon: geoZoneSvg(pinkDarkColor),
-      text: "Geozone",
-      link: `${"/geozone"}`,
-      pageName: strings.GEOZONE,
+      text: "Location",
+      link: `${"/location"}`,
+      pageName: strings.LOCATION,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],
