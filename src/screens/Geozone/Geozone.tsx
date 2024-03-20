@@ -30,6 +30,7 @@ import geozoneStyle from "./Geozone.styles";
 import DrawIcon from "@mui/icons-material/Draw";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const Geozone = () => {
   const classes = geozoneStyle;
@@ -47,6 +48,7 @@ const Geozone = () => {
   const [isCircleActive, setIsCircleActive] = useState(false);
   const [geozonesVisible, setGeozonesVisible] = useState(true);
   const [pointCheck, setPointCheck] = useState(false);
+  const [zipcode, setZipcode] = useState("");
   const [formField, setFormField] = useState<any>({
     name: {
       value: "",
@@ -109,7 +111,6 @@ const Geozone = () => {
       error: "",
     },
   });
-  const [buttonisActive, setButtonisActive] = useState(false);
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
@@ -167,6 +168,7 @@ const Geozone = () => {
   }, [pointCheck, mapCheck]);
 
   let currentMarker: any = null;
+
   const setUpClickListener = (evt: any) => {
     const platform = new window.H.service.Platform({
       apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
@@ -189,15 +191,18 @@ const Geozone = () => {
       },
       (result: any) => {
         var locationName = result.items[0].address.label;
+        var zipcode = result.items[0].address.postalCode;
+        console.log(result);
         var marker = new window.H.map.Marker(coord);
         alert(
           `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
             4
-          )}\nLongitude: ${coord.lng.toFixed(4)}`
+          )}\nLongitude: ${coord.lng.toFixed(4)}\nZipcode: ${zipcode}`
         );
 
         currentMarker = marker;
         mapCheck.addObject(marker);
+
         setOpenModal(true);
         setFormField({
           ...formField,
@@ -582,7 +587,7 @@ const Geozone = () => {
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible(prevVisibility => !prevVisibility);
+    setGeozonesVisible((prevVisibility) => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -611,6 +616,7 @@ const Geozone = () => {
           setFormField={setFormField}
           formField={formField}
           addGeozoneHandler={addGeozoneHandler}
+          zipcode={zipcode}
         />
       </>
     );
@@ -622,51 +628,90 @@ const Geozone = () => {
         <Box
           style={{
             position: "absolute",
-            bottom: 25,
-            left: "50vw",
+            top: "42%",
+            left: "17vw",
             zIndex: 1,
             backgroundColor: "white",
             padding: "0.5rem",
             borderRadius: "0.2rem",
+            boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
           }}
         >
-          <Button
-            onClick={handleCircleButtonClick}
-            className={
-              buttonisActive
-                ? "classes.activeButton"
-                : "classes.nonActiveButton"
-            }
-          >
-            <Tooltip title="Draw Circle" placement="top" arrow>
-              <DrawIcon />
-            </Tooltip>
-          </Button>
-          <Button onClick={toggleGeozonesVisibility}>
-            <Tooltip title="Geofence View" placement="top" arrow>
-              <RemoveRedEyeIcon />
-            </Tooltip>
-          </Button>
-          <Button
-            onClick={() => {
-              setPointCheck(!pointCheck);
-              setIsCircleActive(false);
-              circles.forEach(({ circleGroup, circleMarker }) => {
-                if (mapCheck) {
-                  mapCheck.removeObject(circleGroup);
-                  mapCheck.removeObject(circleMarker);
-                }
-              });
-              setCircles([]);
+          <Box
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "40px",
+              padding: "0.5rem 0rem",
+              borderRadius: "0.2rem",
+              overflow: "hidden",
+              gap: "0.5 rem",
             }}
           >
-            <Tooltip title="Find location" placement="top" arrow>
-              <PinDropIcon />
-            </Tooltip>
-          </Button>
+            <Button
+              onClick={handleCircleButtonClick}
+              style={{
+                backgroundColor: isCircleActive ? "#cef2ff" : "white",
+                marginRight: "0.3rem",
+                marginLeft: "-12px",
+              }}
+            >
+              <Tooltip title="Draw Circle Polygon" placement="right" arrow>
+                <DrawIcon />
+              </Tooltip>
+            </Button>
+
+            <Button
+              onClick={toggleGeozonesVisibility}
+              style={{
+                backgroundColor: geozonesVisible ? "#cef2ff" : "white",
+                marginLeft: "-12px",
+              }}
+            >
+              {geozonesVisible ? (
+                <Tooltip title="Hide Geofence View" placement="right" arrow>
+                  <RemoveRedEyeIcon />
+                </Tooltip>
+              ) : (
+                <Tooltip title="Show Geofence View" placement="right" arrow>
+                  <RemoveRedEyeIcon />
+                </Tooltip>
+              )}
+            </Button>
+
+            <Button
+              onClick={() => {
+                setPointCheck(!pointCheck);
+                setIsCircleActive(false);
+                circles.forEach(({ circleGroup, circleMarker }) => {
+                  if (mapCheck) {
+                    mapCheck.removeObject(circleGroup);
+                    mapCheck.removeObject(circleMarker);
+                  }
+                });
+                setCircles([]);
+                if (pointCheck === true) {
+                  // Remove all markers from the map
+                  mapCheck.getObjects().forEach((object: any) => {
+                    if (object !== circleGroup) {
+                      mapCheck.removeObject(object);
+                    }
+                  });
+                }
+              }}
+              style={{
+                backgroundColor: pointCheck ? "#cef2ff" : "white",
+                marginLeft: "-12px",
+              }}
+            >
+              <Tooltip title="Draw Point" placement="right" arrow>
+                <PinDropIcon />
+              </Tooltip>
+            </Button>
+          </Box>
         </Box>
       </Box>
-      {/* <Box
+      <Box
         style={{
           position: "absolute",
           top: 25,
@@ -734,7 +779,7 @@ const Geozone = () => {
                           {item.name}
                         </ListItemText>
                         <ListItemText style={{ fontSize: "8px" }}>
-                          {item.address}
+                          {item.description}
                         </ListItemText>
                       </Box>
                     </ListItemText>
@@ -759,7 +804,7 @@ const Geozone = () => {
             </List>
           </Box>
         </PerfectScrollbar>
-      </Box> */}
+      </Box>
 
       {createGeozoneModal()}
       <CustomLoader isLoading={loading} />
