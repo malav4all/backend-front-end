@@ -5,7 +5,7 @@ import {
   ServiceResponse,
   endpoints,
 } from "../../../core-services/rest-api";
-import { ADD_GEOZONE, FETCH_GEOZONE } from "./geozone.mutation";
+import { ADD_GEOZONE, FETCH_GEOZONE, UPDATE_GEOZONE } from "./geozone.mutation";
 
 export const getAddressDetailsByPincode = async (pincode: string) => {
   const service = new Service(BASE_URL_POSTAL_PIN_CODE);
@@ -36,6 +36,19 @@ export const fetchGeozoneHandler = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: FETCH_GEOZONE,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const updateGeozone = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPDATE_GEOZONE,
       variables,
     });
 

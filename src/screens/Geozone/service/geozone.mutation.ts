@@ -22,6 +22,8 @@ export const FETCH_GEOZONE = gql`
         name
         description
         locationType
+        mobileNumber
+        finalAddress
         address {
           country
           state
@@ -39,6 +41,15 @@ export const FETCH_GEOZONE = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const UPDATE_GEOZONE = gql`
+  mutation ($input: UpdateGeozoneInput!) {
+    updateGeozone(input: $input) {
+      success
+      message
     }
   }
 `;

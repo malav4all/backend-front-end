@@ -19,7 +19,11 @@ import {
   openSuccessNotification,
 } from "../../helpers/methods";
 import { store } from "../../utils/store";
-import { createGeozone, fetchGeozoneHandler } from "./service/geozone.service";
+import {
+  createGeozone,
+  fetchGeozoneHandler,
+  updateGeozone,
+} from "./service/geozone.service";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import ImageIcon from "@mui/icons-material/MoveToInbox";
 import SearchIcon from "@mui/icons-material/Search";
@@ -32,11 +36,10 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { fetchLocationType } from "../Settings/LocationType/service/location-type.service";
+import { geoZoneInsertField } from "./Geozone.helper";
 
 const Geozone = () => {
-  const classes = geozoneStyle;
-  const mapRef = useRef<any>(null);
-  const [selectedShape, setSelectedShape] = useState<any>("");
+  const [selectedRowData, setSelectedRowData] = useState<any>();
   const [isOpen, setOpenModal] = useState<boolean>(false);
   const [mapCheck, setMapCheck] = useState<any>(null);
   const [mapKey, setMapKey] = useState<number>(0);
@@ -50,69 +53,15 @@ const Geozone = () => {
   const [geozonesVisible, setGeozonesVisible] = useState(true);
   const [pointCheck, setPointCheck] = useState(false);
   const [locationType, setLocationType] = useState([]);
+  const [edit, setEdit] = useState<boolean>(false); // edit: true
 
-  const [formField, setFormField] = useState<any>({
-    name: {
-      value: "",
-      error: "",
-    },
-    type: {
-      value: "",
-      error: "",
-    },
-    propertyName: {
-      name: "",
-      error: "",
-    },
-    locationType: {
-      value: "",
-      error: "",
-    },
-    description: {
-      value: "",
-      error: "",
-    },
-    mobileNumber: {
-      value: "",
-      error: "",
-    },
-    address: {
-      value: "",
-      error: "",
-    },
-    zipCode: {
-      value: "",
-      error: "",
-    },
-    country: {
-      value: "",
-      error: "",
-    },
-    state: {
-      value: "",
-      error: "",
-    },
-    area: {
-      value: "",
-      error: "",
-    },
-    city: {
-      value: "",
-      error: "",
-    },
-    district: {
-      value: "",
-      error: "",
-    },
-    lat: {
-      value: "",
-      error: "",
-    },
-    long: {
-      value: "",
-      error: "",
-    },
-  });
+  const [formField, setFormField] = useState<any>(geoZoneInsertField());
+
+  useEffect(() => {
+    if (selectedRowData && edit) {
+      setFormField(geoZoneInsertField(selectedRowData));
+    }
+  }, [selectedRowData, edit]);
 
   const fetchLocationTypeHandler = async () => {
     try {
@@ -146,6 +95,8 @@ const Geozone = () => {
       mapCheck.removeEventListener("tap", setUpClickListener);
     }
   }, [isCircleActive, mapCheck]);
+
+  console.log(formField);
 
   useEffect(() => {
     if (isCircleActive && mapCheck) {
@@ -360,69 +311,23 @@ const Geozone = () => {
         },
         finalAddress: formField?.address?.value,
       };
-      const res = await createGeozone({
-        input: { ...payload, createdBy: store.getState().auth.userName },
-      });
-      openSuccessNotification(res.addGeozone.message);
+      if (edit) {
+        const res = await updateGeozone({
+          input: {
+            _id: selectedRowData._id,
+            ...payload,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        openSuccessNotification(res.updateGeozone.message);
+      } else {
+        const res = await createGeozone({
+          input: { ...payload, createdBy: store.getState().auth.userName },
+        });
+        openSuccessNotification(res.addGeozone.message);
+      }
       await handleCloseDialog();
-      setFormField({
-        name: {
-          value: "",
-          error: "",
-        },
-        type: {
-          value: "",
-          error: "",
-        },
-        centerNo: {
-          value: "",
-          error: "",
-        },
-        radius: {
-          value: "",
-          error: "",
-        },
-        mobileNumber: {
-          value: "",
-          error: "",
-        },
-        address: {
-          value: "",
-          error: "",
-        },
-        zipCode: {
-          value: "",
-          error: "",
-        },
-        country: {
-          value: "",
-          error: "",
-        },
-        state: {
-          value: "",
-          error: "",
-        },
-        area: {
-          value: "",
-          error: "",
-        },
-        city: {
-          value: "",
-          error: "",
-        },
-        district: {
-          value: "",
-          error: "",
-        },
-        lat: {
-          value: "",
-          error: "",
-        },
-        long: {
-          value: "",
-          error: "",
-        },
-      });
+      setFormField(geoZoneInsertField());
       await fetchGeozone();
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -560,18 +465,6 @@ const Geozone = () => {
       true
     );
 
-    setFormField({
-      ...formField,
-      lat: {
-        value: latLng.lat,
-      },
-      long: {
-        value: latLng.lng,
-      },
-      radius: {
-        value: circle.getRadius(),
-      },
-    });
     setCircles([...circles, { circleGroup, circleMarker }]);
   };
 
@@ -805,6 +698,11 @@ const Geozone = () => {
                         style={{
                           cursor: "pointer",
                         }}
+                        onClick={() => {
+                          setOpenModal(true);
+                          setSelectedRowData(item);
+                          setEdit(true);
+                        }}
                       />
                     </ListItemAvatar>
                     <ListItemAvatar>
@@ -828,4 +726,4 @@ const Geozone = () => {
   );
 };
 
-export default Geozone;
+export default React.memo(Geozone);

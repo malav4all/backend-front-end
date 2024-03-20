@@ -1,59 +1,67 @@
 export const geoZoneInsertField = (data?: any) => {
   return {
     name: {
-      value: data.name ?? "",
+      value: data?.name ?? "",
       error: "",
     },
     type: {
-      value: data.type ?? "",
+      value: data?.geoCodeData?.geometry?.type ?? "",
       error: "",
     },
-    centerNo: {
-      value: data.centerNo ?? "",
+    propertyName: {
+      value: data?.geoCodeData?.properties?.name ?? "",
       error: "",
     },
-    radius: {
-      value: data.radius ?? "",
+    locationType: {
+      value: data?.locationType ?? "",
+      error: "",
+    },
+    description: {
+      value: data?.description ?? "",
       error: "",
     },
     mobileNumber: {
-      value: data.mobileNumber ?? "",
+      value: data?.mobileNumber ?? "",
       error: "",
     },
     address: {
-      value: data.address ?? "",
+      value: data?.finalAddress ?? "",
       error: "",
     },
     zipCode: {
-      value: data.zipCode ?? "",
+      value: data?.address?.zipCode ?? "",
       error: "",
     },
     country: {
-      value: data.country ?? "",
+      value: data?.address?.country ?? "",
       error: "",
     },
     state: {
-      value: data.state ?? "",
+      value: data?.address?.state ?? "",
       error: "",
     },
     area: {
-      value: data.area ?? "",
+      value: data?.address?.area ?? "",
       error: "",
     },
     city: {
-      value: data.city ?? "",
+      value: data?.address?.city ?? "",
       error: "",
     },
     district: {
-      value: data.district ?? "",
+      value: data?.address?.district ?? "",
       error: "",
     },
     lat: {
-      value: data.lat ?? "",
+      value: data?.geoCodeData?.geometry?.coordinates[0] ?? "",
       error: "",
     },
     long: {
-      value: data.long ?? "",
+      value: data?.geoCodeData?.geometry?.coordinates[1] ?? "",
+      error: "",
+    },
+    radius: {
+      value: data?.geoCodeData?.geometry?.radius ?? "",
       error: "",
     },
   };
