@@ -115,10 +115,10 @@ const AddAssetAssingment = (props: CustomProps) => {
     });
   };
 
-  const handleSelectStatus = (formFillEvent: SelectChangeEvent<any>) => {
+  const handleSelectJourneyStatus = (formFillEvent: SelectChangeEvent<any>) => {
     setAssetAssingmentFormFields({
       ...assetAssingmentFormFields,
-      status: {
+      journey: {
         value: formFillEvent.target.value,
         error: "",
       },
@@ -253,18 +253,18 @@ const AddAssetAssingment = (props: CustomProps) => {
                 id="add_user_status_dropdown"
                 name="journey"
                 value={assetAssingmentFormFields.journey?.value}
-                onChange={handleSelectStatus}
+                onChange={handleSelectJourneyStatus}
                 MenuProps={classes.menuProps}
                 displayEmpty
                 renderValue={() =>
-                  assetAssingmentFormFields.journey?.value || "Select Journey"
+                  assetAssingmentFormFields?.journey?.value || "Select Status"
                 }
                 error={
                   !isTruthy(assetAssingmentFormFields.journey?.value) &&
                   assetAssingmentFormFields.journey?.error
                 }
               >
-                {/* {["Active", "Inactive"].map((item, index) => (
+                {["Active", "Inactive"].map((item, index) => (
                   <MenuItem
                     key={index}
                     value={item}
@@ -272,7 +272,7 @@ const AddAssetAssingment = (props: CustomProps) => {
                   >
                     {item}
                   </MenuItem>
-                ))} */}
+                ))}
               </Select>
               {!isTruthy(assetAssingmentFormFields.status?.value) && (
                 <FormHelperText error sx={classes.errorStyle}>
