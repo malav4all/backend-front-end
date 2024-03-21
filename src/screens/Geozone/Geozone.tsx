@@ -96,8 +96,6 @@ const Geozone = () => {
     }
   }, [isCircleActive, mapCheck]);
 
-  console.log(formField);
-
   useEffect(() => {
     if (isCircleActive && mapCheck) {
       mapCheck.addEventListener("tap", createCircle);

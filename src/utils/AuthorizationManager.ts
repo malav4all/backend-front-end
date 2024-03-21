@@ -55,6 +55,17 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
+    {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Journey",
+      link: `${"/journey"}`,
+      pageName: strings.JOURNEY,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
 
     {
       icon: geoZoneSvg("#666"),

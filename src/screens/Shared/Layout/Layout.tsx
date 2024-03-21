@@ -22,6 +22,7 @@ import { onLogout } from "../../LandingPage/landingPageService";
 import { store } from "../../../utils/store";
 import history from "../../../utils/history";
 import Geozone from "../../Geozone/Geozone";
+import Journey from "../../Journey/Journey";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -81,6 +82,13 @@ const Layout = () => {
             path={"/location"}
             component={Geozone}
             componentName={strings.LOCATION}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/journey"}
+            component={Journey}
+            componentName={strings.JOURNEY}
           />
 
           <PrivateRoute

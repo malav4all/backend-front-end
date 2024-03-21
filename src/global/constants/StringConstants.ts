@@ -237,6 +237,7 @@ export class StringConstants {
   EMAIL_AB_CAMPAIGN = "ab";
 
   LOCATION = "Location";
+  JOURNEY = "JOURNEY";
 }
 
 let strings = new StringConstants();
