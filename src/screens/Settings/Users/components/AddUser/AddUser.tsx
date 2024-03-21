@@ -68,24 +68,23 @@ const AddUser = (props: CustomProps) => {
   useEffect(() => {
     props.setEdit?.(false);
     setUserFormFields(insertUserField());
-  }, [props.openAddUserDialog]);
+  }, [props?.openAddUserDialog]);
 
   useEffect(() => {
-    if (props.edit && props.selectedUserRowData) {
+    if (props?.edit && props?.selectedUserRowData) {
       props.setEdit?.(true);
-      setUserFormFields(insertUserField(props.selectedUserRowData));
+      setUserFormFields(insertUserField(props?.selectedUserRowData));
     }
-  }, [props.selectedUserRowData]);
+  }, [props?.selectedUserRowData]);
 
   // useEffect(() => {
   //   fetchAccountData();
   //   fetchRoleData();
   // }, []);
-
   const handleValidation = () => {
     const { isValid, errors }: any = validateAddUserForm(
       userFormFields,
-      props.edit
+      props?.edit
     );
     setUserFormFields({ ...errors });
     return isValid;
@@ -94,9 +93,9 @@ const AddUser = (props: CustomProps) => {
   const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
     setUserFormFields({
       ...userFormFields,
-      [formFillEvent.target.name]: {
-        ...userFormFields[formFillEvent.target.name],
-        value: formFillEvent.target.value,
+      [formFillEvent?.target?.name]: {
+        ...userFormFields[formFillEvent?.target?.name],
+        value: formFillEvent?.target?.value,
         error: "",
       },
     });
@@ -140,14 +139,14 @@ const AddUser = (props: CustomProps) => {
     try {
       setLoading(true);
       const insertUserBody = {
-        firstName: userFormFields.firstName?.value?.trim(),
-        lastName: userFormFields.lastName?.value?.trim(),
-        email: userFormFields.email?.value?.trim()?.toLowerCase(),
-        mobileNumber: userFormFields.mobileNumber?.value,
-        userName: userFormFields.userName?.value?.trim(),
-        password: userFormFields.password?.value,
-        roleId: userFormFields.roleId?.value,
-        status: userFormFields.status?.value,
+        firstName: userFormFields?.firstName?.value?.trim(),
+        lastName: userFormFields?.lastName?.value?.trim(),
+        email: userFormFields?.email?.value?.trim()?.toLowerCase(),
+        mobileNumber: userFormFields?.mobileNumber?.value,
+        userName: userFormFields?.userName?.value?.trim(),
+        password: userFormFields?.password?.value,
+        roleId: userFormFields?.roleId?.value,
+        status: userFormFields?.status?.value,
       };
       if (handleValidation()) {
         if (props.edit) {
@@ -175,7 +174,7 @@ const AddUser = (props: CustomProps) => {
       }
     } catch (error: any) {
       openErrorNotification(
-        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+        isTruthy(error?.message) ? error?.message : notifiers?.GENERIC_ERROR
       );
     }
   };
@@ -194,12 +193,12 @@ const AddUser = (props: CustomProps) => {
           <CustomInput
             required
             id="add_user_first_name_field"
-            placeHolder="Enter First ame"
+            placeHolder="Enter First name"
             name="firstName"
             label="First Name"
             onChange={handleFormDataChange}
-            value={userFormFields.firstName?.value}
-            error={userFormFields.firstName?.error}
+            value={userFormFields?.firstName?.value}
+            error={userFormFields?.firstName?.error}
             propsToInputElement={{ maxLength: strings.USER_FIRST_NAME_LIMIT }}
           />
         </Grid>
@@ -211,8 +210,8 @@ const AddUser = (props: CustomProps) => {
             name="lastName"
             label="Last Name"
             onChange={handleFormDataChange}
-            value={userFormFields.lastName?.value}
-            error={userFormFields.lastName?.error}
+            value={userFormFields?.lastName?.value}
+            error={userFormFields?.lastName?.error}
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
         </Grid>
@@ -259,8 +258,8 @@ const AddUser = (props: CustomProps) => {
             name="userName"
             label="User Name"
             onChange={handleFormDataChange}
-            value={userFormFields.userName?.value}
-            error={userFormFields.userName?.error}
+            value={userFormFields?.userName?.value}
+            error={userFormFields?.userName?.error}
           />
         </Grid>
         {!props.edit && (
@@ -271,7 +270,7 @@ const AddUser = (props: CustomProps) => {
               label="Password"
               type={showPassword ? "text" : "password"}
               name="password"
-              value={userFormFields.password?.value}
+              value={userFormFields?.password?.value}
               disabled={props.edit}
               onChange={handleFormDataChange}
               error={userFormFields?.password?.error}
@@ -305,7 +304,7 @@ const AddUser = (props: CustomProps) => {
             name="createdBy"
             disabled={true}
             label="Created By"
-            value={userFormFields.createdBy?.value}
+            value={userFormFields?.createdBy?.value}
           />
         </Grid>
 
@@ -322,19 +321,19 @@ const AddUser = (props: CustomProps) => {
                 sx={classes.dropDownStyle}
                 id="add_user_roles_dropdown"
                 name="accountId"
-                value={userFormFields.roleId?.value}
+                value={userFormFields?.roleId?.value}
                 onChange={handleSelectRole}
                 disabled={props.edit}
                 renderValue={
-                  userFormFields.roleId?.value !== ""
+                  userFormFields?.roleId?.value !== ""
                     ? undefined
                     : () => "Select a Role"
                 }
                 MenuProps={classes.menuProps}
                 displayEmpty
                 error={
-                  userFormFields.roleId?.value?.length < 4 &&
-                  userFormFields.roleId?.error?.length !== 0
+                  userFormFields?.roleId?.value?.length < 4 &&
+                  userFormFields?.roleId?.error?.length !== 0
                 }
               >
                 {["Admin", "User", "Editor"].map((item: any, index: any) => (
@@ -348,7 +347,7 @@ const AddUser = (props: CustomProps) => {
                 ))}
               </Select>
             </Stack>
-            {!isTruthy(userFormFields.roleId?.value) && (
+            {!isTruthy(userFormFields?.roleId?.value) && (
               <FormHelperText error sx={classes.errorStyle}>
                 {userFormFields.roleId?.error}
               </FormHelperText>
@@ -369,16 +368,16 @@ const AddUser = (props: CustomProps) => {
                 sx={classes.dropDownStyle}
                 id="add_user_status_dropdown"
                 name="status"
-                value={userFormFields.status?.value}
+                value={userFormFields?.status?.value}
                 onChange={handleSelectStatus}
                 MenuProps={classes.menuProps}
                 displayEmpty
                 renderValue={() =>
-                  userFormFields.status?.value || "Select Status"
+                  userFormFields?.status?.value || "Select Status"
                 }
                 error={
-                  !isTruthy(userFormFields.status?.value) &&
-                  userFormFields.status?.error
+                  !isTruthy(userFormFields?.status?.value) &&
+                  userFormFields?.status?.error
                 }
               >
                 {["Active", "Inactive"].map((item, index) => (
@@ -391,7 +390,7 @@ const AddUser = (props: CustomProps) => {
                   </MenuItem>
                 ))}
               </Select>
-              {!isTruthy(userFormFields.status?.value) && (
+              {!isTruthy(userFormFields?.status?.value) && (
                 <FormHelperText error sx={classes.errorStyle}>
                   {userFormFields.status?.error}
                 </FormHelperText>

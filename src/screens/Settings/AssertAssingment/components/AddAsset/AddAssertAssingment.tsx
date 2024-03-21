@@ -35,7 +35,10 @@ import _ from "lodash";
 
 import { store } from "../../../../../utils/store";
 import notifiers from "../../../../../global/constants/NotificationConstants";
-import { addAssetAssingment, updateAssetAssingmentList } from "../../service/AssetAssingment.service";
+import {
+  addAssetAssingment,
+  updateAssetAssingmentList,
+} from "../../service/AssetAssingment.service";
 
 interface CustomProps {
   openAddAssetAssingmentDialog: boolean;
@@ -240,7 +243,7 @@ const AddAssetAssingment = (props: CustomProps) => {
           <Box>
             <Stack direction="column">
               <InputLabel sx={classes.inputLabel} shrink>
-                Jouney
+                Journey
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
