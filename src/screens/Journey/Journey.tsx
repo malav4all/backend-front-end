@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   CustomAppHeader,
   CustomButton,
@@ -8,21 +8,13 @@ import {
 import {
   Autocomplete,
   Box,
-  Divider,
   Grid,
   InputAdornment,
   InputLabel,
   Stack,
-  Step,
-  StepLabel,
-  Stepper,
   TextField,
   Typography,
 } from "@mui/material";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import journeyStyles from "./Journey.styles";
 import {
   getRelativeFontSize,
@@ -38,6 +30,9 @@ import {
 import { createJourney, fetchJourney } from "./service/journey.service";
 import { store } from "../../utils/store";
 import moment from "moment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import ShowJourneyModal from "./Component/ShowJourneyModal";
+import history from "../../utils/history";
 const Journey = () => {
   const classes = journeyStyles;
   const [page, setPage] = useState<number>(1);
@@ -55,6 +50,7 @@ const Journey = () => {
       error: "",
     },
   });
+  const [coordinatesArray, setCoordinatesArray] = useState<any>();
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
@@ -110,6 +106,7 @@ const Journey = () => {
         },
       });
       openSuccessNotification(res.addJourney.message);
+      await fetchJourneyHandler();
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -117,45 +114,28 @@ const Journey = () => {
 
   const tableRender = (tableData: any) => {
     const data = tableData.map((item: any, index: number) => {
+      const coordinates = item.journeyData.map(
+        (coor: any) => coor?.geoCodeData?.geometry?.coordinates
+      );
+
       return {
         journeyName: item?.journeyName,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
-        // journeyData: (
-        //   <>
-        //     <Box
-        //       style={{ display: "flex", justifyContent: "center" }}
-        //       sx={{ minWidth: "400px", width: "100%" }}
-        //     >
-        //       <Stepper
-        //         activeStep={0}
-        //         connector={<Divider sx={classes.divderResponsive} />}
-        //       >
-        //         {item.journeyData.map(
-        //           (journeyItem: any, journeyIndex: number) => (
-        //             <Step
-        //               key={journeyIndex}
-        //               sx={{
-        //                 display: "flex",
-        //                 justifyContent: "center",
-        //                 alignContent: "center",
-        //                 alignItems: "center",
-        //               }}
-        //             >
-        //               <StepLabel>
-        //                 {journeyIndex === 0
-        //                   ? `${journeyItem.name} - (First)${journeyItem.address.state} `
-        //                   : journeyIndex === item.journeyData.length - 1
-        //                   ? `${journeyItem.name} -  (Last)${journeyItem.address.state}`
-        //                   : journeyItem.name}
-        //               </StepLabel>
-        //             </Step>
-        //           )
-        //         )}
-        //       </Stepper>
-        //     </Box>
-        //   </>
-        // ),
+        journeyData: (
+          <>
+            <VisibilityIcon
+              onClick={() => {
+                history.push({
+                  pathname: "/view-journey",
+                  state: {
+                    coordinates: coordinates.flat(),
+                  },
+                });
+              }}
+            />
+          </>
+        ),
         createdBy: item?.createdBy,
       };
     });
@@ -226,7 +206,7 @@ const Journey = () => {
         <CustomTable
           headers={[
             { name: "Journey Name", field: "journeyName" },
-            // { name: "Location", field: "journeyData" },
+            { name: "Location", field: "journeyData" },
             { name: "Created By", field: "createdBy" },
             { name: "Start Date", field: "startDate" },
             { name: "End Date", field: "endDate" },
@@ -404,6 +384,7 @@ const Journey = () => {
               type="datetime-local"
               id="scheduleTime"
               name="startDate"
+              required
               // propsToInputElement={{
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}
@@ -418,6 +399,7 @@ const Journey = () => {
               type="datetime-local"
               id="scheduleTime"
               name="endDate"
+              required
               // propsToInputElement={{
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}

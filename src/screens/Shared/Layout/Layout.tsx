@@ -23,6 +23,7 @@ import { store } from "../../../utils/store";
 import history from "../../../utils/history";
 import Geozone from "../../Geozone/Geozone";
 import Journey from "../../Journey/Journey";
+import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -89,6 +90,13 @@ const Layout = () => {
             path={"/journey"}
             component={Journey}
             componentName={strings.JOURNEY}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/view-journey"}
+            component={ShowJourneyModal}
+            componentName={strings.VIEW_JOURNEY}
           />
 
           <PrivateRoute
