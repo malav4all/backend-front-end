@@ -19,6 +19,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import journeyStyles from "./Journey.styles";
 import {
   getRelativeFontSize,
@@ -33,10 +37,24 @@ import {
 } from "../../helpers/methods";
 import { createJourney, fetchJourney } from "./service/journey.service";
 import { store } from "../../utils/store";
+import moment from "moment";
 const Journey = () => {
   const classes = journeyStyles;
   const [page, setPage] = useState<number>(1);
-  const [formField, setFormField] = useState("");
+  const [formField, setFormField] = useState<any>({
+    journeyName: {
+      value: "",
+      error: "",
+    },
+    startDate: {
+      value: "",
+      error: "",
+    },
+    endDate: {
+      value: "",
+      error: "",
+    },
+  });
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
@@ -59,6 +77,17 @@ const Journey = () => {
     fetchJourneyHandler();
   }, []);
 
+  const handleStepOneOnChange = (event: React.ChangeEvent<any>) => {
+    setFormField({
+      ...formField,
+      [event.target.name]: {
+        ...formField[event.target.name],
+        value: event.target.value,
+        error: "",
+      },
+    });
+  };
+
   const handleAutocompleteChange = (newValue: any) => {
     if (
       newValue.value &&
@@ -73,7 +102,9 @@ const Journey = () => {
     try {
       const res = await createJourney({
         input: {
-          journeyName: formField,
+          journeyName: formField.journeyName.value,
+          startDate: formField.startDate.value,
+          endDate: formField.endDate.value,
           journeyData: finalLocationIds,
           createdBy: store.getState().auth.userName,
         },
@@ -88,41 +119,43 @@ const Journey = () => {
     const data = tableData.map((item: any, index: number) => {
       return {
         journeyName: item?.journeyName,
-        journeyData: (
-          <>
-            <Box
-              style={{ display: "flex", justifyContent: "center" }}
-              sx={{ minWidth: "400px", width: "100%" }}
-            >
-              <Stepper
-                activeStep={0}
-                connector={<Divider sx={classes.divderResponsive} />}
-              >
-                {item.journeyData.map(
-                  (journeyItem: any, journeyIndex: number) => (
-                    <Step
-                      key={journeyIndex}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <StepLabel>
-                        {journeyIndex === 0
-                          ? `${journeyItem.name} - (First)${journeyItem.address.state} `
-                          : journeyIndex === item.journeyData.length - 1
-                          ? `${journeyItem.name} -  (Last)${journeyItem.address.state}`
-                          : journeyItem.name}
-                      </StepLabel>
-                    </Step>
-                  )
-                )}
-              </Stepper>
-            </Box>
-          </>
-        ),
+        startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
+        endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
+        // journeyData: (
+        //   <>
+        //     <Box
+        //       style={{ display: "flex", justifyContent: "center" }}
+        //       sx={{ minWidth: "400px", width: "100%" }}
+        //     >
+        //       <Stepper
+        //         activeStep={0}
+        //         connector={<Divider sx={classes.divderResponsive} />}
+        //       >
+        //         {item.journeyData.map(
+        //           (journeyItem: any, journeyIndex: number) => (
+        //             <Step
+        //               key={journeyIndex}
+        //               sx={{
+        //                 display: "flex",
+        //                 justifyContent: "center",
+        //                 alignContent: "center",
+        //                 alignItems: "center",
+        //               }}
+        //             >
+        //               <StepLabel>
+        //                 {journeyIndex === 0
+        //                   ? `${journeyItem.name} - (First)${journeyItem.address.state} `
+        //                   : journeyIndex === item.journeyData.length - 1
+        //                   ? `${journeyItem.name} -  (Last)${journeyItem.address.state}`
+        //                   : journeyItem.name}
+        //               </StepLabel>
+        //             </Step>
+        //           )
+        //         )}
+        //       </Stepper>
+        //     </Box>
+        //   </>
+        // ),
         createdBy: item?.createdBy,
       };
     });
@@ -137,7 +170,9 @@ const Journey = () => {
           limit: 10,
         },
       });
+
       const data = tableRender(res.fetchJourney.data);
+
       setJourneyTableData(data);
       setCount(res.fetchJourney.paginatorInfo.count);
     } catch (error: any) {
@@ -191,8 +226,10 @@ const Journey = () => {
         <CustomTable
           headers={[
             { name: "Journey Name", field: "journeyName" },
-            { name: "Location", field: "journeyData" },
+            // { name: "Location", field: "journeyData" },
             { name: "Created By", field: "createdBy" },
+            { name: "Start Date", field: "startDate" },
+            { name: "End Date", field: "endDate" },
           ]}
           rows={journeyTableData}
           size={[5]}
@@ -256,9 +293,10 @@ const Journey = () => {
             <CustomInput
               label="Journey Name"
               placeHolder="Enter Journey name"
-              value={formField}
+              value={formField.journeyName.value}
               required
-              onChange={(e: any) => setFormField(e.target.value)}
+              name="journeyName"
+              onChange={handleStepOneOnChange}
             />
           </Grid>
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
@@ -358,6 +396,34 @@ const Journey = () => {
                 )}
               />
             </Box>
+          </Grid>
+          {/* start data */}
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="Start Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="startDate"
+              // propsToInputElement={{
+              //   min: moment().format("YYYY-MM-DDTkk:mm"),
+              // }}
+              value={formField.startDate.value}
+              onChange={handleStepOneOnChange}
+            />
+          </Grid>
+          {/* end date */}
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="End Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="endDate"
+              // propsToInputElement={{
+              //   min: moment().format("YYYY-MM-DDTkk:mm"),
+              // }}
+              value={formField.endDate.value}
+              onChange={handleStepOneOnChange}
+            />
           </Grid>
         </Grid>
       </>

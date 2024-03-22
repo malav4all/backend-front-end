@@ -20,6 +20,8 @@ export const FETCH_JOURNEY = gql`
       data {
         _id
         journeyName
+        startDate
+        endDate
         journeyData {
           _id
           name
