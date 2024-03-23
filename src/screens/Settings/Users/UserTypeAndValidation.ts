@@ -65,7 +65,7 @@ export const insertUserField = (data?: any) => {
       error: "",
     },
     createdBy: {
-      value: store.getState().auth.userName,
+      value: store?.getState()?.auth?.userName,
       error: "",
     },
     roleId: {
@@ -74,6 +74,10 @@ export const insertUserField = (data?: any) => {
     },
     status: {
       value: data?.status ?? "Active",
+      error: "",
+    },
+    password: {
+      value: data?.password ?? "",
       error: "",
     },
   } as any;
@@ -94,8 +98,8 @@ export const changePasswordField = () => {
 
 const isPhoneValid = (phone: string) => {
   try {
-    const phoneUtil = PhoneNumberUtil.getInstance();
-    return phoneUtil.isValidNumber(phoneUtil.parseAndKeepRawInput(phone));
+    const phoneUtil = PhoneNumberUtil?.getInstance();
+    return phoneUtil?.isValidNumber(phoneUtil?.parseAndKeepRawInput(phone));
   } catch (error: any) {
     return false;
   }
@@ -104,43 +108,42 @@ const isPhoneValid = (phone: string) => {
 export const validateAddUserForm = (userFormFields: any, edit = false) => {
   let isValid = true;
   let errors: any = { ...userFormFields };
-
-  if (!errors.firstName?.value) {
+  if (!errors?.firstName?.value) {
     errors.firstName.error = "Please enter first name";
     isValid = false;
   }
 
-  if (!errors.lastName?.value) {
+  if (!errors?.lastName?.value) {
     errors.lastName.error = "Please enter last name";
     isValid = false;
   }
 
-  if (!errors.email?.value) {
+  if (!errors?.email?.value) {
     errors.email.error = "Please enter email";
     isValid = false;
   }
 
-  if (!errors.mobileNumber?.value) {
+  if (!errors?.mobileNumber?.value) {
     errors.mobileNumber.error = "Please enter mobile number";
     isValid = false;
   }
 
-  if (!errors.userName?.value) {
+  if (!errors?.userName?.value) {
     errors.userName.error = "Please enter username";
     isValid = false;
   }
 
-  if (!errors.password?.value) {
+  if (!errors?.password?.value) {
     errors.password.error = "Please enter password";
     isValid = false;
   }
 
-  if (!errors.roleId?.value) {
+  if (!errors?.roleId?.value) {
     errors.roleId.error = "Please select role";
     isValid = false;
   }
 
-  if (!errors.status?.value) {
+  if (!errors?.status?.value) {
     errors.status.error = "Please select status";
     isValid = false;
   }

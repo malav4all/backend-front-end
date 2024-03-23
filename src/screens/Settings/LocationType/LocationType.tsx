@@ -1,4 +1,10 @@
-import { Box, InputAdornment, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  FormHelperText,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
   getRelativeFontSize,
@@ -13,6 +19,7 @@ import {
 } from "../../../global/components";
 import {
   debounceEventHandler,
+  isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../../helpers/methods";
@@ -22,6 +29,7 @@ import {
   fetchLocationType,
 } from "./service/location-type.service";
 import { store } from "../../../utils/store";
+import { validateLocationTypeForm } from "./LocationTypeandValidations";
 
 const tableHeader = [
   {
@@ -31,7 +39,7 @@ const tableHeader = [
 ];
 
 const LocationType = () => {
-  const [formField, setFormField] = useState<string>("");
+  const [formField, setFormField] = useState<any>({ value: "", error: "" });
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [data, setData] = useState([]);
@@ -40,18 +48,24 @@ const LocationType = () => {
   useEffect(() => {
     fetchLocationTypeHandler();
   }, []);
-
+  const handleValidation = () => {
+    const { isValid, errors } = validateLocationTypeForm(formField);
+    setFormField(errors);
+    return isValid;
+  };
   const addLocationTypeHandler = async () => {
     try {
-      const res = await createLocationType({
-        input: {
-          type: formField,
-          createdBy: store.getState().auth.userName,
-        },
-      });
-      openSuccessNotification(res.addLocationType.message);
-      await fetchLocationTypeHandler();
-      setFormField("");
+      if (handleValidation()) {
+        const res = await createLocationType({
+          input: {
+            type: formField,
+            createdBy: store?.getState()?.auth.userName,
+          },
+        });
+        openSuccessNotification(res.addLocationType.message);
+        await fetchLocationTypeHandler();
+        setFormField({});
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -181,11 +195,16 @@ const LocationType = () => {
         >
           <CustomInput
             label="Type"
-            value={formField}
+            value={formField.value}
             onChange={(e: any) => {
-              setFormField(e.target.value);
+              setFormField({ ...formField, value: e.target.value, error: "" });
             }}
             placeHolder="Enter Type"
+            error={
+              !isTruthy(formField?.value) &&
+              isTruthy(formField?.error) &&
+              formField?.error
+            }
           />
           {addLocationTypeButton()}
         </Stack>
