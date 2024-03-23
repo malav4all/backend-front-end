@@ -54,14 +54,7 @@ const Geozone = () => {
   const [pointCheck, setPointCheck] = useState(false);
   const [locationType, setLocationType] = useState([]);
   const [edit, setEdit] = useState<boolean>(false); // edit: true
-
   const [formField, setFormField] = useState<any>(geoZoneInsertField());
-
-  useEffect(() => {
-    if (selectedRowData && edit) {
-      setFormField(geoZoneInsertField(selectedRowData));
-    }
-  }, [selectedRowData, edit]);
 
   const fetchLocationTypeHandler = async () => {
     try {
@@ -237,7 +230,8 @@ const Geozone = () => {
       new window.H.mapevents.MapEvents(initialMap)
     );
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    addCircleToMap(initialMap);
+    // renderAndUpdateCircleToMap(initialMap);
+    showCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
     // setUpClickListener(initialMap, platform);
@@ -249,13 +243,6 @@ const Geozone = () => {
       initialMap.dispose();
     };
   }, []);
-
-  useEffect(() => {
-    if (mapCheck) {
-      mapCheck.removeObjects(mapCheck.getObjects()); // Remove all existing circles
-      addCircleToMap(mapCheck); // Add updated circles
-    }
-  }, [geozoneData]);
 
   useEffect(() => {
     fetchGeozone();
@@ -271,6 +258,7 @@ const Geozone = () => {
           limit,
         },
       });
+
       setGeozoneData(res?.listGeozone?.data);
       setLoading(false);
     } catch (error: any) {
@@ -318,6 +306,7 @@ const Geozone = () => {
           },
         });
         openSuccessNotification(res.updateGeozone.message);
+        setEdit(false);
       } else {
         const res = await createGeozone({
           input: { ...payload, createdBy: store.getState().auth.userName },
@@ -474,27 +463,8 @@ const Geozone = () => {
     map.addObject(parisMarker);
   };
 
-  const addCircleToMap = (map: any) => {
-    geozoneData.forEach((item: any) => {
-      if (geozonesVisible) {
-        map.addObject(
-          new window.H.map.Circle(
-            {
-              lat: item?.geoCodeData?.geometry?.coordinates[0],
-              lng: item?.geoCodeData?.geometry?.coordinates[1],
-            },
-            item?.geoCodeData?.geometry?.radius,
-            {
-              style: geozoneStyle,
-            }
-          )
-        );
-      }
-    });
-  };
-
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible((prevVisibility) => !prevVisibility);
+    setGeozonesVisible(prevVisibility => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -526,6 +496,177 @@ const Geozone = () => {
           locationType={locationType}
         />
       </>
+    );
+  };
+
+  useEffect(() => {
+    if (mapCheck) {
+      if (edit) {
+        mapCheck.removeObjects(mapCheck.getObjects());
+        renderCircleToMap(mapCheck); // Render circles if edit is true
+      } else {
+        mapCheck.removeObjects(mapCheck.getObjects()); // Remove all existing circles if edit is false
+        showCircleToMap(mapCheck); // Add updated circles
+      }
+    }
+  }, [edit, mapCheck, geozoneData, selectedRowData]);
+
+  const showCircleToMap = (map: any) => {
+    geozoneData.forEach((item: any) => {
+      if (geozonesVisible) {
+        map.addObject(
+          new window.H.map.Circle(
+            {
+              lat: item?.geoCodeData?.geometry?.coordinates[0],
+              lng: item?.geoCodeData?.geometry?.coordinates[1],
+            },
+            item?.geoCodeData?.geometry?.radius,
+            {
+              style: geozoneStyle,
+            }
+          )
+        );
+      }
+    });
+  };
+
+  const renderCircleToMap = (map: any) => {
+    map.setCenter({
+      lat: selectedRowData.geoCodeData?.geometry?.coordinates[0],
+      lng: selectedRowData.geoCodeData?.geometry?.coordinates[1],
+    });
+    map.setZoom(14);
+    var circle = new window.H.map.Circle(
+      {
+        lat: selectedRowData.geoCodeData?.geometry?.coordinates[0],
+        lng: selectedRowData.geoCodeData?.geometry?.coordinates[1],
+      },
+      selectedRowData.geoCodeData?.geometry?.radius,
+      {
+        style: geozoneStyle,
+      }
+    );
+
+    var circleOutline = new window.H.map.Polyline(
+      circle.getGeometry().getExterior(),
+      {
+        style: {
+          lineWidth: 8,
+          strokeColor: "rgba(255, 0, 0, 0)",
+        },
+      }
+    );
+
+    var circleGroup = new window.H.map.Group({
+      volatility: true, // mark the group as volatile for smooth dragging of all it's objects
+      objects: [circle, circleOutline],
+    });
+
+    var circleTimeout: any;
+
+    // ensure that the objects can receive drag events
+    circle.draggable = true;
+    circleOutline.draggable = true;
+
+    // extract first point of the circle outline polyline's LineString and
+    // push it to the end, so the outline has a closed geometry
+    circleOutline
+      .getGeometry()
+      .pushPoint(circleOutline.getGeometry().extractPoint(0));
+
+    // add group with circle and it's outline (polyline)
+    map.addObject(circleGroup);
+    // event listener for circle group to show outline (polyline) if moved in with mouse (or touched on touch devices)
+    circleGroup.addEventListener(
+      "pointerenter",
+      function (evt: any) {
+        var currentStyle = circleOutline.getStyle(),
+          newStyle = currentStyle.getCopy({
+            strokeColor: "rgb(255, 0, 0)",
+          });
+
+        if (circleTimeout) {
+          clearTimeout(circleTimeout);
+          circleTimeout = null;
+        }
+        // show outline
+        circleOutline.setStyle(newStyle);
+      },
+      true
+    );
+    // event listener for circle group to hide outline if moved out with mouse (or released finger on touch devices)
+    // the outline is hidden on touch devices after specific timeout
+    circleGroup.addEventListener(
+      "pointerleave",
+      function (evt: any) {
+        var currentStyle = circleOutline.getStyle(),
+          newStyle = currentStyle.getCopy({
+            strokeColor: "rgba(255, 0, 0, 0)",
+          }),
+          timeout = evt.currentPointer.type == "touch" ? 1000 : 0;
+
+        circleTimeout = setTimeout(function () {
+          circleOutline.setStyle(newStyle);
+        }, timeout);
+        document.body.style.cursor = "default";
+      },
+      true
+    );
+    // event listener for circle group to change the cursor if mouse position is over the outline polyline (resizing is allowed)
+    circleGroup.addEventListener(
+      "pointermove",
+      function (evt: any) {
+        if (evt.target instanceof window.H.map.Polyline) {
+          document.body.style.cursor = "pointer";
+        } else {
+          document.body.style.cursor = "default";
+        }
+      },
+      true
+    );
+
+    // event listener for circle group to resize the geo circle object if dragging over outline polyline
+    circleGroup.addEventListener(
+      "drag",
+      function (evt: any) {
+        var pointer = evt.currentPointer,
+          distanceFromCenterInMeters = circle
+            .getCenter()
+            .distance(map.screenToGeo(pointer.viewportX, pointer.viewportY));
+
+        // if resizing is alloved, set the circle's radius
+        if (evt.target instanceof window.H.map.Polyline) {
+          circle.setRadius(distanceFromCenterInMeters);
+
+          // use circle's updated geometry for outline polyline
+          var outlineLinestring = circle.getGeometry().getExterior();
+
+          // extract first point of the outline LineString and push it to the end, so the outline has a closed geometry
+          outlineLinestring.pushPoint(outlineLinestring.extractPoint(0));
+          circleOutline.setGeometry(outlineLinestring);
+
+          // prevent event from bubling, so map doesn't receive this event and doesn't pan
+          evt.stopPropagation();
+          setFormField({
+            ...formField,
+            radius: {
+              value: circle.getRadius(),
+            },
+            propertyName: {
+              value: null,
+            },
+          });
+          if (resizingTimeout) {
+            clearTimeout(resizingTimeout);
+          }
+
+          // Set new timeout to check if resizing is complete
+          resizingTimeout = setTimeout(() => {
+            setOpenModal(true);
+          }, 500);
+        }
+      },
+      true
     );
   };
 
@@ -697,7 +838,8 @@ const Geozone = () => {
                           cursor: "pointer",
                         }}
                         onClick={() => {
-                          setOpenModal(true);
+                          // setOpenModal(true);
+                          setFormField(geoZoneInsertField(item));
                           setSelectedRowData(item);
                           setEdit(true);
                         }}
