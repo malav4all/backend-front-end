@@ -150,5 +150,8 @@ const geozoneStyle = {
       borderRadius: "12px !important",
     },
   },
+  errorStyle:{
+    marginLeft:"14px"
+  }
 } as const;
 export default geozoneStyle;
