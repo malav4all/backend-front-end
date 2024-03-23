@@ -426,7 +426,6 @@ const Geozone = () => {
 
     mapCheck.addObject(circleGroup);
     mapCheck.addObject(circleMarker);
-    currentCircle = { circleGroup, circleMarker };
     circleGroup.addEventListener(
       "pointerenter",
       function (evt: any) {
@@ -474,14 +473,17 @@ const Geozone = () => {
 
   const handleCloseDialog = () => {
     setOpenModal(false);
-    circles.forEach(({ circleGroup, circleMarker }) => {
-      if (mapCheck) {
-        mapCheck.removeObject(circleGroup);
-        mapCheck.removeObject(circleMarker);
-      }
-    });
-    setCircles([]);
-    setIsCircleActive(false);
+    if (!edit) {
+      circles.forEach(({ circleGroup, circleMarker }) => {
+        if (mapCheck) {
+          mapCheck.removeObject(circleGroup);
+          mapCheck.removeObject(circleMarker);
+        }
+      });
+      setCircles([]);
+      setIsCircleActive(false);
+      setFormField(geoZoneInsertField());
+    }
   };
 
   const createGeozoneModal = () => {
