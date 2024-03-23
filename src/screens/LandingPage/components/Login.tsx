@@ -102,24 +102,29 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       if (handleValidation()) {
         const email = formFields.email.value.toLowerCase();
         const password = formFields.password.value;
-        setIsLoading(true);
         const user: any = await onLogin({ input: { email, password } });
-        dispatch(
-          loginAction({
-            email,
-            authenticated: true,
-            accessToken: user?.loginUser?.data?.data?.user.accessToken,
-            userName: user?.loginUser?.data?.data?.user.name,
-            role: user?.loginUser?.data?.data?.user?.roleId,
-            userId: user?.loginUser?.data?.data?.user?._id,
-          })
-        );
-        setIsLoading(false);
-        history.push("/dashboard");
-        openSuccessNotification(user?.loginUser?.data?.message);
+        if (user?.loginUser?.data?.success === 0) {
+          openErrorNotification(user?.loginUser?.data?.message);
+          setIsLoading(false);
+        } else {
+          dispatch(
+            loginAction({
+              email,
+              authenticated: true,
+              accessToken: user?.loginUser?.data?.data?.user.accessToken,
+              userName: user?.loginUser?.data?.data?.user.name,
+              role: user?.loginUser?.data?.data?.user?.roleId,
+              userId: user?.loginUser?.data?.data?.user?._id,
+            })
+          );
+          setIsLoading(false);
+          history.push("/dashboard");
+          openSuccessNotification(user?.loginUser?.data?.message);
+        }
       }
     } catch (error: any) {
       setIsLoading(false);
