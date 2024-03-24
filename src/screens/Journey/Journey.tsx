@@ -31,8 +31,9 @@ import { createJourney, fetchJourney } from "./service/journey.service";
 import { store } from "../../utils/store";
 import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import ShowJourneyModal from "./Component/ShowJourneyModal";
+import { getDistance } from "geolib";
 import history from "../../utils/history";
+
 const Journey = () => {
   const classes = journeyStyles;
   const [page, setPage] = useState<number>(1);
@@ -50,7 +51,7 @@ const Journey = () => {
       error: "",
     },
   });
-  const [coordinatesArray, setCoordinatesArray] = useState<any>();
+  const [coordinatesArray, setCoordinatesArray] = useState<any>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
@@ -90,12 +91,62 @@ const Journey = () => {
       newValue.value._id &&
       !finalLocationIds.includes(newValue.value._id)
     ) {
-      setFinalLocationIds((prevIds) => [...prevIds, newValue.value._id]);
+      setFinalLocationIds(prevIds => [...prevIds, newValue.value._id]);
+      setCoordinatesArray((prev: any) => [
+        ...prev,
+        {
+          latitude: newValue?.value?.geoCodeData?.geometry?.coordinates[0],
+          longitude: newValue?.value?.geoCodeData?.geometry?.coordinates[1],
+        },
+      ]);
     }
   };
 
   const addJourneyHandler = async () => {
     try {
+      // const averageSpeedKmph = 60;
+      // const estimatedTimes = [];
+      // for (let i = 0; i < coordinatesArray.length - 1; i++) {
+      //   const from = coordinatesArray[i];
+      //   const to = coordinatesArray[i + 1];
+      //   const distance = getDistance(from, to) / 1000;
+      //   console.log(
+      //     `Distance between point ${i + 1} and point ${
+      //       i + 2
+      //     }: ${distance.toFixed(2)} kilometers`
+      //   );
+      //   const estimatedTimeHours = distance / averageSpeedKmph;
+      //   estimatedTimes.push(estimatedTimeHours);
+      //   console.log(
+      //     `Estimated time between point ${i + 1} and point ${
+      //       i + 2
+      //     }: ${estimatedTimeHours.toFixed(2)} hours`
+      //   );
+      // }
+
+      const averageSpeedKmph = 40; // 40 km/h
+
+      let totalDistance = 0;
+      let totalEstimatedTime = 0;
+
+      for (let i = 0; i < coordinatesArray.length - 1; i++) {
+        const from = coordinatesArray[i];
+        const to = coordinatesArray[i + 1];
+        const distance = getDistance(from, to) / 1000;
+        totalDistance += distance;
+
+        // Calculate estimated time using the formula: Time = Distance / Speed
+        const estimatedTimeHours = distance / averageSpeedKmph;
+        totalEstimatedTime += estimatedTimeHours;
+      }
+
+      console.log("Total distance:", totalDistance.toFixed(2), "kilometers");
+      console.log(
+        "Total estimated time:",
+        totalEstimatedTime.toFixed(2),
+        "hours"
+      );
+
       const res = await createJourney({
         input: {
           journeyName: formField.journeyName.value,
@@ -103,6 +154,7 @@ const Journey = () => {
           endDate: formField.endDate.value,
           journeyData: finalLocationIds,
           createdBy: store.getState().auth.userName,
+          
         },
       });
       openSuccessNotification(res.addJourney.message);
@@ -141,6 +193,8 @@ const Journey = () => {
     });
     return data;
   };
+
+  console.log(coordinatesArray);
 
   const fetchJourneyHandler = async () => {
     try {
@@ -299,7 +353,7 @@ const Journey = () => {
                 onChange={(event, newValue) =>
                   handleAutocompleteChange(newValue)
                 }
-                renderInput={(params) => (
+                renderInput={params => (
                   <TextField
                     sx={classes.select}
                     {...params}
@@ -332,7 +386,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue)
                   }
-                  renderInput={(params) => (
+                  renderInput={params => (
                     <TextField
                       sx={classes.select}
                       {...params}
@@ -365,7 +419,7 @@ const Journey = () => {
                 onChange={(event, newValue) =>
                   handleAutocompleteChange(newValue)
                 }
-                renderInput={(params) => (
+                renderInput={params => (
                   <TextField
                     sx={classes.select}
                     {...params}

@@ -31,6 +31,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "crypto-js": "^4.2.0",
+    "geolib": "^3.3.4",
     "google-libphonenumber": "^3.2.33",
     "graphql": "^16.8.1",
     "graphql-ws": "^5.14.3",

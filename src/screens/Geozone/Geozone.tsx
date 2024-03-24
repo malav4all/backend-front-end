@@ -142,13 +142,13 @@ const Geozone = () => {
     }
 
     var geocoder = platform.getSearchService();
-    
+
     geocoder.reverseGeocode(
       {
         at: `${coord.lat},${coord.lng}`,
       },
       (result: any) => {
-                var locationName = result.items[0].address.label;
+        var locationName = result.items[0].address.label;
         var zipcode = result.items[0].address.postalCode;
         var marker = new window.H.map.Marker(coord);
         alert(
@@ -167,7 +167,7 @@ const Geozone = () => {
           result.items[0].address.state,
           result.items[0].address.subdistrict,
           result.items[0].address.district,
-          result.items[0].address.postalCode
+          result.items[0].address.postalCode,
         ].filter(Boolean);
         setFormField({
           ...formField,
@@ -205,7 +205,7 @@ const Geozone = () => {
             value: result.items[0].address.district,
           },
           address: {
-            value:addressParts.join("-")
+            value: addressParts.join("-"),
           },
         });
       },
@@ -273,11 +273,11 @@ const Geozone = () => {
       openErrorNotification(error.message);
     }
   };
-const handleValidation=()=>{
-  const {isValid,errors}=validateGeoZoneForm(formField);
-  setFormField({...errors})
-  return isValid;
-}
+  const handleValidation = () => {
+    const { isValid, errors } = validateGeoZoneForm(formField);
+    setFormField({ ...errors });
+    return isValid;
+  };
   const addGeozoneHandler = async () => {
     try {
       const payload = {
@@ -309,29 +309,27 @@ const handleValidation=()=>{
         },
         finalAddress: formField?.address?.value,
       };
-      if(handleValidation()){
-
-      if (edit) {
-        const res = await updateGeozone({
-          input: {
-            _id: selectedRowData._id,
-            ...payload,
-            createdBy: store.getState().auth.userName,
-          },
-        });
-        openSuccessNotification(res.updateGeozone.message);
-        setEdit(false);
-      } else {
-        const res = await createGeozone({
-          input: { ...payload, createdBy: store.getState().auth.userName },
-        });
-        openSuccessNotification(res.addGeozone.message);
+      if (handleValidation()) {
+        if (edit) {
+          const res = await updateGeozone({
+            input: {
+              _id: selectedRowData._id,
+              ...payload,
+              createdBy: store.getState().auth.userName,
+            },
+          });
+          openSuccessNotification(res.updateGeozone.message);
+          setEdit(false);
+        } else {
+          const res = await createGeozone({
+            input: { ...payload, createdBy: store.getState().auth.userName },
+          });
+          openSuccessNotification(res.addGeozone.message);
+        }
+        await handleCloseDialog();
+        setFormField(geoZoneInsertField());
+        await fetchGeozone();
       }
-      await handleCloseDialog();
-      setFormField(geoZoneInsertField());
-      await fetchGeozone();
-    }
-
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -345,15 +343,16 @@ const handleValidation=()=>{
   let currentCircle: any = null;
 
   const createCircle = (evt: any) => {
-    if (currentCircle) {
-      mapCheck.removeObject(circleGroup);
-      mapCheck.removeObject(circleMarker);
-    }
     if (!isCircleActive) {
       return;
     }
     var pointer = evt.currentPointer;
     var latLng = mapCheck.screenToGeo(pointer.viewportX, pointer.viewportY);
+    if (currentCircle) {
+      // Remove existing circle and marker
+      mapCheck.removeObject(currentCircle.circleGroup);
+      mapCheck.removeObject(currentCircle.circleMarker);
+    }
 
     circle = new window.H.map.Circle(latLng, 100, {
       style: { fillColor: "rgba(0, 0, 255, 0.5)", lineWidth: 0 },
@@ -442,6 +441,7 @@ const handleValidation=()=>{
 
     mapCheck.addObject(circleGroup);
     mapCheck.addObject(circleMarker);
+    currentCircle = { circleGroup, circleMarker };
     circleGroup.addEventListener(
       "pointerenter",
       function (evt: any) {
@@ -467,7 +467,7 @@ const handleValidation=()=>{
       true
     );
 
-    setCircles([...circles, { circleGroup, circleMarker }]);
+    setCircles([...circles, currentCircle]);
   };
 
   const addMarkersToMap = (map: any) => {
