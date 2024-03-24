@@ -66,3 +66,38 @@ export const geoZoneInsertField = (data?: any) => {
     },
   };
 };
+
+export const validateGeoZoneForm = (formField: any) => {
+  let isValid = true;
+  let errors: any = { ...formField };
+  if (!errors.name.value) {
+    errors.name.error = "Please enter name";
+    isValid = false;
+  }
+  if (!errors.locationType.value) {
+    errors.locationType.error = "Please select location type";
+    isValid = false;
+  }
+  if (!errors.description.value) {
+    errors.description.error = "Please add description";
+    isValid = false;
+  }
+  if (!errors.mobileNumber.value) {
+    errors.mobileNumber.error = "Please enter a mobile number";
+    isValid = false;
+  }
+  if (errors.mobileNumber.value) {
+    const re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+    if (!re.test(errors.mobileNumber.value)) {
+      errors.mobileNumber.error = "Mobile Number must be of 10 digits!";
+      isValid = false;
+    }
+  }
+  if (!errors.address.value) {
+    errors.address.error = "Please enter address";
+    isValid = false;
+  }
+  
+  return { isValid, errors };
+}
+

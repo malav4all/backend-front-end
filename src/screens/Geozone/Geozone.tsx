@@ -36,7 +36,7 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { fetchLocationType } from "../Settings/LocationType/service/location-type.service";
-import { geoZoneInsertField } from "./Geozone.helper";
+import { geoZoneInsertField, validateGeoZoneForm } from "./Geozone.helper";
 
 const Geozone = () => {
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -142,13 +142,13 @@ const Geozone = () => {
     }
 
     var geocoder = platform.getSearchService();
-
+    
     geocoder.reverseGeocode(
       {
         at: `${coord.lat},${coord.lng}`,
       },
       (result: any) => {
-        var locationName = result.items[0].address.label;
+                var locationName = result.items[0].address.label;
         var zipcode = result.items[0].address.postalCode;
         var marker = new window.H.map.Marker(coord);
         alert(
@@ -161,6 +161,14 @@ const Geozone = () => {
         mapCheck.addObject(marker);
 
         setOpenModal(true);
+        const addressParts = [
+          result.items[0].address.countryName,
+          result.items[0].address.city,
+          result.items[0].address.state,
+          result.items[0].address.subdistrict,
+          result.items[0].address.district,
+          result.items[0].address.postalCode
+        ].filter(Boolean);
         setFormField({
           ...formField,
           propertyName: {
@@ -197,7 +205,7 @@ const Geozone = () => {
             value: result.items[0].address.district,
           },
           address: {
-            value: `${result.items[0].address.countryName} - ${result.items[0].address.state}-${result.items[0].address.subdistrict}-${result.items[0].address.district}-${result.items[0].address.postalCode}`,
+            value:addressParts.join("-")
           },
         });
       },
@@ -265,7 +273,11 @@ const Geozone = () => {
       openErrorNotification(error.message);
     }
   };
-
+const handleValidation=()=>{
+  const {isValid,errors}=validateGeoZoneForm(formField);
+  setFormField({...errors})
+  return isValid;
+}
   const addGeozoneHandler = async () => {
     try {
       const payload = {
@@ -297,6 +309,8 @@ const Geozone = () => {
         },
         finalAddress: formField?.address?.value,
       };
+      if(handleValidation()){
+
       if (edit) {
         const res = await updateGeozone({
           input: {
@@ -316,6 +330,8 @@ const Geozone = () => {
       await handleCloseDialog();
       setFormField(geoZoneInsertField());
       await fetchGeozone();
+    }
+
     } catch (error: any) {
       openErrorNotification(error.message);
     }
