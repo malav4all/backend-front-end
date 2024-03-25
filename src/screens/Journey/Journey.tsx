@@ -102,63 +102,47 @@ const Journey = () => {
     }
   };
 
+  const calculateDistance = async () => {
+    const routeRequestParams = {
+      routingMode: "fast",
+      transportMode: "car",
+      origin: `${coordinatesArray[0].latitude},${coordinatesArray[0].longitude}`,
+      destination: `${coordinatesArray[coordinatesArray.length - 1].latitude},${
+        coordinatesArray[coordinatesArray.length - 1].longitude
+      }`,
+      return: "travelSummary",
+    };
+    const url = `https://router.hereapi.com/v8/routes?routingMode=${
+      routeRequestParams.routingMode
+    }&transportMode=${routeRequestParams.transportMode}&origin=${
+      routeRequestParams.origin
+    }&destination=${routeRequestParams.destination}&return=${
+      routeRequestParams.return
+    }&apiKey=${"7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI"}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const route = data.routes[0];
+    const section = route.sections[0];
+    const totalDistance = section.travelSummary.length / 1000;
+    const totalDuration = section.travelSummary.duration / 3600;
+    console.log("Total distance:", totalDistance.toFixed(2), "kilometers");
+    console.log("Total estimated time:", totalDuration.toFixed(2), "hours");
+  };
+
   const addJourneyHandler = async () => {
     try {
-      // const averageSpeedKmph = 60;
-      // const estimatedTimes = [];
-      // for (let i = 0; i < coordinatesArray.length - 1; i++) {
-      //   const from = coordinatesArray[i];
-      //   const to = coordinatesArray[i + 1];
-      //   const distance = getDistance(from, to) / 1000;
-      //   console.log(
-      //     `Distance between point ${i + 1} and point ${
-      //       i + 2
-      //     }: ${distance.toFixed(2)} kilometers`
-      //   );
-      //   const estimatedTimeHours = distance / averageSpeedKmph;
-      //   estimatedTimes.push(estimatedTimeHours);
-      //   console.log(
-      //     `Estimated time between point ${i + 1} and point ${
-      //       i + 2
-      //     }: ${estimatedTimeHours.toFixed(2)} hours`
-      //   );
-      // }
-
-      const averageSpeedKmph = 40; // 40 km/h
-
-      let totalDistance = 0;
-      let totalEstimatedTime = 0;
-
-      for (let i = 0; i < coordinatesArray.length - 1; i++) {
-        const from = coordinatesArray[i];
-        const to = coordinatesArray[i + 1];
-        const distance = getDistance(from, to) / 1000;
-        totalDistance += distance;
-
-        // Calculate estimated time using the formula: Time = Distance / Speed
-        const estimatedTimeHours = distance / averageSpeedKmph;
-        totalEstimatedTime += estimatedTimeHours;
-      }
-
-      console.log("Total distance:", totalDistance.toFixed(2), "kilometers");
-      console.log(
-        "Total estimated time:",
-        totalEstimatedTime.toFixed(2),
-        "hours"
-      );
-
-      const res = await createJourney({
-        input: {
-          journeyName: formField.journeyName.value,
-          startDate: formField.startDate.value,
-          endDate: formField.endDate.value,
-          journeyData: finalLocationIds,
-          createdBy: store.getState().auth.userName,
-          
-        },
-      });
-      openSuccessNotification(res.addJourney.message);
-      await fetchJourneyHandler();
+      await calculateDistance();
+      // const res = await createJourney({
+      //   input: {
+      //     journeyName: formField.journeyName.value,
+      //     startDate: formField.startDate.value,
+      //     endDate: formField.endDate.value,
+      //     journeyData: finalLocationIds,
+      //     createdBy: store.getState().auth.userName,
+      //   },
+      // });
+      // openSuccessNotification(res.addJourney.message);
+      // await fetchJourneyHandler();
     } catch (error: any) {
       openErrorNotification(error.message);
     }
