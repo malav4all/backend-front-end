@@ -8,7 +8,9 @@ import {
 import {
   Autocomplete,
   Box,
+  FormHelperText,
   Grid,
+  IconButton,
   InputAdornment,
   InputLabel,
   Stack,
@@ -24,6 +26,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
 import {
+  isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../helpers/methods";
@@ -33,6 +36,7 @@ import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { getDistance } from "geolib";
 import history from "../../utils/history";
+import { validateJourneyForm } from "./Journey.helper";
 
 const Journey = () => {
   const classes = journeyStyles;
@@ -74,7 +78,7 @@ const Journey = () => {
     fetchJourneyHandler();
   }, []);
 
-  const handleStepOneOnChange = (event: React.ChangeEvent<any>) => {
+  const handleOnChange = (event: React.ChangeEvent<any>) => {
     setFormField({
       ...formField,
       [event.target.name]: {
@@ -137,22 +141,29 @@ const Journey = () => {
     };
   };
 
+  const handleValidation = () => {
+    const { isValid, errors } = validateJourneyForm(formField);
+    setFormField({ ...errors });
+    return isValid;
+  };
   const addJourneyHandler = async () => {
     try {
-      const { totalDistance, totalDuration } = await calculateDistance();
-      const res = await createJourney({
-        input: {
-          journeyName: formField.journeyName?.value,
-          startDate: formField.startDate?.value,
-          endDate: formField.endDate?.value,
-          journeyData: finalLocationIds,
-          createdBy: store.getState()?.auth?.userName,
-          totalDistance: Number(totalDistance),
-          totalDuration: Number(totalDuration),
-        },
-      });
-      openSuccessNotification(res.addJourney.message);
-      await fetchJourneyHandler();
+      if (handleValidation()) {
+        const { totalDistance, totalDuration } = await calculateDistance();
+        const res = await createJourney({
+          input: {
+            journeyName: formField.journeyName?.value,
+            startDate: formField.startDate?.value,
+            endDate: formField.endDate?.value,
+            journeyData: finalLocationIds,
+            createdBy: store.getState()?.auth?.userName,
+            totalDistance: Number(totalDistance),
+            totalDuration: Number(totalDuration),
+          },
+        });
+        openSuccessNotification(res.addJourney.message);
+        await fetchJourneyHandler();
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -346,7 +357,8 @@ const Journey = () => {
               value={formField?.journeyName?.value}
               required
               name="journeyName"
-              onChange={handleStepOneOnChange}
+              onChange={handleOnChange}
+              error={formField?.journeyName?.error}
             />
           </Grid>
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
@@ -459,7 +471,11 @@ const Journey = () => {
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}
               value={formField?.startDate?.value}
-              onChange={handleStepOneOnChange}
+              onChange={handleOnChange}
+              error={
+                !isTruthy(formField?.startDate?.value) &&
+                formField?.startDate?.error
+              }
             />
           </Grid>
           {/* end date */}
@@ -474,7 +490,11 @@ const Journey = () => {
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}
               value={formField?.endDate?.value}
-              onChange={handleStepOneOnChange}
+              onChange={handleOnChange}
+              error={
+                !isTruthy(formField?.endDate?.value) &&
+                formField?.endDate?.error
+              }
             />
           </Grid>
         </Grid>
