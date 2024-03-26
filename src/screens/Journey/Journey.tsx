@@ -125,12 +125,6 @@ const Journey = () => {
     const section = route.sections[0];
     const totalDistance = section.travelSummary.length / 1000;
     const totalDuration = section.travelSummary.duration / 3600;
-    console.log("Total distance:", totalDistance.toFixed(2), "kilometers");
-    console.log(
-      "Total estimated time:",
-      totalDuration.toFixed(2),
-      "hours Test"
-    );
     return {
       totalDistance: totalDistance.toFixed(2),
       totalDuration: totalDuration.toFixed(2),
@@ -187,8 +181,6 @@ const Journey = () => {
     });
     return data;
   };
-
-  console.log(coordinatesArray);
 
   const fetchJourneyHandler = async () => {
     try {

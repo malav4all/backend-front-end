@@ -14,10 +14,10 @@ export const assetAssingmentTableHeader = [
     field: "labelName",
   },
 
-  // {
-  //   name: "Journey",
-  //   field: "journey",
-  // },
+  {
+    name: "Journey",
+    field: "journey",
+  },
 
   {
     name: "Box Set",
@@ -28,9 +28,14 @@ export const assetAssingmentTableHeader = [
     name: "Created By",
     field: "createdBy",
   },
+
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
-export const insertAssetAssingmentField = (data?: any) => {
+export const insertAssetAssingmentField = (data?: any, edit?: any) => {
   return {
     imei: {
       value: data?.imei ?? "",
@@ -40,10 +45,10 @@ export const insertAssetAssingmentField = (data?: any) => {
       value: data?.labelName ?? "",
       error: "",
     },
-    // journey: {
-    //   value: data?.journey ?? "",
-    //   error: "",
-    // },
+    journey: {
+      value: data?.journey?._id ?? (data?.journey?.journeyName || ""),
+      error: "",
+    },
     boxSet: {
       value: data?.boxSet ?? "",
       error: "",
@@ -77,13 +82,8 @@ export const validateAddAssetAssingmentForm = (
     isValid = false;
   }
 
-  // if (!errors.journey?.value) {
-  //   errors.journey.error = "Please select Journey";
-  //   isValid = false;
-  // }
-
-  if (!errors.createdBy?.value) {
-    errors.createdBy.error = "Please select Created By";
+  if (!errors.journey?.value) {
+    errors.journey.error = "Please select Journey";
     isValid = false;
   }
 
@@ -115,26 +115,11 @@ export const updateAssetAssingmentValidation = (data: any) => {
   } as AssetAssingmentFields;
 };
 
-// export const updateAssetAssingmentValidationForm = (updateAssetAssingmentData: any) => {
-//   const errors = updateAssetAssingmentData;
-//   let isValid = true;
-//   const assignBy = updateAssetAssingmentData.assignBy.value;
-//   const allowedEmailCount = updateAssetAssingmentData.allowedEmailCount.value;
-//   const title = updateAssetAssingmentData.title.value;
-//   if (!assignBy && !allowedEmailCount && !title) {
-//     errors.assignBy.error = "Please select manager email";
-//     errors.allowedEmailCount.error = "Please enter allowed email count";
-//     errors.title.error = "Please enter title";
-//     isValid = false;
-//   } else if (!assignBy) {
-//     errors.assignBy.error = "Please select manager email";
-//     isValid = false;
-//   } else if (!allowedEmailCount) {
-//     errors.allowedEmailCount.error = "Please enter allowed email count";
-//     isValid = false;
-//   } else if (!title) {
-//     errors.title.error = "Please enter title";
-//     isValid = false;
-//   }
-//   return { isValid, errors };
-// };
+export const uploadGroupField = () => {
+  return {
+    groupCSV: {
+      value: {},
+      error: "",
+    },
+  };
+};

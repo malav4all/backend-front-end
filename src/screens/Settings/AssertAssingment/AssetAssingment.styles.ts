@@ -11,9 +11,80 @@ import {
   inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
+  buttonWhiteBg,
+  purplePrimaryColor,
 } from "../../../utils/styles";
 
 const AssetAssingmentStyles = {
+  mainHeader: {
+    marginBottom: 1,
+    display: "flex",
+    justifyContent: "center",
+    ...boldFont,
+    fontSize: getRelativeFontSize(14),
+  },
+  footerWrapper: {
+    width: "100%",
+    marginBottom: "20px",
+    ...centerItemFlex,
+    gap: "10px",
+    "& button": {
+      width: "120px",
+    },
+  },
+  input: {
+    fontSize: getRelativeFontSize(7),
+    fontColor: theme.palette.common.black,
+    ...boldFont,
+    marginTop: "10px",
+    display: "flex",
+    "& .star": {
+      color: inputLabelRequiredColor,
+    },
+  },
+  dropZoneHeader: {
+    marginBottom: 2,
+    display: "flex",
+    height: "5px !important",
+    flexDirection: "column",
+    "& .MuiDropzoneArea-root": {
+      width: "100%",
+      minHeight: "70px",
+      fontSize: "12px",
+      borderRadius: "10px",
+      borderWidth: "3px",
+    },
+
+    "& .MuiDropzoneArea-textContainer": {
+      display: "flex",
+      flexDirection: "row-reverse",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    "& .MuiDropzoneArea-icon": {
+      [theme.breakpoints.down("sm")]: {
+        marginLeft: "15px",
+      },
+    },
+
+    "& .MuiDropzoneArea-text": {
+      fontSize: getRelativeFontSize(2),
+      ...mediumFont,
+      [theme.breakpoints.down("sm")]: {
+        margin: "15px",
+      },
+    },
+  },
+  buttonWhiteBg: {
+    background: "none",
+    border: "1px solid",
+    borderColor: buttonWhiteBg,
+    color: purplePrimaryColor,
+    "&:hover": {
+      background: "none",
+    },
+  },
   mainSection: {
     padding: theme.spacing(2),
     paddingTop: "2px",

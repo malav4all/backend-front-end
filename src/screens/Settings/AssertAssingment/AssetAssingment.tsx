@@ -31,7 +31,7 @@ import strings from "../../../global/constants/StringConstants";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { useTitle } from "../../../utils/UseTitle";
-
+import UploadAssetGroup from "./components/UploadAsset/UploadAssetModal";
 import {
   getRelativeFontSize,
   primaryHeadingColor,
@@ -43,7 +43,7 @@ import {
   fetchAssetAssingmentDataHandler,
   searchAssetAssingment,
 } from "./service/AssetAssingment.service";
-import UpdateAssetAssingment from "./components/UpdateAsset/UpdateAssetAssingment";
+import ExportCSV from "../../../global/components/ExportCSV";
 
 const AssetAssingment = () => {
   useTitle(strings.AssetAssingmentTitle);
@@ -52,29 +52,16 @@ const AssetAssingment = () => {
   const [edit, setEdit] = useState(false);
   const [addAssetAssingmentDialogHandler, setAddAssetAssingmentDialogHandler] =
     useState(false);
-  const [changePasswordDialogHandler, setChangePasswordDialogHandler] =
-    useState(false);
-  const [
-    updateAssetAssingmentDialogHandler,
-    setUpdateAssetAssingmentDialogHandler,
-  ] = useState(false);
+  const [uploadAsset, setUploadAsset] = useState(false);
   const [assetAssingmentDataSource, setAssetAssingmentDataSource] = useState<
     AssetAssingmentData[]
   >([]);
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
   const [roles, setRoles] = useState([]);
   const [count, setCount] = useState(1);
-  const [selectedRowData, setSelectedRowData] = useState<RowData>({
-    emailId: "",
-    assignBy: "",
-    allowedEmailCount: "",
-    title: "",
-  });
+
   const [selectedAssetAssingmentRowData, setSelectedAssetAssingmentRowData] =
     useState<any>({});
-  // const [selectedEmailData, setSelectedEmailData] = useState<any>({
-  //   email: "",
-  // });
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
@@ -115,9 +102,24 @@ const AssetAssingment = () => {
       return {
         imei: assetAssingmentData?.imei,
         labelName: assetAssingmentData?.labelName,
-        // journey: assetAssingmentData?.journey,
+        journey: assetAssingmentData?.journey?.journeyName,
         boxSet: assetAssingmentData?.boxSet,
         createdBy: assetAssingmentData?.createdBy,
+        action: (
+          <>
+            <Tooltip
+              title="Edit"
+              onClick={() => {
+                editAssetAssingment(assetAssingmentData);
+              }}
+            >
+              <EditIcon
+                htmlColor={"#0F2167"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
+            </Tooltip>
+          </>
+        ),
       };
     });
     setAssetAssingmentDataSource([...source]);
@@ -237,22 +239,8 @@ const AssetAssingment = () => {
     setSelectedAssetAssingmentRowData(null);
   };
 
-  // const updateAssetAssingmentDialogBox = () => {
-  //   return (
-  //     <UpdateAssetAssingment
-  //       updateAssetAssingmentDialogOpen={updateAssetAssingmentDialogHandler}
-  //       handleUpdateDialogClose={updateDialogCloseHandler}
-  //       selectedRowData={selectedRowData}
-  //       managerMail={activeCampaigner}
-  //       tableData={getAssetAssingmentDetailTable}
-  //       getSearchData={getSearchData}
-  //       searchCampaigner={searchCampaigner}
-  //     />
-  //   );
-  // };
-
-  const updateDialogCloseHandler = () => {
-    setUpdateAssetAssingmentDialogHandler(false);
+  const uploadAssetModalClose = () => {
+    setUploadAsset(false);
   };
 
   const handleSearchChangePage = (
@@ -287,6 +275,15 @@ const AssetAssingment = () => {
     );
   };
 
+  const uploadAssetGroupModal = () => {
+    return (
+      <UploadAssetGroup
+        showDialog={uploadAsset}
+        handleDialogClose={uploadAssetModalClose}
+      />
+    );
+  };
+
   const getAssetAssingment = () => (
     <Box>
       <Stack
@@ -313,6 +310,27 @@ const AssetAssingment = () => {
         >
           {getSearchBar()}
           {addAssetAssingmentButton()}
+          <CustomButton
+            id="groups_download_template_button"
+            label="Download&nbsp;Template"
+            onClick={ExportCSV(
+              ["IMEI_NUMBER,LABEL_NAME,JOURNEY,BOX_SET"],
+              "asset_assignment"
+            )}
+            customClasses={{
+              width: "170px",
+            }}
+          />
+          <CustomButton
+            id="groups_download_template_button"
+            label="Upload Asset"
+            onClick={() => {
+              setUploadAsset(true);
+            }}
+            customClasses={{
+              width: "170px",
+            }}
+          />
         </Stack>
       </Stack>
 
@@ -325,7 +343,7 @@ const AssetAssingment = () => {
       >
         {campaignerTable()}
         {addAssetAssingmentDialogBox()}
-        {/* {updateAssetAssingmentDialogBox()} */}
+        {uploadAssetGroupModal()}
       </Box>
       <CustomLoader isLoading={isLoading} />
     </Box>

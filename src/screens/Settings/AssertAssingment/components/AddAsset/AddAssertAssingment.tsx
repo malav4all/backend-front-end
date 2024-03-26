@@ -39,6 +39,7 @@ import {
   addAssetAssingment,
   updateAssetAssingmentList,
 } from "../../service/AssetAssingment.service";
+import { fetchJourney } from "../../../../Journey/service/journey.service";
 
 interface CustomProps {
   openAddAssetAssingmentDialog: boolean;
@@ -57,10 +58,12 @@ const AddAssetAssingment = (props: CustomProps) => {
   const classes = usersStyles;
   const [assetAssingmentFormFields, setAssetAssingmentFormFields] =
     useState<any>(
-      insertAssetAssingmentField(props?.selectedAssetAssingmentRowData)
+      insertAssetAssingmentField(
+        props?.selectedAssetAssingmentRowData,
+        props.edit
+      )
     );
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [journeyData, setJourneyData] = useState<any>([]);
 
   useEffect(() => {
     props.setEdit?.(false);
@@ -76,10 +79,9 @@ const AddAssetAssingment = (props: CustomProps) => {
     }
   }, [props.selectedAssetAssingmentRowData]);
 
-  // useEffect(() => {
-  //   fetchAccountData();
-  //   fetchRoleData();
-  // }, []);
+  useEffect(() => {
+    fetchJourneyData();
+  }, []);
 
   const handleValidation = () => {
     const { isValid, errors }: any = validateAddAssetAssingmentForm(
@@ -90,7 +92,7 @@ const AddAssetAssingment = (props: CustomProps) => {
     return isValid;
   };
 
-  const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
+  const handleFormDataChange = (formFillEvent: any) => {
     setAssetAssingmentFormFields({
       ...assetAssingmentFormFields,
       [formFillEvent.target.name]: {
@@ -101,21 +103,7 @@ const AddAssetAssingment = (props: CustomProps) => {
     });
   };
 
-  const handleClickShowPassword = () => {
-    setShowPassword(showPassword);
-  };
-
-  const handleSelectRole = (formFillEvent: SelectChangeEvent<any>) => {
-    setAssetAssingmentFormFields({
-      ...assetAssingmentFormFields,
-      roleId: {
-        value: formFillEvent.target.value,
-        error: "",
-      },
-    });
-  };
-
-  const handleSelectJourneyStatus = (formFillEvent: SelectChangeEvent<any>) => {
+  const handleSelectJourneyStatus = (formFillEvent: any) => {
     setAssetAssingmentFormFields({
       ...assetAssingmentFormFields,
       journey: {
@@ -135,14 +123,27 @@ const AddAssetAssingment = (props: CustomProps) => {
     );
   };
 
+  const fetchJourneyData = async () => {
+    try {
+      const res = await fetchJourney({
+        input: {
+          page: -1,
+          limit: 0,
+        },
+      });
+      setJourneyData(res.fetchJourney.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
   const insertAssetAssingmentDetails = async () => {
     try {
-      setLoading(true);
       const insertAssetAssingmentBody = {
         imei: Number(assetAssingmentFormFields.imei?.value),
         labelName: assetAssingmentFormFields.labelName?.value?.trim(),
         boxSet: assetAssingmentFormFields.boxSet?.value?.trim(),
-        // journey: assetAssingmentFormFields.journey?.value,
+        journey: assetAssingmentFormFields.journey?.value,
         createdBy: assetAssingmentFormFields.createdBy?.value?.trim(),
       };
       if (handleValidation()) {
@@ -155,7 +156,7 @@ const AddAssetAssingment = (props: CustomProps) => {
             },
           });
           props.handleCloseAddAssetAssingmentDialog(false);
-          openSuccessNotification(res?.updateAssetAssingment?.message);
+          openSuccessNotification(res?.updateAssertAssingmentModule?.message);
           await props.tableData?.();
         } else {
           const res = await addAssetAssingment({
@@ -174,13 +175,6 @@ const AddAssetAssingment = (props: CustomProps) => {
         isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
       );
     }
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    setShowPassword(!showPassword);
-    event.preventDefault();
   };
 
   const addAssetAssingmentDialogBody = () => {
@@ -215,28 +209,47 @@ const AddAssetAssingment = (props: CustomProps) => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_asset_assingment_box_set_field"
-            placeHolder="Enter your username"
-            name="boxSet"
-            label="Box Set"
-            onChange={handleFormDataChange}
-            value={assetAssingmentFormFields.boxSet?.value}
-            error={assetAssingmentFormFields.boxSet?.error}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_allowed_email_field"
-            placeHolder="Created By"
-            name="createdBy"
-            disabled={true}
-            label="Created By"
-            value={assetAssingmentFormFields.createdBy?.value}
-          />
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Box Set
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_status_dropdown"
+                name="boxSet"
+                value={assetAssingmentFormFields?.boxSet?.value}
+                onChange={handleFormDataChange}
+                renderValue={() =>
+                  assetAssingmentFormFields?.boxSet?.value || "Select Box set"
+                }
+                MenuProps={classes.menuProps}
+                displayEmpty
+                error={
+                  !isTruthy(assetAssingmentFormFields.boxSet?.value) &&
+                  assetAssingmentFormFields.boxSet?.error
+                }
+              >
+                {["A", "B", "C"].map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+              {!isTruthy(assetAssingmentFormFields.boxSet?.value) && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {assetAssingmentFormFields.boxSet?.error}
+                </FormHelperText>
+              )}
+            </Stack>
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -252,25 +265,30 @@ const AddAssetAssingment = (props: CustomProps) => {
                 sx={classes.dropDownStyle}
                 id="add_user_status_dropdown"
                 name="journey"
-                value={assetAssingmentFormFields.journey?.value}
+                value={assetAssingmentFormFields?.journey?.value}
                 onChange={handleSelectJourneyStatus}
+                renderValue={(selectedValue) => {
+                  const selectedItem = journeyData.find(
+                    (item: any) => item._id === selectedValue
+                  );
+                  return selectedItem
+                    ? selectedItem.journeyName
+                    : "Select Journey";
+                }}
                 MenuProps={classes.menuProps}
                 displayEmpty
-                renderValue={() =>
-                  assetAssingmentFormFields?.journey?.value || "Select Status"
-                }
                 error={
                   !isTruthy(assetAssingmentFormFields.journey?.value) &&
                   assetAssingmentFormFields.journey?.error
                 }
               >
-                {["Active", "Inactive"].map((item, index) => (
+                {journeyData.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item}
+                    value={item._id}
                     sx={classes.dropDownOptionsStyle}
                   >
-                    {item}
+                    {item.journeyName}
                   </MenuItem>
                 ))}
               </Select>

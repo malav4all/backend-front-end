@@ -22,6 +22,10 @@ export const FETCH_ASSET_ONBOARDING = gql`
         imei
         labelName
         boxSet
+        journey {
+          _id
+          journeyName
+        }
         createdBy
       }
     }
