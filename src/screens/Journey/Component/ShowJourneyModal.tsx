@@ -197,8 +197,6 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
       summaryDiv.style.marginRight = "5%";
       summaryDiv.innerHTML = content;
 
-      console.log({ distanceInKm, hours, minutes });
-
       // routeInstructionsContainer!.appendChild(summaryDiv);
     }
 

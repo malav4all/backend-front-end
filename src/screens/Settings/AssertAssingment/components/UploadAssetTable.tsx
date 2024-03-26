@@ -20,7 +20,6 @@ interface Props {
 const UploadTableAsset = (props: Props) => {
   const classes = AssetAssingmentStyles;
   const [journeyData, setJourneyData] = useState<any>([]);
-  const [selectedJourneys, setSelectedJourneys] = React.useState<string[]>([]);
   const [tableData, setTableData] = useState<any>([]);
   const [page, setPage] = useState(1);
 
