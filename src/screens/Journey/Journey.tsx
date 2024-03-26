@@ -78,8 +78,8 @@ const Journey = () => {
     setFormField({
       ...formField,
       [event.target.name]: {
-        ...formField[event.target.name],
-        value: event.target.value,
+        ...formField[event?.target?.name],
+        value: event?.target?.value,
         error: "",
       },
     });
@@ -87,11 +87,11 @@ const Journey = () => {
 
   const handleAutocompleteChange = (newValue: any) => {
     if (
-      newValue.value &&
-      newValue.value._id &&
-      !finalLocationIds.includes(newValue.value._id)
+      newValue?.value &&
+      newValue?.value?._id &&
+      !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds((prevIds) => [...prevIds, newValue.value._id]);
+      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
       setCoordinatesArray((prev: any) => [
         ...prev,
         {
@@ -142,19 +142,37 @@ const Journey = () => {
       const { totalDistance, totalDuration } = await calculateDistance();
       const res = await createJourney({
         input: {
-          journeyName: formField.journeyName.value,
-          startDate: formField.startDate.value,
-          endDate: formField.endDate.value,
+          journeyName: formField.journeyName?.value,
+          startDate: formField.startDate?.value,
+          endDate: formField.endDate?.value,
           journeyData: finalLocationIds,
-          createdBy: store.getState().auth.userName,
-          totalDistance: totalDistance,
-          totalDuration: totalDuration,
+          createdBy: store.getState()?.auth?.userName,
+          totalDistance: Number(totalDistance),
+          totalDuration: Number(totalDuration),
         },
       });
       openSuccessNotification(res.addJourney.message);
       await fetchJourneyHandler();
     } catch (error: any) {
       openErrorNotification(error.message);
+    }
+  };
+  const formatDuration = (durationInHours: number) => {
+    if (durationInHours < 1) {
+      const minutes = Math.round(durationInHours * 60);
+      return `${minutes} Minutes`;
+    } else {
+      return `${durationInHours.toFixed(2)} Hours`;
+    }
+  };
+
+  const formatDistance = (distanceInKm: number) => {
+    const distance = Number(distanceInKm);
+    if (distance < 1) {
+      const meters = Math.round(distance * 1000);
+      return `${meters} m`;
+    } else {
+      return `${distance.toFixed(2)} Km`;
     }
   };
 
@@ -183,6 +201,8 @@ const Journey = () => {
           </>
         ),
         createdBy: item?.createdBy,
+        totalDistance: formatDistance(item?.totalDistance),
+        totalDuration: formatDuration(item?.totalDuration),
       };
     });
     return data;
@@ -238,7 +258,7 @@ const Journey = () => {
   };
 
   const handlePerPageData = (event: any) => {
-    setRowsPerPage(event.target.value);
+    setRowsPerPage(event?.target?.value);
   };
 
   const getCustomTable = () => {
@@ -258,6 +278,8 @@ const Journey = () => {
             { name: "Created By", field: "createdBy" },
             { name: "Start Date", field: "startDate" },
             { name: "End Date", field: "endDate" },
+            { name: "Total Distance", field: "totalDistance" },
+            { name: "Total Duration", field: "totalDuration" },
           ]}
           rows={journeyTableData}
           size={[5]}
@@ -321,7 +343,7 @@ const Journey = () => {
             <CustomInput
               label="Journey Name"
               placeHolder="Enter Journey name"
-              value={formField.journeyName.value}
+              value={formField?.journeyName?.value}
               required
               name="journeyName"
               onChange={handleStepOneOnChange}
@@ -436,7 +458,7 @@ const Journey = () => {
               // propsToInputElement={{
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}
-              value={formField.startDate.value}
+              value={formField?.startDate?.value}
               onChange={handleStepOneOnChange}
             />
           </Grid>
@@ -451,7 +473,7 @@ const Journey = () => {
               // propsToInputElement={{
               //   min: moment().format("YYYY-MM-DDTkk:mm"),
               // }}
-              value={formField.endDate.value}
+              value={formField?.endDate?.value}
               onChange={handleStepOneOnChange}
             />
           </Grid>
