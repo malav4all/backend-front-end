@@ -91,7 +91,7 @@ const Journey = () => {
       newValue.value._id &&
       !finalLocationIds.includes(newValue.value._id)
     ) {
-      setFinalLocationIds(prevIds => [...prevIds, newValue.value._id]);
+      setFinalLocationIds((prevIds) => [...prevIds, newValue.value._id]);
       setCoordinatesArray((prev: any) => [
         ...prev,
         {
@@ -131,22 +131,28 @@ const Journey = () => {
       totalDuration.toFixed(2),
       "hours Test"
     );
+    return {
+      totalDistance: totalDistance.toFixed(2),
+      totalDuration: totalDuration.toFixed(2),
+    };
   };
 
   const addJourneyHandler = async () => {
     try {
-      await calculateDistance();
-      // const res = await createJourney({
-      //   input: {
-      //     journeyName: formField.journeyName.value,
-      //     startDate: formField.startDate.value,
-      //     endDate: formField.endDate.value,
-      //     journeyData: finalLocationIds,
-      //     createdBy: store.getState().auth.userName,
-      //   },
-      // });
-      // openSuccessNotification(res.addJourney.message);
-      // await fetchJourneyHandler();
+      const { totalDistance, totalDuration } = await calculateDistance();
+      const res = await createJourney({
+        input: {
+          journeyName: formField.journeyName.value,
+          startDate: formField.startDate.value,
+          endDate: formField.endDate.value,
+          journeyData: finalLocationIds,
+          createdBy: store.getState().auth.userName,
+          totalDistance: totalDistance,
+          totalDuration: totalDuration,
+        },
+      });
+      openSuccessNotification(res.addJourney.message);
+      await fetchJourneyHandler();
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -341,7 +347,7 @@ const Journey = () => {
                 onChange={(event, newValue) =>
                   handleAutocompleteChange(newValue)
                 }
-                renderInput={params => (
+                renderInput={(params) => (
                   <TextField
                     sx={classes.select}
                     {...params}
@@ -374,7 +380,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue)
                   }
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       sx={classes.select}
                       {...params}
@@ -407,7 +413,7 @@ const Journey = () => {
                 onChange={(event, newValue) =>
                   handleAutocompleteChange(newValue)
                 }
-                renderInput={params => (
+                renderInput={(params) => (
                   <TextField
                     sx={classes.select}
                     {...params}
