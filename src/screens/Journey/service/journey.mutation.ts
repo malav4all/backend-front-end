@@ -22,6 +22,8 @@ export const FETCH_JOURNEY = gql`
         journeyName
         startDate
         endDate
+        totalDistance
+        totalDuration
         journeyData {
           _id
           name
