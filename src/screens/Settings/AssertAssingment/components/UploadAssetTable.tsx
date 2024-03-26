@@ -9,7 +9,11 @@ import AssetAssingmentStyles from "../AssetAssingment.styles";
 import { assetAssingmentTableHeader } from "../AssetAssingmentTypeAndValidation";
 import { store } from "../../../../utils/store";
 import { fetchJourney } from "../../../Journey/service/journey.service";
-import { openErrorNotification } from "../../../../helpers/methods";
+import {
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../../../helpers/methods";
+import { bulkJourneyUpload } from "../service/AssetAssingment.service";
 
 interface Props {
   showDialog: boolean;
@@ -28,6 +32,7 @@ const UploadTableAsset = (props: Props) => {
       props.tableData.map((item: any) => ({
         ...item,
         journey: "",
+        createdBy: store.getState().auth.userName,
       }))
     );
   }, [props.tableData]);
@@ -44,6 +49,7 @@ const UploadTableAsset = (props: Props) => {
           limit: 0,
         },
       });
+      console.log({ res }, "fetchjoiurney");
       setJourneyData(res.fetchJourney.data);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -58,6 +64,8 @@ const UploadTableAsset = (props: Props) => {
     const selectedJourneyId = event.target.value;
     const updatedTableData = [...tableData];
     updatedTableData[index].journey = selectedJourneyId;
+
+    console.log({ updatedTableData });
     setTableData(updatedTableData);
   };
 
@@ -78,8 +86,8 @@ const UploadTableAsset = (props: Props) => {
           (journey: any) => journey._id !== item.journey
         );
         return {
-          imei: item["IMEI_NUMBER"],
-          labelName: item["LABEL_NAME"],
+          imei: Number(item.imei),
+          labelName: item.labelName,
           journey: (
             <>
               <Stack direction="column">
@@ -115,10 +123,23 @@ const UploadTableAsset = (props: Props) => {
               </Stack>
             </>
           ),
-          boxSet: item["BOX_SET"],
+          boxSet: item.boxSet,
           createdBy: store.getState().auth.userName,
         };
       });
+  };
+
+  const bulkJourneyUploadHandler = async () => {
+    try {
+      const res = await bulkJourneyUpload({
+        input: tableData,
+      });
+      props.handleDialogClose(false);
+      
+      openSuccessNotification(res?.bulkJourneyUpload?.message);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const getDialogBody = () => {
@@ -152,7 +173,7 @@ const UploadTableAsset = (props: Props) => {
           />
           <CustomButton
             label="Upload"
-            onClick={() => {}}
+            onClick={bulkJourneyUploadHandler}
             id="campaign_group_upload_button"
           />
         </Box>

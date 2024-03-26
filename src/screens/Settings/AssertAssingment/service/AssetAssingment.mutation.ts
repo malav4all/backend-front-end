@@ -59,3 +59,12 @@ export const SEARCH_ASSET = gql`
     }
   }
 `;
+
+export const BULK_JOURNEY_UPLOAD = gql`
+  mutation ($input: [CreateAssertAssingmentModuleInput!]!) {
+    bulkJourneyUpload(input: $input) {
+      success
+      message
+    }
+  }
+`;
