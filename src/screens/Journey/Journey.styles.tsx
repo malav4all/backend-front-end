@@ -185,6 +185,9 @@ const journeyStyles = {
       },
     },
   },
+  errorStyle: {
+    marginLeft: "14px",
+  },
 };
 
 export default journeyStyles;
