@@ -96,21 +96,10 @@ export const SEARCH_USER = gql`
         lastName
         userName
         email
-        status
         mobileNumber
         createdBy
-        accountId {
-          _id
-          accountName
-          industryType {
-            _id
-            name
-          }
-        }
-        roleId {
-          _id
-          name
-        }
+        roleId
+        status
       }
     }
   }

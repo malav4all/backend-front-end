@@ -164,8 +164,8 @@ const AssetAssingment = () => {
           limit: perPageData,
         },
       });
-      tableDataShowHandler(res?.searchAssetAssingment?.data);
-      setCount(res?.searchAssetAssingment?.paginatorInfo?.count);
+      tableDataShowHandler(res?.searchAssertAssingmentModule?.data);
+      setCount(res?.searchAssertAssingmentModule?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -175,7 +175,7 @@ const AssetAssingment = () => {
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchCampaigner(SearchEvent.target.value.replace(/\s/g, ""));
+      setSearchCampaigner(SearchEvent.target.value.trim().toLowerCase());
       setPageNumber(1);
       setPerPageData(10);
     } else {

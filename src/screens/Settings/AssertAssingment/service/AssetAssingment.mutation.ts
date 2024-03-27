@@ -54,6 +54,10 @@ export const SEARCH_ASSET = gql`
         imei
         labelName
         boxSet
+        journey {
+          _id
+          journeyName
+        }
         createdBy
       }
     }
