@@ -123,3 +123,17 @@ export const uploadGroupField = () => {
     },
   };
 };
+
+export const validateBulkJourneyUploadForm = (tableData: any) => {
+  let isValid = true;
+  let errors = tableData.map((item: any) => {
+    let newItem = { ...item, journey: { ...item.journey } };
+    if (!newItem.journey.value) {
+      newItem.journey.error = "Please select journey";
+      isValid = false;
+    }
+    return newItem;
+  });
+
+  return { errors, isValid };
+};
