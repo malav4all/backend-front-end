@@ -327,6 +327,9 @@ const Geozone = () => {
           openSuccessNotification(res.addGeozone.message);
         }
         await handleCloseDialog();
+        setPointCheck(false);
+        mapCheck.removeEventListener("tap", setUpClickListener);
+        mapCheck.removeObjects(mapCheck.getObjects());
         setFormField(geoZoneInsertField());
         await fetchGeozone();
       }
@@ -479,7 +482,7 @@ const Geozone = () => {
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible(prevVisibility => !prevVisibility);
+    setGeozonesVisible((prevVisibility) => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {

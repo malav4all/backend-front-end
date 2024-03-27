@@ -156,6 +156,31 @@ const Journey = () => {
           },
         });
         openSuccessNotification(res.addJourney.message);
+        setFormField({
+          journeyName: {
+            value: "",
+            error: "",
+          },
+          startDate: {
+            value: "",
+            error: "",
+          },
+          endDate: {
+            value: "",
+            error: "",
+          },
+        });
+        setLocationData([
+          {
+            name: "LocationA",
+            field: "locationA",
+            type: "String",
+            fieldMapping: "",
+            required: true,
+            error: "",
+          },
+        ]);
+        setFinalLocationIds([]);
         await fetchJourneyHandler();
       }
     } catch (error: any) {
@@ -459,9 +484,9 @@ const Journey = () => {
               id="scheduleTime"
               name="startDate"
               required
-              // propsToInputElement={{
-              //   min: moment().format("YYYY-MM-DDTkk:mm"),
-              // }}
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
               value={formField?.startDate?.value}
               onChange={handleOnChange}
               error={
@@ -478,9 +503,9 @@ const Journey = () => {
               id="scheduleTime"
               name="endDate"
               required
-              // propsToInputElement={{
-              //   min: moment().format("YYYY-MM-DDTkk:mm"),
-              // }}
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
               value={formField?.endDate?.value}
               onChange={handleOnChange}
               error={

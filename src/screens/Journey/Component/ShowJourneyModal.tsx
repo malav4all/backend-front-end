@@ -12,8 +12,18 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
       for (let i = 0; i < coords.length - 3; i += 2) {
         const start = `${coords[i]},${coords[i + 1]}`;
         const end = `${coords[i + 2]},${coords[i + 3]}`;
+        addMarkerToMap(platform, start, "Start");
+        addMarkerToMap(platform, end, "End");
         calculateRouteFromAtoB(platform, start, end);
       }
+    }
+    function addMarkerToMap(platform: any, position: string, label: string) {
+      const coords = position.split(",");
+      const marker = new window.H.map.Marker({
+        lat: parseFloat(coords[0]),
+        lng: parseFloat(coords[1]),
+      });
+      map.addObject(marker);
     }
 
     function calculateRouteFromAtoB(platform: any, start: string, end: string) {
