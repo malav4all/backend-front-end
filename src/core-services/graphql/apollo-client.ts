@@ -14,6 +14,9 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { store } from "../../utils/store";
 import { REFRESH_TOKEN } from "../../screens/LandingPage/login-mutation";
 import { updateTokens } from "../../redux/authSlice";
+import { split } from "@apollo/client";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { WebSocketLink } from "@apollo/client/link/ws";
 
 interface AccessToken {
   accessToken: string;
@@ -99,7 +102,6 @@ const errorLink = onError(
         }
       }
     }
-
     if (networkError) {
       if (networkError.message === "Failed to fetch") {
         alert("Backend Server is not responding. Please try again later.");
@@ -108,6 +110,29 @@ const errorLink = onError(
       }
     }
   }
+);
+
+const wsLink = new WebSocketLink({
+  uri: `ws://${getBaseUrl(process.env.REACT_APP_ENV)!.replace(
+    /^https?:\/\//i,
+    ""
+  )}`,
+  options: {
+    reconnect: true,
+  },
+});
+
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  authLink.concat(from([UploadLink, errorLink]))
 );
 
 const refreshToken = async () => {
@@ -126,7 +151,7 @@ const refreshToken = async () => {
 };
 
 export const client = new ApolloClient({
-  link: authLink.concat(from([UploadLink, errorLink])),
+  link,
   cache: new InMemoryCache(),
 });
 
