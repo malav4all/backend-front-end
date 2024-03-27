@@ -30,6 +30,7 @@ interface Props {
   showDialog: boolean;
   handleDialogClose: Function;
   tableData?: any;
+  getAssetAssingmentDetailTable: any;
 }
 
 const UploadTableAsset = (props: Props) => {
@@ -168,6 +169,7 @@ const UploadTableAsset = (props: Props) => {
         });
         props.handleDialogClose(false);
         openSuccessNotification(res?.bulkJourneyUpload?.message);
+        await props.getAssetAssingmentDetailTable?.();
       }
     } catch (error: any) {
       openErrorNotification(error.message);

@@ -13,6 +13,7 @@ import UploadTableAsset from "../UploadAssetTable";
 interface CustomProps {
   showDialog: boolean;
   handleDialogClose: Function;
+  getAssetAssingmentDetailTable: any;
 }
 
 const UploadAssetGroup = (props: CustomProps) => {
@@ -44,6 +45,7 @@ const UploadAssetGroup = (props: CustomProps) => {
 
       setBulkUploadData(data);
       setAssetTable(true);
+      props.handleDialogClose?.();
     });
     reader.readAsBinaryString(event);
   };
@@ -102,6 +104,7 @@ const UploadAssetGroup = (props: CustomProps) => {
           setAssetTable(false);
         }}
         tableData={bulkUpload}
+        getAssetAssingmentDetailTable={props.getAssetAssingmentDetailTable}
       />
     );
   };

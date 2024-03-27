@@ -143,7 +143,6 @@ const AssetAssingment = () => {
           limit: perPageData,
         },
       });
-      console.log({ res });
       tableDataShowHandler(res?.fetchAssertAssingmentModule?.data);
       setCount(res?.fetchAssertAssingmentModule?.paginatorInfo?.count);
       setIsLoading(false);
@@ -281,6 +280,7 @@ const AssetAssingment = () => {
       <UploadAssetGroup
         showDialog={uploadAsset}
         handleDialogClose={uploadAssetModalClose}
+        getAssetAssingmentDetailTable={getAssetAssingmentDetailTable}
       />
     );
   };
