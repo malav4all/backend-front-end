@@ -143,6 +143,7 @@ const AssetAssingment = () => {
           limit: perPageData,
         },
       });
+      console.log({ res });
       tableDataShowHandler(res?.fetchAssertAssingmentModule?.data);
       setCount(res?.fetchAssertAssingmentModule?.paginatorInfo?.count);
       setIsLoading(false);
@@ -313,10 +314,7 @@ const AssetAssingment = () => {
           <CustomButton
             id="groups_download_template_button"
             label="Download&nbsp;Template"
-            onClick={ExportCSV(
-              ["IMEI_NUMBER,LABEL_NAME,JOURNEY,BOX_SET"],
-              "asset_assignment"
-            )}
+            onClick={ExportCSV(["imei,labelName,boxSet"], "asset_assignment")}
             customClasses={{
               width: "170px",
             }}

@@ -1,4 +1,11 @@
-import { Box, Grid, MenuItem, Select, Stack } from "@mui/material";
+import {
+  Box,
+  FormHelperText,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
   CustomButton,
@@ -6,10 +13,18 @@ import {
   CustomTable,
 } from "../../../../global/components";
 import AssetAssingmentStyles from "../AssetAssingment.styles";
-import { assetAssingmentTableHeader } from "../AssetAssingmentTypeAndValidation";
+import {
+  assetAssingmentTableHeader,
+  validateBulkJourneyUploadForm,
+} from "../AssetAssingmentTypeAndValidation";
 import { store } from "../../../../utils/store";
 import { fetchJourney } from "../../../Journey/service/journey.service";
-import { openErrorNotification } from "../../../../helpers/methods";
+import {
+  isTruthy,
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../../../helpers/methods";
+import { bulkJourneyUpload } from "../service/AssetAssingment.service";
 
 interface Props {
   showDialog: boolean;
@@ -27,7 +42,11 @@ const UploadTableAsset = (props: Props) => {
     setTableData(
       props.tableData.map((item: any) => ({
         ...item,
-        journey: "",
+        journey: {
+          value: "",
+          error: "",
+        },
+        createdBy: store.getState().auth.userName,
       }))
     );
   }, [props.tableData]);
@@ -57,7 +76,8 @@ const UploadTableAsset = (props: Props) => {
   const handleSelectJourneyStatus = (event: any, index: any) => {
     const selectedJourneyId = event.target.value;
     const updatedTableData = [...tableData];
-    updatedTableData[index].journey = selectedJourneyId;
+    updatedTableData[index].journey.value = selectedJourneyId;
+    updatedTableData[index].journey.error = "";
     setTableData(updatedTableData);
   };
 
@@ -72,14 +92,14 @@ const UploadTableAsset = (props: Props) => {
     const startIndex = (page - 1) * 5;
     const endIndex = startIndex + 5;
     return tableData
-      .slice(startIndex, endIndex)
-      .map((item: any, index: number) => {
-        const filteredJourneyData = journeyData.filter(
-          (journey: any) => journey._id !== item.journey
+      ?.slice(startIndex, endIndex)
+      ?.map((item: any, index: number) => {
+        const filteredJourneyData = journeyData?.filter(
+          (journey: any) => journey._id !== item?.journey
         );
         return {
-          imei: item["IMEI_NUMBER"],
-          labelName: item["LABEL_NAME"],
+          imei: Number(item?.imei),
+          labelName: item?.labelName,
           journey: (
             <>
               <Stack direction="column">
@@ -87,10 +107,10 @@ const UploadTableAsset = (props: Props) => {
                   sx={classes.dropDownStyle}
                   id="add_user_status_dropdown"
                   name="journey"
-                  value={item.journey}
+                  value={item?.journey.value}
                   onChange={(event) => handleSelectJourneyStatus(event, index)}
                   renderValue={(selectedValue) => {
-                    const selectedItem = journeyData.find(
+                    const selectedItem = journeyData?.find(
                       (item: any) => item._id === selectedValue
                     );
                     return selectedItem
@@ -99,6 +119,10 @@ const UploadTableAsset = (props: Props) => {
                   }}
                   MenuProps={classes.menuProps}
                   displayEmpty
+                  error={
+                    !isTruthy(tableData[0].journey?.value) &&
+                    tableData[0]?.journey?.error
+                  }
                 >
                   {filteredJourneyData.map(
                     (journeyItem: any, journeyIndex: any) => (
@@ -112,13 +136,42 @@ const UploadTableAsset = (props: Props) => {
                     )
                   )}
                 </Select>
+                {tableData[index]?.journey?.error && (
+                  <FormHelperText error sx={{ paddingLeft: "5px" }}>
+                    {tableData[index]?.journey?.error}
+                  </FormHelperText>
+                )}
               </Stack>
             </>
           ),
-          boxSet: item["BOX_SET"],
+          boxSet: item.boxSet,
           createdBy: store.getState().auth.userName,
         };
       });
+  };
+
+  const handleValidation = () => {
+    const { errors, isValid }: any = validateBulkJourneyUploadForm(tableData);
+    setTableData(errors);
+    return isValid;
+  };
+  const bulkJourneyUploadHandler = async () => {
+    const payload = tableData.map((item: any) => ({
+      ...item,
+      journey: item.journey.value,
+    }));
+
+    try {
+      if (handleValidation()) {
+        const res = await bulkJourneyUpload({
+          input: payload,
+        });
+        props.handleDialogClose(false);
+        openSuccessNotification(res?.bulkJourneyUpload?.message);
+      }
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const getDialogBody = () => {
@@ -152,7 +205,7 @@ const UploadTableAsset = (props: Props) => {
           />
           <CustomButton
             label="Upload"
-            onClick={() => {}}
+            onClick={bulkJourneyUploadHandler}
             id="campaign_group_upload_button"
           />
         </Box>
