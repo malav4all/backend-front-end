@@ -135,7 +135,7 @@ export const validateAddUserForm = (userFormFields: any, edit = false) => {
 
   if (!errors?.password?.value) {
     errors.password.error = "Please enter password";
-    isValid = false;
+    isValid = edit;
   }
 
   if (!errors?.roleId?.value) {
