@@ -6,7 +6,7 @@ export const tabConfig = () => [
     count: 0,
   },
   {
-    label: strings.ASSERTASSINGMENT,
+    label: strings.ASSETASSIGNMENT,
     count: 0,
   },
   {

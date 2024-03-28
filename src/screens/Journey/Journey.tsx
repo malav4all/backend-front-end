@@ -283,6 +283,7 @@ const Journey = () => {
 
   const fetchJourneyHandler = async () => {
     try {
+      setIsLoading(true);
       const res = await fetchJourney({
         input: {
           page,
@@ -294,7 +295,9 @@ const Journey = () => {
 
       setJourneyTableData(data);
       setCount(res.fetchJourney.paginatorInfo.count);
+      setIsLoading(false);
     } catch (error: any) {
+      setIsLoading(false);
       openErrorNotification(error.message);
     }
   };

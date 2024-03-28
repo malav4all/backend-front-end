@@ -100,7 +100,7 @@ export class StringConstants {
   TICKETS = "Tickets";
   SETTINGS = "Settings";
   DEVICEHISTORY = "Device History";
-  ASSERTASSINGMENT = "Assert Assingment";
+  ASSETASSIGNMENT = "Asset Assignment";
   LOCATIONTYPE = "Location Type";
 
   STATE = "123456789";
