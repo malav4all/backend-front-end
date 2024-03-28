@@ -239,6 +239,7 @@ export class StringConstants {
   LOCATION = "Location";
   JOURNEY = "JOURNEY";
   VIEW_JOURNEY = "VIEW JOURNEY";
+  LIVE_TRACKING = "LIVE TRACKING";
 }
 
 let strings = new StringConstants();

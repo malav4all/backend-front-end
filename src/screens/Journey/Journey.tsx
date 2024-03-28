@@ -233,6 +233,17 @@ const Journey = () => {
         createdBy: item?.createdBy,
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
+        action: (
+          <>
+            <VisibilityIcon
+              onClick={() => {
+                history.push({
+                  pathname: "/live-tracking",
+                });
+              }}
+            />
+          </>
+        ),
       };
     });
     return data;
@@ -308,6 +319,7 @@ const Journey = () => {
             { name: "End Date", field: "endDate" },
             { name: "Total Distance", field: "totalDistance" },
             { name: "Total Duration", field: "totalDuration" },
+            { name: "Action", field: "action" },
           ]}
           rows={journeyTableData}
           size={[5]}

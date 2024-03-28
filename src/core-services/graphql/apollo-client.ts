@@ -113,10 +113,7 @@ const errorLink = onError(
 );
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${getBaseUrl(process.env.REACT_APP_ENV)!.replace(
-    /^https?:\/\//i,
-    ""
-  )}`,
+  uri: `ws://localhost:8080/graphql`,
   options: {
     reconnect: true,
   },

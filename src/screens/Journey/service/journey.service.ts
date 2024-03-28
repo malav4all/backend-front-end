@@ -1,6 +1,10 @@
 import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/rest-api";
-import { ADD_JOURNEY, FETCH_JOURNEY } from "./journey.mutation";
+import {
+  ADD_JOURNEY,
+  COORDINATES_SUBSCRIPTION,
+  FETCH_JOURNEY,
+} from "./journey.mutation";
 
 export const createJourney = async (variables: any): Promise<any> => {
   try {
@@ -23,6 +27,19 @@ export const fetchJourney = async (variables: any): Promise<any> => {
     });
 
     return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const viewLiveTracking = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.subscribe({
+      query: COORDINATES_SUBSCRIPTION,
+      variables,
+    });
+
+    return response;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }

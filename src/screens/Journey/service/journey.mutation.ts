@@ -53,3 +53,12 @@ export const FETCH_JOURNEY = gql`
     }
   }
 `;
+
+export const COORDINATES_SUBSCRIPTION = gql`
+  subscription CoordinatesUpdated($topic: String!) {
+    coordinatesUpdated(topic: $topic) {
+      lat
+      long
+    }
+  }
+`;

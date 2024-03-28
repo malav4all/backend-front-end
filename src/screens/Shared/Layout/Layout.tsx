@@ -24,6 +24,7 @@ import history from "../../../utils/history";
 import Geozone from "../../Geozone/Geozone";
 import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
+import ViewLiveTracking from "../../Journey/Component/LiveTracking";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -97,6 +98,14 @@ const Layout = () => {
             path={"/view-journey"}
             component={ShowJourneyModal}
             componentName={strings.VIEW_JOURNEY}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/live-tracking"}
+            component={ViewLiveTracking}
+            componentName={strings.LIVE_TRACKING}
           />
 
           <PrivateRoute
