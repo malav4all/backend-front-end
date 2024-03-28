@@ -1,10 +1,10 @@
 # Build Stage
-FROM oven/bun:alpine AS build
+FROM node:alpine AS build
 COPY package.json /code/
 WORKDIR /code/
-RUN bun install --force 
+RUN npm install --force 
 COPY ./ /code/
-RUN bun run build
+RUN npm run build
 
 # Server Stage.
 FROM nginx:1-alpine-slim
