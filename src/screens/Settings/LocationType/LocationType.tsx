@@ -5,7 +5,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   getRelativeFontSize,
   primaryHeadingColor,
@@ -27,9 +27,11 @@ import strings from "../../../global/constants/StringConstants";
 import {
   createLocationType,
   fetchLocationType,
+  searchLocations,
 } from "./service/location-type.service";
 import { store } from "../../../utils/store";
 import { validateLocationTypeForm } from "./LocationTypeandValidations";
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 
 const tableHeader = [
   {
@@ -44,10 +46,22 @@ const LocationType = () => {
   const [limit, setLimit] = useState(10);
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
+  const [searchLocation, setSearchLocation] = useState<any>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
 
   useEffect(() => {
     fetchLocationTypeHandler();
   }, []);
+
+  useEffect(() => {
+    if (searchLocation) {
+      getSearchData();
+    } else {
+      fetchLocationTypeHandler();
+    }
+  }, [searchLocation, page, limit, searchPageNumber]);
+
   const handleValidation = () => {
     const { isValid, errors } = validateLocationTypeForm(formField);
     setFormField(errors);
@@ -86,15 +100,44 @@ const LocationType = () => {
     }
   };
 
+  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
+    if (SearchEvent.target.value) {
+      setSearchLocation(SearchEvent.target.value.replace(/\s/g, ""));
+      setPage(1);
+      setLimit(10);
+    } else {
+      setSearchLocation("");
+    }
+  };
+  
+  const getSearchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchLocations({
+        input: {
+          search: searchLocation,
+          page: 1,
+          limit: 10,
+        },
+      });
+      setData(res?.searchLocations?.data);
+      setCount(res?.searchLocations?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+      setIsLoading(false);
+    }
+  };
+
   const getSearchBar = () => {
     return (
       <CustomInput
         placeHolder="Search asset..."
         id="assetAssingment_search_field"
-        // onChange={debounceEventHandler(
-        //   handleSearchOnChange,
-        //   strings.SEARCH_TIME_OUT
-        // )}
+        onChange={debounceEventHandler(
+          handleSearchOnChange,
+          strings.SEARCH_TIME_OUT
+        )}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -121,7 +164,15 @@ const LocationType = () => {
 
   const handlePerPageData = (event: any) => {
     setPage(1);
+    setSearchPageNumber(1);
     setLimit(event.target.value);
+  };
+
+  const handleSearchChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setSearchPageNumber(newPage);
   };
 
   const handleChangePage = (
@@ -146,9 +197,11 @@ const LocationType = () => {
           rows={data}
           paginationCount={count}
           // handleRowClick={updateAssetAssingmentDetails}
-          handlePageChange={handleChangePage}
-          pageNumber={page}
-          setPage={setPage}
+          handlePageChange={
+            searchLocation ? handleSearchChangePage : handleChangePage
+          }
+          pageNumber={searchLocation ? searchPageNumber : page}
+          setPage={searchLocation ? setSearchPageNumber : setPage}
           handlePerPageData={handlePerPageData}
           perPageData={limit}
           rowsPerPage={limit}
@@ -217,6 +270,7 @@ const LocationType = () => {
         >
           {locationTypeTable()}
         </Box>
+        <CustomLoader isLoading={isLoading} />
       </Box>
     </>
   );

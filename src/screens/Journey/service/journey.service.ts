@@ -4,6 +4,7 @@ import {
   ADD_JOURNEY,
   COORDINATES_SUBSCRIPTION,
   FETCH_JOURNEY,
+  SEARCH_JOURNEY,
 } from "./journey.mutation";
 
 export const createJourney = async (variables: any): Promise<any> => {
@@ -40,6 +41,18 @@ export const viewLiveTracking = async (variables: any): Promise<any> => {
     });
 
     return response;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const searchJourneys = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: SEARCH_JOURNEY,
+      variables,
+    });
+    return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }

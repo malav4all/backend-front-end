@@ -1,3 +1,13 @@
+export const journeyTableHeader = [
+  { name: "Journey Name", field: "journeyName" },
+  { name: "Location", field: "journeyData" },
+  { name: "Created By", field: "createdBy" },
+  { name: "Start Date", field: "startDate" },
+  { name: "End Date", field: "endDate" },
+  { name: "Total Distance", field: "totalDistance" },
+  { name: "Total Duration", field: "totalDuration" },
+];
+
 export const validateJourneyForm = (formField: any) => {
   let isValid = true;
   let errors = { ...formField };
