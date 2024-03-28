@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   CustomAppHeader,
   CustomButton,
@@ -26,17 +32,24 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
 import {
+  debounceEventHandler,
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../helpers/methods";
-import { createJourney, fetchJourney } from "./service/journey.service";
+import {
+  createJourney,
+  fetchJourney,
+  searchJourneys,
+} from "./service/journey.service";
 import { store } from "../../utils/store";
 import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { getDistance } from "geolib";
 import history from "../../utils/history";
-import { validateJourneyForm } from "./Journey.helper";
+import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
+import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
+import strings from "../../global/constants/StringConstants";
 
 const Journey = () => {
   const classes = journeyStyles;
@@ -62,6 +75,9 @@ const Journey = () => {
   const [journeyTableData, setJourneyTableData] = useState([]);
   const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
   const [counter, setCounter] = useState(66);
+  const [isLoading, setIsLoading] = useState<any>(false);
+  const [searchJourney, setSearchJourney] = useState<string>("");
+  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [locationData, setLocationData] = useState<any>([
     {
       name: "LocationA",
@@ -77,6 +93,15 @@ const Journey = () => {
     fetchGeozone();
     fetchJourneyHandler();
   }, []);
+
+  useEffect(() => {
+    if (searchJourney) {
+      getSearchData();
+    } else {
+      fetchGeozone();
+      fetchJourneyHandler();
+    }
+  }, [searchJourney, page, rowsPerPage, searchPageNumber]);
 
   const handleOnChange = (event: React.ChangeEvent<any>) => {
     setFormField({
@@ -206,6 +231,13 @@ const Journey = () => {
     }
   };
 
+  const handleSearchChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setSearchPageNumber(newPage);
+  };
+
   const tableRender = (tableData: any) => {
     const data = tableData.map((item: any, index: number) => {
       const coordinates = item.journeyData.map(
@@ -297,9 +329,39 @@ const Journey = () => {
   };
 
   const handlePerPageData = (event: any) => {
+    setPage(1);
+    setSearchPageNumber(1);
     setRowsPerPage(event?.target?.value);
   };
 
+  const getSearchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchJourneys({
+        input: {
+          search: searchJourney,
+          page: 1,
+          limit: 10,
+        },
+      });
+      const data = tableRender(res.searchJourneys.data);
+      setJourneyTableData(data);
+      setCount(res?.searchJourneys?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+      setIsLoading(false);
+    }
+  };
+  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
+    if (SearchEvent.target.value) {
+      setSearchJourney(SearchEvent.target.value.replace(/\s/g, ""));
+      setPage(1);
+      setRowsPerPage(10);
+    } else {
+      setSearchJourney("");
+    }
+  };
   const getCustomTable = () => {
     return (
       <Box
@@ -311,24 +373,17 @@ const Journey = () => {
         }}
       >
         <CustomTable
-          headers={[
-            { name: "Journey Name", field: "journeyName" },
-            { name: "Location", field: "journeyData" },
-            { name: "Created By", field: "createdBy" },
-            { name: "Start Date", field: "startDate" },
-            { name: "End Date", field: "endDate" },
-            { name: "Total Distance", field: "totalDistance" },
-            { name: "Total Duration", field: "totalDuration" },
-            { name: "Action", field: "action" },
-          ]}
+          headers={journeyTableHeader}
           rows={journeyTableData}
           size={[5]}
-          handlePageChange={handleChangePage}
+          handlePageChange={
+            searchJourney ? handleSearchChangePage : handleChangePage
+          }
           handleRowsPerPage={handlePerPageData}
           paginationCount={count}
           // rowsPerPage={rowsPerPage}
-          pageNumber={page}
-          setPage={setPage}
+          pageNumber={searchJourney ? searchPageNumber : page}
+          setPage={searchJourney ? setSearchPageNumber : setPage}
           handlePerPageData={handlePerPageData}
           perPageData={rowsPerPage}
           rowsPerPage={rowsPerPage}
@@ -360,10 +415,10 @@ const Journey = () => {
       <CustomInput
         placeHolder="Search asset..."
         id="assetAssingment_search_field"
-        // onChange={debounceEventHandler(
-        //   handleSearchOnChange,
-        //   strings.SEARCH_TIME_OUT
-        // )}
+        onChange={debounceEventHandler(
+          handleSearchOnChange,
+          strings.SEARCH_TIME_OUT
+        )}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -606,6 +661,7 @@ const Journey = () => {
         sx={classes.mainSection}
       >
         {getCustomTable()}
+        <CustomLoader isLoading={isLoading} />
       </Grid>
     </>
   );

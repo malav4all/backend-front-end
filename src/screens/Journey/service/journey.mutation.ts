@@ -62,3 +62,48 @@ export const COORDINATES_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const SEARCH_JOURNEY = gql`
+  mutation ($input: SearchJourneysInput!) {
+    searchJourneys(input: $input) {
+      success
+      message
+      paginatorInfo {
+        count
+      }
+      data {
+        _id
+        journeyName
+        startDate
+        endDate
+        totalDistance
+        totalDuration
+        journeyData {
+          _id
+          name
+          description
+          locationType
+          mobileNumber
+          finalAddress
+          address {
+            country
+            state
+            city
+            area
+            district
+            zipCode
+          }
+          geoCodeData {
+            type
+            geometry {
+              type
+              coordinates
+              radius
+            }
+          }
+        }
+        createdBy
+      }
+    }
+  }
+`;
