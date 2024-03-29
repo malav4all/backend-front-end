@@ -72,7 +72,7 @@ const layoutStyles = {
   },
   supportTicketTitleWrapper: {
     width: "100%",
-    background: "#ECF9FF",
+    background: "#f1edff",
     display: "flex",
     justifyContent: "center",
     "& img": {

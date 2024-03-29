@@ -32,7 +32,7 @@ const customTabsStyles = {
   active: {
     // backgroundColor: primaryActiveTabBgColor,
     // color: primaryColorPurple,
-    backgroundColor: "#059df5",
+    backgroundColor: "#9063f2",
     color: "#F9F9F9",
     textDecoration: "none",
   },

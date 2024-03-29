@@ -590,7 +590,7 @@ const Journey = () => {
     <>
       <CustomAppHeader
         className={{
-          backgroundColor: "#ECF9FF",
+          backgroundColor: "#f1edff",
           padding: "10px 20px 15px 18px",
         }}
       >
