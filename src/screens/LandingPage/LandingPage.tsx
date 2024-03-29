@@ -38,7 +38,7 @@ const LandingPage = (props: CustomProps) => {
         }}
       >
         <img
-          src={"https://i.ibb.co/k1WbZGS/login-screen-1.png"}
+          src={require("../../assets/images/login screen (1).png")}
           height="auto"
           width="100%"
           style={{ objectFit: "fill" }}
@@ -96,7 +96,7 @@ const LandingPage = (props: CustomProps) => {
                 width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: "2rem"
+                marginBottom: "2rem",
               }}
             >
               <Box
