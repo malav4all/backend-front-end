@@ -294,7 +294,7 @@ const Dashboard = () => {
       </Grid>
     );
   };
-  
+
   console.log(stats);
   const getStatsCard = () => {
     return (
@@ -577,7 +577,7 @@ const Dashboard = () => {
           id="Dashboard_Recent_Campaigns"
         >
           <Box sx={classes.container} minHeight="300px">
-            <Typography sx={classes.containerTitle}>Recent Campaign</Typography>
+            <Typography sx={classes.containerTitle}>Recent Activity</Typography>
             <Box onClick={() => {}} sx={{ cursor: "pointer" }}>
               <Typography sx={{ ...regularFont, color: "#929292" }}>
                 {recentCampaignStats.name}
