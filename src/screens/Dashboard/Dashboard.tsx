@@ -46,6 +46,7 @@ import history from "../../utils/history";
 import norecentactivity from "../../assets/images/dashboard/norecentactivity.svg";
 import { useTitle } from "../../utils/UseTitle";
 import { useDispatch } from "react-redux";
+import { fetchDashboardDetail } from "./service/Dashboard.service";
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -59,31 +60,8 @@ const Dashboard = () => {
   const [myCampaign, setMyCampaign] = useState<Last3DaysCampaigns>(
     {} as Last3DaysCampaigns
   );
-  const [stats, setStats] = useState({
-    executed: {
-      title: "Executed Campaigns",
-      value: 0,
-      icon: campaigns,
-      resource: strings.campaign,
-      redirection: {
-        pathname: "",
-      },
-    },
-    outbounds: {
-      title: "Outbound Emails",
-      value: 0,
-      icon: email,
-      resource: strings.campaign,
-      redirection: {},
-    },
-    audience: {
-      title: "Audience Change",
-      value: 0,
-      icon: recipients,
-      resource: strings.contact,
-      redirection: {},
-    },
-  });
+  const [statData, setStatData] = useState<any>();
+
   const [campaignRecipientStats, setCampaignRecipientStats] =
     useState<CampaignRecipientCounts>({
       Total: {
@@ -139,7 +117,20 @@ const Dashboard = () => {
         },
       },
     });
+
+  useEffect(() => {
+    getStatData();
+  }, []);
   const [activities, setActivities] = useState([]);
+
+  const getStatData = async () => {
+    try {
+      const statData = await fetchDashboardDetail();
+      setStatData(statData.fetchDashboardDetail.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const [selectedRecActivityFilter, setSelectedRecActivityFilter] =
     useState<string>("");
@@ -156,6 +147,32 @@ const Dashboard = () => {
       return acc;
     }, {});
   };
+
+  const [stats, setStats] = useState({
+    executed: {
+      title: "Total Journey",
+      value: statData?.totalJourney,
+      icon: campaigns,
+      resource: strings.campaign,
+      redirection: {
+        pathname: "",
+      },
+    },
+    outbounds: {
+      title: "Total Users",
+      value: statData?.totalUser,
+      icon: email,
+      resource: strings.campaign,
+      redirection: {},
+    },
+    audience: {
+      title: "Ongoing Journey",
+      value: statData?.ongoingJourney,
+      icon: recipients,
+      resource: strings.contact,
+      redirection: {},
+    },
+  });
 
   const fillActivities = (activitiesData: any) => {
     const data = activitiesData.map((activity: any) => {
@@ -271,66 +288,7 @@ const Dashboard = () => {
       </Grid>
     );
   };
-
-  const getThoughtsSection = () => {
-    return (
-      <Box sx={classes.thoughtsBox}>
-        <img src={thoughtsimg} height={"auto"} width={"auto"} />
-        <Typography variant="h6" sx={classes.containerTitle}>
-          Tags
-        </Typography>
-        <Typography sx={classes.featureDescription}>
-          You can customize the tags for a specific contact to better reflect
-          the nature of your relationship or interaction with them.
-        </Typography>
-      </Box>
-    );
-  };
-
-  const getUpgradeNow = () => {
-    return (
-      <Box
-        sx={{
-          height: "250px",
-          width: "100%",
-          position: "relative",
-          marginBottom: "20px",
-        }}
-      >
-        <img
-          src={spaceshuttle}
-          style={{ position: "absolute", top: "-20px", left: "40px" }}
-        />
-        <Box
-          sx={{
-            backgroundImage: "url(" + upgradenow + ")",
-            display: "flex",
-            height: "100%",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            borderRadius: "8px",
-            backgroundSize: "cover",
-          }}
-        >
-          <Box display="flex" justifyContent="center" alignItems="center" p={2}>
-            <Typography sx={classes.upgradeNowText}>
-              Unlock the full potential of your email marketing campaigns with
-              Mailzzy's upgraded plans.{" "}
-            </Typography>
-          </Box>
-          <a
-            href="https://mailzzy.com/pricing/"
-            target="_blank"
-            style={{ textDecoration: "none" }}
-          >
-            <Button sx={classes.upgradeBtn}>Upgrade Now</Button>
-          </a>
-        </Box>
-      </Box>
-    );
-  };
-
+  console.log(stats);
   const getStatsCard = () => {
     return (
       <Grid container spacing={2}>
@@ -357,7 +315,7 @@ const Dashboard = () => {
             >
               <Box>
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}></Typography>
+                <Typography sx={classes.statsValue}>{}</Typography>
               </Box>
               <Box>
                 <img src={stat.icon} width={60} height={60} />
@@ -373,12 +331,7 @@ const Dashboard = () => {
     return (
       <Stack direction="column" justifyContent="center" alignItems="center">
         <img src={norecentactivity} alt="forbidden" width="70%" />
-        <Box sx={{ textAlign: "center" }} p={1}>
-          <Typography sx={{ ...regularFont, textAlign: "center" }}>
-            You don't have permission to view {name}. Please contact your
-            account administrator.
-          </Typography>
-        </Box>
+        <Box sx={{ textAlign: "center" }} p={1}></Box>
       </Stack>
     );
   };
@@ -401,7 +354,7 @@ const Dashboard = () => {
     return (
       <Box id="Dashboard_Campaign_Recipients" sx={classes.container}>
         <Typography sx={classes.containerTitle} gutterBottom>
-          Campaign Recipients
+          Ongoing Journey
         </Typography>
         {getPermissionPlaceholder("Campaign Recipients")}
       </Box>
@@ -417,7 +370,7 @@ const Dashboard = () => {
           position="static"
           top="0"
         >
-          My Campaigns
+          My Journeys
         </Typography>
         <Box
           minHeight={isDesktop ? "500px" : "250px"}
@@ -635,8 +588,9 @@ const Dashboard = () => {
         container
         spacing={2}
         sx={{ padding: "0 16px", marginTop: "-48px" }}
+        xs={12}
       >
-        <Grid item xs={12} sm={12} xl={9} md={9} lg={9}>
+        <Grid item xs={12} sm={12} xl={12} md={12} lg={12}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
@@ -653,16 +607,6 @@ const Dashboard = () => {
             </Grid>
             <Grid item xs={12} md={3} lg={3} xl={3}>
               {getCampaignsList()}
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={12}>
-              {getThoughtsSection()}
-            </Grid>
-            <Grid item xs={12} md={12} sx={{ marginTop: "20px" }}>
-              {getUpgradeNow()}
             </Grid>
           </Grid>
         </Grid>

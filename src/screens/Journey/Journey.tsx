@@ -248,12 +248,14 @@ const Journey = () => {
       );
 
       return {
+        key: item._id,
         journeyName: item?.journeyName,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
         journeyData: (
           <>
             <VisibilityIcon
+              key={item._id}
               onClick={() => {
                 history.push({
                   pathname: "/view-journey",
@@ -471,6 +473,7 @@ const Journey = () => {
                         )
                     ) // Filter out selected values
                     .map((item: any) => ({
+                      key: item._id,
                       label: `${item.name} - ${item.description}`,
                       value: item,
                     })) || []
@@ -497,7 +500,15 @@ const Journey = () => {
           </Grid>
           {locationData?.map((item: any, index: number) => (
             <>
-              <Grid item xs={12} sm={3} md={2.5} lg={2.5} xl={2.5} key={index}>
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                md={2.5}
+                lg={2.5}
+                xl={2.5}
+                key={index}
+              >
                 <Box>
                   <InputLabel sx={classes.inputLabel} shrink>
                     {item.name}
@@ -508,7 +519,7 @@ const Journey = () => {
                   <Box>
                     <Autocomplete
                       sx={classes.emailDropDownStyle}
-                      id={`location-${index}`}
+                      id={`location-${item._id}`}
                       options={
                         tableData
                           ?.filter(
@@ -518,6 +529,7 @@ const Journey = () => {
                               )
                           )
                           .map((tItem: any) => ({
+                            key: tItem._id,
                             label: `${tItem.name} - ${tItem.description}`,
                             value: tItem,
                           })) || []
@@ -532,7 +544,7 @@ const Journey = () => {
                           <TextField
                             sx={classes.select}
                             {...params}
-                            name={`location-${index}`}
+                            name={`location-${item._id}`}
                             placeholder="Search Start location here....."
                             onSelect={() => {}}
                             InputProps={InputProps}
@@ -583,6 +595,7 @@ const Journey = () => {
                         )
                     ) // Filter out selected values
                     .map((item: any) => ({
+                      key: item._id,
                       label: `${item.name} - ${item.description}`,
                       value: item,
                     })) || []
