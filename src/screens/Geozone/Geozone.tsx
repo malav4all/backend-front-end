@@ -941,21 +941,21 @@ const Geozone = () => {
                           cursor: "pointer",
                         }}
                         onClick={() => {
-                          // setOpenModal(true);
+                          setOpenModal(true);
                           setFormField(geoZoneInsertField(item));
                           setSelectedRowData(item);
                           setEdit(true);
                         }}
                       />
                     </ListItemAvatar>
-                    <ListItemAvatar>
+                    {/* <ListItemAvatar>
                       <DeleteIcon
                         htmlColor={"#9063F2"}
                         style={{
                           cursor: "pointer",
                         }}
                       />
-                    </ListItemAvatar>
+                    </ListItemAvatar> */}
                   </ListItem>
                 ))}
             </List>
