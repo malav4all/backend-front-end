@@ -15,7 +15,7 @@ interface CustomProps {
   data: any;
 }
 
-const COLORS = ["#FFCDEE", "#0069A9", "#462682", "#059df5", "#ACC837"];
+const COLORS = ["#FFCDEE", "#0069A9", "#462682", "#9063f2", "#ACC837"];
 
 const CampaignRecipientPieChart = (props: CustomProps) => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));

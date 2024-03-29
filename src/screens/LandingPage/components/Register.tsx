@@ -288,7 +288,7 @@ const Register = React.forwardRef((props, ref: any) => {
           <Box
             ml={0.5}
             component={"span"}
-            color={"#0352B5"}
+            color={"#9063F2"}
             sx={{ fontWeight: "bold", cursor: "pointer" }}
             onClick={logInPage}
             id="back_login_screen"

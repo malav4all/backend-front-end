@@ -7,7 +7,7 @@ import {
 
  const SettingStyles = {
   headerBackgroundColor: {
-    backgroundColor: "#ECF9FF",
+    backgroundColor: "#f1edff",
     padding: "35px 31px 31px 32px",
   },
   settingsTitle: {

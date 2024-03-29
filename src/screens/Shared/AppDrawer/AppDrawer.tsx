@@ -260,16 +260,16 @@ const AppDrawer = (props: CustomProps) => {
         {!isDrawerOpen && isDesktop ? (
           <img
             src={
-              "https://media.licdn.com/dms/image/D4D0BAQFspWAJRZSeGg/company-logo_200_200/0/1680259816996/imz_corporate_logo?e=2147483647&v=beta&t=2bSxMOACOAXj0LlG7sFvdmflCnmYHCqEgCejNCQTiuE"
+              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
             }
-            height="38px"
-            width="38px"
+            height="13px"
           />
         ) : (
           <img
             src={
-              "https://media.licdn.com/dms/image/D4D0BAQFspWAJRZSeGg/company-logo_200_200/0/1680259816996/imz_corporate_logo?e=2147483647&v=beta&t=2bSxMOACOAXj0LlG7sFvdmflCnmYHCqEgCejNCQTiuE"
+              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
             }
+            height="50px"
           />
         )}
       </Box>

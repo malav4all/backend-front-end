@@ -693,12 +693,14 @@ const Geozone = () => {
 
   return (
     <>
-      <Box component={"div"} id="map" style={{ width: "100%", height: "100%" }}>
+    
+      <Box component={"div"} id="map" style={{ width: "100%", height: "100%", position: "relative" }}>
+
         <Box
           style={{
             position: "absolute",
             top: "42%",
-            left: "17vw",
+            left: "2vw",
             zIndex: 1,
             backgroundColor: "white",
             padding: "0.5rem",
@@ -720,30 +722,30 @@ const Geozone = () => {
             <Button
               onClick={handleCircleButtonClick}
               style={{
-                backgroundColor: isCircleActive ? "#cef2ff" : "white",
+                backgroundColor: isCircleActive ? "#F1EDFF" : "white",
                 marginRight: "0.3rem",
                 marginLeft: "-12px",
               }}
             >
               <Tooltip title="Draw Circle Polygon" placement="right" arrow>
-                <DrawIcon />
+                <DrawIcon sx={{color: "#9063F2"}}/>
               </Tooltip>
             </Button>
 
             <Button
               onClick={toggleGeozonesVisibility}
               style={{
-                backgroundColor: geozonesVisible ? "#cef2ff" : "white",
+                backgroundColor: geozonesVisible ? "#F1EDFF" : "white",
                 marginLeft: "-12px",
               }}
             >
               {geozonesVisible ? (
                 <Tooltip title="Hide Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon />
+                  <RemoveRedEyeIcon sx={{color: "#9063F2"}}/>
                 </Tooltip>
               ) : (
                 <Tooltip title="Show Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon />
+                  <RemoveRedEyeIcon sx={{color: "#9063F2"}}/>
                 </Tooltip>
               )}
             </Button>
@@ -769,23 +771,25 @@ const Geozone = () => {
                 }
               }}
               style={{
-                backgroundColor: pointCheck ? "#cef2ff" : "white",
+                backgroundColor: pointCheck ? "#F1EDFF" : "white",
                 marginLeft: "-12px",
               }}
             >
               <Tooltip title="Draw Point" placement="right" arrow>
-                <PinDropIcon />
+                <PinDropIcon sx={{color: "#9063F2"}} />
               </Tooltip>
             </Button>
           </Box>
         </Box>
+
       </Box>
+
       <Box
         style={{
           position: "absolute",
           top: 25,
           right: "25px",
-          zIndex: 1,
+          zIndex: 0,
           padding: "0.5rem",
           backgroundColor: "white",
           boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
@@ -854,7 +858,7 @@ const Geozone = () => {
                     </ListItemText>
                     <ListItemAvatar>
                       <EditIcon
-                        htmlColor={"#0F2167"}
+                        htmlColor={"#9063F2"}
                         style={{
                           cursor: "pointer",
                         }}
@@ -868,7 +872,7 @@ const Geozone = () => {
                     </ListItemAvatar>
                     <ListItemAvatar>
                       <DeleteIcon
-                        htmlColor={"#0F2167"}
+                        htmlColor={"#9063F2"}
                         style={{
                           cursor: "pointer",
                         }}
@@ -883,6 +887,7 @@ const Geozone = () => {
 
       {createGeozoneModal()}
       <CustomLoader isLoading={loading} />
+
     </>
   );
 };
