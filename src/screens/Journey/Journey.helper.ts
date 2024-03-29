@@ -6,6 +6,7 @@ export const journeyTableHeader = [
   { name: "End Date", field: "endDate" },
   { name: "Total Distance", field: "totalDistance" },
   { name: "Total Duration", field: "totalDuration" },
+  { name: "Action", field: "action" },
 ];
 
 export const validateJourneyForm = (formField: any) => {

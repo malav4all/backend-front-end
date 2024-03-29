@@ -55,6 +55,7 @@ const Geozone = () => {
   const [locationType, setLocationType] = useState([]);
   const [edit, setEdit] = useState<boolean>(false); // edit: true
   const [formField, setFormField] = useState<any>(geoZoneInsertField());
+  const [searchLocationText, setSearchLocationText] = useState<string>("");
 
   const fetchLocationTypeHandler = async () => {
     try {
@@ -691,6 +692,82 @@ const Geozone = () => {
     );
   };
 
+  const handleSearchLocation = () => {
+    const platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+    });
+    const geocoder = platform.getSearchService();
+    const geocodingParameters = {
+      q: searchLocationText,
+      countryCode: "IND",
+    };
+
+    geocoder.geocode(
+      geocodingParameters,
+      (result: any) => {
+        addLocationsToMap(result.items);
+        mapCheck.setZoom(16);
+      },
+      (error: any) => {
+        alert("Error geocoding location");
+      }
+    );
+  };
+
+  let bubble: any;
+  function openBubble(position: any, text: any) {
+    var platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+    });
+    var defaultLayers = platform.createDefaultLayers();
+    var ui = window.H.ui.UI.createDefault(mapCheck, defaultLayers);
+    if (!bubble) {
+      bubble = new window.H.ui.InfoBubble(position, { content: text });
+      ui.addBubble(bubble);
+    } else {
+      bubble.setPosition(position);
+      bubble.setContent(text);
+      bubble.open();
+    }
+  }
+  const handleKeyPress = (e: any) => {
+    if (e.key === "Enter") {
+      handleSearchLocation();
+    }
+  };
+  let markers: any = [];
+
+  const addLocationsToMap = (locations: any) => {
+    var group = new window.H.map.Group(),
+      position,
+      i;
+
+    markers.forEach((marker: any) => {
+      mapCheck.removeObject(marker);
+    });
+    markers = [];
+
+    for (i = 0; i < locations.length; i += 1) {
+      let location = locations[i];
+      let marker = new window.H.map.Marker(location.position);
+      marker.label = location.address.label;
+      markers.push(marker);
+      group.addObject(marker);
+    }
+
+    group.addEventListener(
+      "tap",
+      function (evt: any) {
+        mapCheck.setCenter(evt.target.getGeometry());
+        openBubble(evt.target.getGeometry(), evt.target.label);
+      },
+      false
+    );
+
+    mapCheck.addObject(group);
+    mapCheck.setCenter(group.getBoundingBox().getCenter());
+  };
+
   return (
     <>
       <Box
@@ -884,6 +961,28 @@ const Geozone = () => {
             </List>
           </Box>
         </PerfectScrollbar>
+      </Box>
+
+      <Box
+        style={{
+          position: "absolute",
+          top: 25,
+          left: "320px",
+          zIndex: 0,
+          padding: "0.5rem",
+          borderRadius: "0.3rem",
+        }}
+      >
+        <Box sx={{ margin: "5px 5px", width: "350px" }}>
+          <CustomInput
+            placeHolder="Search location....."
+            id="users_search_field"
+            onKeyPress={handleKeyPress}
+            onChange={(e: any) => {
+              setSearchLocationText(e.target.value);
+            }}
+          />
+        </Box>
       </Box>
 
       {createGeozoneModal()}
