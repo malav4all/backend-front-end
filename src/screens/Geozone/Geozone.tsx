@@ -235,35 +235,33 @@ const Geozone = () => {
     });
   }
   useEffect(() => {
-    let initialMap: any;
-    getLocation()
-      .then((location: any) => {
-        const platform = new window.H.service.Platform({
-          apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
-        });
-        const defaultLayers = platform.createDefaultLayers();
+    const platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+    });
+    const defaultLayers = platform.createDefaultLayers();
 
-        initialMap = new window.H.Map(
-          document.getElementById("map"),
-          defaultLayers.vector.normal.map,
-          {
-            center: { lat: location.latitude, lng: location.longitude },
-            zoom: 16,
-            pixelRatio: window.devicePixelRatio || 1,
-          }
-        );
-        new window.H.mapevents.Behavior(
-          new window.H.mapevents.MapEvents(initialMap)
-        );
-        window.H.ui.UI.createDefault(initialMap, defaultLayers);
-        // renderAndUpdateCircleToMap(initialMap);
-        showCircleToMap(initialMap);
-        addMarkersToMap(initialMap);
-        setMapCheck(initialMap);
-      })
-      .catch((error) => {
-        console.error("Error getting location:", error);
-      });
+    const initialMap = new window.H.Map(
+      document.getElementById("map"),
+      defaultLayers.vector.normal.map,
+      {
+        center: { lat: 28.495831757053296, lng: 77.07923644083718 },
+        zoom: 5,
+        pixelRatio: window.devicePixelRatio || 1,
+        key: mapKey,
+      }
+    );
+
+    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
+
+    new window.H.mapevents.Behavior(
+      new window.H.mapevents.MapEvents(initialMap)
+    );
+    window.H.ui.UI.createDefault(initialMap, defaultLayers);
+    // renderAndUpdateCircleToMap(initialMap);
+    showCircleToMap(initialMap);
+    addMarkersToMap(initialMap);
+    setMapCheck(initialMap);
+    // setUpClickListener(initialMap, platform);
 
     return () => {
       window.removeEventListener("resize", () =>

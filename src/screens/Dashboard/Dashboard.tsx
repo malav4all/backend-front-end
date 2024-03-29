@@ -322,7 +322,7 @@ const Dashboard = () => {
             >
               <Box>
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}>{stat.value}</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
               </Box>
               <Box>
                 <img src={stat.icon} width={60} height={60} />
