@@ -8,6 +8,7 @@ import {
   getHomeIcon,
   getIntegrationIcon,
   getSettingsIcon,
+  journeyIcon,
 } from "./SidebarSvgConstant";
 import { pinkDarkColor } from "./styles";
 import { isTruthy } from "../helpers/methods";
@@ -56,8 +57,8 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: geoZoneSvg("#666"),
-      activeIcon: geoZoneSvg(pinkDarkColor),
+      icon: journeyIcon("#666"),
+      activeIcon: journeyIcon(pinkDarkColor),
       text: "Journey",
       link: `${"/journey"}`,
       pageName: strings.JOURNEY,
