@@ -104,7 +104,7 @@ const dashboardStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#def3fa",
+    backgroundColor: "#FCF5FF",
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",
@@ -152,7 +152,7 @@ const dashboardStyles = {
   statusBox: {
     ml: 1,
     ...regularFont,
-    backgroundColor: "#def3fa",
+    backgroundColor: "#FCF5FF",
     padding: 1,
     fontSize: getRelativeFontSize(),
   },
