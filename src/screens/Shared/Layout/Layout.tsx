@@ -42,8 +42,8 @@ const Layout = () => {
     const elapsedTime = (currentTime - lastActiveTime) / 1000 / 60;
 
     if (elapsedTime >= idleLogoutTime) {
-      const _id = localStorage.getItem("userId");
-      onLogout({ input: { _id } });
+      // const _id = localStorage.getItem("userId");
+      // onLogout({ input: { _id } });
       localStorage.removeItem("userId");
       setTimeout(() => {
         history.push("/");
