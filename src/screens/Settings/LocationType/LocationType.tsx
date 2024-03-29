@@ -72,13 +72,13 @@ const LocationType = () => {
       if (handleValidation()) {
         const res = await createLocationType({
           input: {
-            type: formField,
+            type: formField.value,
             createdBy: store?.getState()?.auth.userName,
           },
         });
         openSuccessNotification(res.addLocationType.message);
         await fetchLocationTypeHandler();
-        setFormField({});
+        setFormField({ value: "", error: "" });
       }
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -109,7 +109,7 @@ const LocationType = () => {
       setSearchLocation("");
     }
   };
-  
+
   const getSearchData = async () => {
     try {
       setIsLoading(true);

@@ -9,6 +9,7 @@ import {
   ListItemAvatar,
   ListItemText,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
@@ -24,6 +25,7 @@ import {
   fetchGeozoneHandler,
   updateGeozone,
 } from "./service/geozone.service";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import ImageIcon from "@mui/icons-material/MoveToInbox";
 import SearchIcon from "@mui/icons-material/Search";
@@ -56,6 +58,7 @@ const Geozone = () => {
   const [edit, setEdit] = useState<boolean>(false); // edit: true
   const [formField, setFormField] = useState<any>(geoZoneInsertField());
   const [searchLocationText, setSearchLocationText] = useState<string>("");
+  const [viewGeozone, setViewGeozone] = useState<any>();
 
   const fetchLocationTypeHandler = async () => {
     try {
@@ -216,34 +219,51 @@ const Geozone = () => {
     );
   };
 
-  useEffect(() => {
-    const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+  function getLocation() {
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          reject(error);
+        }
+      );
     });
-    const defaultLayers = platform.createDefaultLayers();
+  }
+  useEffect(() => {
+    let initialMap: any;
+    getLocation()
+      .then((location: any) => {
+        const platform = new window.H.service.Platform({
+          apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+        });
+        const defaultLayers = platform.createDefaultLayers();
 
-    const initialMap = new window.H.Map(
-      document.getElementById("map"),
-      defaultLayers.vector.normal.map,
-      {
-        center: { lat: 28.495831757053296, lng: 77.07923644083718 },
-        zoom: 5,
-        pixelRatio: window.devicePixelRatio || 1,
-        key: mapKey,
-      }
-    );
-
-    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
-
-    new window.H.mapevents.Behavior(
-      new window.H.mapevents.MapEvents(initialMap)
-    );
-    window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    // renderAndUpdateCircleToMap(initialMap);
-    showCircleToMap(initialMap);
-    addMarkersToMap(initialMap);
-    setMapCheck(initialMap);
-    // setUpClickListener(initialMap, platform);
+        initialMap = new window.H.Map(
+          document.getElementById("map"),
+          defaultLayers.vector.normal.map,
+          {
+            center: { lat: location.latitude, lng: location.longitude },
+            zoom: 16,
+            pixelRatio: window.devicePixelRatio || 1,
+          }
+        );
+        new window.H.mapevents.Behavior(
+          new window.H.mapevents.MapEvents(initialMap)
+        );
+        window.H.ui.UI.createDefault(initialMap, defaultLayers);
+        // renderAndUpdateCircleToMap(initialMap);
+        showCircleToMap(initialMap);
+        addMarkersToMap(initialMap);
+        setMapCheck(initialMap);
+      })
+      .catch((error) => {
+        console.error("Error getting location:", error);
+      });
 
     return () => {
       window.removeEventListener("resize", () =>
@@ -533,23 +553,63 @@ const Geozone = () => {
     }
   }, [edit, mapCheck, geozoneData, selectedRowData]);
 
+  useEffect(() => {
+    if (viewGeozone?.isViewGeozone) {
+      viewGeozoneZoomLevel(mapCheck);
+    }
+  }, [viewGeozone]);
+
+  let bubbleNew: any;
+  function openBubbleNew(position: any, text: any) {
+    var platform = new window.H.service.Platform({
+      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+    });
+    var defaultLayers = platform.createDefaultLayers();
+    var ui = window.H.ui.UI.createDefault(mapCheck, defaultLayers);
+    if (!bubbleNew) {
+      bubbleNew = new window.H.ui.InfoBubble(position, { content: text });
+      ui.addBubble(bubbleNew);
+    } else {
+      bubbleNew.setPosition(position);
+      bubbleNew.setContent(text);
+      bubbleNew.open();
+    }
+  }
+
   const showCircleToMap = (map: any) => {
     geozoneData.forEach((item: any) => {
       if (geozonesVisible) {
-        map.addObject(
-          new window.H.map.Circle(
-            {
-              lat: item?.geoCodeData?.geometry?.coordinates[0],
-              lng: item?.geoCodeData?.geometry?.coordinates[1],
-            },
-            item?.geoCodeData?.geometry?.radius,
-            {
-              style: geozoneStyle,
-            }
-          )
+        let circle = new window.H.map.Circle(
+          {
+            lat: item?.geoCodeData?.geometry?.coordinates[0],
+            lng: item?.geoCodeData?.geometry?.coordinates[1],
+          },
+          item?.geoCodeData?.geometry?.radius,
+          {
+            style: geozoneStyle,
+          }
         );
+        circle.setData(item.name);
+        circle.addEventListener("tap", (evt: any) => {
+          openBubbleNew(evt.target.getCenter(), item.name);
+        });
+        map.addObject(circle);
       }
     });
+  };
+
+  const viewGeozoneZoomLevel = (map: any) => {
+    let marker;
+    const center = {
+      lat: viewGeozone?.selectedGeozoneData.geoCodeData?.geometry
+        ?.coordinates[0],
+      lng: viewGeozone?.selectedGeozoneData?.geoCodeData?.geometry
+        ?.coordinates[1],
+    };
+    marker = new window.H.map.Marker(center);
+    map.addObject(marker);
+    map.setCenter(center);
+    map.setZoom(17);
   };
 
   const renderCircleToMap = (map: any) => {
@@ -739,7 +799,6 @@ const Geozone = () => {
 
   const addLocationsToMap = (locations: any) => {
     var group = new window.H.map.Group(),
-      position,
       i;
 
     markers.forEach((marker: any) => {
@@ -806,7 +865,7 @@ const Geozone = () => {
                 marginLeft: "-12px",
               }}
             >
-              <Tooltip title="Draw Circle Polygon" placement="right" arrow>
+              <Tooltip title="Create Circle" placement="right" arrow>
                 <DrawIcon sx={{ color: "#9063F2" }} />
               </Tooltip>
             </Button>
@@ -854,7 +913,7 @@ const Geozone = () => {
                 marginLeft: "-12px",
               }}
             >
-              <Tooltip title="Draw Point" placement="right" arrow>
+              <Tooltip title="Create Location Point" placement="right" arrow>
                 <PinDropIcon sx={{ color: "#9063F2" }} />
               </Tooltip>
             </Button>
@@ -874,7 +933,7 @@ const Geozone = () => {
           borderRadius: "0.3rem",
         }}
       >
-        <Box sx={{ margin: "5px 5px", width: "350px" }}>
+        <Box sx={{ margin: "5px 5px", width: "300px" }}>
           <CustomInput
             placeHolder="Search....."
             id="users_search_field"
@@ -895,7 +954,8 @@ const Geozone = () => {
           <Box
             sx={{
               height: "auto",
-              maxHeight: "350px",
+              maxHeight: "300px",
+              padding: 0,
             }}
           >
             <List
@@ -914,9 +974,17 @@ const Geozone = () => {
                 })
                 .map((item: any, index) => (
                   <ListItem key={item._id}>
-                    <ListItemAvatar>
+                    <ListItemAvatar
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setViewGeozone({
+                          isViewGeozone: true,
+                          selectedGeozoneData: item,
+                        });
+                      }}
+                    >
                       <Avatar>
-                        <ImageIcon />
+                        <LocationOnIcon color="primary" />
                       </Avatar>
                     </ListItemAvatar>
 
@@ -924,13 +992,15 @@ const Geozone = () => {
                       sx={{ display: "flex", flexDirection: "row" }}
                     >
                       <Box>
-                        <ListItemText
-                          style={{ fontSize: "12px", fontWeight: "bold" }}
-                        >
-                          {item.name}
+                        <ListItemText>
+                          <Typography sx={{ fontSize: "14px" }}>
+                            {item.name}
+                          </Typography>
                         </ListItemText>
-                        <ListItemText style={{ fontSize: "8px" }}>
-                          {item.description}
+                        <ListItemText>
+                          <Typography sx={{ fontSize: "14px" }}>
+                            {item.description}
+                          </Typography>
                         </ListItemText>
                       </Box>
                     </ListItemText>
