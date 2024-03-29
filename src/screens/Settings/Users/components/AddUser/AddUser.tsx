@@ -231,7 +231,7 @@ const AddUser = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <CustomContactNumberInput
             label="Contact Number"
-            required={false}
+            required={true}
             id="add_user_contact_number_filed"
             value={userFormFields.mobileNumber?.value}
             placeHolder="Enter Your Mobile Number"
@@ -245,7 +245,7 @@ const AddUser = (props: CustomProps) => {
               });
             }}
             error={
-              isTruthy(userFormFields.mobileNumber?.value) &&
+              !isTruthy(userFormFields.mobileNumber?.value) &&
               userFormFields.mobileNumber?.error
             }
           />

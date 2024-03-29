@@ -132,7 +132,7 @@ export const getFormattedNumbers = (value: string) => {
 };
 
 export const translateFirstAndLastName = (value: string) => {
-  const userName = store.getState()?.auth?.userName ?? "";
+  const userName: any = store.getState()?.auth?.userName ?? "";
   const name = userName.split(" ");
   if (!name.length) {
     let returnString = value.replace("$FIRST_NAME", "");
@@ -190,12 +190,7 @@ export const validateStatusQuery = (statusFromUrl: any) => {
 };
 
 export const validateTabValue = (statusFromUrl: any) => {
-  if (
-    ![
-      strings.USERS,
-      strings.ASSERTASSINGMENT
-    ].includes(statusFromUrl)
-  ) {
+  if (![strings.USERS, strings.ASSETASSIGNMENT].includes(statusFromUrl)) {
     return strings.USERS;
   }
   return statusFromUrl;

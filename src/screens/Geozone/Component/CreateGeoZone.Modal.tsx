@@ -248,7 +248,6 @@ const CreateGeoZone = ({
                 });
               }}
               value={formField?.zipCode?.value}
-              disabled={true}
               renderInput={(params) => (
                 <TextField
                   sx={classes.select}

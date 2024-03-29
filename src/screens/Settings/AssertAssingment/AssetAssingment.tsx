@@ -301,7 +301,7 @@ const AssetAssingment = () => {
             color: primaryHeadingColor,
           }}
         >
-          AssetAssingment
+          Asset Assignment
         </Typography>
 
         <Stack
