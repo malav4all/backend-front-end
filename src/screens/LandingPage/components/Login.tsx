@@ -273,14 +273,14 @@ const Login = () => {
 
   return (
     <Box>
-      <Box
+      {/* <Box
         sx={{
           display: "flex",
           justifyContent: "center",
         }}
       >
         {getCategoryTabs()}
-      </Box>
+      </Box> */}
       {screenHandler()}
     </Box>
   );

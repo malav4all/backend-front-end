@@ -73,8 +73,8 @@ const Geozone = () => {
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
     setPointCheck(false);
-    mapCheck.removeEventListener("tap", setUpClickListener);
-    mapCheck.removeObjects(mapCheck.getObjects());
+    // mapCheck.removeEventListener("tap", setUpClickListener);
+    // mapCheck.removeObjects(mapCheck.getObjects());
   };
 
   useEffect(() => {
@@ -693,9 +693,11 @@ const Geozone = () => {
 
   return (
     <>
-    
-      <Box component={"div"} id="map" style={{ width: "100%", height: "100%", position: "relative" }}>
-
+      <Box
+        component={"div"}
+        id="map"
+        style={{ width: "100%", height: "100%", position: "relative" }}
+      >
         <Box
           style={{
             position: "absolute",
@@ -728,7 +730,7 @@ const Geozone = () => {
               }}
             >
               <Tooltip title="Draw Circle Polygon" placement="right" arrow>
-                <DrawIcon sx={{color: "#9063F2"}}/>
+                <DrawIcon sx={{ color: "#9063F2" }} />
               </Tooltip>
             </Button>
 
@@ -741,11 +743,11 @@ const Geozone = () => {
             >
               {geozonesVisible ? (
                 <Tooltip title="Hide Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon sx={{color: "#9063F2"}}/>
+                  <RemoveRedEyeIcon sx={{ color: "#9063F2" }} />
                 </Tooltip>
               ) : (
                 <Tooltip title="Show Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon sx={{color: "#9063F2"}}/>
+                  <RemoveRedEyeIcon sx={{ color: "#9063F2" }} />
                 </Tooltip>
               )}
             </Button>
@@ -776,12 +778,11 @@ const Geozone = () => {
               }}
             >
               <Tooltip title="Draw Point" placement="right" arrow>
-                <PinDropIcon sx={{color: "#9063F2"}} />
+                <PinDropIcon sx={{ color: "#9063F2" }} />
               </Tooltip>
             </Button>
           </Box>
         </Box>
-
       </Box>
 
       <Box
@@ -887,7 +888,6 @@ const Geozone = () => {
 
       {createGeozoneModal()}
       <CustomLoader isLoading={loading} />
-
     </>
   );
 };
