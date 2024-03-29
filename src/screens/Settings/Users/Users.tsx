@@ -101,9 +101,13 @@ const Users = () => {
   };
 
   const tableDataShowHandler = (usersData: any) => {
-    const source = usersData.map((usersData: any) => {
+    const source = usersData.map((usersData: any, index: number) => {
       return {
-        email: <Typography sx={classes.rowColor}>{usersData.email}</Typography>,
+        email: (
+          <Typography key={usersData._id} sx={classes.rowColor}>
+            {usersData.email}
+          </Typography>
+        ),
         firstName: usersData?.firstName,
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
@@ -329,7 +333,7 @@ const Users = () => {
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
           rowsPerPage={perPageData}
-          isExportCSV={searchCampaigner ? false : true}
+          isExportCSV={false}
           onClickExportCSV={handleDownload}
         />
       </Box>
