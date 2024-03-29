@@ -89,6 +89,7 @@ const Dashboard = () => {
         value: 0,
       },
     });
+
   const [recentCampaignStats, setRecentCampaignStats] =
     useState<RecentCampaignStats>({
       id: "",
@@ -118,9 +119,6 @@ const Dashboard = () => {
       },
     });
 
-  useEffect(() => {
-    getStatData();
-  }, []);
   const [activities, setActivities] = useState([]);
 
   const getStatData = async () => {
@@ -131,6 +129,10 @@ const Dashboard = () => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    getStatData();
+  }, []);
 
   const [selectedRecActivityFilter, setSelectedRecActivityFilter] =
     useState<string>("");
@@ -147,6 +149,8 @@ const Dashboard = () => {
       return acc;
     }, {});
   };
+
+  console.log(statData);
 
   const [stats, setStats] = useState({
     executed: {
@@ -173,6 +177,8 @@ const Dashboard = () => {
       redirection: {},
     },
   });
+
+  // console.log(stats, statData);
 
   const fillActivities = (activitiesData: any) => {
     const data = activitiesData.map((activity: any) => {
@@ -288,6 +294,7 @@ const Dashboard = () => {
       </Grid>
     );
   };
+  
   console.log(stats);
   const getStatsCard = () => {
     return (
@@ -315,7 +322,7 @@ const Dashboard = () => {
             >
               <Box>
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}>{}</Typography>
+                <Typography sx={classes.statsValue}>{stat.value}</Typography>
               </Box>
               <Box>
                 <img src={stat.icon} width={60} height={60} />
