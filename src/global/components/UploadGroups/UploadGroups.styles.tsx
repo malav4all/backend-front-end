@@ -221,7 +221,7 @@ const uploadGroupStyles = {
     height: "47px",
     transition: "all .3s ease",
     "&:hover": {
-      background: "#059df5",
+      background: "#9063f2",
     },
   },
 } as const;

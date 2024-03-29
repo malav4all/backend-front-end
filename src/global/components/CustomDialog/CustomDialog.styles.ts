@@ -3,7 +3,7 @@ import { makeStyles } from "@mui/styles";
 
 const customDialogStyles = makeStyles((theme: Theme) => ({
   headerStyle: {
-    background: "#ECF9FF",
+    background: "#f1edff",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

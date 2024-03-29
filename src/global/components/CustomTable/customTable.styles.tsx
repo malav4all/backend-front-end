@@ -30,7 +30,7 @@ const customTableStyles = {
   tableHeaderCell: {
     ...boldFont,
     color: "#FFFFFF",
-    backgroundColor: "#0F2167",
+    backgroundColor: "#4b14c4",
     borderTop: "1px solid #F0F0F0",
     borderBottom: "1px solid #F0F0F0",
     textAlign: "left",

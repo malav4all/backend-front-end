@@ -91,14 +91,21 @@ const LandingPage = (props: CustomProps) => {
             }}
           >
             <Box
-              component="img"
-              src={
-                "https://www.imzcorporate.com/wp-content/uploads/2023/04/imz-logo.png"
-              }
-              sx={classes.logo}
-              height={"72px"}
-              width={"179px"}
-            />
+              sx={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: "2rem"
+              }}
+            >
+              <Box
+                component="img"
+                src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
+                sx={classes.logo}
+                height={"50px"}
+              />
+            </Box>
             <Box>{getComponentBasedOnURL()}</Box>
           </Grid>
         </Grid>

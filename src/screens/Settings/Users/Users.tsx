@@ -137,7 +137,7 @@ const Users = () => {
           <>
             <Tooltip title="Change Password">
               <LockResetIcon
-                htmlColor={"#0F2167"}
+                htmlColor={"#4b14c4"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 onClick={() => {
                   setChangePasswordModal(true);
@@ -152,7 +152,7 @@ const Users = () => {
               }}
             >
               <EditIcon
-                htmlColor={"#0F2167"}
+                htmlColor={"#4b14c4"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
             </Tooltip>

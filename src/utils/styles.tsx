@@ -18,23 +18,23 @@ const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
 const drawerWidth = 300;
 const textLightColor = "#666666";
-const purplePrimaryColor = "#0F2167";
-const pinkDarkColor = "#0352B5";
+const purplePrimaryColor = "#4b14c4";
+const pinkDarkColor = "#9063F2";
 const pureWhiteColor = "#ffffff";
 const primaryHeadingColor = "#001529";
 const primaryGreenColor = "#adc804";
 const primaryBlackColor = "#000000";
-const primaryBlue = "#0F2167";
+const primaryBlue = "#4b14c4";
 const lightTextColor = "#666";
-const lightPinkColor = "#ECF9FF";
-const activeMenuColor = "#0F2167";
+const lightPinkColor = "#f1edff";
+const activeMenuColor = "#4b14c4";
 const darkPurpledColor = "#0675f9";
 const inputLabelRequiredColor = "red";
 const buttonWhiteBg = "#E7E7E7";
 const lightBgColor = "#FAF5FD";
 const chipBackgroundColor = "#FFF1F9";
 const completeChipBackgroundColor = "#E7EEBD";
-const activeMenuBackgroundColor = "#ECF9FF";
+const activeMenuBackgroundColor = "#f1edff";
 const cardBorderColor = "#f0f5f5";
 const warningColor = "red";
 
@@ -110,7 +110,7 @@ const customButtonStyle: CSSProperties = {
   height: "47px",
   transition: "all .3s ease",
   "&:hover": {
-    background: "#059df5",
+    background: "#9063f2",
   },
 };
 

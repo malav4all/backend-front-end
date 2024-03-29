@@ -44,7 +44,7 @@ const CardSection = (props: CustomProps) => {
               cursor: "pointer",
               border:
                 plan.id === props.plan.id
-                  ? "2px solid #0352B5"
+                  ? "2px solid #9063F2"
                   : "1px solid #DDDDDD",
               boxShadow: "2px 7px 19px rgba(0, 0, 0, 0.1)",
               borderRadius: "16px",
