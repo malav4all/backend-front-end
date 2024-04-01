@@ -10,6 +10,13 @@ import {
   Button,
   Stack,
   Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import {
   options,
@@ -47,6 +54,8 @@ import norecentactivity from "../../assets/images/dashboard/norecentactivity.svg
 import { useTitle } from "../../utils/UseTitle";
 import { useDispatch } from "react-redux";
 import { fetchDashboardDetail } from "./service/Dashboard.service";
+import { PieChart, Pie, Cell, Legend } from 'recharts';
+
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -358,12 +367,64 @@ const Dashboard = () => {
   };
 
   const getCampaignerRecipientsGraph = () => {
+    const data = [
+      {
+        user: "User 1",
+        journey: "Journey 1",
+        startDate: "2024-01-01",
+        endDate: "2024-01-10",
+        imei: "5134634513663",
+      },
+      {
+        user: "User 1",
+        journey: "Journey 2",
+        startDate: "2024-01-05",
+        endDate: "2024-01-15",
+        imei: "0917591237514",
+      },
+      {
+        user: "User 1",
+        journey: "Journey 3",
+        startDate: "2024-01-10",
+        endDate: "2024-01-20",
+        imei: "089838592620",
+      },
+      {
+        user: "User 1",
+        journey: "Journey 4",
+        startDate: "2024-01-15",
+        endDate: "2024-01-25",
+        imei: "25059710451920",
+      },
+    ];
     return (
       <Box id="Dashboard_Campaign_Recipients" sx={classes.container}>
         <Typography sx={classes.containerTitle} gutterBottom>
           Ongoing Journey
         </Typography>
-        {getPermissionPlaceholder("Campaign Recipients")}
+
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>User</TableCell>
+              <TableCell>Journey</TableCell>
+              <TableCell>IMEI</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row: any, index: any) => (
+              <TableRow key={index}>
+                <TableCell>{row.user}</TableCell>
+                <TableCell>{row.journey}</TableCell>
+                <TableCell>{row.imei}</TableCell>
+                <TableCell>{row.startDate}</TableCell>
+                <TableCell>{row.endDate}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </Box>
     );
   };
@@ -455,6 +516,13 @@ const Dashboard = () => {
     );
   };
 
+  const data = [
+    { name: 'Online', value: 30 },
+    { name: 'Offline', value: 20 },
+  ];
+  
+  const COLORS = ['#845ADF', '#baa6ea'];
+
   const getRecentActivitiesCampaign = () => {
     return (
       <Grid container spacing={2}>
@@ -472,98 +540,30 @@ const Dashboard = () => {
           <Box sx={classes.container}>
             <Stack direction="row" justifyContent="space-between">
               <Typography sx={classes.containerTitle}>
-                Recent Activities
+                Online/Offline Devices
               </Typography>
-              <FormControl>
-                <Select
-                  id="Dashboard_Recent_Activity_Dropdown"
-                  sx={classes.recactivitydropdown}
-                  value={selectedRecActivityFilter}
-                  onChange={(event: any) =>
-                    setSelectedRecActivityFilter(event.target.value)
-                  }
-                >
-                  {[].map((data: any) => (
-                    <MenuItem
-                      key={data.label}
-                      sx={classes.dropdownOptions}
-                      value={data.value}
-                    >
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </Stack>
-            <Box
-              minHeight={isDesktop ? "300px" : "250px"}
-              height={isDesktop ? "325px" : "250px"}
-              display="flex"
-              justifyContent="center"
-              sx={{
-                overflow: "auto",
-                scrollbarWidth: "thin",
-                "::-webkit-scrollbar": {
-                  display: "none",
-                },
-              }}
-            >
-              <Box sx={{ width: "100%" }}>
-                {isTruthy(activities) ? (
-                  activities.map((activity: any) => {
-                    return (
-                      <Stack direction="column" mt={2}>
-                        <Stack direction="row">
-                          <Typography sx={classes.dashboardDataSize}>
-                            {activity.event == "Audience" ? (
-                              `${activity.metadata.count} contacts were imported for ${activity.metadata.name}`
-                            ) : (
-                              <Stack direction="row" alignItems="center">
-                                <Typography sx={classes.dashboardDataSize}>
-                                  {activity.metadata.name}
-                                </Typography>{" "}
-                                <Box sx={classes.statusBox}>
-                                  {activity.metadata.status}
-                                </Box>
-                              </Stack>
-                            )}
-                          </Typography>
-                        </Stack>
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          spacing={1}
-                          mb={1}
-                        >
-                          <Typography sx={classes.dates}>
-                            {moment(activity.eventDate).format("MMMM Do, yyyy")}
-                          </Typography>
-                          <Box
-                            sx={{
-                              borderRadius: "50%",
-                              height: "5px",
-                              width: "5px",
-                              backgroundColor: "#595959",
-                            }}
-                          ></Box>
-                          <Typography sx={classes.tags}>
-                            {activity.event}
-                          </Typography>
-                        </Stack>
-                        <Divider />
-                      </Stack>
-                    );
-                  })
-                ) : (
-                  <Box minHeight="300px" display="flex">
-                    {getNoActivityPlaceholder(
-                      "No Activity",
-                      "It appears that nothing has happened recently!"
-                    )}
-                  </Box>
-                )}
-              </Box>
-            </Box>
+            <PieChart width={400} height={400}>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                // innerRadius={60}
+                outerRadius={80}
+                fill="#8884d8"
+                paddingAngle={5}
+                dataKey="value"
+                label
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Legend verticalAlign="bottom" height={36} />
+            </PieChart>
           </Box>
         </Grid>
         <Grid
