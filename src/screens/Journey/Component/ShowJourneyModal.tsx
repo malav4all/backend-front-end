@@ -6,75 +6,32 @@ interface ViewJourneyProps {
 
 const ShowJourneyModal = (props: ViewJourneyProps) => {
   useEffect(() => {
+    const routeOrigin = props?.location?.state?.routeOrigin;
     const coordinates = props?.location?.state?.coordinates;
 
-    function calculateRoutes(platform: any, coords: number[]) {
-      for (let i = 0; i < coords.length - 3; i += 2) {
-        const start = `${coords[i]},${coords[i + 1]}`;
-        const end = `${coords[i + 2]},${coords[i + 3]}`;
-        addMarkerToMap(platform, start, "Start");
-        addMarkerToMap(platform, end, "End");
-        calculateRouteFromAtoB(platform, start, end);
-      }
-    }
-    function addMarkerToMap(platform: any, position: string, label: string) {
-      const coords = position.split(",");
-      const marker = new window.H.map.Marker({
-        lat: parseFloat(coords[0]),
-        lng: parseFloat(coords[1]),
-      });
-      map.addObject(marker);
+    if (!routeOrigin || routeOrigin.length < 2) {
+      console.error("Invalid routeOrigin:", routeOrigin);
+      return;
     }
 
-    function calculateRouteFromAtoB(platform: any, start: string, end: string) {
-      var router = platform.getRoutingService(null, 8),
-        routeRequestParams = {
-          routingMode: "fast",
-          transportMode: "car",
-          origin: start,
-          destination: end,
-          return:
-            "polyline,turnByTurnActions,actions,instructions,travelSummary",
-        };
-
-      router.calculateRoute(routeRequestParams, onSuccess, onError);
-    }
-
-    function onSuccess(result: any) {
-      var route = result.routes[0];
-
-      addRouteShapeToMap(route);
-      addManueversToMap(route);
-      // addWaypointsToPanel(route);
-      // addManueversToPanel(route);
-      addSummaryToPanel(route);
-      // ... etc.
-    }
-
-    function onError() {
-      alert("Can't reach the remote server");
-    }
-
-    var mapContainer = document.getElementById("map");
-
-    var platform = new window.H.service.Platform({
+    const platform = new window.H.service.Platform({
       apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
     });
 
-    var defaultLayers = platform.createDefaultLayers();
-
-    var map = new window.H.Map(mapContainer, defaultLayers.vector.normal.map, {
-      center: { lat: 28.633, lng: 77.2196 },
-      zoom: 13,
-      pixelRatio: window.devicePixelRatio || 1,
+    const defaultLayers = platform.createDefaultLayers({
+      tileSize: 256,
+      ppi: 320,
     });
-
-    // window.addEventListener("resize", () => map.getViewPort().resize());
-
-    new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));
-
+    const map = new window.H.Map(
+      document.getElementById("map"),
+      defaultLayers.vector.normal.map,
+      {
+        center: { lat: 28.633, lng: 77.2196 },
+        zoom: 13,
+      }
+    );
     var ui = window.H.ui.UI.createDefault(map, defaultLayers);
-
+    map.addLayer(defaultLayers.vector.normal.traffic);
     var bubble: any;
 
     function openBubble(position: any, text: any) {
@@ -92,160 +49,87 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
       }
     }
 
+    window.addEventListener("resize", () => map.getViewPort().resize());
+
+    const router = platform.getRoutingService(null, 8);
+
+    const onSuccess = (result: any) => {
+      addRouteShapeToMap(result.routes[0].sections);
+    };
+
+    const onError = (error: any) => {
+      alert("Can't reach the remote server");
+    };
+
+    const routeRequestParams = {
+      routingMode: "fast",
+      transportMode: "car",
+      origin: `${routeOrigin[0].lat},${routeOrigin[0].lng}`,
+      destination: `${routeOrigin[1].lat},${routeOrigin[1].lng}`,
+      return: "polyline",
+      via: new window.H.service.Url.MultiValueQueryParameter(
+        coordinates.map((wp: any) => `${wp.lat},${wp.lng}`)
+      ),
+    };
+
+    router.calculateRoute(routeRequestParams, onSuccess, onError);
+    const geocoder = platform.getSearchService();
     function addRouteShapeToMap(route: any) {
-      route.sections.forEach((section: any) => {
-        // decode LineString from the flexible polyline
-        let linestring = window.H.geo.LineString.fromFlexiblePolyline(
-          section.polyline
+      const lineStrings: any = [];
+      const waypointMarkers: any = [];
+      route.forEach((section: any) => {
+        lineStrings.push(
+          window.H.geo.LineString.fromFlexiblePolyline(section.polyline)
         );
+      });
 
-        let polyline = new window.H.map.Polyline(linestring, {
-          style: {
-            lineWidth: 4,
-            strokeColor: "rgba(0, 128, 255, 0.7)",
+      coordinates.forEach((waypoint: any) => {
+        const waypointMarker = new window.H.map.Marker({
+          lat: waypoint.lat,
+          lng: waypoint.lng,
+        });
+        waypointMarkers.push(waypointMarker);
+        geocoder.reverseGeocode(
+          {
+            at: `${waypoint.lat},${waypoint.lng}`,
           },
-        });
-
-        map.addObject(polyline);
-        // And zoom to its bounding rectangle
-        map.getViewModel().setLookAtData({
-          bounds: polyline.getBoundingBox(),
-        });
-      });
-    }
-
-    function addManueversToMap(route: any) {
-      var svgMarkup =
-          '<svg width="18" height="18" ' +
-          'xmlns="http://www.w3.org/2000/svg">' +
-          '<circle cx="8" cy="8" r="8" ' +
-          'fill="#1b468d" stroke="white" stroke-width="1" />' +
-          "</svg>",
-        dotIcon = new window.H.map.Icon(svgMarkup, { anchor: { x: 8, y: 8 } }),
-        group = new window.H.map.Group(),
-        i,
-        j;
-
-      route.sections.forEach((section: any) => {
-        let poly = window.H.geo.LineString.fromFlexiblePolyline(
-          section.polyline
-        ).getLatLngAltArray();
-
-        let actions = section.actions;
-
-        for (i = 0; i < actions.length; i += 1) {
-          let action = actions[i];
-          var marker = new window.H.map.Marker(
-            {
-              lat: poly[action.offset * 3],
-              lng: poly[action.offset * 3 + 1],
-            },
-            { icon: dotIcon }
-          );
-          marker.instruction = action.instruction;
-          group.addObject(marker);
-        }
-
-        group.addEventListener(
-          "tap",
-          function (evt: any) {
-            map.setCenter(evt.target.getGeometry());
-            openBubble(evt.target.getGeometry(), evt.target.instruction);
+          (result: any) => {
+            const locationName = result.items[0].address.label;
+            waypointMarker.label = locationName;
           },
-          false
-        );
-
-        // Add the maneuvers group to the map
-        map.addObject(group);
-      });
-    }
-
-    function addWaypointsToPanel(route: any) {
-      var nodeH3 = document.createElement("h3");
-      var labels: any = [];
-
-      route.sections.forEach((section: any) => {
-        labels.push(section.turnByTurnActions[0].nextRoad?.name[0].value);
-        labels.push(
-          section.turnByTurnActions[section.turnByTurnActions.length - 1]
-            .currentRoad.name[0].value
+          (error: any) => {
+            console.error("Error reverse geocoding:", error);
+          }
         );
       });
 
-      nodeH3.textContent = labels.join(" - ");
-      // routeInstructionsContainer!.innerHTML = "";
-      // routeInstructionsContainer!?.appendChild(nodeH3);
-    }
-
-    function addSummaryToPanel(route: any) {
-      let distance = 0;
-      let duration = 0;
-
-      route.sections.forEach((section: any) => {
-        distance += section.travelSummary.length;
-        duration += section.travelSummary.duration;
+      const multiLineString = new window.H.geo.MultiLineString(lineStrings);
+      const routeLine = new window.H.map.Polyline(multiLineString, {
+        style: {
+          strokeColor: "blue",
+          lineWidth: 5,
+        },
       });
 
-      // Convert distance to kilometers
-      let distanceInKm = (distance / 1000).toFixed(2);
+      const startMarker = new window.H.map.Marker(routeOrigin[0]);
 
-      // Convert duration to hours and minutes
-      let hours = Math.floor(duration / 3600);
-      let minutes = Math.floor((duration % 3600) / 60);
+      const endMarker = new window.H.map.Marker(routeOrigin[1]);
 
-      var summaryDiv = document.createElement("div"),
-        content =
-          "<b>Total distance</b>: " +
-          distanceInKm +
-          " km. <br />" +
-          "<b>Travel Time</b>: " +
-          (hours > 0 ? hours + " hours " : "") +
-          (minutes > 0 ? minutes + " minutes" : "");
-
-      summaryDiv.style.fontSize = "small";
-      summaryDiv.style.marginLeft = "5%";
-      summaryDiv.style.marginRight = "5%";
-      summaryDiv.innerHTML = content;
-
-      // routeInstructionsContainer!.appendChild(summaryDiv);
-    }
-
-    function addManueversToPanel(route: any) {
-      var nodeOL = document.createElement("ol");
-
-      nodeOL.style.fontSize = "small";
-      nodeOL.style.marginLeft = "5%";
-      nodeOL.style.marginRight = "5%";
-      nodeOL.className = "directions";
-
-      route.sections.forEach((section: any) => {
-        section.actions.forEach((action: any, idx: any) => {
-          var li = document.createElement("li"),
-            spanArrow = document.createElement("span"),
-            spanInstruction = document.createElement("span");
-
-          spanArrow.className =
-            "arrow " + (action.direction || "") + action.action;
-          spanInstruction.innerHTML = section.actions[idx].instruction;
-          li.appendChild(spanArrow);
-          li.appendChild(spanInstruction);
-
-          nodeOL.appendChild(li);
-        });
-      });
-
-      // routeInstructionsContainer!?.appendChild(nodeOL) as any;
-    }
-
-    function toMMSS(duration: any) {
-      return (
-        Math.floor(duration / 60) + " minutes " + (duration % 60) + " seconds."
+      const group = new window.H.map.Group();
+      group.addObjects([routeLine, startMarker, endMarker, ...waypointMarkers]);
+      group.addEventListener(
+        "tap",
+        function (evt: any) {
+          map.setCenter(evt.target.getGeometry());
+          openBubble(evt.target.getGeometry(), evt.target.label);
+        },
+        false
       );
+      map.addObject(group);
+      map.getViewModel().setLookAtData({ bounds: group.getBoundingBox() });
     }
 
-    if (coordinates && coordinates.length >= 4) {
-      calculateRoutes(platform, coordinates);
-    }
+    new window.H.mapevents.Behavior(new window.H.mapevents.MapEvents(map));
   }, []);
 
   return <div id="map" style={{ width: "100%", height: "100%" }}></div>;
