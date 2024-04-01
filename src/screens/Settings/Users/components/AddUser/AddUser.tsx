@@ -1,5 +1,4 @@
 import {
-  Autocomplete,
   Box,
   FormHelperText,
   Grid,
@@ -229,25 +228,15 @@ const AddUser = (props: CustomProps) => {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomContactNumberInput
+          <CustomInput
             label="Contact Number"
+            name="mobileNumber"
             required={true}
             id="add_user_contact_number_filed"
             value={userFormFields.mobileNumber?.value}
             placeHolder="Enter Your Mobile Number"
-            onChange={(phone: any) => {
-              setUserFormFields({
-                ...userFormFields,
-                mobileNumber: {
-                  value: phone,
-                  error: "",
-                },
-              });
-            }}
-            error={
-              !isTruthy(userFormFields.mobileNumber?.value) &&
-              userFormFields.mobileNumber?.error
-            }
+            onChange={handleFormDataChange}
+            error={userFormFields?.mobileNumber?.error}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>

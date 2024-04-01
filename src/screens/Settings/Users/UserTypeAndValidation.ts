@@ -1,6 +1,4 @@
-import strings from "../../../global/constants/StringConstants";
 import { UserFields } from "../../../models/interfaces";
-import { PhoneNumberUtil } from "google-libphonenumber";
 import { store } from "../../../utils/store";
 
 export const userTableHeader = [
@@ -96,15 +94,6 @@ export const changePasswordField = () => {
   } as any;
 };
 
-const isPhoneValid = (phone: string) => {
-  try {
-    const phoneUtil = PhoneNumberUtil?.getInstance();
-    return phoneUtil?.isValidNumber(phoneUtil?.parseAndKeepRawInput(phone));
-  } catch (error: any) {
-    return false;
-  }
-};
-
 export const validateAddUserForm = (userFormFields: any, edit = false) => {
   let isValid = true;
   let errors: any = { ...userFormFields };
@@ -123,9 +112,16 @@ export const validateAddUserForm = (userFormFields: any, edit = false) => {
     isValid = false;
   }
 
-  if (!errors?.mobileNumber?.value) {
-    errors.mobileNumber.error = "Please enter mobile number";
+  if (!errors.mobileNumber.value) {
+    errors.mobileNumber.error = "Please enter a mobile number";
     isValid = false;
+  }
+  if (errors.mobileNumber.value) {
+    const re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+    if (!re.test(errors.mobileNumber.value)) {
+      errors.mobileNumber.error = "Mobile Number must be of 10 digits!";
+      isValid = false;
+    }
   }
 
   if (!errors?.userName?.value) {
