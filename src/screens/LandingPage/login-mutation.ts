@@ -56,6 +56,7 @@ export const VERIFYOTP = gql`
     verifyOtp(input: $input) {
       success
       message
+      email
     }
   }
 `;
