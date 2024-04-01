@@ -43,11 +43,9 @@ import {
   fetchJourney,
   searchJourneys,
 } from "./service/journey.service";
-import ClearIcon from "@mui/icons-material/Clear";
 import { store } from "../../utils/store";
 import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { getDistance } from "geolib";
 import history from "../../utils/history";
 import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -135,28 +133,38 @@ const Journey = () => {
     }
   };
   const calculateDistance = async () => {
+    const firstCoordinate = coordinatesArray?.shift();
+    const lastCoordinate = coordinatesArray?.pop();
+    const viaParams = coordinatesArray.map(
+      (point: any) => `via=${point.latitude},${point.longitude}`
+    );
+
+    const viaQueryString = viaParams.join("&");
     const routeRequestParams = {
       routingMode: "fast",
       transportMode: "car",
-      origin: `${coordinatesArray[0].latitude},${coordinatesArray[0].longitude}`,
-      destination: `${coordinatesArray[coordinatesArray.length - 1].latitude},${
-        coordinatesArray[coordinatesArray.length - 1].longitude
-      }`,
+      origin: `${firstCoordinate.latitude},${firstCoordinate.longitude}`,
+      destination: `${lastCoordinate.latitude},${lastCoordinate.longitude}`,
       return: "travelSummary",
     };
     const url = `https://router.hereapi.com/v8/routes?routingMode=${
       routeRequestParams.routingMode
     }&transportMode=${routeRequestParams.transportMode}&origin=${
       routeRequestParams.origin
-    }&destination=${routeRequestParams.destination}&return=${
+    }&destination=${routeRequestParams.destination}&${viaQueryString}&return=${
       routeRequestParams.return
     }&apiKey=${"7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI"}`;
     const res = await fetch(url);
     const data = await res.json();
     const route = data.routes[0];
-    const section = route.sections[0];
-    const totalDistance = section.travelSummary.length / 1000;
-    const totalDuration = section.travelSummary.duration / 3600;
+    let totalDistance = 0;
+    let totalDuration = 0;
+    route.sections.forEach((section: any) => {
+      totalDistance += section.travelSummary.length;
+      totalDuration += section.travelSummary.duration;
+    });
+    totalDistance /= 1000;
+    totalDuration /= 3600;
     return {
       totalDistance: totalDistance.toFixed(2),
       totalDuration: totalDuration.toFixed(2),
@@ -243,10 +251,21 @@ const Journey = () => {
 
   const tableRender = (tableData: any) => {
     const data = tableData.map((item: any, index: number) => {
-      const coordinates = item.journeyData.map(
-        (coor: any) => coor?.geoCodeData?.geometry?.coordinates
-      );
-
+      const coordinates = item.journeyData.map((coor: any) => {
+        const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
+        return { lat, lng };
+      });
+      const firstCoordinate = coordinates?.shift();
+      const lastCoordinate = coordinates?.pop();
+      const routeOrigin: { lat: number; lng: number }[] = [];
+      if (firstCoordinate) {
+        const { lat: firstLat, lng: firstLong } = firstCoordinate;
+        routeOrigin.push({ lat: firstLat, lng: firstLong });
+      }
+      if (lastCoordinate) {
+        const { lat: lastLat, lng: lastLong } = lastCoordinate;
+        routeOrigin.push({ lat: lastLat, lng: lastLong });
+      }
       return {
         key: item._id,
         journeyName: item?.journeyName,
@@ -260,7 +279,8 @@ const Journey = () => {
                 history.push({
                   pathname: "/view-journey",
                   state: {
-                    coordinates: coordinates.flat(),
+                    coordinates: coordinates,
+                    routeOrigin,
                   },
                 });
               }}
@@ -500,15 +520,7 @@ const Journey = () => {
           </Grid>
           {locationData?.map((item: any, index: number) => (
             <>
-              <Grid
-                item
-                xs={12}
-                sm={3}
-                md={2.5}
-                lg={2.5}
-                xl={2.5}
-                key={index}
-              >
+              <Grid item xs={12} sm={3} md={2.5} lg={2.5} xl={2.5} key={index}>
                 <Box>
                   <InputLabel sx={classes.inputLabel} shrink>
                     {item.name}
