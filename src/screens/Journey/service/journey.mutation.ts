@@ -58,7 +58,8 @@ export const COORDINATES_SUBSCRIPTION = gql`
   subscription CoordinatesUpdated($topic: String!) {
     coordinatesUpdated(topic: $topic) {
       lat
-      long
+      lng
+      direction
     }
   }
 `;
