@@ -20,6 +20,7 @@ export const FETCH_JOURNEY = gql`
       data {
         _id
         journeyName
+        imei
         startDate
         endDate
         totalDistance
@@ -74,6 +75,7 @@ export const SEARCH_JOURNEY = gql`
       }
       data {
         _id
+        imei
         journeyName
         startDate
         endDate
