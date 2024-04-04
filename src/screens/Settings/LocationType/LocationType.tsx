@@ -132,7 +132,7 @@ const LocationType = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search asset..."
+        placeHolder="Search location..."
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

@@ -25,6 +25,7 @@ import Geozone from "../../Geozone/Geozone";
 import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
+import Trackplay from "../../Trackplay/Trackplay";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -106,6 +107,14 @@ const Layout = () => {
             path={"/live-tracking"}
             component={ViewLiveTracking}
             componentName={strings.LIVE_TRACKING}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trackplay"}
+            component={Trackplay}
+            componentName={strings.TRACK_PLAY}
           />
 
           <PrivateRoute

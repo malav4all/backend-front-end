@@ -79,6 +79,17 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
+    {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Track Play",
+      link: `${"/trackplay"}`,
+      pageName: strings.LOCATION,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {

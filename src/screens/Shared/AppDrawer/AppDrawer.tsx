@@ -259,16 +259,12 @@ const AppDrawer = (props: CustomProps) => {
       <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
           <img
-            src={
-              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
-            }
+            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
             height="13px"
           />
         ) : (
           <img
-            src={
-              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
-            }
+            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
             height="50px"
           />
         )}
