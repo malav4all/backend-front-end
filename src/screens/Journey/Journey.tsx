@@ -9,6 +9,7 @@ import {
   CustomAppHeader,
   CustomButton,
   CustomInput,
+  CustomPaper,
   CustomTable,
 } from "../../global/components";
 import {
@@ -21,6 +22,7 @@ import {
   InputLabel,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import journeyStyles from "./Journey.styles";
@@ -28,6 +30,7 @@ import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
+  disabledBackgroundColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
@@ -269,10 +272,30 @@ const Journey = () => {
       return {
         key: item._id,
         journeyName: item?.journeyName,
+        imei: item?.imei,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
         journeyData: (
-          <>
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography sx={classes.liveTrackingTooltipText}>
+                  {"View Journey"}
+                </Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
+              },
+            }}
+          >
             <VisibilityIcon
               key={item._id}
               onClick={() => {
@@ -285,13 +308,32 @@ const Journey = () => {
                 });
               }}
             />
-          </>
+          </Tooltip>
         ),
         createdBy: item?.createdBy,
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
         action: (
-          <>
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography sx={classes.liveTrackingTooltipText}>
+                  {"Live Tracking"}
+                </Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
+              },
+            }}
+          >
             <VisibilityIcon
               onClick={() => {
                 history.push({
@@ -299,7 +341,7 @@ const Journey = () => {
                 });
               }}
             />
-          </>
+          </Tooltip>
         ),
       };
     });

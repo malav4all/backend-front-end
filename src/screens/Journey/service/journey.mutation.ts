@@ -20,6 +20,7 @@ export const FETCH_JOURNEY = gql`
       data {
         _id
         journeyName
+        imei
         startDate
         endDate
         totalDistance

@@ -1,5 +1,6 @@
 export const journeyTableHeader = [
   { name: "Journey Name", field: "journeyName" },
+  { name: "Imei", field: "imei" },
   { name: "Location", field: "journeyData" },
   { name: "Created By", field: "createdBy" },
   { name: "Start Date", field: "startDate" },

@@ -188,6 +188,12 @@ const journeyStyles = {
   errorStyle: {
     marginLeft: "14px",
   },
+  liveTrackingTooltipText: {
+    padding: "10px",
+    color: "white",
+    fontSize: "14px",
+    ...regularFont,
+  },
 };
 
 export default journeyStyles;
