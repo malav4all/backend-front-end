@@ -75,6 +75,7 @@ export const SEARCH_JOURNEY = gql`
       }
       data {
         _id
+        imei
         journeyName
         startDate
         endDate

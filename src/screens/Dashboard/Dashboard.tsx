@@ -150,7 +150,6 @@ const Dashboard = () => {
     }, {});
   };
 
-  console.log(statData);
 
   const [stats, setStats] = useState({
     executed: {
@@ -178,7 +177,6 @@ const Dashboard = () => {
     },
   });
 
-  // console.log(stats, statData);
 
   const fillActivities = (activitiesData: any) => {
     const data = activitiesData.map((activity: any) => {
@@ -295,7 +293,6 @@ const Dashboard = () => {
     );
   };
 
-  console.log(stats);
   const getStatsCard = () => {
     return (
       <Grid container spacing={2}>

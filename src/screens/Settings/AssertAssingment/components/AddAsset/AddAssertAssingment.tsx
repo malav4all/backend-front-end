@@ -128,7 +128,7 @@ const AddAssetAssingment = (props: CustomProps) => {
       const res = await fetchJourney({
         input: {
           page: -1,
-          limit: 0,
+          limit: 10,
         },
       });
       setJourneyData(res.fetchJourney.data);

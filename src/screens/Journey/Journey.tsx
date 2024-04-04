@@ -253,8 +253,8 @@ const Journey = () => {
   };
 
   const tableRender = (tableData: any) => {
-    const data = tableData.map((item: any, index: number) => {
-      const coordinates = item.journeyData.map((coor: any) => {
+    const data = tableData?.map((item: any, index: number) => {
+      const coordinates = item?.journeyData?.map((coor: any) => {
         const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
         return { lat, lng };
       });
@@ -410,7 +410,7 @@ const Journey = () => {
       const res = await searchJourneys({
         input: {
           search: searchJourney,
-          page: 1,
+          page: page,
           limit: 10,
         },
       });
@@ -452,8 +452,8 @@ const Journey = () => {
           handleRowsPerPage={handlePerPageData}
           paginationCount={count}
           // rowsPerPage={rowsPerPage}
-          pageNumber={searchJourney ? searchPageNumber : page}
-          setPage={searchJourney ? setSearchPageNumber : setPage}
+          pageNumber={page}
+          setPage={setPage}
           handlePerPageData={handlePerPageData}
           perPageData={rowsPerPage}
           rowsPerPage={rowsPerPage}
