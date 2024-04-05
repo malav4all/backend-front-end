@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { COORDINATES_SUBSCRIPTION } from "../service/journey.mutation";
 
 const ViewLiveTracking = () => {
-  const [map, setMap] = useState<any>(null); // State to hold the map object
-  const [arrowMarker, setArrowMarker] = useState<any>(null); // State to hold the arrow marker object
+  const [map, setMap] = useState<any>(null);
+  const [currentMarker, setCurrentMarker] = useState<any>(null);
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -26,7 +26,7 @@ const ViewLiveTracking = () => {
       new window.H.mapevents.MapEvents(initialMap)
     );
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    setMap(initialMap); // Set the map object in state
+    setMap(initialMap);
     return () => {
       window.removeEventListener("resize", () =>
         initialMap.getViewPort().resize()
@@ -35,34 +35,43 @@ const ViewLiveTracking = () => {
     };
   }, []);
 
-  const updateArrowMarker = (lat: any, lng: any) => {
-    if (!map) return;
-
-    if (!arrowMarker) {
-      const svgMarkup =
-        '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg">' +
-        '<path d="M12 24l-8.47-10.994h5.219v-11.006h6.562v11.006h5.219z" fill="#000"/>' +
-        "</svg>";
-      const icon = new window.H.map.Icon(svgMarkup, {
-        size: { w: 24, h: 24 },
-        anchor: { x: 12, y: 12 },
-      });
-      const marker = new window.H.map.Marker({ lat, lng }, { icon });
-      map.addObject(marker);
-      setArrowMarker(marker);
-    } else {
-      arrowMarker.setGeometry({ lat, lng });
-    }
-  };
-
   const { data } = useSubscription(COORDINATES_SUBSCRIPTION, {
-    variables: { topic: "malav_Live" },
+    variables: { topic: "track/864180068905939" },
   });
+
   useEffect(() => {
     if (data && data.coordinatesUpdated) {
-      data.coordinatesUpdated.forEach((item: any) =>
-        updateArrowMarker(item.lat, item.long)
+      const { lat, lng, direction } = data.coordinatesUpdated;
+      const domIconElement = document.createElement("div");
+      domIconElement.style.margin = "-20px 0 0 -20px";
+
+      domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
+      <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
+        fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+    </svg>`;
+
+      if (currentMarker) {
+        map.removeObject(currentMarker);
+      }
+
+      const newMarker = new window.H.map.DomMarker(
+        { lat, lng },
+        {
+          icon: new window.H.map.DomIcon(domIconElement, {
+            onAttach: function (
+              clonedElement: any,
+              domIcon: any,
+              domMarker: any
+            ) {
+              const clonedContent =
+                clonedElement.getElementsByTagName("svg")[0];
+              clonedContent.style.transform = "rotate(" + direction + "deg)";
+            },
+          }),
+        }
       );
+      setCurrentMarker(newMarker);
+      map.addObject(newMarker);
     }
   }, [data]);
 

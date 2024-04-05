@@ -20,6 +20,7 @@ export const FETCH_JOURNEY = gql`
       data {
         _id
         journeyName
+        imei
         startDate
         endDate
         totalDistance
@@ -58,7 +59,8 @@ export const COORDINATES_SUBSCRIPTION = gql`
   subscription CoordinatesUpdated($topic: String!) {
     coordinatesUpdated(topic: $topic) {
       lat
-      long
+      lng
+      direction
     }
   }
 `;
@@ -73,6 +75,7 @@ export const SEARCH_JOURNEY = gql`
       }
       data {
         _id
+        imei
         journeyName
         startDate
         endDate

@@ -58,7 +58,7 @@ const AssetAssingment = () => {
   >([]);
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
   const [roles, setRoles] = useState([]);
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0);
 
   const [selectedAssetAssingmentRowData, setSelectedAssetAssingmentRowData] =
     useState<any>({});
@@ -68,14 +68,6 @@ const AssetAssingment = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
   // const [changePasswordModal, setChangePasswordModal] = useState(false);
-
-  useEffect(() => {
-    if (searchCampaigner === "") {
-      setPageNumber(1);
-      setSearchPageNumber(1);
-      setPerPageData(10);
-    }
-  }, [searchCampaigner, searchPageNumber]);
 
   useEffect(() => {
     if (searchCampaigner) {
@@ -92,7 +84,6 @@ const AssetAssingment = () => {
     setPageNumber(newPage);
   };
   const handlePerPageData = (event: any) => {
-    setPageNumber(1);
     setSearchPageNumber(1);
     setPerPageData(event.target.value);
   };
@@ -176,7 +167,6 @@ const AssetAssingment = () => {
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchCampaigner(SearchEvent.target.value.trim().toLowerCase());
-      setPageNumber(1);
       setPerPageData(10);
     } else {
       setSearchCampaigner("");
@@ -262,8 +252,8 @@ const AssetAssingment = () => {
           handlePageChange={
             searchCampaigner ? handleSearchChangePage : handleChangePage
           }
-          pageNumber={searchCampaigner ? searchPageNumber : pageNumber}
-          setPage={searchCampaigner ? setSearchPageNumber : setPageNumber}
+          pageNumber={pageNumber}
+          setPage={setPageNumber}
           isLoading={isLoading}
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
