@@ -200,6 +200,12 @@ const CustomTable = (props: CustomProps) => {
                   ))}
                 </Select>
               </Box>
+              <Box style={{ display: "flex", alignItems: "center" }}>
+                <InputLabel sx={classes.regularFonts}>
+                  Total Records:
+                </InputLabel>
+                <Typography>{props?.paginationCount}</Typography>
+              </Box>
             </>
           )}
           <Box display={"flex"} alignContent={"center"} alignItems={"center"}>
