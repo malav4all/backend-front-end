@@ -20,7 +20,7 @@ import trackPlayStyle from "../Trackplay.styles";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { isTruthy, openErrorNotification } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
-import { getAddressDetailsByPincode } from "../service/trackplay.service";
+// import { getAddressDetailsByPincode } from "../service/trackplay.service";
 import _ from "lodash";
 
 interface TrackPlayProps {
@@ -42,14 +42,14 @@ const CreateTrackPlay = ({
   const classes = trackPlayStyle;
   const [zipCodeDate, setZipCodeData] = useState([]);
 
-  const fetchZipCodeHandler = async (value: any) => {
-    try {
-      const res = await getAddressDetailsByPincode(value);
-      setZipCodeData(res);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
+  // const fetchZipCodeHandler = async (value: any) => {
+  //   try {
+  //     // const res = await getAddressDetailsByPincode(value);
+  //     setZipCodeData(res);
+  //   } catch (error: any) {
+  //     openErrorNotification(error.message);
+  //   }
+  // };
 
   const updateUserDialogTitle = () => {
     return (
@@ -204,7 +204,7 @@ const CreateTrackPlay = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        {/* <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
               Zip Code
@@ -277,7 +277,7 @@ const CreateTrackPlay = ({
               )}
             />
           </Box>
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput

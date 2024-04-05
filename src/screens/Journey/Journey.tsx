@@ -524,12 +524,14 @@ const Journey = () => {
           </Grid>
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Box>
+
               <InputLabel sx={classes.inputLabel} shrink>
                 Start Location
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
               </InputLabel>
+
               <Autocomplete
                 sx={classes.emailDropDownStyle}
                 id="update_user_manager_field"
@@ -540,7 +542,7 @@ const Journey = () => {
                         !Object.values(selectedValues).find(
                           (selected: any) => selected?.value === tItem
                         )
-                    ) // Filter out selected values
+                    ) 
                     .map((item: any) => ({
                       key: item._id,
                       label: `${item.name} - ${item.description}`,
@@ -565,6 +567,7 @@ const Journey = () => {
                   );
                 }}
               />
+
             </Box>
           </Grid>
           {locationData?.map((item: any, index: number) => (
