@@ -41,7 +41,14 @@ const trackplayStyle = {
       },
     },
   },
-
+  header: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#FCF5FF",
+    padding: "16px",
+    paddingBottom: "64px",
+    paddingTop: "35px",
+  },
   boldFonts: {
     ...boldFont,
     fontSize: getRelativeFontSize(13),
@@ -150,8 +157,8 @@ const trackplayStyle = {
       borderRadius: "12px !important",
     },
   },
-  errorStyle:{
-    marginLeft:"14px"
-  }
+  errorStyle: {
+    marginLeft: "14px",
+  },
 } as const;
 export default trackplayStyle;

@@ -54,8 +54,10 @@ import norecentactivity from "../../assets/images/dashboard/norecentactivity.svg
 import { useTitle } from "../../utils/UseTitle";
 import { useDispatch } from "react-redux";
 import { fetchDashboardDetail } from "./service/Dashboard.service";
-import { PieChart, Pie, Cell, Legend } from 'recharts';
-
+import { PieChart, Pie, Cell, Legend } from "recharts";
+import { FaBell } from "react-icons/fa6";
+import CustomTable from "../../global/components/CustomTableExpandRow/CustomTableRowExpand";
+import { MdEdit } from "react-icons/md";
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -159,7 +161,6 @@ const Dashboard = () => {
     }, {});
   };
 
-
   const [stats, setStats] = useState({
     executed: {
       title: "Total Journey",
@@ -173,19 +174,18 @@ const Dashboard = () => {
     outbounds: {
       title: "Total Users",
       value: statData?.totalUser,
-      icon: email,
+
       resource: strings.campaign,
       redirection: {},
     },
     audience: {
       title: "Ongoing Journey",
       value: statData?.ongoingJourney,
-      icon: recipients,
+
       resource: strings.contact,
       redirection: {},
     },
   });
-
 
   const fillActivities = (activitiesData: any) => {
     const data = activitiesData.map((activity: any) => {
@@ -268,6 +268,7 @@ const Dashboard = () => {
             Hello, {getUserName()}!
           </Typography>
         </Grid>
+
         <Grid
           item
           xs={12}
@@ -314,7 +315,7 @@ const Dashboard = () => {
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "8px",
+                padding: "1rem 1.5rem",
                 backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
@@ -330,6 +331,7 @@ const Dashboard = () => {
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
                 <Typography sx={classes.statsValue}>10</Typography>
               </Box>
+
               <Box>
                 <img src={stat.icon} width={60} height={60} />
               </Box>
@@ -340,30 +342,7 @@ const Dashboard = () => {
     );
   };
 
-  const getPermissionPlaceholder = (name: string) => {
-    return (
-      <Stack direction="column" justifyContent="center" alignItems="center">
-        <img src={norecentactivity} alt="forbidden" width="70%" />
-        <Box sx={{ textAlign: "center" }} p={1}></Box>
-      </Stack>
-    );
-  };
-
-  const getNoActivityPlaceholder = (title: string, subtitle: string) => {
-    return (
-      <Stack direction="column" justifyContent="center" alignItems="center">
-        <img src={norecentactivity} alt={title} width="100%" />
-        <Box sx={{ textAlign: "center" }} p={1}>
-          <Typography sx={classes.noactivityheading}>{title}</Typography>
-          <Typography sx={{ ...regularFont, textAlign: "center" }}>
-            {subtitle}
-          </Typography>
-        </Box>
-      </Stack>
-    );
-  };
-
-  const getCampaignerRecipientsGraph = () => {
+  const getAlerts = () => {
     const data = [
       {
         user: "User 1",
@@ -395,33 +374,179 @@ const Dashboard = () => {
       },
     ];
     return (
-      <Box id="Dashboard_Campaign_Recipients" sx={classes.container}>
-        <Typography sx={classes.containerTitle} gutterBottom>
-          Ongoing Journey
+      <Box
+        id="Alerts_pannel"
+        sx={{
+          padding: "1.5rem 1.5rem",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "1.5rem",
+            fontWeight: "Bold",
+            marginTop: "-0.5rem",
+          }}
+          gutterBottom
+        >
+          Alerts
         </Typography>
 
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User</TableCell>
-              <TableCell>Journey</TableCell>
-              <TableCell>IMEI</TableCell>
-              <TableCell>Start Date</TableCell>
-              <TableCell>End Date</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row: any, index: any) => (
-              <TableRow key={index}>
-                <TableCell>{row.user}</TableCell>
-                <TableCell>{row.journey}</TableCell>
-                <TableCell>{row.imei}</TableCell>
-                <TableCell>{row.startDate}</TableCell>
-                <TableCell>{row.endDate}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Grid container spacing={2} sx={{}}>
+          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "#E13D56",
+                borderRadius: "8px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+              }}
+            >
+              <Box
+                sx={{
+                  fontFamily: "SourceSans3_Bold",
+                  fontWeight: 700,
+                  color: "ivory",
+                }}
+              >
+                <Typography>Tamper</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  fontSize: "1.5rem",
+                  color: "white",
+                  marginTop: "-1rem",
+                }}
+              >
+                <FaBell />
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "#18A0FB",
+                borderRadius: "8px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+              }}
+            >
+              <Box
+                sx={{
+                  fontFamily: "SourceSans3_Bold",
+                  fontWeight: 700,
+                  color: "ivory",
+                }}
+              >
+                <Typography>Lock/Unlock</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  fontSize: "1.5rem",
+                  color: "white",
+                  marginTop: "-1rem",
+                }}
+              >
+                <FaBell />
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "#FF9A02",
+                borderRadius: "8px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+              }}
+            >
+              <Box
+                sx={{
+                  fontFamily: "SourceSans3_Bold",
+                  fontWeight: 700,
+                  color: "ivory",
+                }}
+              >
+                <Typography>Geozone In/Out</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  fontSize: "1.5rem",
+                  color: "white",
+                  marginTop: "-1rem",
+                }}
+              >
+                <FaBell />
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "#855BDE",
+                borderRadius: "8px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+              }}
+            >
+              <Box
+                sx={{
+                  fontFamily: "SourceSans3_Bold",
+                  fontWeight: 700,
+                  color: "ivory",
+                }}
+              >
+                <Typography>Total Alerts</Typography>
+                <Typography sx={classes.statsValue}>30</Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  fontSize: "1.5rem",
+                  color: "white",
+                  marginTop: "-1rem",
+                }}
+              >
+                <FaBell />
+              </Box>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     );
   };
@@ -514,75 +639,153 @@ const Dashboard = () => {
   };
 
   const data = [
-    { name: 'Online', value: 30 },
-    { name: 'Offline', value: 20 },
+    { name: "Online", value: 30 },
+    { name: "Offline", value: 20 },
   ];
-  
-  const COLORS = ['#845ADF', '#baa6ea'];
 
-  const getRecentActivitiesCampaign = () => {
+  const COLORS = ["#845ADF", "#baa6ea"];
+
+  const getAlertsTable = () => {
     return (
-      <Grid container spacing={2}>
+      <Box
+        id="Alerts_panel"
+        sx={{
+          padding: "1.5rem 1.5rem",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+        }}
+      >
         <Grid
-          item
+          container
           xs={12}
-          sm={12}
           md={12}
-          lg={6}
-          xl={6}
-          alignItems="center"
-          justifyContent="center"
-          id="Dashboard_Recent_Activities"
+          lg={12}
+          xl={12}
+          width="100%"
         >
-          <Box sx={classes.container}>
-            <Stack direction="row" justifyContent="space-between">
-              <Typography sx={classes.containerTitle}>
-                Online/Offline Devices
-              </Typography>
-            </Stack>
-            <PieChart width={400} height={400}>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                // innerRadius={60}
-                outerRadius={80}
-                fill="#8884d8"
-                paddingAngle={5}
-                dataKey="value"
-                label
+          <Grid item xs={12} md={5} lg={8} sx={{ display: "flex", margin: "1rem 0rem"}}>
+            <Typography variant="h5" sx={classes.heading}>
+              Alerts table
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            md={7}
+            lg={4}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexWrap: "wrap",
+            }}
+          >
+            <Box>
+              <Select
+                id="Dashboard_Interval_Dropdown"
+                sx={classes.dropdown}
+                value={""}
+                onChange={(event: any) => {}}
               >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
+                {options.map((data) => (
+                  <MenuItem
+                    key={data.label}
+                    value={data.value}
+                    sx={classes.dropdownOptions}
+                  >
+                    {data.label}
+                  </MenuItem>
                 ))}
-              </Pie>
-              <Legend verticalAlign="bottom" height={36} />
-            </PieChart>
-          </Box>
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={6}
-          xl={6}
-          mt={{ sm: 2, xs: 2, md: 0, lg: 0, xl: 0 }}
-          id="Dashboard_Recent_Campaigns"
-        >
-          <Box sx={classes.container} minHeight="300px">
-            <Typography sx={classes.containerTitle}>Recent Activity</Typography>
-            <Box onClick={() => {}} sx={{ cursor: "pointer" }}>
-              <Typography sx={{ ...regularFont, color: "#929292" }}>
-                {recentCampaignStats.name}
-              </Typography>
+              </Select>
             </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={9} xl={9} lg={9}>
+            <CustomTable
+              headers={[
+                { name: "IMEI", field: "imei" },
+                { name: "Event", field: "event" },
+                { name: "Latitude", field: "lat" },
+                { name: "Longitude", field: "lng" },
+                { name: "Message", field: "message" },
+              ]}
+              rows={[
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+                {
+                  imei: "124245245154",
+                  event: "demo event",
+                  lat: "23.465123789",
+                  lng: "21.456132198",
+                  message: "Source G-310-20221207-0001",
+                },
+              ]}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+            <CustomTable
+              headers={[{ name: "Offline", field: "offline" }]}
+              rows={[
+                {
+                  offline: "124245245154",
+                },
+                {
+                  offline: "124245245154",
+                },
+                {
+                  offline: "124245245154",
+                },
+                {
+                  offline: "124245245154",
+                },
+                {
+                  offline: "124245245154",
+                },
+                {
+                  offline: "124245245154",
+                },
+              ]}
+            />
+          </Grid>
+        </Grid>
+      </Box>
     );
   };
 
@@ -594,23 +797,18 @@ const Dashboard = () => {
         sx={{ padding: "0 16px", marginTop: "-48px" }}
         xs={12}
       >
-        <Grid item xs={12} sm={12} xl={12} md={12} lg={12}>
+        <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
             </Grid>
-            <Grid mb={isDesktop ? 2 : 0} item xs={12} md={8} lg={9} xl={9}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                  {getCampaignerRecipientsGraph()}
-                </Grid>
-                <Grid item xs={12} md={12} lg={12} xl={12}>
-                  <Box mb={2}>{getRecentActivitiesCampaign()}</Box>
-                </Grid>
-              </Grid>
+
+            <Grid item xs={12} md={12} lg={12} xl={12}>
+              {getAlerts()}
             </Grid>
-            <Grid item xs={12} md={3} lg={3} xl={3}>
-              {getCampaignsList()}
+
+            <Grid item xs={12} md={12} lg={12} xl={12}>
+              {getAlertsTable()}
             </Grid>
           </Grid>
         </Grid>
