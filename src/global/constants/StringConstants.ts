@@ -240,6 +240,9 @@ export class StringConstants {
   JOURNEY = "JOURNEY";
   VIEW_JOURNEY = "VIEW JOURNEY";
   LIVE_TRACKING = "LIVE TRACKING";
+  REPORTS = "REPORTS";
+  ALERT_REPORTS = "ALERT REPORTS";
+  DISTANCE_REPORTS = "DISTANCE REPORTS";
 }
 
 let strings = new StringConstants();

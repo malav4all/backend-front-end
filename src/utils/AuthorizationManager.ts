@@ -79,6 +79,39 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
+    {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Reports",
+      link: `${"/reports"}`,
+      pageName: strings.LOCATION,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Distance Report",
+          link: `${"/reports"}`,
+          pageName: strings.LOCATION,
+        },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Alert Report",
+          link: `${"/reports"}`,
+          pageName: strings.LOCATION,
+        },
+        // {
+        //   icon: geoZoneSvg("#666"),
+        //   activeIcon: geoZoneSvg(pinkDarkColor),
+        //   text: "Reports",
+        //   link: `${"/reports"}`,
+        //   pageName: strings.LOCATION,
+        // },
+      ],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {

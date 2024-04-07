@@ -25,6 +25,10 @@ import Geozone from "../../Geozone/Geozone";
 import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
+import Reports from "../../Reports/screens/Reports";
+import AlertReports from "../../Reports/screens/AlertReport/AlertReports";
+import DistanceReportStyles from "../../Reports/screens/DistanceReport/DistanceReport.styles";
+import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -107,7 +111,27 @@ const Layout = () => {
             component={ViewLiveTracking}
             componentName={strings.LIVE_TRACKING}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/reports"}
+            component={Reports}
+            componentName={strings.REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/alert-reports"}
+            component={AlertReports}
+            componentName={strings.ALERT_REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/distance-reports"}
+            component={DistanceReport}
+            componentName={strings.DISTANCE_REPORTS}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
