@@ -257,11 +257,9 @@ const Geozone = () => {
       new window.H.mapevents.MapEvents(initialMap)
     );
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-    // renderAndUpdateCircleToMap(initialMap);
     showCircleToMap(initialMap);
     addMarkersToMap(initialMap);
     setMapCheck(initialMap);
-    // setUpClickListener(initialMap, platform);
 
     return () => {
       window.removeEventListener("resize", () =>
