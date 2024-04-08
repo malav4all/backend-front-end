@@ -981,8 +981,8 @@ const Geozone = () => {
                         });
                       }}
                     >
-                      <Avatar>
-                        <LocationOnIcon color="primary" />
+                      <Avatar sx={{ backgroundColor: "#F1EDFF" }}>
+                        <LocationOnIcon sx={{ color: "#845ADF" }} />
                       </Avatar>
                     </ListItemAvatar>
 

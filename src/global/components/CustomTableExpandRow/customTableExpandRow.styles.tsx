@@ -21,7 +21,7 @@ const customTableStyles = {
   tableHeaderCell: {
     ...boldFont,
     color: "#ffffff",
-    backgroundColor: "#4b14c4",
+    backgroundColor: "#845ADF",
     "&:first-child": {
       borderRadius: "10px 0px 0px 10px",
     },

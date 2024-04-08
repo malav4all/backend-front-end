@@ -27,7 +27,7 @@ import {
   CustomTable,
 } from "../../../global/components";
 import UpdateUser from "./components/UpdateUser/UpdateUser";
-import { userTableHeader } from "./UserTypeAndValidation";
+
 import strings from "../../../global/constants/StringConstants";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import notifiers from "../../../global/constants/NotificationConstants";
@@ -41,6 +41,7 @@ import {
 import { fetchUserDataHandler, searchUser } from "./service/user.service";
 import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
+import { userTableHeader } from "./UserTypeAndValidation";
 
 const Users = () => {
   useTitle(strings.UsersTitle);
@@ -101,68 +102,19 @@ const Users = () => {
   };
 
   const tableDataShowHandler = (usersData: any) => {
-    const source = usersData.map((usersData: any, index: number) => {
+    const source = usersData.map((userData: any, index: number) => {
       return {
-        email: (
-          <Typography key={usersData._id} sx={classes.rowColor}>
-            {usersData.email}
+        user: (
+          <Typography key={index} sx={classes.rowColor}>
+            {userData.user}
           </Typography>
         ),
-        firstName: usersData?.firstName,
-        mobileNumber: usersData?.mobileNumber,
-        createdBy: usersData?.createdBy,
-        roleId: usersData?.roleId,
-        status: (
-          <Chip
-            label={usersData.status}
-            sx={{
-              backgroundColor:
-                usersData.status === "Active" ? "#DFFFF3" : "grey",
-              color: usersData.status === "Active" ? "#37b071" : "white",
-              border: usersData.status === "Active" ? "1px solid #37b071" : "1px solid white",
-              animation: "pulse 2s infinite",
-              "@keyframes pulse": {
-                "0%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-                "50%": {
-                  transform: "scale(1.05)",
-                  opacity: 0.75,
-                },
-                "100%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-              },
-            }}
-            variant="filled"
-          />
-        ),
+        imei: userData.imei,
+        journey: userData.journey,
         action: (
-          <>
-            <Tooltip title="Change Password">
-              <LockResetIcon
-                htmlColor={"#845ADF"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                onClick={() => {
-                  setChangePasswordModal(true);
-                  setSelectedEmailData(usersData.email);
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editUser(usersData);
-              }}
-            >
-              <EditIcon
-                htmlColor={"#845ADF"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-              />
-            </Tooltip>
-          </>
+          <button>
+            Download
+          </button>
         ),
       };
     });
@@ -181,14 +133,47 @@ const Users = () => {
   const getUsersDetailTable = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchUserDataHandler({
-        input: {
-          page: pageNumber,
-          limit: perPageData,
+
+      const dummyData = [
+        {
+          imei: "123456789",
+          journey: "Lorem Ipsum",
+          user: "John Doe",
+          action: <button>Download</button>,
         },
-      });
-      tableDataShowHandler(res?.userListAll?.data);
-      setCount(res?.userListAll?.paginatorInfo?.count);
+        {
+          imei: "987654321",
+          journey: "Dolor Sit Amet",
+          user: "Jane Smith",
+          action: <button>Download</button>,
+        },
+        {
+          imei: "555555555",
+          journey: "Consectetur adipiscing elit",
+          user: "Alice Johnson",
+          action: <button>Download</button>,
+        },
+        {
+          imei: "777777777",
+          journey: "Sed do eiusmod tempor incididunt",
+          user: "Bob Brown",
+          action: <button>Download</button>,
+        },
+        {
+          imei: "999999999",
+          journey: "Ut labore et dolore magna aliqua",
+          user: "Eve White",
+          action: <button>Download</button>,
+        },
+      ];
+
+      // Simulate a delay to mimic the network request
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Set dummy data to state variables
+      tableDataShowHandler(dummyData);
+      setCount(dummyData.length);
+
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -251,7 +236,7 @@ const Users = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label={"Add User"}
+        label={"Filter Report"}
         onClick={() => setAddUserDialogHandler(true)}
         customClasses={{
           width: "150px",
@@ -358,7 +343,7 @@ const Users = () => {
             color: primaryHeadingColor,
           }}
         >
-          Users
+          Alert Report
         </Typography>
 
         <Stack

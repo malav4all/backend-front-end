@@ -1,22 +1,11 @@
 import { useState, useEffect } from "react";
 import {
   Box,
-  FormControl,
   Grid,
   MenuItem,
   Select,
   Typography,
   useMediaQuery,
-  Button,
-  Stack,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
 } from "@mui/material";
 import {
   options,
@@ -25,7 +14,6 @@ import {
   RecentCampaignStats,
   CampaignCounts,
   Last3DaysCampaigns,
-  getRecentActivityOptions,
 } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
@@ -33,8 +21,7 @@ import thoughtsimg from "../../assets/images/dashboard/quotesimage.webp";
 import upgradenow from "../../assets/images/dashboard/upgradenow.svg";
 import spaceshuttle from "../../assets/images/dashboard/spaceshuttle.svg";
 import campaigns from "../../assets/images/dashboard/campaigns.svg";
-import email from "../../assets/images/dashboard/emails.svg";
-import recipients from "../../assets/images/dashboard/recipients.svg";
+
 import { theme, regularFont } from "../../utils/styles";
 import {
   convertESTtoUserLocalTime,
@@ -280,7 +267,17 @@ const Dashboard = () => {
             flexWrap: "wrap",
           }}
         >
-          <Box>
+          <Box sx={{display: "flex", gap: "1rem"}}>
+            <Typography
+              sx={{
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
+                fontWeight: "bold",
+              }}
+            >
+              Interval
+            </Typography>
             <Select
               id="Dashboard_Interval_Dropdown"
               sx={classes.dropdown}
@@ -656,15 +653,14 @@ const Dashboard = () => {
           boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
-        <Grid
-          container
-          xs={12}
-          md={12}
-          lg={12}
-          xl={12}
-          width="100%"
-        >
-          <Grid item xs={12} md={5} lg={8} sx={{ display: "flex", margin: "1rem 0rem"}}>
+        <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
+          <Grid
+            item
+            xs={12}
+            md={5}
+            lg={8}
+            sx={{ display: "flex", margin: "1rem 0rem" }}
+          >
             <Typography variant="h5" sx={classes.heading}>
               Alerts table
             </Typography>
@@ -680,26 +676,7 @@ const Dashboard = () => {
               justifyContent: "flex-end",
               flexWrap: "wrap",
             }}
-          >
-            <Box>
-              <Select
-                id="Dashboard_Interval_Dropdown"
-                sx={classes.dropdown}
-                value={""}
-                onChange={(event: any) => {}}
-              >
-                {options.map((data) => (
-                  <MenuItem
-                    key={data.label}
-                    value={data.value}
-                    sx={classes.dropdownOptions}
-                  >
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-          </Grid>
+          ></Grid>
         </Grid>
 
         <Grid container spacing={2}>
@@ -761,25 +738,34 @@ const Dashboard = () => {
 
           <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
             <CustomTable
-              headers={[{ name: "Offline", field: "offline" }]}
+              headers={[
+                { name: "Offline", field: "offline" },
+                { name: "Last Data", field: "lastData" },
+              ]}
               rows={[
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
                 {
                   offline: "124245245154",
+                  lastData: "05-Apr-2024 02:47 PM",
                 },
               ]}
             />

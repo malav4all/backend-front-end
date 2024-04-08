@@ -8,8 +8,6 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import WifiOffIcon from "@mui/icons-material/WifiOff";
-import WifiIcon from "@mui/icons-material/Wifi";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import React from "react";

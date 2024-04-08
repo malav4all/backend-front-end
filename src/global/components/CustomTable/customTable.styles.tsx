@@ -14,9 +14,9 @@ import {
 const customTableStyles = {
   table: {
     borderCollapse: "separate",
-    borderSpacing: "0 5px",
-    borderTopRadius: "15px",
-    borderBottomRadius: "15px",
+    borderSpacing: "0px",
+    borderTopRadius: "5px",
+    borderBottomRadius: "5px",
     width: "100%",
     mt: 2,
     [theme.breakpoints.down("xl")]: {
@@ -30,7 +30,7 @@ const customTableStyles = {
   tableHeaderCell: {
     ...boldFont,
     color: "#FFFFFF",
-    backgroundColor: "#4b14c4",
+    backgroundColor: "#845ADF",
     borderTop: "1px solid #F0F0F0",
     borderBottom: "1px solid #F0F0F0",
     textAlign: "left",
@@ -41,7 +41,7 @@ const customTableStyles = {
   tableCell: {
     ...regularFont,
     fontSize: getRelativeFontSize(2),
-    height: "40px",
+    height: "25px",
     borderTop: "1px solid #F0F0F0",
     borderBottom: "1px solid #F0F0F0",
     textAlign: "left",

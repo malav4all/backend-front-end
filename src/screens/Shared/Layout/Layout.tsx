@@ -26,6 +26,7 @@ import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
+import Reports from "../../Reports/Reports";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -115,6 +116,14 @@ const Layout = () => {
             path={"/trackplay"}
             component={Trackplay}
             componentName={strings.TRACK_PLAY}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/reports"}
+            component={Reports}
+            componentName={strings.REPORTS}
           />
 
           <PrivateRoute

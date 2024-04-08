@@ -102,6 +102,9 @@ export class StringConstants {
   DEVICEHISTORY = "Device History";
   ASSETASSIGNMENT = "Asset Assignment";
   LOCATIONTYPE = "Location Type";
+  DISTANCE = "Distance"
+  JROUNEY = "Journey"
+  ALERT = "Alert"
 
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
@@ -241,6 +244,7 @@ export class StringConstants {
   VIEW_JOURNEY = "VIEW JOURNEY";
   LIVE_TRACKING = "LIVE TRACKING";
   TRACK_PLAY = "TRACK PLAY"
+  REPORTS = "REPORTS"
 }
 
 let strings = new StringConstants();

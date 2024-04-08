@@ -3,16 +3,14 @@ import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
   geoZoneSvg,
-  getGroupIcon,
-  getHistoryIcon,
   getHomeIcon,
-  getIntegrationIcon,
   getSettingsIcon,
   journeyIcon,
+  liveSvg,
+  reportSvg,
+  trackPlaySvg,
 } from "./SidebarSvgConstant";
 import { pinkDarkColor } from "./styles";
-import { isTruthy } from "../helpers/methods";
-
 export interface ListOfMenusType {
   icon?: string;
   activeIcon?: string;
@@ -44,7 +42,6 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
-
     {
       icon: getSettingsIcon("#666"),
       activeIcon: getSettingsIcon(pinkDarkColor),
@@ -67,7 +64,6 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
-
     {
       icon: geoZoneSvg("#666"),
       activeIcon: geoZoneSvg(pinkDarkColor),
@@ -80,11 +76,33 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: geoZoneSvg("#666"),
-      activeIcon: geoZoneSvg(pinkDarkColor),
+      icon: trackPlaySvg("#666"),
+      activeIcon: trackPlaySvg(pinkDarkColor),
       text: "Track Play",
       link: `${"/trackplay"}`,
-      pageName: strings.LOCATION,
+      pageName: strings.TRACK_PLAY,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
+    {
+      icon: reportSvg("#666"),
+      activeIcon: reportSvg(pinkDarkColor),
+      text: "Reports",
+      link: `${"/reports"}`,
+      pageName: strings.REPORTS,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
+    {
+      icon: liveSvg("#666"),
+      activeIcon: liveSvg(pinkDarkColor),
+      text: "Live Track",
+      link: `${"/livetrack"}`,
+      pageName: strings.LIVE_TRACKING,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],

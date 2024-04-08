@@ -189,56 +189,99 @@ const AddUser = (props: CustomProps) => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_first_name_field"
-            placeHolder="Enter First name"
-            name="firstName"
-            label="First Name"
-            onChange={handleFormDataChange}
-            value={userFormFields?.firstName?.value}
-            error={userFormFields?.firstName?.error}
-            propsToInputElement={{ maxLength: strings.USER_FIRST_NAME_LIMIT }}
-          />
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Select User
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_roles_dropdown"
+                name="accountId"
+                value={userFormFields?.roleId?.value}
+                onChange={handleSelectRole}
+                disabled={props.edit}
+                renderValue={
+                  userFormFields?.roleId?.value !== ""
+                    ? undefined
+                    : () => "Select a Role"
+                }
+                MenuProps={classes.menuProps}
+                displayEmpty
+                error={
+                  userFormFields?.roleId?.value?.length < 4 &&
+                  userFormFields?.roleId?.error?.length !== 0
+                }
+              >
+                {["Admin", "User", "Editor"].map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+            {!isTruthy(userFormFields?.roleId?.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {userFormFields.roleId?.error}
+              </FormHelperText>
+            )}
+          </Box>
         </Grid>
+
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_last_name_field"
-            placeHolder="Enter last name"
-            name="lastName"
-            label="Last Name"
-            onChange={handleFormDataChange}
-            value={userFormFields?.lastName?.value}
-            error={userFormFields?.lastName?.error}
-            propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
-          />
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Select User
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_roles_dropdown"
+                name="accountId"
+                value={userFormFields?.roleId?.value}
+                onChange={handleSelectRole}
+                disabled={props.edit}
+                renderValue={
+                  userFormFields?.roleId?.value !== ""
+                    ? undefined
+                    : () => "Select a Role"
+                }
+                MenuProps={classes.menuProps}
+                displayEmpty
+                error={
+                  userFormFields?.roleId?.value?.length < 4 &&
+                  userFormFields?.roleId?.error?.length !== 0
+                }
+              >
+                {["Admin", "User", "Editor"].map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+            {!isTruthy(userFormFields?.roleId?.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {userFormFields.roleId?.error}
+              </FormHelperText>
+            )}
+          </Box>
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_email_field"
-            placeHolder="Enter Your email"
-            name="email"
-            label="Email"
-            onChange={handleFormDataChange}
-            value={userFormFields.email?.value}
-            error={userFormFields.email?.error}
-            propsToInputElement={{ maxLength: strings.USER_EMAIL_LIMIT }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            label="Contact Number"
-            name="mobileNumber"
-            required={true}
-            id="add_user_contact_number_filed"
-            value={userFormFields.mobileNumber?.value}
-            placeHolder="Enter Your Mobile Number"
-            onChange={handleFormDataChange}
-            error={userFormFields?.mobileNumber?.error}
-          />
-        </Grid>
+
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <CustomInput
             required
