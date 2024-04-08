@@ -182,6 +182,7 @@ const Journey = () => {
   const addJourneyHandler = async () => {
     try {
       if (handleValidation()) {
+        setIsLoading(true);
         const { totalDistance, totalDuration } = await calculateDistance();
         const res = await createJourney({
           input: {
@@ -221,8 +222,10 @@ const Journey = () => {
         ]);
         setFinalLocationIds([]);
         await fetchJourneyHandler();
+        setIsLoading(false);
       }
     } catch (error: any) {
+      setIsLoading(false);
       openErrorNotification(error.message);
     }
   };
@@ -272,7 +275,6 @@ const Journey = () => {
       return {
         key: item._id,
         journeyName: item?.journeyName,
-        imei: item?.imei,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
         journeyData: (
@@ -425,7 +427,7 @@ const Journey = () => {
   };
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchJourney(SearchEvent.target.value.replace(/\s/g, ""));
+      setSearchJourney(SearchEvent.target.value.trim());
       setPage(1);
       setRowsPerPage(10);
     } else {
