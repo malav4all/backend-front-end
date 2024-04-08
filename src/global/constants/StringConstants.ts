@@ -198,6 +198,7 @@ export class StringConstants {
   CheckYourEmailTitle = "Check your email | IMZ";
   TemplatesTitle = "Templates | IMZ";
   UsersTitle = "Users | IMZ";
+  AlertReportTitle = "Alert Report | IMZ";
   AssetAssingmentTitle = "Asset | IMZ";
   ForgotPasswordTitle = "Forgot Password | IMZ";
   Integration = "Integrations | IMZ";
@@ -244,7 +245,9 @@ export class StringConstants {
   VIEW_JOURNEY = "VIEW JOURNEY";
   LIVE_TRACKING = "LIVE TRACKING";
   TRACK_PLAY = "TRACK PLAY"
-  REPORTS = "REPORTS"
+  REPORTS = "REPORTS";
+  ALERT_REPORTS = "ALERT REPORTS";
+  DISTANCE_REPORTS = "DISTANCE REPORTS";
 }
 
 let strings = new StringConstants();

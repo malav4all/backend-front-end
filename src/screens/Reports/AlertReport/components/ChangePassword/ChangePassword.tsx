@@ -11,7 +11,7 @@ import {
   CustomDialog,
   CustomInput,
 } from "../../../../../global/components";
-import usersStyles from "../../Users.styles";
+import usersStyles from "../../AlertReports.styles";
 import {
   isTruthy,
   openErrorNotification,

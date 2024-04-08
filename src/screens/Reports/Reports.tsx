@@ -11,7 +11,7 @@ import UnauthorizedPage from "../UnauthorizedPage/UnauthorizedPage";
 // import Users from "./Users/Users";
 import { useLocation } from "react-router-dom";
 import { validateTabValue } from "../../helpers/methods";
-import Users from "./AlertReport/Users";
+import Users from "../Settings/Users/Users";
 // import AssetAssingment from "./AssertAssingment/AssetAssingment";
 // import LocationType from "./LocationType/LocationType";
 

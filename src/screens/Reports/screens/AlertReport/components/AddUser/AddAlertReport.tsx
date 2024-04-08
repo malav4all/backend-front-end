@@ -5,44 +5,44 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Stack,
   Typography,
   SelectChangeEvent,
-  InputAdornment,
-  IconButton,
+
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  CustomButton,
-  CustomContactNumberInput,
-  CustomDialog,
-  CustomInput,
-} from "../../../../../global/components";
-import usersStyles from "../../AlertReports.styles";
-import {
-  isTruthy,
-  openErrorNotification,
-  openSuccessNotification,
-} from "../../../../../helpers/methods";
+
+import usersStyles from "../../AlertReport.styles";
+
 import {
   insertUserField,
   validateAddUserForm,
 } from "../../UserTypeAndValidation";
-import uploadUser from "../../../../../assets/images/uploadUser.svg";
-import strings from "../../../../../global/constants/StringConstants";
+// import uploadUser from "../../../../../assets/images/uploadUser.svg";
+
 import _ from "lodash";
-import { addUserPayload } from "../../AlertReports";
 import {
   createUser,
   fetchAccountHandler,
   fetchRole,
   updateUser,
-} from "../../service/user.service";
-import { store } from "../../../../../utils/store";
-import notifiers from "../../../../../global/constants/NotificationConstants";
-import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
-import showPasswordIcon from "../../../../../assets/images/Show.svg";
+} from "../../service/alertReport.service";
+// import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
+// import showPasswordIcon from "../../../../../assets/images/Show.svg";
+import { store } from "../../../../../../utils/store";
+import {
+  isTruthy,
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../../../../../helpers/methods";
+import notifiers from "../../../../../../global/constants/NotificationConstants";
+import { CustomInput } from "../../../../../../utils/styles";
+import strings from "../../../../../../global/constants/StringConstants";
+import {
+  CustomButton,
+  CustomDialog,
+} from "../../../../../../global/components";
+import moment from "moment";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -178,110 +178,9 @@ const AddUser = (props: CustomProps) => {
     }
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    setShowPassword(!showPassword);
-    event.preventDefault();
-  };
-
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Select User
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="accountId"
-                value={userFormFields?.roleId?.value}
-                onChange={handleSelectRole}
-                disabled={props.edit}
-                renderValue={
-                  userFormFields?.roleId?.value !== ""
-                    ? undefined
-                    : () => "Select a Role"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userFormFields?.roleId?.value?.length < 4 &&
-                  userFormFields?.roleId?.error?.length !== 0
-                }
-              >
-                {["Admin", "User", "Editor"].map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-            {!isTruthy(userFormFields?.roleId?.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {userFormFields.roleId?.error}
-              </FormHelperText>
-            )}
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Select User
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="accountId"
-                value={userFormFields?.roleId?.value}
-                onChange={handleSelectRole}
-                disabled={props.edit}
-                renderValue={
-                  userFormFields?.roleId?.value !== ""
-                    ? undefined
-                    : () => "Select a Role"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userFormFields?.roleId?.value?.length < 4 &&
-                  userFormFields?.roleId?.error?.length !== 0
-                }
-              >
-                {["Admin", "User", "Editor"].map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-            {!isTruthy(userFormFields?.roleId?.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {userFormFields.roleId?.error}
-              </FormHelperText>
-            )}
-          </Box>
-        </Grid>
-
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -294,39 +193,6 @@ const AddUser = (props: CustomProps) => {
             error={userFormFields?.userName?.error}
           />
         </Grid>
-        {!props.edit && (
-          <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-            <CustomInput
-              placeHolder="••••••••"
-              id="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={userFormFields?.password?.value}
-              disabled={props.edit}
-              onChange={handleFormDataChange}
-              error={userFormFields?.password?.error}
-              required
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      <Box
-                        component="img"
-                        src={showPassword ? showPasswordIcon : hidePasswordIcon}
-                      />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-        )}
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <CustomInput
@@ -458,7 +324,7 @@ const AddUser = (props: CustomProps) => {
   const addUserHeaderImg = () => {
     return (
       <Box display={"flex"}>
-        <img src={uploadUser} alt="Add user not found!" />
+        {/* <img src={uploadUser} alt="Add user not found!" /> */}
       </Box>
     );
   };

@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import usersStyles from "./Users.styles";
+import usersStyles from "./AlertReports.styles";
 import CustomButton from "../../../global/components/CustomButton/CustomButton";
 import AddUser from "./components/AddUser/AddUser";
 import { RowData, UserData } from "../../../models/interfaces";
@@ -38,7 +38,7 @@ import {
   primaryHeadingColor,
   boldFont,
 } from "../../../utils/styles";
-import { fetchUserDataHandler, searchUser } from "./service/user.service";
+// import { fetchUserDataHandler, searchUser } from "./service/alertReport.service";
 import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import { userTableHeader } from "./UserTypeAndValidation";

@@ -35,7 +35,7 @@ const ListOfMenus = () =>
     {
       icon: getHomeIcon("#666"),
       activeIcon: getHomeIcon(pinkDarkColor),
-      text: "Home",
+      text: "Dashboard",
       link: "/dashboard",
       pageName: strings.DASHBOARD,
       visibleInSidebar: true,
@@ -87,17 +87,6 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: reportSvg("#666"),
-      activeIcon: reportSvg(pinkDarkColor),
-      text: "Reports",
-      link: `${"/reports"}`,
-      pageName: strings.REPORTS,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
-    },
-    {
       icon: liveSvg("#666"),
       activeIcon: liveSvg(pinkDarkColor),
       text: "Live Track",
@@ -106,7 +95,39 @@ const ListOfMenus = () =>
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],
-      subMenu: [],
+      subMenu: [],},
+      {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Reports",
+      link: `${"/reports"}`,
+      pageName: strings.LOCATION,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Distance Report",
+          link: `${"/distanc-reports"}`,
+          pageName: strings.LOCATION,
+        },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Alert Report",
+          link: `${"/alert-reports"}`,
+          pageName: strings.LOCATION,
+        },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Journey Reports",
+          link: `${"/journey-reports"}`,
+          pageName: strings.LOCATION,
+        },
+      ],
     },
   ] as any;
 

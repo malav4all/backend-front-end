@@ -415,7 +415,7 @@ const Journey = () => {
       const res = await searchJourneys({
         input: {
           search: searchJourney,
-          page: page,
+          page: 1,
           limit: 10,
         },
       });
