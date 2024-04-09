@@ -30,9 +30,14 @@ import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
 import { useDispatch } from "react-redux";
-import { fetchDashboardDetail } from "./service/Dashboard.service";
+import {
+  alertRowData,
+  fetchDashboardDetail,
+} from "./service/Dashboard.service";
 import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
+import { useSubscription } from "@apollo/client";
+import { ALERT_TABLE_DATA } from "./service/Dashboard.mutation";
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -40,13 +45,22 @@ const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const userName = useAppSelector(selectName);
+  const [alertTableData, setAlertTableData] = useState([]);
+  const [dateFilter, setDateFilter] = useState({
+    startDate: moment().clone().subtract(1, "hour").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  const [selectedRange, setSelectedRange] = useState("Past 1h");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [myCampaign, setMyCampaign] = useState<Last3DaysCampaigns>(
     {} as Last3DaysCampaigns
   );
   const [statData, setStatData] = useState<any>();
+  const startIndex = (page - 1) * 10;
+  const endIndex = startIndex + 10;
 
   const [campaignRecipientStats, setCampaignRecipientStats] =
     useState<CampaignRecipientCounts>({
@@ -120,6 +134,12 @@ const Dashboard = () => {
     getStatData();
   }, []);
 
+  useEffect(() => {
+    if (dateFilter) {
+      alertData();
+    }
+  }, [dateFilter.startDate, dateFilter.endDate]);
+
   const [selectedRecActivityFilter, setSelectedRecActivityFilter] =
     useState<string>("");
 
@@ -191,6 +211,16 @@ const Dashboard = () => {
     return userName;
   };
 
+  const alertData = async () => {
+    const res = await alertRowData({
+      input: {
+        startDate: dateFilter.startDate,
+        endDate: dateFilter.endDate,
+      },
+    });
+    setAlertTableData(res.getAlertData);
+  };
+
   const getDashboardHeader = () => {
     return (
       <Grid
@@ -220,36 +250,99 @@ const Dashboard = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Interval
-            </Typography>
             <Select
-              id="Dashboard_Interval_Dropdown"
-              sx={classes.dropdown}
-              value={""}
-              onChange={(event: any) => {}}
+              id="campaigns_interval_dropdown"
+              sx={classes.dropDownStyle}
+              value={selectedRange}
+              onChange={handleChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
             >
-              {options.map((data) => (
-                <MenuItem
-                  key={data.label}
-                  value={data.value}
-                  sx={classes.dropdownOptions}
-                >
-                  {data.label}
-                </MenuItem>
-              ))}
+              <MenuItem value="Past 1m" sx={classes.optionStyle}>
+                Past 1m
+              </MenuItem>
+              <MenuItem value="Past 5m" sx={classes.optionStyle}>
+                Past 5m
+              </MenuItem>
+              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                Past 15m
+              </MenuItem>
+              <MenuItem value="Past 1h" sx={classes.optionStyle}>
+                Past 1h
+              </MenuItem>
+              <MenuItem value="Past 3h" sx={classes.optionStyle}>
+                Past 3h
+              </MenuItem>
+              <MenuItem value="Past 12h" sx={classes.optionStyle}>
+                Past 12h
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 2d
+              </MenuItem>
+              <MenuItem value="Past 30d" sx={classes.optionStyle}>
+                Past 30d
+              </MenuItem>
             </Select>
           </Box>
         </Grid>
       </Grid>
     );
+  };
+
+  const handleChange = (event: any) => {
+    setSelectedRange(event.target.value);
+    const now = moment();
+    let startDate, endDate;
+    switch (event.target.value) {
+      case "Past 1m":
+        startDate = now.clone().subtract(1, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 5m":
+        startDate = now.clone().subtract(5, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 15m":
+        startDate = now.clone().subtract(15, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 1h":
+        startDate = now.clone().subtract(1, "hour").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 3h":
+        startDate = now.clone().subtract(3, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 6h":
+        startDate = now.clone().subtract(6, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 12h":
+        startDate = now.clone().subtract(12, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 24h":
+        startDate = now.clone().subtract(24, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 2d":
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30d":
+        startDate = now.clone().subtract(30, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      default:
+        startDate = now.clone().subtract(1, "hour").toISOString();
+        endDate = now.toISOString();
+        break;
+    }
+    setDateFilter({
+      startDate: startDate,
+      endDate: endDate,
+    });
   };
 
   const getStatsCard = () => {
@@ -500,99 +593,18 @@ const Dashboard = () => {
     );
   };
 
-  const getCampaignsList = () => {
-    return (
-      <Box id="Dashboard_My_Campaigns" sx={classes.container}>
-        <Typography
-          sx={classes.containerTitle}
-          mt={0}
-          position="static"
-          top="0"
-        >
-          My Journeys
-        </Typography>
-        <Box
-          minHeight={isDesktop ? "500px" : "250px"}
-          height={isDesktop ? "660px" : "250px"}
-          display="flex"
-          sx={{
-            overflow: "auto",
-            scrollbarWidth: "thin",
-            "::-webkit-scrollbar": {
-              display: "none",
-            },
-          }}
-        >
-          <Box py={1} justifyContent="flex-start">
-            {Object.keys(myCampaign)?.map((data: any) => {
-              return (
-                <>
-                  <Typography sx={classes.campaignDate}>{data}</Typography>
-                  {myCampaign[data].map((camp: any, index: number) => (
-                    <Box display="flex" mb={2}>
-                      <Box
-                        sx={{
-                          minWidth: "75px",
-                          marginBottom: "8px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Typography sx={classes.dateRangeText}>
-                          {convertESTtoUserLocalTime(camp.scheduleTime)}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{
-                          borderRight:
-                            "4px solid " +
-                            CAMPAIGN_COLORS[index % CAMPAIGN_COLORS.length],
-                          borderRadius: "10px 0 0 10px",
-                          marginBottom: "8px",
-                        }}
-                      ></Box>
-
-                      <Box
-                        ml={1}
-                        onClick={() =>
-                          camp.status === strings.Completed ||
-                          camp.status === strings.Failed
-                        }
-                        sx={{ cursor: "pointer" }}
-                      >
-                        <Typography
-                          sx={{
-                            ...regularFont,
-                            colo: "#1E1D1D",
-                            fontSize: "14px",
-                          }}
-                        >
-                          {camp.name}
-                        </Typography>
-                        <Typography sx={{ ...regularFont, color: "#B1B1B1" }}>
-                          {camp.status}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  ))}
-                </>
-              );
-            })}
-          </Box>
-          )
-        </Box>
-      </Box>
-    );
-  };
-
   const data = [
     { name: "Online", value: 30 },
     { name: "Offline", value: 20 },
   ];
 
   const COLORS = ["#845ADF", "#baa6ea"];
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
 
   const getAlertsTable = () => {
     return (
@@ -632,63 +644,27 @@ const Dashboard = () => {
         </Grid>
 
         <Grid container>
-          <Grid item xs={12} sm={12} md={9} xl={9} lg={9}>
+          <Grid item xs={12} sm={12} md={9} xl={6} lg={6}>
             <CustomTable
               headers={[
                 { name: "IMEI", field: "imei" },
+                { name: "Label", field: "label" },
+                { name: "Mode", field: "mode" },
                 { name: "Event", field: "event" },
-                { name: "Latitude", field: "lat" },
-                { name: "Longitude", field: "lng" },
+                { name: "Source", field: "source" },
                 { name: "Message", field: "message" },
               ]}
-              rows={[
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-                {
-                  imei: "124245245154",
-                  event: "demo event",
-                  lat: "23.465123789",
-                  lng: "21.456132198",
-                  message: "Source G-310-20221207-0001",
-                },
-              ]}
+              rows={alertTableData.slice(startIndex, endIndex)}
+              paginationCount={alertTableData.length}
+              rowsPerPage={10}
+              pageNumber={page}
+              isRowPerPageEnable={true}
+              setPage={setPage}
+              handlePageChange={handleChangePage}
             />
           </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+          <Grid item xs={12} sm={12} md={3} xl={6} lg={6}>
             <CustomTable
               headers={[
                 { name: "Offline", field: "offline" },
@@ -720,6 +696,7 @@ const Dashboard = () => {
                   lastData: "05-Apr-2024 02:47 PM",
                 },
               ]}
+              isRowPerPageEnable={true}
             />
           </Grid>
         </Grid>
@@ -737,9 +714,9 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={12} lg={12} xl={12}>
+            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}

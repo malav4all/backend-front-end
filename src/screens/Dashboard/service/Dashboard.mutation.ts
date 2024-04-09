@@ -11,3 +11,17 @@ export const FETCH_DASHBOARD_DETAIL = gql`
     }
   }
 `;
+
+export const ALERT_TABLE_DATA = gql`
+  mutation ($input: AlertInputType!) {
+    getAlertData(input: $input) {
+      lat
+      lng
+      mode
+      source
+      event
+      imei
+      label
+    }
+  }
+`;

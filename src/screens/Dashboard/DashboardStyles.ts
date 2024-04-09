@@ -194,6 +194,20 @@ const dashboardStyles = {
     fontSize: getRelativeFontSize(),
     fontStyle: "italic",
   },
+  dropDownStyle: {
+    ...regularFont,
+    ...purpleThemedSelectComponent,
+    backgroundColor: pureWhiteColor,
+    height: "47px",
+    padding: "2px",
+    width: " 180px",
+    borderRadius: "12px",
+    fontSize: "14px",
+  },
+  optionStyle: {
+    ...regularFont,
+    ...pinkThemedMenuItems,
+  },
 } as const;
 
 export default dashboardStyles;
