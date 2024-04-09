@@ -65,6 +65,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (dateFilter) {
       alertData();
+      const intervalId = setInterval(() => {
+        alertData();
+      }, 30000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
     }
   }, [dateFilter.startDate, dateFilter.endDate]);
 
