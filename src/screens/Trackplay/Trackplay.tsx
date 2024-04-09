@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import { fetchTrackplayHandler } from "./service/trackplay.service";
-import { Box } from "@mui/material";
+import { Box, Slider } from "@mui/material";
+import CustomButton from "../../global/components/CustomButton/CustomButton";
+import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import polyline from "@mapbox/polyline";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import TrackReport from "./Component/Report";
@@ -17,8 +21,17 @@ const Trackplay = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stop, setStop] = useState(false);
   const [lastStoppedIndex, setLastStoppedIndex] = useState(0);
+  const [journeyStarted, setJourneyStarted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [dataValue, setDataValue] = useState([]);
   const [rawData, setRawData] = useState([]);
+
+  const marks = [
+    { value: 1, label: "1X" },
+    { value: 2, label: "2X" },
+    { value: 3, label: "3X" },
+    { value: 4, label: "4X" },
+  ];
 
   const getReports = async (dataTest: any) => {
     const finalArr = dataTest.map(
@@ -143,20 +156,11 @@ const Trackplay = () => {
     return () => clearInterval(animation);
   }, [marker, lineString, speed, currentIndex, map, stop, lastStoppedIndex]);
 
-  const increaseSpeed = () => {
-    setSpeed((prevSpeed) => prevSpeed + 1);
+  const handleSpeedChange = (event: any, newValue: any) => {
+    setSpeed(newValue);
   };
-
-  const decreaseSpeed = () => {
-    setSpeed((prevSpeed) => Math.max(prevSpeed - 1, 1));
-  };
-
-  const stopMovement = () => {
-    setStop(true);
-  };
-
-  const startMovement = () => {
-    setStop(false);
+  const toggleMovement = () => {
+    setStop((prevStop) => !prevStop);
   };
 
   const downloadReport = () => {
@@ -164,13 +168,25 @@ const Trackplay = () => {
       <>
         <PDFDownloadLink
           document={<TrackReport reportData={dataValue} />}
-          fileName={"Invoice.pdf"}
+          fileName={"Report.pdf"}
         >
           {({ blob, url, loading, error }) =>
             loading ? (
               "Loading..."
             ) : (
-              <button className="button">Print Invoice</button>
+              <button
+                style={{
+                  width: "100px",
+                  padding: "13px 5px",
+                  marginTop: "8px",
+                  outline: "none",
+                  backgroundColor: stop ? "#ffffff" : "#FF5733",
+                  color: stop ? "#333" : "white",
+                }}
+                className="button"
+              >
+                Print Report
+              </button>
             )
           }
         </PDFDownloadLink>
@@ -195,21 +211,76 @@ const Trackplay = () => {
   };
 
   return (
-    <>
+    <Box
+      component={"div"}
+      id="map"
+      style={{
+        width: "100%",
+        zIndex: 1,
+        height: "100%",
+        position: "relative",
+      }}
+    >
       <Box
-        component={"div"}
-        id="map"
-        style={{ width: "100%", height: "100%", position: "relative" }}
+        display={"flex"}
+        gap={3}
+        pb={1}
+        justifyContent={"center"}
+        alignItems={"center"}
+        sx={{
+          background: "grey",
+          backgroundColor: "#5bc0de",
+          color: "white",
+        }}
       >
-        <button onClick={trackPlayApiHandler}>Start</button>
-        <button onClick={increaseSpeed}>Increase Speed</button>
-        <button onClick={decreaseSpeed}>Decrease Speed</button>
-        <button onClick={stopMovement}>Stop</button>
-        <button onClick={startMovement}>Start Movement</button>
-        <button onClick={generateExcelFile}>Download Excel</button>
+        <CustomButton
+          label={"Start"}
+          onClick={trackPlayApiHandler}
+          disabled={journeyStarted}
+          customClasses={{
+            width: "100px",
+            marginTop: "8px",
+            backgroundColor: "#5bc0dv",
+            color: "white",
+          }}
+        />
+        <div style={{ width: 300 }}>
+          <Slider
+            aria-label="Restricted values"
+            value={speed}
+            onChange={handleSpeedChange}
+            valueLabelDisplay="auto"
+            defaultValue={0}
+            step={1}
+            marks={marks}
+            min={1}
+            max={4}
+          />
+        </div>
+        <CustomButton
+          customClasses={{
+            width: "100px",
+            marginTop: "8px",
+            backgroundColor: stop ? "#ffffff" : "#f0ad4e",
+            color: stop ? "#333" : "white",
+          }}
+          onClick={toggleMovement}
+          icon={stop ? <PlayCircleFilledIcon /> : <StopCircleIcon />}
+        />
+        <CustomButton
+          label={"Download Excel"}
+          customClasses={{
+            width: "100px",
+            marginTop: "8px",
+            backgroundColor: stop ? "#ffffff" : "#FF5733",
+            color: stop ? "#333" : "white",
+          }}
+          onClick={generateExcelFile}
+        />
         {downloadReport()}
       </Box>
-    </>
+      <CustomLoader isLoading={isLoading} />
+    </Box>
   );
 };
 

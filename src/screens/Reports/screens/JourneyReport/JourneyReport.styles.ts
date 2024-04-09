@@ -11,8 +11,7 @@ import {
   inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
-} from "../../../utils/styles";
+} from "../../../../utils/styles";
+const journeyReportStyles = {} as const;
 
-const ReportsStyles = {} as const;
-
-export default ReportsStyles;
+export default journeyReportStyles;
