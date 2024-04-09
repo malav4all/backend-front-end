@@ -30,6 +30,9 @@ import Reports from "../../Reports/screens/Reports";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
+import { useSubscription } from "@apollo/client";
+import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
+import { openInfoNotification } from "../../../helpers/methods";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -56,6 +59,14 @@ const Layout = () => {
       }, 1000);
     }
   };
+
+  const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
+    variables: { topic: "alerts/#" },
+  });
+
+  useEffect(() => {
+    openInfoNotification(data?.alertUpdated?.message);
+  }, [data]);
 
   const { getLastActiveTime } = useIdleTimer({
     timeout: 15 * 1000 * 60,
