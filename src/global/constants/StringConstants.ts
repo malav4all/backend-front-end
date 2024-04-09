@@ -77,6 +77,7 @@ export class StringConstants {
 
   // authManager
   DASHBOARD = "Dashboard";
+  DEVICEDASHBOARD = "DeviceDashboard"
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
   GROUPS = "Campaign Groups";
@@ -102,10 +103,15 @@ export class StringConstants {
   DEVICEHISTORY = "Device History";
   ASSETASSIGNMENT = "Asset Assignment";
   LOCATIONTYPE = "Location Type";
-
+  DISTANCE = "Distance";
+  JROUNEY = "Journey";
+  ALERT = "Alert";
+  LIVE_MONITORING = "Live Monitoring";
+  ALL_DEVICES = "All Devices";
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
   FACEBOOK_APP_SECRET = "f474dc2284358fc1a8fdd73955d2fa81";
+  ACTIVE_JOURNEY = "Active Journey"
 
   //For Support Ticket
   assignedToMe = "Assigned To Me";
@@ -195,6 +201,7 @@ export class StringConstants {
   CheckYourEmailTitle = "Check your email | IMZ";
   TemplatesTitle = "Templates | IMZ";
   UsersTitle = "Users | IMZ";
+  AlertReportTitle = "Alert Report | IMZ";
   AssetAssingmentTitle = "Asset | IMZ";
   ForgotPasswordTitle = "Forgot Password | IMZ";
   Integration = "Integrations | IMZ";
@@ -240,6 +247,10 @@ export class StringConstants {
   JOURNEY = "JOURNEY";
   VIEW_JOURNEY = "VIEW JOURNEY";
   LIVE_TRACKING = "LIVE TRACKING";
+  TRACK_PLAY = "TRACK PLAY";
+  REPORTS = "REPORTS";
+  ALERT_REPORTS = "ALERT REPORTS";
+  DISTANCE_REPORTS = "DISTANCE REPORTS";
 }
 
 let strings = new StringConstants();

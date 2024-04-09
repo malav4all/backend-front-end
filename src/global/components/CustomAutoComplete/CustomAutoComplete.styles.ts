@@ -4,7 +4,7 @@ const CustomAutoCompleteStyles = {
   autoCompleteStylesStyle: {
     width: "100%",
     height: "52px",
-    borderRadius: "10px",
+    borderRadius: "5px",
     position: "relative",
     background: "#ffffff",
   },
@@ -20,7 +20,7 @@ const CustomAutoCompleteStyles = {
       },
     },
     "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
+      borderRadius: "5px",
       borderColor: "#DFDFDF",
     },
   },

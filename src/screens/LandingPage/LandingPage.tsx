@@ -27,26 +27,6 @@ const LandingPage = (props: CustomProps) => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const isAuthenticated = useAppSelector(selectAuthenticated);
 
-  const staticImageComponent = () => {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          backgroundColor: "#EBEDFF",
-          display: "flex",
-          justifyItems: "center",
-        }}
-      >
-        <img
-          src={require("../../assets/images/login screen (1).png")}
-          height="auto"
-          width="100%"
-          style={{ objectFit: "fill" }}
-        />
-      </Box>
-    );
-  };
-
   const getComponentBasedOnURL = () => {
     const location = props.location?.pathname?.split("/")[1].toLowerCase();
     switch (location) {
@@ -70,24 +50,31 @@ const LandingPage = (props: CustomProps) => {
   const getLandingPage = () => {
     return (
       <Box>
-        <Grid container justifyContent="center">
-          {isDesktop && (
-            <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
-              {staticImageComponent()}
-            </Grid>
-          )}
+        <Grid
+          container
+          justifyContent="center"
+          sx={{
+            alignItems: "center",
+            height: "100vh",
+            backgroundColor: "#5F22E2",
+          }}
+        >
           <Grid
             item
             xs={12}
-            sm={12}
-            md={12}
+            sm={10}
+            md={5}
             lg={4}
-            xl={4}
-            position="relative"
+            xl={3}
             style={{
-              background: "#F9F9F9",
-              height: "100vh",
+              background: "#ffffff",
               overflowY: "auto",
+              padding: "2rem",
+              width: "40px",
+              border: "1px solid rgb(236 239 241)",
+              boxShadow:
+                "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
+              borderRadius: "0.5rem",
             }}
           >
             <Box
@@ -102,10 +89,10 @@ const LandingPage = (props: CustomProps) => {
               <Box
                 component="img"
                 src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
-                sx={classes.logo}
                 height={"50px"}
               />
             </Box>
+
             <Box>{getComponentBasedOnURL()}</Box>
           </Grid>
         </Grid>

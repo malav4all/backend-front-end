@@ -3,16 +3,14 @@ import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
   geoZoneSvg,
-  getGroupIcon,
-  getHistoryIcon,
   getHomeIcon,
-  getIntegrationIcon,
   getSettingsIcon,
   journeyIcon,
+  liveSvg,
+  reportSvg,
+  trackPlaySvg,
 } from "./SidebarSvgConstant";
 import { pinkDarkColor } from "./styles";
-import { isTruthy } from "../helpers/methods";
-
 export interface ListOfMenusType {
   icon?: string;
   activeIcon?: string;
@@ -37,20 +35,40 @@ const ListOfMenus = () =>
     {
       icon: getHomeIcon("#666"),
       activeIcon: getHomeIcon(pinkDarkColor),
-      text: "Home",
+      text: "Dashboard",
       link: "/dashboard",
       pageName: strings.DASHBOARD,
       visibleInSidebar: true,
       accessToResource: [],
-      subMenu: [],
+      subMenu: [
+        {
+          icon: getHomeIcon("#666"),
+          activeIcon: getHomeIcon(pinkDarkColor),
+          text: "Live Monitoring",
+          link: "/dashboard",
+          pageName: strings.DASHBOARD,
+          visibleInSidebar: true,
+          accessToResource: [],
+          subMenu: [],
+        },
+        {
+          icon: getHomeIcon("#666"),
+          activeIcon: getHomeIcon(pinkDarkColor),
+          text: "All Devices",
+          link: "/device-dashboard",
+          pageName: strings.DEVICEDASHBOARD,
+          visibleInSidebar: true,
+          accessToResource: [],
+          subMenu: [],
+        },
+      ],
     },
-
     {
-      icon: getSettingsIcon("#666"),
-      activeIcon: getSettingsIcon(pinkDarkColor),
-      text: "Settings",
-      link: `${"/settings"}`,
-      pageName: strings.SETTINGS,
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Location",
+      link: `${"/location"}`,
+      pageName: strings.LOCATION,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],
@@ -60,20 +78,65 @@ const ListOfMenus = () =>
       icon: journeyIcon("#666"),
       activeIcon: journeyIcon(pinkDarkColor),
       text: "Journey",
-      link: `${"/journey"}`,
+      link: `${""}`,
       pageName: strings.JOURNEY,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],
-      subMenu: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Active",
+          link: `${"/journey"}`,
+          pageName: strings.ACTIVE_JOURNEY,
+        },
+        {
+          text: "Archived",
+          link: `${"/trackplay"}`,
+          pageName: strings.ACTIVE_JOURNEY,
+        },
+      ],
     },
-
     {
       icon: geoZoneSvg("#666"),
       activeIcon: geoZoneSvg(pinkDarkColor),
-      text: "Location",
-      link: `${"/location"}`,
+      text: "Reports",
+      link: `${"/reports"}`,
       pageName: strings.LOCATION,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Distance Report",
+          link: `${"/distanc-reports"}`,
+          pageName: strings.LOCATION,
+        },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Alert Report",
+          link: `${"/alert-reports"}`,
+          pageName: strings.LOCATION,
+        },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Journey Reports",
+          link: `${"/journey-reports"}`,
+          pageName: strings.LOCATION,
+        },
+      ],
+    },
+    {
+      icon: getSettingsIcon("#666"),
+      activeIcon: getSettingsIcon(pinkDarkColor),
+      text: "Settings",
+      link: `${"/settings"}`,
+      pageName: strings.SETTINGS,
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],

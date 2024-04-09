@@ -8,8 +8,6 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import WifiOffIcon from "@mui/icons-material/WifiOff";
-import WifiIcon from "@mui/icons-material/Wifi";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import React from "react";
@@ -259,16 +257,12 @@ const AppDrawer = (props: CustomProps) => {
       <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
           <img
-            src={
-              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
-            }
+            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
             height="13px"
           />
         ) : (
           <img
-            src={
-              "https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"
-            }
+            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
             height="50px"
           />
         )}

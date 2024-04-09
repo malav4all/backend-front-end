@@ -13,7 +13,7 @@ const customDrawerStyles = makeStyles(
       },
     },
   }),
-  { index: 1 }
+  { index: 100}
 );
 
 export default customDrawerStyles;

@@ -38,7 +38,7 @@ const CardSectionStyles = {
     height: "40px",
     width: "180px",
     textAlign: "center",
-    borderRadius: "12px",
+    borderRadius: "10px",
     boxShadow: "none !important",
     "&:hover": {
       backgroundColor: "#1B1028",

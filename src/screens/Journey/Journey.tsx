@@ -135,6 +135,7 @@ const Journey = () => {
       setSelectedValues((prev: any) => ({ ...prev, [name]: newValue }));
     }
   };
+
   const calculateDistance = async () => {
     const firstCoordinate = coordinatesArray?.shift();
     const lastCoordinate = coordinatesArray?.pop();
@@ -179,6 +180,7 @@ const Journey = () => {
     setFormField({ ...errors });
     return isValid;
   };
+
   const addJourneyHandler = async () => {
     try {
       if (handleValidation()) {
@@ -229,6 +231,7 @@ const Journey = () => {
       openErrorNotification(error.message);
     }
   };
+
   const formatDuration = (durationInHours: number) => {
     if (durationInHours < 1) {
       const minutes = Math.round(durationInHours * 60);
@@ -371,6 +374,8 @@ const Journey = () => {
     }
   };
 
+  console.log(journeyTableData);
+
   const fetchGeozone = async () => {
     try {
       const res = await fetchGeozoneHandler({
@@ -425,6 +430,7 @@ const Journey = () => {
       setIsLoading(false);
     }
   };
+
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchJourney(SearchEvent.target.value.trim());
@@ -434,6 +440,7 @@ const Journey = () => {
       setSearchJourney("");
     }
   };
+
   const getCustomTable = () => {
     return (
       <Box
@@ -485,7 +492,7 @@ const Journey = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search asset..."
+        placeHolder="Search journey..."
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -519,12 +526,14 @@ const Journey = () => {
           </Grid>
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Box>
+
               <InputLabel sx={classes.inputLabel} shrink>
                 Start Location
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
               </InputLabel>
+
               <Autocomplete
                 sx={classes.emailDropDownStyle}
                 id="update_user_manager_field"
@@ -535,7 +544,7 @@ const Journey = () => {
                         !Object.values(selectedValues).find(
                           (selected: any) => selected?.value === tItem
                         )
-                    ) // Filter out selected values
+                    ) 
                     .map((item: any) => ({
                       key: item._id,
                       label: `${item.name} - ${item.description}`,
@@ -560,6 +569,7 @@ const Journey = () => {
                   );
                 }}
               />
+
             </Box>
           </Grid>
           {locationData?.map((item: any, index: number) => (
@@ -761,7 +771,7 @@ const Journey = () => {
       >
         <CustomButton
           id="users_add_button"
-          label={"Add"}
+          label={"Add Journey"}
           onClick={addMoreLocation}
           customClasses={{
             width: "150px",
