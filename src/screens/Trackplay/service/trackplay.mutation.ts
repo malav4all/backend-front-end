@@ -3,8 +3,12 @@ import { gql } from "@apollo/client";
 export const FETCH_TRACKPLAY_DATA = gql`
   mutation {
     getRowData {
-     lat
-     lng
+      imei
+      direction
+      lat
+      lng
+      label
+      currentTime
     }
   }
 `;

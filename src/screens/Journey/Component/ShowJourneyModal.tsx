@@ -66,7 +66,7 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
       transportMode: "car",
       origin: `${routeOrigin[0].lat},${routeOrigin[0].lng}`,
       destination: `${routeOrigin[1].lat},${routeOrigin[1].lng}`,
-      return: "polyline",
+      return: "polyline,turnByTurnActions,actions,instructions,travelSummary",
       via: new window.H.service.Url.MultiValueQueryParameter(
         coordinates.map((wp: any) => `${wp.lat},${wp.lng}`)
       ),
