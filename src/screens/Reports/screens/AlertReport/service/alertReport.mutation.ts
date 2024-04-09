@@ -104,3 +104,18 @@ export const SEARCH_USER = gql`
     }
   }
 `;
+
+export const FETCH_REPORT_DETAIL = gql`
+  subscription alertUpdated($topic: String!) {
+    alertUpdated(topic: $topic) {
+      label
+      event
+      imei
+      message
+      lat
+      lng
+      mode
+      source
+    }
+  }
+`;

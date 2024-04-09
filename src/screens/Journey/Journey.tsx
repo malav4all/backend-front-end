@@ -374,8 +374,6 @@ const Journey = () => {
     }
   };
 
-  console.log(journeyTableData);
-
   const fetchGeozone = async () => {
     try {
       const res = await fetchGeozoneHandler({
@@ -526,7 +524,6 @@ const Journey = () => {
           </Grid>
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Box>
-
               <InputLabel sx={classes.inputLabel} shrink>
                 Start Location
                 <Box ml={0.4} sx={classes.star}>
@@ -544,7 +541,7 @@ const Journey = () => {
                         !Object.values(selectedValues).find(
                           (selected: any) => selected?.value === tItem
                         )
-                    ) 
+                    )
                     .map((item: any) => ({
                       key: item._id,
                       label: `${item.name} - ${item.description}`,
@@ -569,7 +566,6 @@ const Journey = () => {
                   );
                 }}
               />
-
             </Box>
           </Grid>
           {locationData?.map((item: any, index: number) => (
