@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import { fetchTrackplayHandler } from "./service/trackplay.service";
 import { Box } from "@mui/material";
+import polyline from "@mapbox/polyline";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import TrackReport from "./Component/Report";
+import * as XLSX from "xlsx";
+import moment from "moment";
 
 const Trackplay = () => {
   const [map, setMap] = useState<any>(null);
@@ -12,6 +17,52 @@ const Trackplay = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stop, setStop] = useState(false);
   const [lastStoppedIndex, setLastStoppedIndex] = useState(0);
+  const [dataValue, setDataValue] = useState([]);
+  const [rawData, setRawData] = useState([]);
+
+  const getReports = async (dataTest: any) => {
+    const finalArr = dataTest.map(
+      ({ direction, __typename, label, lat, lng, ...rest }: any) => {
+        return {
+          ...rest,
+          lat: Number(lat),
+          lng: Number(lng),
+        };
+      }
+    );
+
+    const payload = { trace: finalArr };
+
+    const url = `https://router.hereapi.com/v8/import?transportMode=car&return=polyline,turnByTurnActions,actions,instructions,travelSummary&apiKey=7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI`;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    const route = data.routes[0];
+
+    const reportData = route.sections[0].actions.map(
+      (
+        { instruction, action, duration, length, offset }: any,
+        index: number
+      ) => {
+        return {
+          sNo: index,
+          imei: dataTest[0].label,
+          instruction,
+          action,
+          duration,
+          length,
+          offset,
+        };
+      }
+    );
+    setDataValue(reportData);
+  };
 
   function addPolylineToMap(data: any) {
     const mapLine = new window.H.geo.LineString();
@@ -33,9 +84,13 @@ const Trackplay = () => {
     setMarker(marker);
   }
 
+  const reportDownload = () => {};
+
   const trackPlayApiHandler = async () => {
     const trackdata = await fetchTrackplayHandler();
     addPolylineToMap(trackdata.getRowData);
+    getReports(trackdata.getRowData);
+    setRawData(trackdata.getRowData);
   };
 
   useEffect(() => {
@@ -104,6 +159,41 @@ const Trackplay = () => {
     setStop(false);
   };
 
+  const downloadReport = () => {
+    return (
+      <>
+        <PDFDownloadLink
+          document={<TrackReport reportData={dataValue} />}
+          fileName={"Invoice.pdf"}
+        >
+          {({ blob, url, loading, error }) =>
+            loading ? (
+              "Loading..."
+            ) : (
+              <button className="button">Print Invoice</button>
+            )
+          }
+        </PDFDownloadLink>
+      </>
+    );
+  };
+
+  const generateExcelFile = () => {
+    const modifiedData = rawData.map((item: any) => ({
+      IMEI: item.imei,
+      Vehicle_No: item.label,
+      Latitude: item.lat,
+      Longitude: item.lng,
+      Time: item.currentTime
+        ? moment(item.currentTime).format("DD-MM-YYYY HH:mm:ss A")
+        : "",
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(modifiedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, "TrackReport.xlsx");
+  };
+
   return (
     <>
       <Box
@@ -116,6 +206,8 @@ const Trackplay = () => {
         <button onClick={decreaseSpeed}>Decrease Speed</button>
         <button onClick={stopMovement}>Stop</button>
         <button onClick={startMovement}>Start Movement</button>
+        <button onClick={generateExcelFile}>Download Excel</button>
+        {downloadReport()}
       </Box>
     </>
   );
