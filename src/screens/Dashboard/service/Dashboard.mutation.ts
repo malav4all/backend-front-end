@@ -22,6 +22,8 @@ export const ALERT_TABLE_DATA = gql`
       event
       imei
       label
+      message
+      time
     }
   }
 `;

@@ -91,7 +91,18 @@ const Dashboard = () => {
         },
       }),
     ]);
-    setAlertTableData(res1.getAlertData);
+    const alertTableDataValue = res1.getAlertData.map((item: any) => {
+      return {
+        imei: item.imei,
+        label: item.label,
+        mode: item.mode,
+        event: item.event,
+        message: item.message,
+        source: item.source,
+        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+      };
+    });
+    setAlertTableData(alertTableDataValue);
     const deviceStatus = res2.getStatusDevice.map((item: any) => {
       return {
         imei: item.imei,
@@ -476,6 +487,7 @@ const Dashboard = () => {
                 { name: "Event", field: "event" },
                 { name: "Source", field: "source" },
                 { name: "Message", field: "message" },
+                { name: "Time", field: "time" },
               ]}
               rows={alertTableData.slice(startIndex, endIndex)}
               paginationCount={alertTableData.length}
@@ -495,7 +507,7 @@ const Dashboard = () => {
                 { name: "Status", field: "status" },
                 { name: "Time", field: "time" },
               ]}
-              rows={statData}
+              rows={statData.slice(startDeviceIndex, endDeviceIndex)}
               isRowPerPageEnable={true}
               rowsPerPage={10}
               paginationCount={statData.length}
