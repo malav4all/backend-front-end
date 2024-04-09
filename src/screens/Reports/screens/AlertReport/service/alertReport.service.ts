@@ -4,6 +4,7 @@ import {
   ADD_USER,
   CHANGE_PASSWORD,
   FETCH_ACCOUNT,
+  FETCH_REPORT_DETAIL,
   FETCH_ROLE,
   FETCH_USER,
   SEARCH_USER,
@@ -16,7 +17,6 @@ export const fetchAccountHandler = async (variables: any): Promise<any> => {
       mutation: FETCH_ACCOUNT,
       variables,
     });
-
     return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);

@@ -26,13 +26,14 @@ import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
-import Reports from "../../Reports/screens/Reports";
+// import Reports from "../../Reports/screens/Reports";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
 import { openInfoNotification } from "../../../helpers/methods";
+import Reports from "../../Reports/Report";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -147,19 +148,17 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
+            path={"/journey-reports"}
+            component={DistanceReport}
+            componentName={strings.DISTANCE_REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
             path={"/live-tracking"}
             component={Trackplay}
             componentName={strings.TRACK_PLAY}
           />
-
-          <PrivateRoute
-            exact
-            isLoggedIn={isAuthenticated}
-            path={"/reports"}
-            component={Reports}
-            componentName={strings.REPORTS}
-          />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

@@ -112,7 +112,7 @@ const ListOfMenus = () =>
           icon: geoZoneSvg("#666"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Distance Report",
-          link: `${"/distanc-reports"}`,
+          link: `${"/distance-reports"}`,
           pageName: strings.LOCATION,
         },
         {

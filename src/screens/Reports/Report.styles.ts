@@ -11,9 +11,41 @@ import {
   inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
-} from "../../../utils/styles";
+  pureWhiteColor,
+} from "./../../utils/styles";
+const reportStyles = {
+  mainCardHeading: {
+    ...boldFont,
+    fontSize: getRelativeFontSize(10),
+    color: primaryHeadingColor,
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(3),
+    },
+  },
+  campaignerTable: {
+    minWidth: "300px",
+    width: "100%",
+    overflow: "auto",
+  },
+  dropdown: {
+    ...regularFont,
+    ...purpleThemedSelectComponent,
+    height: "40px",
+    width: "200px",
+    backgroundColor: pureWhiteColor,
+    borderRadius: "8px",
+    color: "#22222C",
+    border: 0,
+    boxShadow: "4px 4px 30px rgba(0, 0, 0, 0.03)",
+    "&:hover": {
+      border: 0,
+    },
+  },
+  dropdownOptions: {
+    ...regularFont,
+    ...pinkThemedMenuItems,
+  },
 
-const usersStyles = {
   mainSection: {
     padding: theme.spacing(2),
     paddingTop: "2px",
@@ -99,7 +131,7 @@ const usersStyles = {
   },
   dropDownStyle: {
     height: "47px",
-    borderRadius: "5px",
+    borderRadius: "12px",
     ...purpleThemedSelectComponent,
 
     "& .MuiInputBase-input": {
@@ -128,14 +160,7 @@ const usersStyles = {
     variant: "standard",
     ...boldFont,
   },
-  mainCardHeading: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
-    color: primaryHeadingColor,
-    [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(3),
-    },
-  },
+
   select: {
     "& .MuiOutlinedInput-root": {
       height: "47px",
@@ -215,11 +240,7 @@ const usersStyles = {
       marginBottom: theme.spacing(1),
     },
   },
-  campaignerTable: {
-    minWidth: "300px",
-    width: "100%",
-    overflow: "auto",
-  },
+
   searchInputWrapper: {
     display: "flex",
     alignItem: "center",
@@ -251,4 +272,4 @@ const usersStyles = {
   },
 } as const;
 
-export default usersStyles;
+export default reportStyles;
