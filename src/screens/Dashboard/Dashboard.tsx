@@ -9,22 +9,15 @@ import {
 } from "@mui/material";
 import {
   options,
-  Counts,
   CampaignRecipientCounts,
   RecentCampaignStats,
-  CampaignCounts,
   Last3DaysCampaigns,
 } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import campaigns from "../../assets/images/dashboard/campaigns.svg";
-
 import { theme, regularFont } from "../../utils/styles";
 import { convertESTtoUserLocalTime, isTruthy } from "../../helpers/methods";
-
-import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
-
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
@@ -47,96 +40,7 @@ const Dashboard = () => {
     {} as Last3DaysCampaigns
   );
   const [statData, setStatData] = useState<any>();
-
-  const [campaignRecipientStats, setCampaignRecipientStats] =
-    useState<CampaignRecipientCounts>({
-      Total: {
-        name: "Total",
-        value: 0,
-      },
-      Success: {
-        name: "Success",
-        value: 0,
-      },
-      Opened: {
-        name: "Opened",
-        value: 0,
-      },
-      Clicked: {
-        name: "Clicked",
-        value: 0,
-      },
-      Failed: {
-        name: "Failed",
-        value: 0,
-      },
-      Unsubscribed: {
-        name: "Unsubscribed",
-        value: 0,
-      },
-    });
-
-  const [recentCampaignStats, setRecentCampaignStats] =
-    useState<RecentCampaignStats>({
-      id: "",
-      name: "",
-      createdOn: "",
-      stats: {
-        Requested: {
-          name: "Requested",
-          value: 0,
-          fill: "#0069A9",
-        },
-        Success: {
-          name: "Success",
-          value: 0,
-          fill: "#C20C85",
-        },
-        Failed: {
-          name: "Failed",
-          value: 0,
-          fill: "#462682",
-        },
-        Unsubscribed: {
-          name: "Unsubscribed",
-          value: 0,
-          fill: "#C3D772",
-        },
-      },
-    });
-
-  const [activities, setActivities] = useState([]);
-
-  const getStatData = async () => {
-    try {
-      const statData = await fetchDashboardDetail();
-      setStatData(statData.fetchDashboardDetail.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getStatData();
-  }, []);
-
-  const [selectedRecActivityFilter, setSelectedRecActivityFilter] =
-    useState<string>("");
-
-  const fillMyCampaigns = (last3DaysCampaignData: any) => {
-    const sortedCampaigns = last3DaysCampaignData.sort(
-      (a: any, b: any) =>
-        moment(b.scheduleTime).valueOf() - moment(a.scheduleTime).valueOf()
-    );
-    return sortedCampaigns.reduce((acc: any, val: any) => {
-      acc[moment(val.scheduleTime).format("MMMM D")] =
-        acc[moment(val.scheduleTime).format("MMMM D")] || [];
-      acc[moment(val.scheduleTime).format("MMMM D")].push(val);
-      return acc;
-    }, {});
-  };
-
-  const [stats, setStats] = useState({
+  const stats = {
     executed: {
       title: "Total Journey",
       value: statData?.totalJourney,
@@ -160,27 +64,15 @@ const Dashboard = () => {
       resource: strings.contact,
       redirection: {},
     },
-  });
-
-  const fillActivities = (activitiesData: any) => {
-    const data = activitiesData.map((activity: any) => {
-      return {
-        ...activity,
-        metadata: JSON.parse(activity.metadata),
-      };
-    });
-    return data.sort(
-      (a: any, b: any) =>
-        moment(b.scheduleTime).valueOf() - moment(a.scheduleTime).valueOf()
-    );
   };
 
-  const updateAudienceChanged = (audience: Counts[]) => {
-    let count = 0;
-    audience.map((data) => {
-      count = data.count;
-    });
-    return count;
+  const getStatData = async () => {
+    try {
+      const statData = await fetchDashboardDetail();
+      setStatData(statData.fetchDashboardDetail.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const getUserName = () => {
@@ -204,7 +96,7 @@ const Dashboard = () => {
       >
         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
           <Typography variant="h5" sx={classes.heading}>
-            Hello, {getUserName()}!
+            
           </Typography>
         </Grid>
 
@@ -587,13 +479,6 @@ const Dashboard = () => {
     );
   };
 
-  const data = [
-    { name: "Online", value: 30 },
-    { name: "Offline", value: 20 },
-  ];
-
-  const COLORS = ["#845ADF", "#baa6ea"];
-
   const getAlertsTable = () => {
     return (
       <Box
@@ -631,8 +516,8 @@ const Dashboard = () => {
           ></Grid>
         </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sm={12} md={9} xl={9} lg={9}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={12} md={8} xl={8} lg={9}>
             <CustomTable
               headers={[
                 { name: "IMEI", field: "imei" },
@@ -688,7 +573,7 @@ const Dashboard = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+          <Grid item xs={12} sm={12} md={4} xl={4} lg={3}>
             <CustomTable
               headers={[
                 { name: "Offline", field: "offline" },
@@ -753,6 +638,10 @@ const Dashboard = () => {
       </Grid>
     );
   };
+
+  useEffect(() => {
+    getStatData();
+  }, []);
 
   return (
     <Box>

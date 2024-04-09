@@ -56,7 +56,7 @@ const LandingPage = (props: CustomProps) => {
           sx={{
             alignItems: "center",
             height: "100vh",
-            backgroundColor: "#845ADF",
+            backgroundColor: "#5F22E2",
           }}
         >
           <Grid

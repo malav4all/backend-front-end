@@ -30,7 +30,7 @@ const customTableStyles = {
   tableHeaderCell: {
     ...boldFont,
     color: "#FFFFFF",
-    backgroundColor: "#845ADF",
+    backgroundColor: "#5F22E2",
     borderTop: "1px solid #F0F0F0",
     borderBottom: "1px solid #F0F0F0",
     textAlign: "left",
@@ -48,7 +48,7 @@ const customTableStyles = {
   },
   tableRow: {
     margin: "10px 0",
-    backgroundColor: "#FAFBFD",
+    backgroundColor: "#ffffff",
     "&:hover": {
       cursor: "pointer",
     },

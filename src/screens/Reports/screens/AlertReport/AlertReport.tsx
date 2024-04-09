@@ -150,7 +150,7 @@ const AlertReport = () => {
             <>
               <Tooltip title="Change Password">
                 <LockResetIcon
-                  htmlColor={"#845ADF"}
+                  htmlColor={"#5F22E2"}
                   style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                   onClick={() => {
                     setChangePasswordModal(true);
@@ -165,7 +165,7 @@ const AlertReport = () => {
                 }}
               >
                 <EditIcon
-                  htmlColor={"#845ADF"}
+                  htmlColor={"#5F22E2"}
                   style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 />
               </Tooltip>

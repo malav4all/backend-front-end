@@ -1,58 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
   Grid,
+  InputAdornment,
   MenuItem,
   Select,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import {
-  options,
-  Counts,
-  CampaignRecipientCounts,
-  RecentCampaignStats,
-  Last3DaysCampaigns,
-} from "./DashboardData";
+import SearchIcon from "@mui/icons-material/Search";
+import { options } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import campaigns from "../../assets/images/dashboard/campaigns.svg";
 
-import { theme, regularFont } from "../../utils/styles";
 import {
-  convertESTtoUserLocalTime,
+  debounceEventHandler,
   isTruthy,
   openErrorNotification,
 } from "../../helpers/methods";
 
-import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
 
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
-import { useDispatch } from "react-redux";
 import { fetchDashboardDetail } from "./service/Dashboard.service";
-import { FaBell } from "react-icons/fa6";
 import dummyData, {
   deviceDashboardTableHeader,
 } from "./DeviceDashboard.helper";
-import { CustomTable } from "../../global/components";
-
-const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
+import { CustomInput, CustomTable } from "../../global/components";
 
 const DeviceDashboard = () => {
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
-  const dispatch = useDispatch();
-  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const userName = useAppSelector(selectName);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deviceDashboardData, setDeviceDashboardData] = useState([{}]);
-  const [myCampaign, setMyCampaign] = useState<Last3DaysCampaigns>(
-    {} as Last3DaysCampaigns
-  );
   const [statData, setStatData] = useState<any>();
 
   const getStatData = async () => {
@@ -64,11 +47,7 @@ const DeviceDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    getStatData();
-  }, []);
-
-  const [stats, setStats] = useState({
+  const stats = {
     executed: {
       title: "Online Devices",
       value: statData?.totalJourney,
@@ -92,19 +71,7 @@ const DeviceDashboard = () => {
       resource: strings.contact,
       redirection: {},
     },
-  });
-
-  const getUserName = () => {
-    const name = userName.split(" ");
-    if (name.length > 0) {
-      return name[0];
-    }
-    return userName;
   };
-
-  useEffect(() => {
-    fetchDeviceDashboardHandler();
-  }, []);
 
   const fetchDeviceDashboardHandler = async () => {
     try {
@@ -138,9 +105,7 @@ const DeviceDashboard = () => {
         width="100%"
       >
         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          <Typography variant="h5" sx={classes.heading}>
-            Hello, {getUserName()}!
-          </Typography>
+          <Typography variant="h5" sx={classes.heading}></Typography>
         </Grid>
 
         <Grid
@@ -234,9 +199,6 @@ const DeviceDashboard = () => {
           minWidth: "300px",
           width: "100%",
           overflow: "auto",
-          padding: "1rem",
-          backgroundColor: "white",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
         <CustomTable
@@ -259,6 +221,35 @@ const DeviceDashboard = () => {
     );
   };
 
+  const getSearchBar = () => {
+    return (
+      <CustomInput
+        placeHolder="Search Devices..."
+        id="assetAssingment_search_field"
+        onChange={debounceEventHandler(
+          handleSearchOnChange,
+          strings.SEARCH_TIME_OUT
+        )}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    );
+  };
+
+  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
+    if (SearchEvent.target.value) {
+      // setSearchJourney(SearchEvent.target.value.replace(/\s/g, ""));
+      // setPage(1);
+      // setRowsPerPage(10);
+    } else {
+      // setSearchJourney("");
+    }
+  };
 
   const getDashboardBody = () => {
     return (
@@ -282,32 +273,58 @@ const DeviceDashboard = () => {
                   md={5}
                   lg={8}
                   sx={{ display: "flex", margin: "1rem 0rem" }}
-                >
-                  <Typography variant="h5" sx={classes.heading}>
-                    All Devices table
-                  </Typography>
-                </Grid>
+                ></Grid>
 
                 <Grid
                   item
                   xs={12}
-                  md={7}
-                  lg={4}
+                  md={12}
+                  lg={12}
                   sx={{
                     display: "flex",
                     justifyContent: "flex-end",
                     flexWrap: "wrap",
+                    backgroundColor: "white",
+                    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                    padding: "1rem",
+                    borderRadius: "0.5rem",
                   }}
-                ></Grid>
-              </Grid>
+                >
+                  <Grid
+                    item
+                    xs={12}
+                    md={12}
+                    lg={12}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "2rem",
+                    }}
+                  >
+                    <Typography variant="h5" sx={classes.heading}>
+                      All Devices table
+                    </Typography>
 
-              {getCustomTable()}
+                    {getSearchBar()}
+                  </Grid>
+                  {getCustomTable()}
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
     );
   };
+
+  useEffect(() => {
+    fetchDeviceDashboardHandler();
+  }, []);
+
+  useEffect(() => {
+    getStatData();
+  }, []);
 
   return (
     <Box>
