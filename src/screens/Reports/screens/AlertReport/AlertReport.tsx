@@ -34,7 +34,7 @@ import {
 } from "../../../../global/components";
 import { boldFont, primaryHeadingColor } from "../../../../utils/styles";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
-import { RowData, AlertReportData } from "../../../../models/interfaces";
+import { RowData, UserData } from "../../../../models/interfaces";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTitle } from "../../../../utils/UseTitle";
 import AddAlertReport from "./components/AddUser/AddAlertReport";
@@ -51,7 +51,7 @@ const AlertReport = () => {
   const [updateAlertReportDialogHandler, setUpdateAlertReportDialogHandler] =
     useState(false);
   const [alertReportDataSource, setAlertReportDataSource] = useState<
-    AlertReportData[]
+    UserData[]
   >([]);
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
   const [roles, setRoles] = useState([]);
@@ -279,12 +279,12 @@ const AlertReport = () => {
   const addAlertReportDialogBox = () => {
     return (
       <AddAlertReport
-        openAddAlertReportDialog={addAlertReportDialogHandler}
-        handleCloseAddAlertReportDialog={closeAddAlertReportDialogHandler}
+        openAddUserDialog={addAlertReportDialogHandler}
+        handleCloseAddUserDialog={closeAddAlertReportDialogHandler}
         managerMail={activeCampaigner}
         roles={roles}
         tableData={getAlertReportDetailTable}
-        selectedAlertReportRowData={selectedAlertReportRowData}
+        selectedUserRowData={selectedAlertReportRowData}
         isLoading={isLoading}
         edit={edit}
         setEdit={setEdit}

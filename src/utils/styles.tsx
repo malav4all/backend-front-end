@@ -9,7 +9,7 @@ import { createTheme } from "@mui/material/styles";
 
 const borderRadius = "5px";
 const primaryColor = "#0d3057";
-const primaryBackgroundColor = "#FCFCFC";
+const primaryBackgroundColor = "#ffffff";
 const borderColor = "rgba(0, 0, 0, 0.12)";
 const borderStyle = "1px solid " + borderColor;
 const infoTextColor = "#888888";

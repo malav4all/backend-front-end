@@ -29,6 +29,7 @@ import Trackplay from "../../Trackplay/Trackplay";
 import Reports from "../../Reports/screens/Reports";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
+import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -146,6 +147,22 @@ const Layout = () => {
             path={"/reports"}
             component={Reports}
             componentName={strings.REPORTS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-dashboard"}
+            component={DeviceDashboard}
+            componentName={strings.DEVICEDASHBOARD}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trackplay"}
+            component={Trackplay}
+            componentName={strings.ACTIVE_JOURNEY}
           />
 
           <PrivateRoute

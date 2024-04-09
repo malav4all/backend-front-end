@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
   SelectChangeEvent,
-
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
@@ -56,7 +55,7 @@ interface CustomProps {
   setEdit?: any;
 }
 
-const AddUser = (props: CustomProps) => {
+const AddAlertReport = (props: CustomProps) => {
   const classes = usersStyles;
   const [userFormFields, setUserFormFields] = useState<any>(
     insertUserField(props?.selectedUserRowData)
@@ -128,7 +127,7 @@ const AddUser = (props: CustomProps) => {
     return (
       <Box>
         <Typography sx={classes.boldFonts}>
-          {props.edit ? "Update User" : "Add User"}
+          {props.edit ? "Update AlertReport" : "Add AlertReport"}
         </Typography>
       </Box>
     );
@@ -187,7 +186,7 @@ const AddUser = (props: CustomProps) => {
             id="add_user_address_field"
             placeHolder="Enter your username"
             name="userName"
-            label="User Name"
+            label="AlertReport Name"
             onChange={handleFormDataChange}
             value={userFormFields?.userName?.value}
             error={userFormFields?.userName?.error}
@@ -234,15 +233,17 @@ const AddUser = (props: CustomProps) => {
                   userFormFields?.roleId?.error?.length !== 0
                 }
               >
-                {["Admin", "User", "Editor"].map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {["Admin", "AlertReport", "Editor"].map(
+                  (item: any, index: any) => (
+                    <MenuItem
+                      key={index}
+                      value={item}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item}
+                    </MenuItem>
+                  )
+                )}
               </Select>
             </Stack>
             {!isTruthy(userFormFields?.roleId?.value) && (
@@ -324,7 +325,7 @@ const AddUser = (props: CustomProps) => {
   const addUserHeaderImg = () => {
     return (
       <Box display={"flex"}>
-        {/* <img src={uploadUser} alt="Add user not found!" /> */}
+        {/* <img src={uploadUser} alt="Add AlertReport not found!" /> */}
       </Box>
     );
   };
@@ -351,4 +352,4 @@ const AddUser = (props: CustomProps) => {
   return <Box>{getAddUserDialog()}</Box>;
 };
 
-export default AddUser;
+export default AddAlertReport;
