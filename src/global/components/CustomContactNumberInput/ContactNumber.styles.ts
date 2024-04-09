@@ -7,7 +7,7 @@ import {
 const customContactNumberStyles = {
   textField: {
     width: "100%",
-    borderRadius: "12px",
+    borderRadius: "8px",
     "& .MuiInputBase-input": {
       position: "relative",
       padding: "12px 12px",
@@ -17,7 +17,7 @@ const customContactNumberStyles = {
       },
     },
     "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
+      borderRadius: "8px",
       "&.Mui-focused fieldset": {
         borderColor: "#0675f9",
       },

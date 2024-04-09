@@ -26,6 +26,10 @@ import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
+import Reports from "../../Reports/screens/Reports";
+import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
+import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
+import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -108,13 +112,57 @@ const Layout = () => {
             component={ViewLiveTracking}
             componentName={strings.LIVE_TRACKING}
           />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/reports"}
+            component={Reports}
+            componentName={strings.REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/alert-reports"}
+            component={AlertReport}
+            componentName={strings.ALERT_REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/distance-reports"}
+            component={DistanceReport}
+            componentName={strings.DISTANCE_REPORTS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/live-tracking"}
+            component={Trackplay}
+            componentName={strings.TRACK_PLAY}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/reports"}
+            component={Reports}
+            componentName={strings.REPORTS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-dashboard"}
+            component={DeviceDashboard}
+            componentName={strings.DEVICEDASHBOARD}
+          />
 
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/trackplay"}
             component={Trackplay}
-            componentName={strings.TRACK_PLAY}
+            componentName={strings.ACTIVE_JOURNEY}
           />
 
           <PrivateRoute

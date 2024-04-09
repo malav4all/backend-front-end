@@ -48,8 +48,6 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
-  const [changePasswordDialogHandler, setChangePasswordDialogHandler] =
-    useState(false);
   const [updateUserDialogHandler, setUpdateUserDialogHandler] = useState(false);
   const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
@@ -116,8 +114,10 @@ const Users = () => {
           <Chip
             label={usersData.status}
             sx={{
-              backgroundColor: usersData.status === "Active" ? "green" : "red",
-              color: "white",
+              backgroundColor:
+                usersData.status === "Active" ? "green" : "grey",
+              color: usersData.status === "Active" ? "white" : "white",
+              border: usersData.status === "Active" ? "1px solid #37b071" : "1px solid white",
               animation: "pulse 2s infinite",
               "@keyframes pulse": {
                 "0%": {
@@ -141,7 +141,7 @@ const Users = () => {
           <>
             <Tooltip title="Change Password">
               <LockResetIcon
-                htmlColor={"#4b14c4"}
+                htmlColor={"#5F22E2"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 onClick={() => {
                   setChangePasswordModal(true);
@@ -156,7 +156,7 @@ const Users = () => {
               }}
             >
               <EditIcon
-                htmlColor={"#4b14c4"}
+                htmlColor={"#5F22E2"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
             </Tooltip>

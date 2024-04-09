@@ -187,7 +187,7 @@ const AddUser = (props: CustomProps) => {
 
   const addUserDialogBody = () => {
     return (
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{ padding: "1rem" }}>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <CustomInput
             required

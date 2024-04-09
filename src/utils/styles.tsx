@@ -7,9 +7,9 @@ import Switch from "@mui/material/Switch";
 import { CSSProperties, withStyles } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 
-const borderRadius = "30px";
+const borderRadius = "5px";
 const primaryColor = "#0d3057";
-const primaryBackgroundColor = "#FCFCFC";
+const primaryBackgroundColor = "#ffffff";
 const borderColor = "rgba(0, 0, 0, 0.12)";
 const borderStyle = "1px solid " + borderColor;
 const infoTextColor = "#888888";
@@ -18,16 +18,16 @@ const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
 const drawerWidth = 300;
 const textLightColor = "#666666";
-const purplePrimaryColor = "#4b14c4";
+const purplePrimaryColor = "#5F22E2";
 const pinkDarkColor = "#9063F2";
 const pureWhiteColor = "#ffffff";
 const primaryHeadingColor = "#001529";
 const primaryGreenColor = "#adc804";
 const primaryBlackColor = "#000000";
-const primaryBlue = "#4b14c4";
+const primaryBlue = "#5F22E2";
 const lightTextColor = "#666";
 const lightPinkColor = "#f1edff";
-const activeMenuColor = "#4b14c4";
+const activeMenuColor = "#5F22E2";
 const darkPurpledColor = "#0675f9";
 const inputLabelRequiredColor = "red";
 const buttonWhiteBg = "#E7E7E7";
@@ -96,7 +96,7 @@ const getRelativeFontSize = (value: number = 0) => {
 };
 
 const customButtonStyle: CSSProperties = {
-  borderRadius: "15px",
+  borderRadius: "5px",
   border: "none",
   fontSize: getRelativeFontSize(),
   textAlign: "center",
@@ -222,7 +222,7 @@ export const BootstrapInput = withStyles((theme: Theme) =>
       },
       backgroundColor: theme.palette.common.white,
       border: "1px solid #ced4da",
-      borderRadius: "15px",
+      borderRadius: "5px",
       padding: "5px 5px",
       width: "300px",
     },

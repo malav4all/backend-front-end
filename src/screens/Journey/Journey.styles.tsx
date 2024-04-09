@@ -81,7 +81,7 @@ const journeyStyles = {
     height: "47px",
     padding: "2px",
     width: "150px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     [theme.breakpoints.down("lg")]: {
       marginBottom: "5px",
     },
@@ -115,7 +115,7 @@ const journeyStyles = {
     backgroundColor: "#ffffff",
     border: "1px solid #ced4da",
     minWidth: "50px",
-    borderRadius: "10px",
+    borderRadius: "5px",
     width: "50px",
     display: "flex",
     alignItems: "center",
@@ -165,7 +165,8 @@ const journeyStyles = {
     "& .MuiOutlinedInput-root": {
       padding: "0, 9px",
       height: "47px",
-      borderRadius: "12px !important",
+      borderRadius: "5px",
+      backgroundColor: "white",
       "&.Mui-focused fieldset": {
         borderColor: "#4B0150",
       },
@@ -174,7 +175,7 @@ const journeyStyles = {
   select: {
     "& .MuiOutlinedInput-root": {
       height: "47px",
-      borderRadius: "12px",
+      borderRadius: "5px",
       fontSize: getRelativeFontSize(),
 
       "&.Mui-focused fieldset": {

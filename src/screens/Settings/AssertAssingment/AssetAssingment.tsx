@@ -151,7 +151,7 @@ const AssetAssingment = () => {
       const res = await searchAssetAssingment({
         input: {
           search: searchCampaigner,
-          page: pageNumber,
+          page: 1,
           limit: perPageData,
         },
       });

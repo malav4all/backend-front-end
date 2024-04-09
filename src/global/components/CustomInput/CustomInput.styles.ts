@@ -8,7 +8,7 @@ import {
 const customInputStyles = {
   textField: {
     width: "100%",
-    borderRadius: "12px",
+    borderRadius: "5px",
     "& .MuiInputBase-input": {
       position: "relative",
       padding: "12px 12px",
@@ -18,7 +18,7 @@ const customInputStyles = {
       },
     },
     "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
+      borderRadius: "5px",
       "&.Mui-focused fieldset": {
         borderColor: "#0675f9",
       },
