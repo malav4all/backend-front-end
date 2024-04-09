@@ -44,7 +44,6 @@ const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
-  const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const userName = useAppSelector(selectName);
@@ -53,7 +52,7 @@ const Dashboard = () => {
     startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
-  const [selectedRange, setSelectedRange] = useState("Past 1h");
+  const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [myCampaign, setMyCampaign] = useState<Last3DaysCampaigns>(
     {} as Last3DaysCampaigns
@@ -62,146 +61,11 @@ const Dashboard = () => {
   const startIndex = (page - 1) * 10;
   const endIndex = startIndex + 10;
 
-  const [campaignRecipientStats, setCampaignRecipientStats] =
-    useState<CampaignRecipientCounts>({
-      Total: {
-        name: "Total",
-        value: 0,
-      },
-      Success: {
-        name: "Success",
-        value: 0,
-      },
-      Opened: {
-        name: "Opened",
-        value: 0,
-      },
-      Clicked: {
-        name: "Clicked",
-        value: 0,
-      },
-      Failed: {
-        name: "Failed",
-        value: 0,
-      },
-      Unsubscribed: {
-        name: "Unsubscribed",
-        value: 0,
-      },
-    });
-
-  const [recentCampaignStats, setRecentCampaignStats] =
-    useState<RecentCampaignStats>({
-      id: "",
-      name: "",
-      createdOn: "",
-      stats: {
-        Requested: {
-          name: "Requested",
-          value: 0,
-          fill: "#0069A9",
-        },
-        Success: {
-          name: "Success",
-          value: 0,
-          fill: "#C20C85",
-        },
-        Failed: {
-          name: "Failed",
-          value: 0,
-          fill: "#462682",
-        },
-        Unsubscribed: {
-          name: "Unsubscribed",
-          value: 0,
-          fill: "#C3D772",
-        },
-      },
-    });
-
-  const [activities, setActivities] = useState([]);
-
-  const getStatData = async () => {
-    try {
-      const statData = await fetchDashboardDetail();
-      setStatData(statData.fetchDashboardDetail.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getStatData();
-  }, []);
-
   useEffect(() => {
     if (dateFilter) {
       alertData();
     }
   }, [dateFilter.startDate, dateFilter.endDate]);
-
-  const [selectedRecActivityFilter, setSelectedRecActivityFilter] =
-    useState<string>("");
-
-  const fillMyCampaigns = (last3DaysCampaignData: any) => {
-    const sortedCampaigns = last3DaysCampaignData.sort(
-      (a: any, b: any) =>
-        moment(b.scheduleTime).valueOf() - moment(a.scheduleTime).valueOf()
-    );
-    return sortedCampaigns.reduce((acc: any, val: any) => {
-      acc[moment(val.scheduleTime).format("MMMM D")] =
-        acc[moment(val.scheduleTime).format("MMMM D")] || [];
-      acc[moment(val.scheduleTime).format("MMMM D")].push(val);
-      return acc;
-    }, {});
-  };
-
-  const [stats, setStats] = useState({
-    executed: {
-      title: "Total Journey",
-      value: statData?.totalJourney,
-      // icon: campaigns,
-      resource: strings.campaign,
-      redirection: {
-        pathname: "",
-      },
-    },
-    outbounds: {
-      title: "Total Users",
-      value: statData?.totalUser,
-
-      resource: strings.campaign,
-      redirection: {},
-    },
-    audience: {
-      title: "Ongoing Journey",
-      value: statData?.ongoingJourney,
-
-      resource: strings.contact,
-      redirection: {},
-    },
-  });
-
-  const fillActivities = (activitiesData: any) => {
-    const data = activitiesData.map((activity: any) => {
-      return {
-        ...activity,
-        metadata: JSON.parse(activity.metadata),
-      };
-    });
-    return data.sort(
-      (a: any, b: any) =>
-        moment(b.scheduleTime).valueOf() - moment(a.scheduleTime).valueOf()
-    );
-  };
-
-  const updateAudienceChanged = (audience: Counts[]) => {
-    let count = 0;
-    audience.map((data) => {
-      count = data.count;
-    });
-    return count;
-  };
 
   const getUserName = () => {
     const name = userName.split(" ");
@@ -267,6 +131,9 @@ const Dashboard = () => {
               <MenuItem value="Past 15m" sx={classes.optionStyle}>
                 Past 15m
               </MenuItem>
+              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                Past 30m
+              </MenuItem>
               <MenuItem value="Past 1h" sx={classes.optionStyle}>
                 Past 1h
               </MenuItem>
@@ -304,6 +171,10 @@ const Dashboard = () => {
         break;
       case "Past 15m":
         startDate = now.clone().subtract(15, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30m":
+        startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
         break;
       case "Past 1h":
@@ -345,76 +216,7 @@ const Dashboard = () => {
     });
   };
 
-  const getStatsCard = () => {
-    return (
-      <Grid container spacing={2}>
-        {Object.values(stats).map((stat: any) => (
-          <Grid item xs={12} sm={12} md={4} xl={4} lg={4}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-                cursor: isTruthy(stat.redirection) ? "pointer" : "auto",
-              }}
-              onClick={() =>
-                isTruthy(stat.redirection)
-                  ? history.push(stat.redirection)
-                  : null
-              }
-            >
-              <Box>
-                <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
-              </Box>
-
-              <Box>
-                <img src={stat.icon} width={60} height={60} />
-              </Box>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-    );
-  };
-
   const getAlerts = () => {
-    const data = [
-      {
-        user: "User 1",
-        journey: "Journey 1",
-        startDate: "2024-01-01",
-        endDate: "2024-01-10",
-        imei: "5134634513663",
-      },
-      {
-        user: "User 1",
-        journey: "Journey 2",
-        startDate: "2024-01-05",
-        endDate: "2024-01-15",
-        imei: "0917591237514",
-      },
-      {
-        user: "User 1",
-        journey: "Journey 3",
-        startDate: "2024-01-10",
-        endDate: "2024-01-20",
-        imei: "089838592620",
-      },
-      {
-        user: "User 1",
-        journey: "Journey 4",
-        startDate: "2024-01-15",
-        endDate: "2024-01-25",
-        imei: "25059710451920",
-      },
-    ];
     return (
       <Box
         id="Alerts_pannel"
