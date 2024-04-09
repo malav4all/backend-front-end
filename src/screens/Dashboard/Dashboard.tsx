@@ -33,6 +33,7 @@ import { useDispatch } from "react-redux";
 import {
   alertRowData,
   fetchDashboardDetail,
+  statusDevice,
 } from "./service/Dashboard.service";
 import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
@@ -45,21 +46,21 @@ const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const [page, setPage] = useState(1);
-  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const [statusPage, setStatusPage] = useState(1);
   const userName = useAppSelector(selectName);
   const [alertTableData, setAlertTableData] = useState([]);
   const [dateFilter, setDateFilter] = useState({
-    startDate: moment().clone().subtract(1, "hour").toISOString(),
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [myCampaign, setMyCampaign] = useState<Last3DaysCampaigns>(
-    {} as Last3DaysCampaigns
-  );
-  const [statData, setStatData] = useState<any>();
+  const [statData, setStatData] = useState<any>([]);
   const startIndex = (page - 1) * 10;
   const endIndex = startIndex + 10;
+
+  const startDeviceIndex = (statusPage - 1) * 10;
+  const endDeviceIndex = startDeviceIndex + 10;
 
   useEffect(() => {
     if (dateFilter) {
@@ -76,13 +77,30 @@ const Dashboard = () => {
   };
 
   const alertData = async () => {
-    const res = await alertRowData({
-      input: {
-        startDate: dateFilter.startDate,
-        endDate: dateFilter.endDate,
-      },
+    const [res1, res2] = await Promise.all([
+      alertRowData({
+        input: {
+          startDate: dateFilter.startDate,
+          endDate: dateFilter.endDate,
+        },
+      }),
+      statusDevice({
+        input: {
+          startDate: dateFilter.startDate,
+          endDate: dateFilter.endDate,
+        },
+      }),
+    ]);
+    setAlertTableData(res1.getAlertData);
+    const deviceStatus = res2.getStatusDevice.map((item: any) => {
+      return {
+        imei: item.imei,
+        label: item.label,
+        status: item.status,
+        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+      };
     });
-    setAlertTableData(res.getAlertData);
+    setStatData(deviceStatus);
   };
 
   const getDashboardHeader = () => {
@@ -121,6 +139,7 @@ const Dashboard = () => {
               onChange={handleChange}
               displayEmpty
               inputProps={{ "aria-label": "Without label" }}
+              renderValue={() => selectedRange}
             >
               <MenuItem value="Past 1m" sx={classes.optionStyle}>
                 Past 1m
@@ -131,7 +150,7 @@ const Dashboard = () => {
               <MenuItem value="Past 15m" sx={classes.optionStyle}>
                 Past 15m
               </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+              <MenuItem value="Past 30m" sx={classes.optionStyle}>
                 Past 30m
               </MenuItem>
               <MenuItem value="Past 1h" sx={classes.optionStyle}>
@@ -206,10 +225,11 @@ const Dashboard = () => {
         endDate = now.toISOString();
         break;
       default:
-        startDate = now.clone().subtract(1, "hour").toISOString();
+        startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
         break;
     }
+
     setDateFilter({
       startDate: startDate,
       endDate: endDate,
@@ -395,17 +415,18 @@ const Dashboard = () => {
     );
   };
 
-  const data = [
-    { name: "Online", value: 30 },
-    { name: "Offline", value: 20 },
-  ];
-
-  const COLORS = ["#845ADF", "#baa6ea"];
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPage(newPage);
+  };
+
+  const handleStatusChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setStatusPage(newPage);
   };
 
   const getAlertsTable = () => {
@@ -469,36 +490,18 @@ const Dashboard = () => {
           <Grid item xs={12} sm={12} md={3} xl={6} lg={6}>
             <CustomTable
               headers={[
-                { name: "Offline", field: "offline" },
-                { name: "Last Data", field: "lastData" },
+                { name: "IMEI", field: "imei" },
+                { name: "Label", field: "label" },
+                { name: "Status", field: "status" },
+                { name: "Time", field: "time" },
               ]}
-              rows={[
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-                {
-                  offline: "124245245154",
-                  lastData: "05-Apr-2024 02:47 PM",
-                },
-              ]}
+              rows={statData}
               isRowPerPageEnable={true}
+              rowsPerPage={10}
+              paginationCount={statData.length}
+              pageNumber={statusPage}
+              setPage={setStatusPage}
+              handlePageChange={handleStatusChangePage}
             />
           </Grid>
         </Grid>

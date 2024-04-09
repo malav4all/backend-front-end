@@ -25,3 +25,16 @@ export const ALERT_TABLE_DATA = gql`
     }
   }
 `;
+
+export const DEVICE_STATUS = gql`
+  mutation ($input: AlertInputType!) {
+    getStatusDevice(input: $input) {
+      lat
+      lng
+      imei
+      label
+      status
+      time
+    }
+  }
+`;
