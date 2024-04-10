@@ -203,7 +203,7 @@ const Dashboard = () => {
 
   const stats = {
     executed: {
-      title: "Active Journey",
+      title: strings.ACTIVE_JOURNEY,
       value: statData?.totalJourney,
       // icon: campaigns,
       resource: strings.campaign,
@@ -615,7 +615,7 @@ const Dashboard = () => {
                 cursor: isTruthy(stat.redirection) ? "pointer" : "pointer",
               }}
               onClick={() => {
-                if (stat.title === "Active Journey") {
+                if (stat.title === strings.ACTIVE_JOURNEY) {
                   history.push("/journey");
                 }
                 if (stat.title === "Offline Devices") {
