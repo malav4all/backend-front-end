@@ -17,11 +17,8 @@ import {
 } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import campaigns from "../../assets/images/dashboard/campaigns.svg";
 
-import { theme, regularFont } from "../../utils/styles";
-import { convertESTtoUserLocalTime, isTruthy } from "../../helpers/methods";
-
+import { FcInfo } from "react-icons/fc";
 import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
 
@@ -39,6 +36,7 @@ import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
 import { useSubscription } from "@apollo/client";
 import { ALERT_TABLE_DATA } from "./service/Dashboard.mutation";
+import { isTruthy } from "../../helpers/methods";
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -107,6 +105,11 @@ const Dashboard = () => {
         message: item.message,
         source: item.source,
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        action: (
+          <span style={{ color: "#845ADF" }}>
+            <FcInfo />
+          </span>
+        ),
       };
     });
     setAlertTableData(alertTableDataValue);
@@ -116,6 +119,11 @@ const Dashboard = () => {
         label: item.label,
         status: item.status,
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        action: (
+          <span style={{ color: "#845ADF" }}>
+            <FcInfo />
+          </span>
+        ),
       };
     });
     setStatData(deviceStatus);
@@ -489,64 +497,64 @@ const Dashboard = () => {
 
   const getAlertsTable = () => {
     return (
-      <Box sx={{ display: "flex", gap: "1rem", flexWrap: "nowrap" }}>
+      <Grid container>
         <Grid
+          container
           item
           xs={12}
+          sm={12}
           md={12}
-          lg={7}
-          id="Alerts_panel"
+          xl={7}
+          lg={12}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: "white",
             borderRadius: "8px",
             boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <Grid item xs={12} sm={12} md={9} xl={12} lg={12}>
-            <Grid
-              item
-              xs={12}
-              md={12}
-              lg={7}
-              sx={{ display: "flex", margin: "1rem 0rem" }}
-            >
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: "Bold", fontSize: "1.2rem" }}
-              >
-                Alerts logs
-              </Typography>
-            </Grid>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "Bold",
+              fontSize: "1.2rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Alert Logs
+          </Typography>
 
-            <CustomTable
-              headers={[
-                { name: "Name", field: "label" },
-                { name: "IMEI", field: "imei" },
-                { name: "Last Ping", field: "time" },
-                { name: "Event", field: "event" },
-                { name: "Mode", field: "mode" },
-                { name: "Source", field: "source" },
-                { name: "Message", field: "message" },
-              ]}
-              rows={alertTableData.slice(startIndex, endIndex)}
-              paginationCount={alertTableData.length}
-              rowsPerPage={10}
-              pageNumber={page}
-              isRowPerPageEnable={true}
-              setPage={setPage}
-              handlePageChange={handleChangePage}
-            />
-          </Grid>
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Last Ping", field: "time" },
+              { name: "Event", field: "event" },
+              { name: "Mode", field: "mode" },
+              { name: "Source", field: "source" },
+              { name: "Message", field: "message" },
+              { name: "Action", field: "action" },
+            ]}
+            rows={alertTableData.slice(startIndex, endIndex)}
+            paginationCount={alertTableData.length}
+            rowsPerPage={10}
+            pageNumber={page}
+            isRowPerPageEnable={true}
+            setPage={setPage}
+            handlePageChange={handleChangePage}
+          />
         </Grid>
 
         <Grid
           container
+          item
           xs={12}
-          md={12}
-          lg={5}
-          xl={5}
           sm={12}
+          md={12}
+          lg={12}
+          xl={5}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: "white",
@@ -573,6 +581,7 @@ const Dashboard = () => {
               { name: "IMEI", field: "imei" },
               { name: "Status", field: "status" },
               { name: "Last ping", field: "time" },
+              { name: "Action", field: "action" },
             ]}
             rows={statData.slice(startDeviceIndex, endDeviceIndex)}
             isRowPerPageEnable={true}
@@ -583,7 +592,7 @@ const Dashboard = () => {
             handlePageChange={handleStatusChangePage}
           />
         </Grid>
-      </Box>
+      </Grid>
     );
   };
 
