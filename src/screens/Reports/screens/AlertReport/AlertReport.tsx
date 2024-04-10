@@ -1,219 +1,220 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Grid,
   InputAdornment,
   MenuItem,
   Select,
-  Stack,
   Typography,
 } from "@mui/material";
-
-import SearchIcon from "@mui/icons-material/Search";
-
-import { searchAlertReport } from "./service/alertReport.service";
-
-import strings from "../../../../global/constants/StringConstants";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import moment from "moment";
+import alertReportStyles from "./AlertReport.styles";
+import { alertRowData, statusDevice } from "./service/alertReport.service";
+import { CustomInput, CustomTable } from "../../../../global/components";
+import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 import {
   debounceEventHandler,
   openErrorNotification,
 } from "../../../../helpers/methods";
-import {
-  CustomAppHeader,
-  CustomInput,
-  CustomTable,
-} from "../../../../global/components";
-import { boldFont, primaryHeadingColor } from "../../../../utils/styles";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
-import { useTitle } from "../../../../utils/UseTitle";
-import { options, reportTableHeader } from "../../Report.helper";
-import reportStyles from "../../Report.styles";
-import { useSubscription } from "@apollo/client";
-import { FETCH_REPORT_DETAIL } from "./service/alertReport.mutation";
-import { alertReportStyles } from "./AlertReport.styles";
-
+import strings from "../../../../global/constants/StringConstants";
+import SearchIcon from "@mui/icons-material/Search";
 const AlertReport = () => {
-  useTitle("Alert Report");
   const classes = alertReportStyles;
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [alertReportDataSource, setAlertReportDataSource] = useState<any>([]);
-  const [searchCampaigner, setSearchCampaigner] = useState<string>("");
-  const [count, setCount] = useState(1);
-
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [perPageData, setPerPageData] = useState(10);
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
-
-  const topicData = [
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-    {
-      event: "other",
-      imei: "937066712051",
-      label: "937066712051",
-      lat: 28.495638,
-      lng: 77.078944,
-      message: "Device generated alert. Source G-310-20221207-0001",
-      mode: "DEVICE",
-      source: "G-310-20221207-0001",
-    },
-  ];
-
-  const { data } = useSubscription(FETCH_REPORT_DETAIL, {
-    variables: { topic: "alerts/#" },
+  const [alertTableData, setAlertTableData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [dateFilter, setDateFilter] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
   });
+  const [filterData, setFilterData] = useState<any[]>([]);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedRange, setSelectedRange] = useState("Past 30m");
+  const startIndex = (page - 1) * 10;
+  const endIndex = startIndex + 10;
+  const [statusPage, setStatusPage] = useState(1);
+  const [statData, setStatData] = useState<any>([]);
+  const startDeviceIndex = (statusPage - 1) * 10;
+  const endDeviceIndex = startDeviceIndex + 10;
+  const serachInputValue = useRef<any>("");
   useEffect(() => {
-    if (searchCampaigner) {
-      getSearchData();
-    } else {
-      fetchAlertReportHandler();
+    if (dateFilter) {
+      alertData();
+      const intervalId = setInterval(() => {
+        alertData();
+      }, 30000);
+
+      return () => {
+        clearInterval(intervalId);
+      };
     }
-  }, []);
+  }, [dateFilter.startDate, dateFilter.endDate]);
+
+  const handleChange = (event: any) => {
+    setSelectedRange(event.target.value);
+    const now = moment();
+    let startDate, endDate;
+    switch (event.target.value) {
+      case "Past 1m":
+        startDate = now.clone().subtract(1, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 5m":
+        startDate = now.clone().subtract(5, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 15m":
+        startDate = now.clone().subtract(15, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30m":
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 1h":
+        startDate = now.clone().subtract(1, "hour").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 3h":
+        startDate = now.clone().subtract(3, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 6h":
+        startDate = now.clone().subtract(6, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 12h":
+        startDate = now.clone().subtract(12, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 24h":
+        startDate = now.clone().subtract(24, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 2d":
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30d":
+        startDate = now.clone().subtract(30, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      default:
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+    }
+
+    setDateFilter({
+      startDate: startDate,
+      endDate: endDate,
+    });
+  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPageNumber(newPage);
+    setPage(newPage);
   };
 
-  const handlePerPageData = (event: any) => {
-    setPageNumber(1);
-    setSearchPageNumber(1);
-    setPerPageData(event.target.value);
-  };
-
-  const tableDataShowHandler = (alertReportsData: any) => {
-    const source = alertReportsData?.map(
-      (alertReportsData: any, index: number) => {
-        return {
-          event: alertReportsData?.event,
-          imei: alertReportsData?.imei,
-          label: alertReportsData?.label,
-          lat: alertReportsData?.lat,
-          lng: alertReportsData?.lng,
-          message: alertReportsData?.message,
-          mode: alertReportsData?.mode,
-          source: alertReportsData?.source,
-        };
-      }
-    );
-    setAlertReportDataSource([...source]);
-  };
-
-  const fetchAlertReportHandler = async () => {
-    try {
-      // const res = await fetchAlertReports();
-      tableDataShowHandler(topicData);
-      // setCount(res?.userListAll?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
-
-  const getSearchData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await searchAlertReport({
-        input: {
-          search: searchCampaigner,
-          page: pageNumber,
-          limit: perPageData,
-        },
-      });
-      tableDataShowHandler(res?.searchAlertReport?.data);
-      setCount(res?.searchAlertReport?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
-    }
-  };
-
-  const getHeader = () => {
+  const getDashboardHeader = () => {
     return (
-      <Box>
-        <Typography sx={classes.mainCardHeading}>Alert Report</Typography>
-      </Box>
+      <Grid
+        container
+        sx={classes.header}
+        xs={12}
+        md={12}
+        lg={12}
+        xl={12}
+        width="100%"
+      >
+        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
+          <Typography variant="h5" sx={classes.heading}>
+            {getSearchBar()}
+          </Typography>
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          md={7}
+          lg={4}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexWrap: "wrap",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Select
+              id="campaigns_interval_dropdown"
+              sx={classes.dropDownStyle}
+              value={selectedRange}
+              onChange={handleChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              renderValue={() => selectedRange}
+            >
+              <MenuItem value="Past 1m" sx={classes.optionStyle}>
+                Past 1m
+              </MenuItem>
+              <MenuItem value="Past 5m" sx={classes.optionStyle}>
+                Past 5m
+              </MenuItem>
+              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                Past 15m
+              </MenuItem>
+              <MenuItem value="Past 30m" sx={classes.optionStyle}>
+                Past 30m
+              </MenuItem>
+              <MenuItem value="Past 1h" sx={classes.optionStyle}>
+                Past 1h
+              </MenuItem>
+              <MenuItem value="Past 3h" sx={classes.optionStyle}>
+                Past 3h
+              </MenuItem>
+              <MenuItem value="Past 12h" sx={classes.optionStyle}>
+                Past 12h
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 2d
+              </MenuItem>
+              <MenuItem value="Past 30d" sx={classes.optionStyle}>
+                Past 30d
+              </MenuItem>
+            </Select>
+          </Box>
+        </Grid>
+      </Grid>
     );
   };
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchCampaigner(SearchEvent.target.value.replace(/\s/g, ""));
-      setPageNumber(1);
-      setPerPageData(10);
-    } else {
-      setSearchCampaigner("");
+    const value = SearchEvent.target.value.toLocaleLowerCase();
+    if (value) {
+      setIsLoading(true);
+      const searchedReports = alertTableData?.filter(
+        (data: any) =>
+          data?.imei?.toLowerCase()?.includes(value) ||
+          data?.label?.toLowerCase()?.includes(value) ||
+          data?.event?.toLowerCase()?.includes(value) ||
+          data?.message?.toLowerCase()?.includes(value) ||
+          data!?.mode!?.toLowerCase()?.includes(value) ||
+          data?.source?.toLowerCase()?.includes(value) ||
+          data!?.time!?.toLowerCase()?.includes(value)
+      );
+      setFilterData([...searchedReports]);
+      setIsLoading(false);
     }
   };
 
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search here ..."
-        id="alertReports_search_field"
+        placeHolder="Search Reports..."
+        id="report_search_field"
+        // inputRef={serachInputValue}
         onChange={debounceEventHandler(
           handleSearchOnChange,
           strings.SEARCH_TIME_OUT
@@ -229,130 +230,142 @@ const AlertReport = () => {
     );
   };
 
-  const handleSearchChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setSearchPageNumber(newPage);
+  const alertData = async () => {
+    try {
+      setIsLoading(true);
+      const [res1, res2] = await Promise.all([
+        alertRowData({
+          input: {
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
+          },
+        }),
+        statusDevice({
+          input: {
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
+          },
+        }),
+      ]);
+      const alertTableDataValue = res1.getAlertData.map((item: any) => {
+        return {
+          imei: item.imei,
+          label: item.label,
+          mode: item.mode,
+          event: item.event,
+          message: item.message,
+          source: item.source,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        };
+      });
+      setAlertTableData(alertTableDataValue);
+      const deviceStatus = res2.getStatusDevice.map((item: any) => {
+        return {
+          imei: item.imei,
+          label: item.label,
+          status: item.status,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        };
+      });
+      setStatData(deviceStatus);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      openErrorNotification(error.message);
+    }
   };
-  const handleDownload = async () => {};
-
-  const campaignerTable = () => {
+  const getDashboardBody = () => {
     return (
-      <Box id="alertReports_display_table" sx={classes.campaignerTable}>
-        <CustomTable
-          headers={reportTableHeader}
-          rows={alertReportDataSource}
-          paginationCount={count}
-          // handleRowClick={updateAlertReportDetails}
-          handlePageChange={
-            searchCampaigner ? handleSearchChangePage : handleChangePage
-          }
-          pageNumber={searchCampaigner ? searchPageNumber : pageNumber}
-          setPage={searchCampaigner ? setSearchPageNumber : setPageNumber}
-          isLoading={isLoading}
-          handlePerPageData={handlePerPageData}
-          perPageData={perPageData}
-          rowsPerPage={perPageData}
-          isExportCSV={false}
-          onClickExportCSV={handleDownload}
-        />
+      <Grid
+        container
+        spacing={2}
+        sx={{ padding: "0 16px", marginTop: "-48px" }}
+        xs={12}
+      >
+        <Grid item xs={12} sm={12} xl={12} md={12} lg={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={12} lg={12} xl={12}>
+              {getAlertsTable()}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    );
+  };
+  const getAlertsTable = () => {
+    return (
+      <Box
+        id="Alerts_panel"
+        sx={{
+          padding: "1.5rem 1.5rem",
+          backgroundColor: "white",
+          borderRadius: "8px",
+          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+        }}
+      >
+        <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
+          <Grid
+            item
+            xs={12}
+            md={12}
+            lg={12}
+            sx={{ display: "flex", margin: "1rem 0rem" }}
+          >
+            <Typography variant="h5" sx={classes.heading}>
+              Alerts Report
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={12}
+            md={12}
+            lg={12}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexWrap: "wrap",
+            }}
+          ></Grid>
+        </Grid>
+
+        <Grid container>
+          <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
+            <CustomTable
+              headers={[
+                { name: "NAME", field: "label" },
+                { name: "IMEI", field: "imei" },
+                { name: "Event", field: "event" },
+                { name: "Mode", field: "mode" },
+                { name: "Source", field: "source" },
+                { name: "Message", field: "message" },
+                { name: "Time", field: "time" },
+              ]}
+              rows={
+                serachInputValue.current.value
+                  ? filterData
+                  : alertTableData.slice(startIndex, endIndex)
+              }
+              paginationCount={alertTableData.length}
+              rowsPerPage={10}
+              pageNumber={page}
+              isRowPerPageEnable={true}
+              setPage={setPage}
+              handlePageChange={handleChangePage}
+            />
+          </Grid>
+        </Grid>
       </Box>
     );
   };
 
-  const getAlertReport = () => (
+  return (
     <Box>
-      <CustomAppHeader
-        className={{
-          backgroundColor: "#f1edff",
-          padding: "10px 20px 15px 18px",
-        }}
-      >
-        <Stack
-          px={4}
-          py={4}
-          direction={{ lg: "row", xs: "column" }}
-          justifyContent="space-between"
-          alignItems={{ lg: "center" }}
-        >
-          <Typography
-            sx={{
-              ...boldFont,
-              color: primaryHeadingColor,
-            }}
-          >
-            {getHeader()}
-          </Typography>
-        </Stack>
-      </CustomAppHeader>
-
-      <Stack
-        px={4}
-        pt={2}
-        direction={{ lg: "row", xs: "column" }}
-        justifyContent="space-between"
-        alignItems={{ lg: "center" }}
-      >
-        <Typography
-          sx={{
-            ...boldFont,
-            color: primaryHeadingColor,
-          }}
-        ></Typography>
-        <Grid
-          item
-          xs={12}
-          md={7}
-          lg={4}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            flexWrap: "wrap",
-          }}
-        >
-          <Box>
-            <Select
-              id="Dashboard_Interval_Dropdown"
-              sx={classes.dropdown}
-              value={"Past 24hr"}
-              onChange={(event: any) => {}}
-            >
-              {options.map((data) => (
-                <MenuItem
-                  key={data.label}
-                  value={data.value}
-                  sx={classes.dropdownOptions}
-                >
-                  {data.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-        </Grid>
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          {getSearchBar()}
-        </Stack>
-      </Stack>
-
-      <Box
-        sx={{
-          minWidth: "300px",
-          overflow: "auto",
-          padding: "30px",
-        }}
-      >
-        {campaignerTable()}
-      </Box>
+      {getDashboardHeader()}
+      {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
-
-  return getAlertReport();
 };
 
 export default AlertReport;

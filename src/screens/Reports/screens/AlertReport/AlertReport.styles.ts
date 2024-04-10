@@ -1,44 +1,49 @@
 import {
   boldFont,
+  centerItemFlex,
   getRelativeFontSize,
-  pinkThemedMenuItems,
-  primaryHeadingColor,
-  pureWhiteColor,
-  purpleThemedSelectComponent,
-  regularFont,
+  mainContainer,
   theme,
+  primaryHeadingColor,
+  pinkDarkColor,
+  mediumFont,
+  regularFont,
+  inputLabelRequiredColor,
+  pinkThemedMenuItems,
+  purpleThemedSelectComponent,
+  pureWhiteColor,
 } from "../../../../utils/styles";
-
-export const alertReportStyles = {
-  mainCardHeading: {
+const alertReportStyles = {
+  header: {
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "#FCF5FF",
+    padding: "16px",
+    paddingBottom: "64px",
+    paddingTop: "35px",
+  },
+  heading: {
     ...boldFont,
-    fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
+    fontSize: getRelativeFontSize(7),
     [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(1),
     },
   },
-  campaignerTable: {
-    minWidth: "300px",
-    width: "100%",
-    overflow: "auto",
-  },
-  dropdown: {
+  dropDownStyle: {
     ...regularFont,
     ...purpleThemedSelectComponent,
-    height: "40px",
-    width: "200px",
     backgroundColor: pureWhiteColor,
-    borderRadius: "8px",
-    color: "#22222C",
-    border: 0,
-    boxShadow: "4px 4px 30px rgba(0, 0, 0, 0.03)",
-    "&:hover": {
-      border: 0,
-    },
+    height: "47px",
+    padding: "2px",
+    width: " 180px",
+    borderRadius: "12px",
+    fontSize: "14px",
   },
-  dropdownOptions: {
+  optionStyle: {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-};
+} as const;
+
+export default alertReportStyles;
