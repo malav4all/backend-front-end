@@ -62,21 +62,28 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   description: {
-    width: "10%",
+    width: "20%",
+    borderRightColor: "#000000",
+    borderRightWidth: 1,
+    textAlign: "left",
+    paddingLeft: 10,
+  },
+  serialNumber: {
+    width: "5%",
     borderRightColor: "#000000",
     borderRightWidth: 1,
     textAlign: "left",
     paddingLeft: 10,
   },
   price: {
-    width: "40%",
+    width: "20%",
     borderRightColor: "#000000",
     borderRightWidth: 1,
     textAlign: "right",
     paddingRight: 10,
   },
   amount: {
-    width: "40%",
+    width: "20%",
     textAlign: "right",
     paddingRight: 10,
   },
@@ -97,7 +104,7 @@ const TrackReport = ({ reportData }: ReportProps) => {
         </View>
         <View>
           <View style={styles.row}>
-            <Text style={styles.description}>SNO</Text>
+            <Text style={styles.serialNumber}>SNO</Text>
             <Text style={styles.description}>IMEI NO</Text>
             <Text style={styles.quantity}>Instruction</Text>
             <Text style={styles.price}>Action</Text>
@@ -106,11 +113,13 @@ const TrackReport = ({ reportData }: ReportProps) => {
 
           {reportData.map((item: any, index: any) => (
             <View key={index} style={styles.row}>
-              <Text style={styles.description}>{item.sNo}</Text>
+              <Text style={styles.serialNumber}>{item.sNo}</Text>
               <Text style={styles.description}>{item.imei}</Text>
               <Text style={styles.quantity}>{item.instruction}</Text>
               <Text style={styles.price}>{item.action}</Text>
-              <Text style={styles.amount}>{item.duration}</Text>
+              <Text style={styles.amount}>
+                {(item.duration / 360).toFixed()}Min
+              </Text>
             </View>
           ))}
         </View>
