@@ -193,6 +193,26 @@ const Dashboard = () => {
     );
   };
 
+  const stats = {
+    executed: {
+      title: "Active Journey",
+      value: statData?.totalJourney,
+      // icon: campaigns,
+      resource: strings.campaign,
+      redirection: {
+        pathname: "",
+      },
+    },
+
+    outbounds: {
+      title: "Offline Devices",
+      value: statData?.totalUser,
+
+      resource: strings.campaign,
+      redirection: {},
+    },
+  };
+
   const handleChange = (event: any) => {
     setSelectedRange(event.target.value);
     const now = moment();
@@ -449,52 +469,45 @@ const Dashboard = () => {
 
   const getAlertsTable = () => {
     return (
-      <Box
-        id="Alerts_panel"
-        sx={{
-          padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-        }}
-      >
-        <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
-          <Grid
-            item
-            xs={12}
-            md={5}
-            lg={8}
-            sx={{ display: "flex", margin: "1rem 0rem" }}
-          >
-            <Typography variant="h5" sx={classes.heading}>
-              Alerts table
-            </Typography>
-          </Grid>
+      <Box sx={{ display: "flex", gap: "1rem", flexWrap: "nowrap" }}>
+        <Grid
+          item
+          xs={12}
+          md={12}
+          lg={7}
+          id="Alerts_panel"
+          sx={{
+            padding: "1.5rem 1.5rem",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+          }}
+        >
+          <Grid item xs={12} sm={12} md={9} xl={12} lg={12}>
+            <Grid
+              item
+              xs={12}
+              md={12}
+              lg={7}
+              sx={{ display: "flex", margin: "1rem 0rem" }}
+            >
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: "Bold", fontSize: "1.2rem" }}
+              >
+                Alerts logs
+              </Typography>
+            </Grid>
 
-          <Grid
-            item
-            xs={12}
-            md={7}
-            lg={4}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              flexWrap: "wrap",
-            }}
-          ></Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item xs={12} sm={12} md={9} xl={6} lg={6}>
             <CustomTable
               headers={[
+                { name: "Name", field: "label" },
                 { name: "IMEI", field: "imei" },
-                { name: "Label", field: "label" },
-                { name: "Mode", field: "mode" },
+                { name: "Last Ping", field: "time" },
                 { name: "Event", field: "event" },
+                { name: "Mode", field: "mode" },
                 { name: "Source", field: "source" },
                 { name: "Message", field: "message" },
-                { name: "Time", field: "time" },
               ]}
               rows={alertTableData.slice(startIndex, endIndex)}
               paginationCount={alertTableData.length}
@@ -505,26 +518,94 @@ const Dashboard = () => {
               handlePageChange={handleChangePage}
             />
           </Grid>
+        </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={6} lg={6}>
-            <CustomTable
-              headers={[
-                { name: "IMEI", field: "imei" },
-                { name: "Label", field: "label" },
-                { name: "Status", field: "status" },
-                { name: "Time", field: "time" },
-              ]}
-              rows={statData.slice(startDeviceIndex, endDeviceIndex)}
-              isRowPerPageEnable={true}
-              rowsPerPage={10}
-              paginationCount={statData.length}
-              pageNumber={statusPage}
-              setPage={setStatusPage}
-              handlePageChange={handleStatusChangePage}
-            />
-          </Grid>
+        <Grid
+          container
+          xs={12}
+          md={12}
+          lg={5}
+          xl={5}
+          sm={12}
+          sx={{
+            padding: "1.5rem 1.5rem",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "Bold",
+              fontSize: "1.2rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Offline Devices
+          </Typography>
+
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Status", field: "status" },
+              { name: "Last ping", field: "time" },
+            ]}
+            rows={statData.slice(startDeviceIndex, endDeviceIndex)}
+            isRowPerPageEnable={true}
+            rowsPerPage={10}
+            paginationCount={statData.length}
+            pageNumber={statusPage}
+            setPage={setStatusPage}
+            handlePageChange={handleStatusChangePage}
+          />
         </Grid>
       </Box>
+    );
+  };
+
+  const getStatsCard = () => {
+    return (
+      <Grid container spacing={2}>
+        {Object.values(stats).map((stat: any) => (
+          <Grid item xs={12} sm={12} md={6} xl={6} lg={6} key={stat.title}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                cursor: isTruthy(stat.redirection) ? "pointer" : "pointer",
+              }}
+              onClick={() => {
+                if (stat.title === "Active Journey") {
+                  history.push("/journey");
+                }
+                if (stat.title === "Offline Devices") {
+                  history.push("/device-dashboard");
+                }
+              }}
+            >
+              <Box>
+                <Typography sx={classes.statsTitle}>{stat.title}</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
+              </Box>
+
+              <Box>
+                <img src={stat.icon} width={60} height={60} />
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
     );
   };
 
@@ -538,9 +619,9 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
+            <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
-            </Grid> */}
+            </Grid>
 
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}
