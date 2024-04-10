@@ -241,7 +241,7 @@ const DeviceDashboard = () => {
                 fontWeight: "bold",
               }}
             >
-              Interval
+              Duration
             </Typography>
             <Box sx={{ display: "flex", gap: "1rem" }}>
               <Select
@@ -317,9 +317,9 @@ const DeviceDashboard = () => {
                 <Typography sx={classes.statsValue}>{stat.value}</Typography>
               </Box>
 
-              <Box>
+              {/* <Box>
                 <img src={stat.icon} width={60} height={60} />
-              </Box>
+              </Box> */}
             </Box>
           </Grid>
         ))}
