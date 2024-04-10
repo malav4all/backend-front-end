@@ -1,5 +1,5 @@
-const Reports = () => {
-  return <>Alert</>;
+const Report = () => {
+  return <div>Report</div>;
 };
 
-export default Reports;
+export default Report;
