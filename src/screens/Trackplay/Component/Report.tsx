@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   description: {
-    width: "20%",
+    width: "30%",
     borderRightColor: "#000000",
     borderRightWidth: 1,
     textAlign: "left",
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   amount: {
-    width: "20%",
+    width: "15%",
     textAlign: "right",
     paddingRight: 10,
   },
