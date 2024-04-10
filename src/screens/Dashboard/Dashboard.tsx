@@ -557,7 +557,7 @@ const Dashboard = () => {
               { name: "Mode", field: "mode" },
               { name: "Source", field: "source" },
               { name: "Message", field: "message" },
-              { name: "Action", field: "action" },
+              // { name: "Action", field: "action" },
             ]}
             rows={alertTableData.slice(startIndex, endIndex)}
             paginationCount={alertTableData.length}
