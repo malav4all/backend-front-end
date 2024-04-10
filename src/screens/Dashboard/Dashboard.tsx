@@ -153,9 +153,9 @@ const Dashboard = () => {
         width="100%"
       >
         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          <Typography variant="h5" sx={classes.heading}>
+          {/* <Typography variant="h5" sx={classes.heading}>
             Hello, {getUserName()}!
-          </Typography>
+          </Typography> */}
         </Grid>
 
         <Grid
@@ -170,6 +170,16 @@ const Dashboard = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Typography
+              sx={{
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
+                fontWeight: "bold",
+              }}
+            >
+              Duration
+            </Typography>
             <Select
               id="campaigns_interval_dropdown"
               sx={classes.dropDownStyle}
@@ -639,10 +649,10 @@ const Dashboard = () => {
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
                 <Typography sx={classes.statsValue}>10</Typography>
               </Box>
-
+              {/* 
               <Box>
                 <img src={stat.icon} width={60} height={60} />
-              </Box>
+              </Box> */}
             </Box>
           </Grid>
         ))}
