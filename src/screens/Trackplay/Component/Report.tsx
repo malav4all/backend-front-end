@@ -64,11 +64,13 @@ const styles = StyleSheet.create({
   description: {
     width: "22%",
     borderRightWidth: 1,
+    fontSize: 8,
     paddingLeft: 10,
     justifyContent: "center",
     alignItems: "center",
     display: "flex",
     textAlign: "center",
+    paddingTop: "7px",
   },
   serialNumber: {
     width: "10%",
@@ -104,15 +106,17 @@ const styles = StyleSheet.create({
     display: "flex",
     textAlign: "center",
   },
+  trackReport: {
+    marginBottom: "1rem",
+  },
 });
 
 const TrackReport = ({ reportData, rawData }: ReportProps) => {
-  console.log("this is inside Report", rawData);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View>
-          <Text>Track Report</Text>
+          <Text style={styles.trackReport}>Track Report</Text>
         </View>
         <View>
           <View style={styles.row}>
@@ -121,7 +125,6 @@ const TrackReport = ({ reportData, rawData }: ReportProps) => {
             <Text style={styles.quantity}>Instruction</Text>
             <Text style={styles.price}>Action</Text>
             <Text style={styles.amount}>Duration</Text>
-            <Text style={styles.total}>Date/ Time</Text>
           </View>
 
           {reportData.map((item: any, index: any) => (
@@ -133,7 +136,6 @@ const TrackReport = ({ reportData, rawData }: ReportProps) => {
               <Text style={styles.amount}>
                 {(item.duration / 360).toFixed()} min
               </Text>
-              <Text style={styles.total}>{item.currentTime}</Text>
             </View>
           ))}
         </View>

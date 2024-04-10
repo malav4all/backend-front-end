@@ -12,7 +12,10 @@ import alertReportStyles from "./AlertReport.styles";
 import { alertRowData, statusDevice } from "./service/alertReport.service";
 import { CustomInput, CustomTable } from "../../../../global/components";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
-import { debounceEventHandler } from "../../../../helpers/methods";
+import {
+  debounceEventHandler,
+  openErrorNotification,
+} from "../../../../helpers/methods";
 import strings from "../../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
 const AlertReport = () => {
@@ -228,41 +231,48 @@ const AlertReport = () => {
   };
 
   const alertData = async () => {
-    const [res1, res2] = await Promise.all([
-      alertRowData({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      }),
-      statusDevice({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      }),
-    ]);
-    const alertTableDataValue = res1.getAlertData.map((item: any) => {
-      return {
-        imei: item.imei,
-        label: item.label,
-        mode: item.mode,
-        event: item.event,
-        message: item.message,
-        source: item.source,
-        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-      };
-    });
-    setAlertTableData(alertTableDataValue);
-    const deviceStatus = res2.getStatusDevice.map((item: any) => {
-      return {
-        imei: item.imei,
-        label: item.label,
-        status: item.status,
-        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-      };
-    });
-    setStatData(deviceStatus);
+    try {
+      setIsLoading(true);
+      const [res1, res2] = await Promise.all([
+        alertRowData({
+          input: {
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
+          },
+        }),
+        statusDevice({
+          input: {
+            startDate: dateFilter.startDate,
+            endDate: dateFilter.endDate,
+          },
+        }),
+      ]);
+      const alertTableDataValue = res1.getAlertData.map((item: any) => {
+        return {
+          imei: item.imei,
+          label: item.label,
+          mode: item.mode,
+          event: item.event,
+          message: item.message,
+          source: item.source,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        };
+      });
+      setAlertTableData(alertTableDataValue);
+      const deviceStatus = res2.getStatusDevice.map((item: any) => {
+        return {
+          imei: item.imei,
+          label: item.label,
+          status: item.status,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        };
+      });
+      setStatData(deviceStatus);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      openErrorNotification(error.message);
+    }
   };
   const getDashboardBody = () => {
     return (
