@@ -65,7 +65,7 @@ const Dashboard = () => {
       alertData();
       const intervalId = setInterval(() => {
         alertData();
-      }, 30000);
+      }, 5000);
 
       return () => {
         clearInterval(intervalId);
