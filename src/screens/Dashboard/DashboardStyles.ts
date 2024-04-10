@@ -45,7 +45,7 @@ const dashboardStyles = {
     color: primaryHeadingColor,
     fontSize: getRelativeFontSize(7),
     [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(2),
     },
   },
   noactivityheading: {

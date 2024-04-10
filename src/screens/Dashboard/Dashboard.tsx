@@ -17,11 +17,8 @@ import {
 } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import campaigns from "../../assets/images/dashboard/campaigns.svg";
 
-import { theme, regularFont } from "../../utils/styles";
-import { convertESTtoUserLocalTime, isTruthy } from "../../helpers/methods";
-
+import { FcInfo } from "react-icons/fc";
 import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
 
@@ -39,6 +36,7 @@ import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
 import { useSubscription } from "@apollo/client";
 import { ALERT_TABLE_DATA } from "./service/Dashboard.mutation";
+import { isTruthy } from "../../helpers/methods";
 
 const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
 
@@ -107,6 +105,11 @@ const Dashboard = () => {
         message: item.message,
         source: item.source,
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        action: (
+          <span style={{ color: "#845ADF" }}>
+            <FcInfo />
+          </span>
+        ),
       };
     });
     setAlertTableData(alertTableDataValue);
@@ -116,6 +119,11 @@ const Dashboard = () => {
         label: item.label,
         status: item.status,
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        action: (
+          <span style={{ color: "#845ADF" }}>
+            <FcInfo />
+          </span>
+        ),
       };
     });
     setStatData(deviceStatus);
@@ -191,6 +199,26 @@ const Dashboard = () => {
         </Grid>
       </Grid>
     );
+  };
+
+  const stats = {
+    executed: {
+      title: "Active Journey",
+      value: statData?.totalJourney,
+      // icon: campaigns,
+      resource: strings.campaign,
+      redirection: {
+        pathname: "",
+      },
+    },
+
+    outbounds: {
+      title: "Offline Devices",
+      value: statData?.totalUser,
+
+      resource: strings.campaign,
+      redirection: {},
+    },
   };
 
   const handleChange = (event: any) => {
@@ -300,7 +328,12 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Tamper</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {
+                    alertTableData.filter((item: any) => item.event === "other")
+                      .length
+                  }
+                </Typography>
               </Box>
 
               <Box
@@ -338,7 +371,13 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Lock/Unlock</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.filter((item: any) => item.event === "locked")
+                    .length +
+                    alertTableData.filter(
+                      (item: any) => item.event === "unlocked"
+                    ).length}
+                </Typography>
               </Box>
 
               <Box
@@ -376,7 +415,14 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Geozone In/Out</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.filter(
+                    (item: any) => item.event === "geo_exit"
+                  ).length +
+                    alertTableData.filter(
+                      (item: any) => item.event === "geo_entry"
+                    ).length}
+                </Typography>
               </Box>
 
               <Box
@@ -414,7 +460,9 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Total Alerts</Typography>
-                <Typography sx={classes.statsValue}>30</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.length}
+                </Typography>
               </Box>
 
               <Box
@@ -449,82 +497,144 @@ const Dashboard = () => {
 
   const getAlertsTable = () => {
     return (
-      <Box
-        id="Alerts_panel"
-        sx={{
-          padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-        }}
-      >
-        <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
-          <Grid
-            item
-            xs={12}
-            md={5}
-            lg={8}
-            sx={{ display: "flex", margin: "1rem 0rem" }}
-          >
-            <Typography variant="h5" sx={classes.heading}>
-              Alerts table
-            </Typography>
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            md={7}
-            lg={4}
+      <Grid container>
+        <Grid
+          container
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          xl={7}
+          lg={12}
+          sx={{
+            padding: "1.5rem 1.5rem",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography
+            variant="h5"
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              flexWrap: "wrap",
+              fontWeight: "Bold",
+              fontSize: "1.2rem",
+              marginBottom: "1.5rem",
             }}
-          ></Grid>
+          >
+            Alert Logs
+          </Typography>
+
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Last Ping", field: "time" },
+              { name: "Event", field: "event" },
+              { name: "Mode", field: "mode" },
+              { name: "Source", field: "source" },
+              { name: "Message", field: "message" },
+              { name: "Action", field: "action" },
+            ]}
+            rows={alertTableData.slice(startIndex, endIndex)}
+            paginationCount={alertTableData.length}
+            rowsPerPage={10}
+            pageNumber={page}
+            isRowPerPageEnable={true}
+            setPage={setPage}
+            handlePageChange={handleChangePage}
+          />
         </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sm={12} md={9} xl={6} lg={6}>
-            <CustomTable
-              headers={[
-                { name: "IMEI", field: "imei" },
-                { name: "Label", field: "label" },
-                { name: "Mode", field: "mode" },
-                { name: "Event", field: "event" },
-                { name: "Source", field: "source" },
-                { name: "Message", field: "message" },
-                { name: "Time", field: "time" },
-              ]}
-              rows={alertTableData.slice(startIndex, endIndex)}
-              paginationCount={alertTableData.length}
-              rowsPerPage={10}
-              pageNumber={page}
-              isRowPerPageEnable={true}
-              setPage={setPage}
-              handlePageChange={handleChangePage}
-            />
-          </Grid>
+        <Grid
+          container
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={5}
+          sx={{
+            padding: "1.5rem 1.5rem",
+            backgroundColor: "white",
+            borderRadius: "8px",
+            boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "Bold",
+              fontSize: "1.2rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Offline Devices
+          </Typography>
 
-          <Grid item xs={12} sm={12} md={3} xl={6} lg={6}>
-            <CustomTable
-              headers={[
-                { name: "IMEI", field: "imei" },
-                { name: "Label", field: "label" },
-                { name: "Status", field: "status" },
-                { name: "Time", field: "time" },
-              ]}
-              rows={statData.slice(startDeviceIndex, endDeviceIndex)}
-              isRowPerPageEnable={true}
-              rowsPerPage={10}
-              paginationCount={statData.length}
-              pageNumber={statusPage}
-              setPage={setStatusPage}
-              handlePageChange={handleStatusChangePage}
-            />
-          </Grid>
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Status", field: "status" },
+              { name: "Last ping", field: "time" },
+              { name: "Action", field: "action" },
+            ]}
+            rows={statData.slice(startDeviceIndex, endDeviceIndex)}
+            isRowPerPageEnable={true}
+            rowsPerPage={10}
+            paginationCount={statData.length}
+            pageNumber={statusPage}
+            setPage={setStatusPage}
+            handlePageChange={handleStatusChangePage}
+          />
         </Grid>
-      </Box>
+      </Grid>
+    );
+  };
+
+  const getStatsCard = () => {
+    return (
+      <Grid container spacing={2}>
+        {Object.values(stats).map((stat: any) => (
+          <Grid item xs={12} sm={12} md={6} xl={6} lg={6} key={stat.title}>
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              component={"div"}
+              id="dashboard_stats"
+              sx={{
+                padding: "1rem 1.5rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                cursor: isTruthy(stat.redirection) ? "pointer" : "pointer",
+              }}
+              onClick={() => {
+                if (stat.title === "Active Journey") {
+                  history.push("/journey");
+                }
+                if (stat.title === "Offline Devices") {
+                  history.push("/device-dashboard");
+                }
+              }}
+            >
+              <Box>
+                <Typography sx={classes.statsTitle}>{stat.title}</Typography>
+                <Typography sx={classes.statsValue}>10</Typography>
+              </Box>
+
+              <Box>
+                <img src={stat.icon} width={60} height={60} />
+              </Box>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
     );
   };
 
@@ -538,9 +648,9 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
+            <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
-            </Grid> */}
+            </Grid>
 
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}

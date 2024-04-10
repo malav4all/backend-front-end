@@ -40,3 +40,18 @@ export const DEVICE_STATUS = gql`
     }
   }
 `;
+
+export const ALERTS_SUBSCRIPTION = gql`
+  subscription ($topic: String!) {
+    alertUpdated(topic: $topic) {
+      label
+      event
+      imei
+      message
+      lat
+      lng
+      mode
+      source
+    }
+  }
+`;

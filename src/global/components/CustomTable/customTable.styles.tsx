@@ -40,7 +40,7 @@ const customTableStyles = {
   },
   tableCell: {
     ...regularFont,
-    fontSize: getRelativeFontSize(2),
+    fontSize: getRelativeFontSize(1),
     height: "25px",
     borderTop: "1px solid #F0F0F0",
     borderBottom: "1px solid #F0F0F0",

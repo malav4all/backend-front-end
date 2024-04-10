@@ -266,7 +266,7 @@ const CustomTable = (props: CustomProps) => {
                   width="100%"
                 />
                 <Typography sx={classes.mediumFonts}>
-                  We've got nothing for you, sorry!
+                  We've got nothing for you!
                 </Typography>
               </Box>
             </TableCell>
