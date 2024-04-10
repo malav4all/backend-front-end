@@ -112,6 +112,7 @@ export class StringConstants {
   FACEBOOK_APP_ID = 1347418019080617;
   FACEBOOK_APP_SECRET = "f474dc2284358fc1a8fdd73955d2fa81";
   ACTIVE_JOURNEY = "Active Journey";
+  UPCOMING_JOURNEY = "Active Journey";
 
   //For Support Ticket
   assignedToMe = "Assigned To Me";

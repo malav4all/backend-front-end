@@ -36,6 +36,7 @@ import { openInfoNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
+import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourney";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -178,7 +179,13 @@ const Layout = () => {
             component={Trackplay}
             componentName={strings.ACTIVE_JOURNEY}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/upcoming-journey"}
+            component={UpcomingJourney}
+            componentName={strings.UPCOMING_JOURNEY}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

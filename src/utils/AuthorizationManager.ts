@@ -96,6 +96,13 @@ const ListOfMenus = () =>
           link: `${"/trackplay"}`,
           pageName: strings.ACTIVE_JOURNEY,
         },
+        {
+          icon: geoZoneSvg("#666"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Upcoming Journey",
+          link: `${"/upcoming-journey"}`,
+          pageName: strings.UPCOMING_JOURNEY,
+        },
       ],
     },
     {
