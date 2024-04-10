@@ -320,7 +320,12 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Tamper</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {
+                    alertTableData.filter((item: any) => item.event === "other")
+                      .length
+                  }
+                </Typography>
               </Box>
 
               <Box
@@ -358,7 +363,13 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Lock/Unlock</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.filter((item: any) => item.event === "locked")
+                    .length +
+                    alertTableData.filter(
+                      (item: any) => item.event === "unlocked"
+                    ).length}
+                </Typography>
               </Box>
 
               <Box
@@ -396,7 +407,14 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Geozone In/Out</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.filter(
+                    (item: any) => item.event === "geo_exit"
+                  ).length +
+                    alertTableData.filter(
+                      (item: any) => item.event === "geo_entry"
+                    ).length}
+                </Typography>
               </Box>
 
               <Box
@@ -434,7 +452,9 @@ const Dashboard = () => {
                 }}
               >
                 <Typography>Total Alerts</Typography>
-                <Typography sx={classes.statsValue}>30</Typography>
+                <Typography sx={classes.statsValue}>
+                  {alertTableData.length}
+                </Typography>
               </Box>
 
               <Box
