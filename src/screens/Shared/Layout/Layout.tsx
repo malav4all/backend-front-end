@@ -34,6 +34,7 @@ import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
 import { openInfoNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
+import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -149,8 +150,8 @@ const Layout = () => {
             exact
             isLoggedIn={isAuthenticated}
             path={"/journey-reports"}
-            component={DistanceReport}
-            componentName={strings.DISTANCE_REPORTS}
+            component={JourneyReport}
+            componentName={strings.JOURNEY_REPORTS}
           />
           <PrivateRoute
             exact
