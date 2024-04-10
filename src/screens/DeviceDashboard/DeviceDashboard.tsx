@@ -29,6 +29,9 @@ import dummyData, {
   deviceDashboardTableHeader,
 } from "./DeviceDashboard.helper";
 import { CustomInput, CustomTable } from "../../global/components";
+import { statusDevice } from "../Dashboard/service/Dashboard.service";
+import moment from "moment";
+import { FcInfo } from "react-icons/fc";
 
 const DeviceDashboard = () => {
   useTitle(strings.DashboardTitle);
@@ -36,21 +39,32 @@ const DeviceDashboard = () => {
   const userName = useAppSelector(selectName);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deviceDashboardData, setDeviceDashboardData] = useState([{}]);
-  const [statData, setStatData] = useState<any>();
+  const [statDataTable, setStatDataTable] = useState<any>();
+  const [selectedRange, setSelectedRange] = useState("Past 30m");
+  const [statusPage, setStatusPage] = useState(1);
+  const startDeviceIndex = (statusPage - 1) * 10;
+  const endDeviceIndex = startDeviceIndex + 10;
+  const [dateFilter, setDateFilter] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
+  });
 
-  const getStatData = async () => {
-    try {
-      const statData = await fetchDashboardDetail();
-      setStatData(statData.fetchDashboardDetail.data);
-    } catch (err) {
-      console.log(err);
-    }
+  const handleStatusChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setStatusPage(newPage);
   };
+
+  useEffect(() => {
+    alertData();
+  }, [dateFilter]);
 
   const stats = {
     executed: {
       title: "Online Devices",
-      value: statData?.totalJourney,
+      value: statDataTable?.filter((item: any) => item?.status === "online")
+        ?.length,
       //   icon: campaigns,
       resource: strings.campaign,
       redirection: {
@@ -59,18 +73,56 @@ const DeviceDashboard = () => {
     },
     outbounds: {
       title: "Offline Devices",
-      value: statData?.totalUser,
+      value: statDataTable?.filter((item: any) => item?.status === "offline")
+        ?.length,
       //   icon: campaigns,
       resource: strings.campaign,
       redirection: {},
     },
     audience: {
       title: "Total Devices",
-      value: statData?.ongoingJourney,
+      value: statDataTable?.length,
       //   icon: campaigns,
       resource: strings.contact,
       redirection: {},
     },
+  };
+  const alertData = async () => {
+    const [res2] = await Promise.all([
+      statusDevice({
+        input: {
+          startDate: dateFilter.startDate,
+          endDate: dateFilter.endDate,
+        },
+      }),
+    ]);
+
+    const deviceStatus = res2.getStatusDevice.map(
+      (item: any, index: number) => {
+        return {
+          id: index,
+          imei: item.imei,
+          label: item.label,
+          status: item.status,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+          action: (
+            <span style={{ color: "#845ADF" }}>
+              <FcInfo
+                onClick={() => {
+                  history.push({
+                    pathname: "/view-offline",
+                    state: {
+                      data: item,
+                    },
+                  });
+                }}
+              />
+            </span>
+          ),
+        };
+      }
+    );
+    setStatDataTable(deviceStatus);
   };
 
   const fetchDeviceDashboardHandler = async () => {
@@ -91,6 +143,67 @@ const DeviceDashboard = () => {
       setIsLoading(false);
       openErrorNotification(error.message);
     }
+  };
+
+  const handleChange = (event: any) => {
+    setSelectedRange(event.target.value);
+    const now = moment();
+    let startDate, endDate;
+    switch (event.target.value) {
+      case "Past 1m":
+        startDate = now.clone().subtract(1, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 5m":
+        startDate = now.clone().subtract(5, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 15m":
+        startDate = now.clone().subtract(15, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30m":
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 1h":
+        startDate = now.clone().subtract(1, "hour").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 3h":
+        startDate = now.clone().subtract(3, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 6h":
+        startDate = now.clone().subtract(6, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 12h":
+        startDate = now.clone().subtract(12, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 24h":
+        startDate = now.clone().subtract(24, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 2d":
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30d":
+        startDate = now.clone().subtract(30, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      default:
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+    }
+
+    setDateFilter({
+      startDate: startDate,
+      endDate: endDate,
+    });
   };
 
   const getDashboardHeader = () => {
@@ -130,22 +243,45 @@ const DeviceDashboard = () => {
             >
               Interval
             </Typography>
-            <Select
-              id="Dashboard_Interval_Dropdown"
-              sx={classes.dropdown}
-              value={""}
-              onChange={(event: any) => {}}
-            >
-              {options.map((data) => (
-                <MenuItem
-                  key={data.label}
-                  value={data.value}
-                  sx={classes.dropdownOptions}
-                >
-                  {data.label}
+            <Box sx={{ display: "flex", gap: "1rem" }}>
+              <Select
+                id="campaigns_interval_dropdown"
+                sx={classes.dropDownStyle}
+                value={selectedRange}
+                onChange={handleChange}
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                renderValue={() => selectedRange}
+              >
+                <MenuItem value="Past 1m" sx={classes.optionStyle}>
+                  Past 1m
                 </MenuItem>
-              ))}
-            </Select>
+                <MenuItem value="Past 5m" sx={classes.optionStyle}>
+                  Past 5m
+                </MenuItem>
+                <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                  Past 15m
+                </MenuItem>
+                <MenuItem value="Past 30m" sx={classes.optionStyle}>
+                  Past 30m
+                </MenuItem>
+                <MenuItem value="Past 1h" sx={classes.optionStyle}>
+                  Past 1h
+                </MenuItem>
+                <MenuItem value="Past 3h" sx={classes.optionStyle}>
+                  Past 3h
+                </MenuItem>
+                <MenuItem value="Past 12h" sx={classes.optionStyle}>
+                  Past 12h
+                </MenuItem>
+                <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                  Past 2d
+                </MenuItem>
+                <MenuItem value="Past 30d" sx={classes.optionStyle}>
+                  Past 30d
+                </MenuItem>
+              </Select>
+            </Box>
           </Box>
         </Grid>
       </Grid>
@@ -178,7 +314,7 @@ const DeviceDashboard = () => {
             >
               <Box>
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
+                <Typography sx={classes.statsValue}>{stat.value}</Typography>
               </Box>
 
               <Box>
@@ -202,20 +338,20 @@ const DeviceDashboard = () => {
         }}
       >
         <CustomTable
-          headers={deviceDashboardTableHeader}
-          rows={deviceDashboardData}
-          //   size={[5]}
-          //   handlePageChange={
-          //     searchJourney ? handleSearchChangePage : handleChangePage
-          //   }
-          //   handleRowsPerPage={handlePerPageData}
-          //   paginationCount={count}
-          // rowsPerPage={rowsPerPage}
-          //   pageNumber={page}
-          //   setPage={setPage}
-          //   handlePerPageData={handlePerPageData}
-          //   perPageData={rowsPerPage}
-          //   rowsPerPage={rowsPerPage}
+          headers={[
+            { name: "Name", field: "label" },
+            { name: "IMEI", field: "imei" },
+            { name: "Status", field: "status" },
+            { name: "Last ping", field: "time" },
+            { name: "Action", field: "action" },
+          ]}
+          rows={statDataTable?.slice(startDeviceIndex, endDeviceIndex)}
+          isRowPerPageEnable={true}
+          rowsPerPage={10}
+          paginationCount={statDataTable?.length}
+          pageNumber={statusPage}
+          setPage={setStatusPage}
+          handlePageChange={handleStatusChangePage}
         />
       </Box>
     );
@@ -303,7 +439,7 @@ const DeviceDashboard = () => {
                     }}
                   >
                     <Typography variant="h5" sx={classes.heading}>
-                      All Devices table
+                      All Devices Table
                     </Typography>
 
                     {getSearchBar()}
@@ -320,10 +456,6 @@ const DeviceDashboard = () => {
 
   useEffect(() => {
     fetchDeviceDashboardHandler();
-  }, []);
-
-  useEffect(() => {
-    getStatData();
   }, []);
 
   return (

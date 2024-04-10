@@ -56,11 +56,11 @@ const Trackplay = () => {
       body: JSON.stringify(payload),
     });
     const data = await res.json();
+    console.log("data", data);
     const route = data.routes[0];
-
     const reportData = route.sections[0].actions.map(
       (
-        { instruction, action, duration, length, offset }: any,
+        { instruction, action, duration, length, offset, currentTime }: any,
         index: number
       ) => {
         return {
@@ -71,11 +71,14 @@ const Trackplay = () => {
           duration,
           length,
           offset,
+          currentTime,
         };
       }
     );
+
     setDataValue(reportData);
   };
+  // console.log(dataValue);
 
   function addPolylineToMap(data: any) {
     const mapLine = new window.H.geo.LineString();
@@ -101,9 +104,11 @@ const Trackplay = () => {
 
   const trackPlayApiHandler = async () => {
     const trackdata = await fetchTrackplayHandler();
+
     addPolylineToMap(trackdata.getRowData);
     getReports(trackdata.getRowData);
     setRawData(trackdata.getRowData);
+    // console.log(rawData);
   };
 
   useEffect(() => {
@@ -164,10 +169,12 @@ const Trackplay = () => {
   };
 
   const downloadReport = () => {
+    // console.log("this is inside datavalue", rawData);
+
     return (
       <>
         <PDFDownloadLink
-          document={<TrackReport reportData={dataValue} />}
+          document={<TrackReport reportData={dataValue} rawData={rawData} />}
           fileName={"Report.pdf"}
         >
           {({ blob, url, loading, error }) =>

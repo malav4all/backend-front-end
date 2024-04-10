@@ -3,35 +3,34 @@ import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 interface ReportProps {
   reportData: any;
+  rawData: any;
 }
 
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
     padding: 20,
+    fontSize: 12,
   },
-  name: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    fontSize: 22,
-    marginBottom: 5,
-  },
-  invoiceNumber: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
+  header: {
+    fontSize: 11,
+    marginBottom: 20,
+    textAlign: "center",
   },
   section: {
     margin: 10,
     padding: 10,
-    flexGrow: 1,
   },
-  header: {
-    fontSize: 24,
+  name: {
+    fontSize: 11,
     marginBottom: 10,
-    textAlign: "center",
+  },
+  invoiceNumber: {
+    fontSize: 11,
+    marginBottom: 10,
   },
   label: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 5,
   },
   input: {
@@ -45,67 +44,84 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    borderBottomWidth: 1,
     backgroundColor: "#D3D3D3",
+    borderBottomWidth: 1,
     borderTopColor: "black",
     borderTopWidth: 1,
     borderBottomColor: "black",
-    fontStyle: "bold",
-    alignItems: "center",
-    height: 22,
+    height: 30,
   },
   quantity: {
-    width: "30%",
+    width: "28%",
     borderRightWidth: 1,
-    textAlign: "right",
-    borderRightColor: "#000000",
     paddingRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    fontSize: 10,
+    textAlign: "center",
   },
   description: {
-    width: "30%",
-    borderRightColor: "#000000",
+    width: "22%",
     borderRightWidth: 1,
-    textAlign: "left",
+    fontSize: 8,
     paddingLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    textAlign: "center",
+    paddingTop: "7px",
   },
   serialNumber: {
-    width: "5%",
-    borderRightColor: "#000000",
+    width: "10%",
     borderRightWidth: 1,
-    textAlign: "left",
     paddingLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    textAlign: "center",
   },
   price: {
     width: "20%",
-    borderRightColor: "#000000",
     borderRightWidth: 1,
-    textAlign: "right",
+    textAlign: "center",
     paddingRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
   },
   amount: {
-    width: "15%",
-    textAlign: "right",
+    width: "20%",
     paddingRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    textAlign: "center",
   },
   total: {
+    width: "20%",
+    paddingRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
+    textAlign: "center",
+  },
+  trackReport: {
+    marginBottom: "1rem",
   },
 });
-const TrackReport = ({ reportData }: ReportProps) => {
+
+const TrackReport = ({ reportData, rawData }: ReportProps) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View>
-          <Text>Track Report</Text>
+          <Text style={styles.trackReport}>Track Report</Text>
         </View>
         <View>
           <View style={styles.row}>
-            <Text style={styles.serialNumber}>SNO</Text>
-            <Text style={styles.description}>IMEI NO</Text>
+            <Text style={styles.serialNumber}>S.N</Text>
+            <Text style={styles.description}>IMEI No</Text>
             <Text style={styles.quantity}>Instruction</Text>
             <Text style={styles.price}>Action</Text>
             <Text style={styles.amount}>Duration</Text>
@@ -118,7 +134,7 @@ const TrackReport = ({ reportData }: ReportProps) => {
               <Text style={styles.quantity}>{item.instruction}</Text>
               <Text style={styles.price}>{item.action}</Text>
               <Text style={styles.amount}>
-                {(item.duration / 360).toFixed()}Min
+                {(item.duration / 360).toFixed()} min
               </Text>
             </View>
           ))}
