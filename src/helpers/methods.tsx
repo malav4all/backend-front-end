@@ -83,7 +83,7 @@ export const openWarningNotification = (
 
 export const openErrorNotification = (
   message: any,
-  title: string = "Error"
+  title: string = "Alert"
 ) => {
   globalEmitter.emit(strings.notification, {
     type: strings.error,

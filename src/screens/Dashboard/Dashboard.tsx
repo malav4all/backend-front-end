@@ -113,8 +113,9 @@ const Dashboard = () => {
       };
     });
     setAlertTableData(alertTableDataValue);
-    const deviceStatus = res2.getStatusDevice.map(
-      (item: any, index: number) => {
+    const deviceStatus = res2.getStatusDevice
+      .filter((val: any) => val.status === "offline")
+      .map((item: any, index: number) => {
         return {
           id: index,
           imei: item.imei,
@@ -136,8 +137,7 @@ const Dashboard = () => {
             </span>
           ),
         };
-      }
-    );
+      });
     setStatData(deviceStatus);
   };
 
@@ -349,7 +349,7 @@ const Dashboard = () => {
                   color: "ivory",
                 }}
               >
-                <Typography>Tamper</Typography>
+                <Typography>Tamper/Misc</Typography>
                 <Typography sx={classes.statsValue}>
                   {
                     alertTableData.filter((item: any) => item.event === "other")
@@ -552,7 +552,7 @@ const Dashboard = () => {
             headers={[
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
-              { name: "Last Ping", field: "time" },
+              { name: "Alert Time", field: "time" },
               { name: "Event", field: "event" },
               { name: "Mode", field: "mode" },
               { name: "Source", field: "source" },
