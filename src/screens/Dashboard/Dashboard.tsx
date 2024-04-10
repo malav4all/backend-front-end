@@ -113,19 +113,31 @@ const Dashboard = () => {
       };
     });
     setAlertTableData(alertTableDataValue);
-    const deviceStatus = res2.getStatusDevice.map((item: any) => {
-      return {
-        imei: item.imei,
-        label: item.label,
-        status: item.status,
-        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        action: (
-          <span style={{ color: "#845ADF" }}>
-            <FcInfo />
-          </span>
-        ),
-      };
-    });
+    const deviceStatus = res2.getStatusDevice.map(
+      (item: any, index: number) => {
+        return {
+          id: index,
+          imei: item.imei,
+          label: item.label,
+          status: item.status,
+          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+          action: (
+            <span style={{ color: "#845ADF" }}>
+              <FcInfo
+                onClick={() => {
+                  history.push({
+                    pathname: "/view-offline",
+                    state: {
+                      data: item,
+                    },
+                  });
+                }}
+              />
+            </span>
+          ),
+        };
+      }
+    );
     setStatData(deviceStatus);
   };
 

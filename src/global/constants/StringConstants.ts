@@ -77,7 +77,7 @@ export class StringConstants {
 
   // authManager
   DASHBOARD = "Dashboard";
-  DEVICEDASHBOARD = "DeviceDashboard"
+  DEVICEDASHBOARD = "DeviceDashboard";
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
   GROUPS = "Campaign Groups";
@@ -111,7 +111,7 @@ export class StringConstants {
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
   FACEBOOK_APP_SECRET = "f474dc2284358fc1a8fdd73955d2fa81";
-  ACTIVE_JOURNEY = "Active Journey"
+  ACTIVE_JOURNEY = "Active Journey";
 
   //For Support Ticket
   assignedToMe = "Assigned To Me";
@@ -251,6 +251,7 @@ export class StringConstants {
   REPORTS = "REPORTS";
   ALERT_REPORTS = "ALERT REPORTS";
   DISTANCE_REPORTS = "DISTANCE REPORTS";
+  VIEW_OFFLINE = "VIEW OFFLINE";
 }
 
 let strings = new StringConstants();
