@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Box,
+  Chip,
   Grid,
   MenuItem,
   Select,
@@ -120,7 +121,32 @@ const Dashboard = () => {
           id: index,
           imei: item.imei,
           label: item.label,
-          status: item.status,
+          status: (
+            <Chip
+              label={item.status}
+              sx={{
+                backgroundColor: "red",
+                color: "white",
+                border: "1px solid white",
+                animation: "pulse 2s infinite",
+                "@keyframes pulse": {
+                  "0%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
+                  "50%": {
+                    transform: "scale(1.05)",
+                    opacity: 0.75,
+                  },
+                  "100%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
+                },
+              }}
+              variant="filled"
+            />
+          ),
           time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
           action: (
             <span style={{ color: "#845ADF" }}>
