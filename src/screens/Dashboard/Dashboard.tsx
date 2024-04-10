@@ -696,9 +696,9 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={12} lg={12} xl={12}>
+            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}
