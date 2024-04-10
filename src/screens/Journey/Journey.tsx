@@ -72,6 +72,7 @@ const Journey = () => {
     },
   });
   const [coordinatesArray, setCoordinatesArray] = useState<any>([]);
+  const [isHideForm, setIsHideForm] = useState<boolean>(false);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
@@ -759,7 +760,6 @@ const Journey = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
-
       <Box
         sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
         mt={2}
@@ -767,29 +767,55 @@ const Journey = () => {
       >
         <CustomButton
           id="users_add_button"
-          label={"Add Journey"}
-          onClick={addMoreLocation}
+          label={"Create Journey"}
+          onClick={() => {
+            setIsHideForm(!isHideForm);
+          }}
           customClasses={{
             width: "150px",
           }}
         />
       </Box>
+      {isHideForm && (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              flexWrap: "wrap",
+            }}
+            mt={2}
+            mr={2}
+          >
+            <CustomButton
+              id="users_add_button"
+              label={"Add Journey"}
+              onClick={addMoreLocation}
+              customClasses={{
+                width: "150px",
+              }}
+            />
+          </Box>
 
-      <Box p={2}>{inputSection()}</Box>
-      <Box
-        sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
-        mt={2}
-        mr={2}
-      >
-        <CustomButton
-          id="users_add_button"
-          label={"Submit"}
-          onClick={addJourneyHandler}
-          customClasses={{
-            width: "150px",
-          }}
-        />
-      </Box>
+          <Box p={2}>{inputSection()}</Box>
+
+          <Box
+            sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
+            mt={2}
+            mr={2}
+          >
+            <CustomButton
+              id="users_add_button"
+              label={"Submit"}
+              onClick={addJourneyHandler}
+              customClasses={{
+                width: "150px",
+              }}
+            />
+          </Box>
+        </>
+      )}
+
       <Grid
         item
         xs={12}
