@@ -252,6 +252,7 @@ export class StringConstants {
   ALERT_REPORTS = "ALERT REPORTS";
   DISTANCE_REPORTS = "DISTANCE REPORTS";
   JOURNEY_REPORTS = "DISTANCE REPORTS";
+  VIEW_OFFLINE = "VIEW OFFLINE";
 }
 
 let strings = new StringConstants();

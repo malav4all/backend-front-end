@@ -34,6 +34,7 @@ import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
 import { openInfoNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
+import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
 
 const Layout = () => {
@@ -67,7 +68,9 @@ const Layout = () => {
   });
 
   useEffect(() => {
-    openInfoNotification(data?.alertUpdated?.message);
+    if (data?.alertUpdated?.message) {
+      openInfoNotification(data?.alertUpdated?.message);
+    }
   }, [data]);
 
   const { getLastActiveTime } = useIdleTimer({
@@ -174,6 +177,14 @@ const Layout = () => {
             path={"/trackplay"}
             component={Trackplay}
             componentName={strings.ACTIVE_JOURNEY}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/view-offline"}
+            component={ViewOfflineDevice}
+            componentName={strings.VIEW_OFFLINE}
           />
 
           <PrivateRoute
