@@ -118,7 +118,7 @@ const TrackReport = ({ reportData }: ReportProps) => {
               <Text style={styles.quantity}>{item.instruction}</Text>
               <Text style={styles.price}>{item.action}</Text>
               <Text style={styles.amount}>
-                {(item.duration / 360).toFixed()}Minutes
+                {(item.duration / 360).toFixed()}Min
               </Text>
             </View>
           ))}
