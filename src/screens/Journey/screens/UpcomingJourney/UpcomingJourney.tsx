@@ -156,7 +156,7 @@ const UpcomingJourney = () => {
           <Box sx={{ display: "flex", gap: "1rem" }}>
             <CustomButton
               id="users_add_button"
-              label={"Create Upcoming Journey"}
+              label={"Create Journey"}
               onClick={() => {}}
               customClasses={{
                 width: "150px",
