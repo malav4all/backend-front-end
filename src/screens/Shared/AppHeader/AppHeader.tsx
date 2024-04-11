@@ -50,7 +50,7 @@ const AppHeader = () => {
             bgcolor: "transparent",
             boxShadow: "none",
             zIndex: 2,
-            backgroundColor: "#f1edff",
+            backgroundColor: "red",
           }}
         >
           <Toolbar>

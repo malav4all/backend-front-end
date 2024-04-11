@@ -67,14 +67,7 @@ const DistanceReport = (props: CustomProps) => {
     }
   };
 
-  const formatDuration = (durationInHours: number) => {
-    if (durationInHours < 1) {
-      const minutes = Math.round(durationInHours * 60);
-      return `${minutes} Minutes`;
-    } else {
-      return `${durationInHours.toFixed(2)} Hours`;
-    }
-  };
+
 
   const handleChange = (event: any) => {
     setSelectedRange(event.target.value);
@@ -136,20 +129,18 @@ const DistanceReport = (props: CustomProps) => {
       endDate: endDate,
     });
   };
-
-  const formatDistance = (distanceInKm: number) => {
-    const distance = Number(distanceInKm);
-    if (distance < 1) {
-      const meters = Math.round(distance * 1000);
-      return `${meters} m`;
+  const formatDistance = (distanceInMeters: number) => {
+    if (distanceInMeters < 1000) {
+      return `${distanceInMeters} m`;
     } else {
-      return `${distance.toFixed(2)} Km`;
+      const distanceInKm = distanceInMeters / 1000;
+      return `${distanceInKm.toFixed(2)} km`;
     }
   };
 
   const tableRender = (tableData: any) => {
     let totalDistance = 0;
-    let totalTime = 0; // in seconds
+    let totalTime = 0;
 
     const data = tableData?.map((item: any, index: number) => {
       let distance = 0;
@@ -168,10 +159,11 @@ const DistanceReport = (props: CustomProps) => {
       }
       totalDistance += distance;
       totalTime += timeee;
+      const formattedDistance = formatDistance(distance);
       return {
         imei: item.imei,
-        distance: formatDistance(distance),
-        duration: formatDuration(timeee),
+        distance: formattedDistance,
+        duration: calculateApproxTime(formattedDistance),
       };
     });
 
@@ -197,6 +189,35 @@ const DistanceReport = (props: CustomProps) => {
       setRowsPerPage(10);
     } else {
       setSearchJourney("");
+    }
+  };
+
+  const calculateApproxTime = (formattedDistance: string) => {
+    const speedKmPerHour = 40;
+    let distanceInKm: number = 0;
+
+    if (formattedDistance.includes("m")) {
+      distanceInKm = parseFloat(formattedDistance) / 1000;
+    }
+    if (formattedDistance.includes("km")) {
+      distanceInKm = parseFloat(formattedDistance.split(" ")[0]);
+    }
+
+    const timeInHours = distanceInKm / speedKmPerHour;
+    const timeInMinutes = timeInHours * 60;
+
+    if (timeInMinutes < 60) {
+      return `${Math.round(timeInMinutes)} minutes`;
+    } else {
+      const hours = Math.floor(timeInMinutes / 60);
+      const remainingMinutes = Math.round(timeInMinutes % 60);
+      if (remainingMinutes === 0) {
+        return `${hours} hour${hours > 1 ? "s" : ""}`;
+      } else {
+        return `${hours} hour${
+          hours > 1 ? "s" : ""
+        } and ${remainingMinutes} minutes`;
+      }
     }
   };
 

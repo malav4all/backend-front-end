@@ -146,10 +146,10 @@ const DeviceDashboard = () => {
         label: item.labelName,
         status: (
           <Chip
-            label={item.status}
+            label={item?.status}
             sx={{
-              backgroundColor: item.status === "Online" ? "green" : "red",
-              color: item.status === "Online" ? "white" : "white",
+              backgroundColor: item.status === "online" ? "green" : "red",
+              color: item.status === "online" ? "white" : "white",
               border:
                 item.status === "Active"
                   ? "1px solid #37b071"

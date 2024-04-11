@@ -112,7 +112,7 @@ const AppDrawer = (props: CustomProps) => {
                 ? classes.selectedMenuOption
                 : {
                     ...classes.menuOption,
-                    backgroundColor: activeMenuBackgroundColor,
+                    backgroundColor: "#5F22E1",
                   },
             ]}
           >
