@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import { fetchTrackplayHandler } from "./service/trackplay.service";
-import { Box, Slider } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Autocomplete,
+  Box,
+  Button,
+  Grid,
+  InputLabel,
+  Slider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import CustomButton from "../../global/components/CustomButton/CustomButton";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
@@ -11,8 +25,13 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import TrackReport from "./Component/Report";
 import * as XLSX from "xlsx";
 import moment from "moment";
+import { RiFileExcel2Line } from "react-icons/ri";
+import trackplayStyle from "./Trackplay.styles";
+import { CustomInput } from "../../global/components";
+import { RiFileExcel2Fill } from "react-icons/ri";
 
 const Trackplay = () => {
+  const classes = trackplayStyle;
   const [map, setMap] = useState<any>(null);
   const [marker, setMarker] = useState<any>(null);
   const [lineString, setLineString] = useState<any>(null);
@@ -98,8 +117,6 @@ const Trackplay = () => {
     setMarker(marker);
   }
 
-  const reportDownload = () => {};
-
   const trackPlayApiHandler = async () => {
     const trackdata = await fetchTrackplayHandler();
 
@@ -161,12 +178,12 @@ const Trackplay = () => {
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
   };
+
   const toggleMovement = () => {
     setStop((prevStop) => !prevStop);
   };
 
   const downloadReport = () => {
-
     return (
       <>
         <PDFDownloadLink
@@ -177,19 +194,18 @@ const Trackplay = () => {
             loading ? (
               "Loading..."
             ) : (
-              <button
-                style={{
-                  width: "100px",
-                  padding: "13px 5px",
-                  marginTop: "8px",
-                  outline: "none",
+              <Button
+                onClick={generateExcelFile}
+                sx={{
                   backgroundColor: stop ? "#ffffff" : "#FF5733",
-                  color: stop ? "#333" : "white",
+                  color: "white",
+                  display: "flex",
+                  gap: "0.5rem",
+                  textDecoration: "none",
                 }}
-                className="button"
               >
-                Print Report
-              </button>
+                <BsFileEarmarkPdfFill />
+              </Button>
             )
           }
         </PDFDownloadLink>
@@ -213,6 +229,78 @@ const Trackplay = () => {
     XLSX.writeFile(workbook, "TrackReport.xlsx");
   };
 
+  const inputSection = () => {
+    return (
+      <>
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="Journey Name"
+              placeHolder="Enter Journey name"
+              // value={formField?.journeyName?.value}
+              required
+              name="journeyName"
+              // onChange={handleOnChange}
+              // error={formField?.journeyName?.error}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="IMEI"
+              placeHolder="Enter IMEI name"
+              // value={formField?.journeyName?.value}
+              required
+              name="imei"
+              // onChange={handleOnChange}
+              // error={formField?.journeyName?.error}
+            />
+          </Grid>
+
+          {/* start data */}
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="Start Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="startDate"
+              required
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+              // value={formField?.startDate?.value}
+              // onChange={handleOnChange}
+              // error={
+              //   !isTruthy(formField?.startDate?.value) &&
+              //   formField?.startDate?.error
+              // }
+            />
+          </Grid>
+
+          {/* end date */}
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="End Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="endDate"
+              required
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+              // value={formField?.endDate?.value}
+              // onChange={handleOnChange}
+              // error={
+              //   !isTruthy(formField?.endDate?.value) &&
+              //   formField?.endDate?.error
+              // }
+            />
+          </Grid>
+        </Grid>
+      </>
+    );
+  };
+
   return (
     <Box
       component={"div"}
@@ -224,65 +312,136 @@ const Trackplay = () => {
         position: "relative",
       }}
     >
+      <CustomLoader isLoading={isLoading} />
+
       <Box
-        display={"flex"}
-        gap={3}
-        pb={1}
-        justifyContent={"center"}
-        alignItems={"center"}
         sx={{
-          background: "grey",
-          backgroundColor: "#5bc0de",
-          color: "white",
+          position: "absolute",
+          top: "1rem",
+          left: "0.3rem",
+          zIndex: "2",
+          width: "94%",
+          margin: "auto",
+          padding: "1rem 2rem",
+          borderRadius: "5px",
+          backgroundColor: "white",
+          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
         }}
       >
-        <CustomButton
-          label={"Start"}
-          onClick={trackPlayApiHandler}
-          disabled={journeyStarted}
-          customClasses={{
-            width: "100px",
-            marginTop: "8px",
-            backgroundColor: "#5bc0dv",
-            color: "white",
-          }}
-        />
-        <div style={{ width: 300 }}>
-          <Slider
-            aria-label="Restricted values"
-            value={speed}
-            onChange={handleSpeedChange}
-            valueLabelDisplay="auto"
-            defaultValue={0}
-            step={1}
-            marks={marks}
-            min={1}
-            max={4}
-          />
-        </div>
-        <CustomButton
-          customClasses={{
-            width: "100px",
-            marginTop: "8px",
-            backgroundColor: stop ? "#ffffff" : "#f0ad4e",
-            color: stop ? "#333" : "white",
-          }}
-          onClick={toggleMovement}
-          icon={stop ? <PlayCircleFilledIcon /> : <StopCircleIcon />}
-        />
-        <CustomButton
-          label={"Download Excel"}
-          customClasses={{
-            width: "100px",
-            marginTop: "8px",
-            backgroundColor: stop ? "#ffffff" : "#FF5733",
-            color: stop ? "#333" : "white",
-          }}
-          onClick={generateExcelFile}
-        />
-        {downloadReport()}
+        <Grid container>
+          <Grid container xs={12} md={10} lg={10} xl={10}>
+            {inputSection()}
+          </Grid>
+
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "end",
+            }}
+            xs={12}
+            md={2}
+            lg={2}
+            xl={2}
+          >
+            <CustomButton
+              id="users_add_button"
+              label={"Submit"}
+              onClick={trackPlayApiHandler}
+              customClasses={{
+                width: "150px",
+              }}
+            />
+          </Grid>
+        </Grid>
       </Box>
-      <CustomLoader isLoading={isLoading} />
+
+      <Box
+        sx={{
+          position: "absolute",
+          top: "9rem",
+          right: "2rem",
+          zIndex: "2",
+          backgroundColor: "white",
+          boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+          padding: "1rem",
+          borderRadius: "5px",
+        }}
+      >
+        <Box
+          sx={{
+            width: "200px",
+            gap: "0.5rem",
+            justifyContent: "space-between",
+          }}
+        >
+          <CustomButton
+            customClasses={{
+              width: "1rem",
+              marginBottom: "8px",
+              backgroundColor: stop ? "#ffffff" : "#f0ad4e",
+              color: stop ? "#333" : "white",
+            }}
+            onClick={toggleMovement}
+            icon={stop ? <PlayCircleFilledIcon /> : <StopCircleIcon />}
+          />
+        </Box>
+
+        <Accordion>
+          <AccordionSummary
+            // expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1-content"
+            id="speed-scale"
+          >
+            <Typography>Speed</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ width: 150, margin: "auto" }}>
+              <Slider
+                aria-label="Restricted values"
+                value={speed}
+                onChange={handleSpeedChange}
+                valueLabelDisplay="auto"
+                defaultValue={0}
+                step={1}
+                marks={marks}
+                min={1}
+                max={4}
+                sx={{
+                  height: 8,
+                }}
+              />
+            </div>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary
+            // expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel2-content"
+            id="panel2-header"
+          >
+            <Typography>Reports</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Button
+              onClick={generateExcelFile}
+              sx={{
+                backgroundColor: stop ? "#ffffff" : "#FF5733",
+                color: stop ? "#333" : "white",
+                display: "flex",
+                gap: "0.5rem",
+                marginBottom: "0.5rem",
+              }}
+            >
+              <RiFileExcel2Fill />
+            </Button>
+
+            {downloadReport()}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </Box>
   );
 };

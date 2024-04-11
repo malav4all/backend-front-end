@@ -41,6 +41,26 @@ const trackplayStyle = {
       },
     },
   },
+  inputLabel: {
+    display: "flex",
+    color: "#212121",
+    fontSize: getRelativeFontSize(7),
+    fontColor: theme.palette.common.black + " !important",
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
   header: {
     display: "flex",
     alignItems: "center",
@@ -77,26 +97,6 @@ const trackplayStyle = {
     },
   },
 
-  inputLabel: {
-    display: "flex",
-    color: "#212121",
-    fontSize: getRelativeFontSize(7),
-    fontColor: theme.palette.common.black + " !important",
-    variant: "standard",
-    ...boldFont,
-    "& .MuiTextField-root": {
-      color: "red",
-    },
-    "& .MuiInputLabel-root ": {
-      color: "red",
-    },
-    "&:focus": {
-      color: "red",
-    },
-    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
-      color: "red",
-    },
-  },
   star: {
     color: inputLabelRequiredColor,
   },
