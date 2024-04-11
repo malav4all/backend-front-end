@@ -1,21 +1,25 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { fetchJourney } from "../../../Journey/service/journey.service";
-import { Box, Grid, InputAdornment, Tooltip, Typography } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import {
+  Box,
+  Grid,
+  InputAdornment,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
+import DistanceReport from "../DistanceReport/DistanceReport";
+import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 import { CustomInput, CustomTable } from "../../../../global/components";
-import moment from "moment";
+import strings from "../../../../global/constants/StringConstants";
 import {
   debounceEventHandler,
   openErrorNotification,
 } from "../../../../helpers/methods";
-import strings from "../../../../global/constants/StringConstants";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
+import SearchIcon from "@mui/icons-material/Search";
+import { ChangeEvent, useEffect, useState } from "react";
+import moment from "moment";
 import journeyReportStyles from "./JourneyReport.styles";
-interface CustomProps {
-  isFromDistanceReport: boolean;
-}
-
-const JourneyReport = (props: CustomProps) => {
+import { archiveJourney } from "./service/JourneyReport.service";
+const JourneyReport = () => {
   const classes = journeyReportStyles;
   const [isLoading, setIsLoading] = useState<any>(false);
   const [count, setCount] = useState<number>(0);
@@ -24,24 +28,22 @@ const JourneyReport = (props: CustomProps) => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [searchJourney, setSearchJourney] = useState<string>("");
+  const [dateFilter, setDateFilter] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   useEffect(() => {
     fetchJourneyHandler();
   }, []);
+
   const fetchJourneyHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchJourney({
-        input: {
-          page,
-          limit: 10,
-        },
-      });
-
-      const data = tableRender(res.fetchJourney.data);
-
+      const res = await archiveJourney();
+      const data = tableRender(res.archiveJourney.data);
       setJourneyTableData(data);
-      setCount(res.fetchJourney.paginatorInfo.count);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -58,6 +60,67 @@ const JourneyReport = (props: CustomProps) => {
     }
   };
 
+  const handleChange = (event: any) => {
+    setSelectedRange(event.target.value);
+    const now = moment();
+    let startDate, endDate;
+    switch (event.target.value) {
+      case "Past 1m":
+        startDate = now.clone().subtract(1, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 5m":
+        startDate = now.clone().subtract(5, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 15m":
+        startDate = now.clone().subtract(15, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30m":
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 1h":
+        startDate = now.clone().subtract(1, "hour").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 3h":
+        startDate = now.clone().subtract(3, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 6h":
+        startDate = now.clone().subtract(6, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 12h":
+        startDate = now.clone().subtract(12, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 24h":
+        startDate = now.clone().subtract(24, "hours").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 2d":
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 30d":
+        startDate = now.clone().subtract(30, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      default:
+        startDate = now.clone().subtract(30, "minutes").toISOString();
+        endDate = now.toISOString();
+        break;
+    }
+
+    setDateFilter({
+      startDate: startDate,
+      endDate: endDate,
+    });
+  };
+
   const formatDistance = (distanceInKm: number) => {
     const distance = Number(distanceInKm);
     if (distance < 1) {
@@ -69,35 +132,38 @@ const JourneyReport = (props: CustomProps) => {
   };
 
   const tableRender = (tableData: any) => {
+    let totalDistance = 0;
+    let totalTime = 0; // in seconds
+
     const data = tableData?.map((item: any, index: number) => {
-      const coordinates = item?.journeyData?.map((coor: any) => {
-        const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
-        return { lat, lng };
-      });
-      const firstCoordinate = coordinates?.shift();
-      const lastCoordinate = coordinates?.pop();
-      const routeOrigin: { lat: number; lng: number }[] = [];
-      if (firstCoordinate) {
-        const { lat: firstLat, lng: firstLong } = firstCoordinate;
-        routeOrigin.push({ lat: firstLat, lng: firstLong });
-      }
-      if (lastCoordinate) {
-        const { lat: lastLat, lng: lastLong } = lastCoordinate;
-        routeOrigin.push({ lat: lastLat, lng: lastLong });
-      }
+      // let distance = 0;
+      // let timeee = 0;
+      // for (let i = 0; i < item.coordinates.length - 1; i++) {
+      //   const startCoord = item.coordinates[i];
+      //   const endCoord = item.coordinates[i + 1];
+      //   const startMoment = moment(startCoord.time);
+      //   const endMoment = moment(endCoord.time);
+      //   const duration = moment.duration(endMoment.diff(startMoment));
+      //   timeee += duration.asSeconds();
+      //   // distance += getDistance(
+      //   //   { latitude: startCoord.latitude, longitude: startCoord.longitude },
+      //   //   { latitude: endCoord.latitude, longitude: endCoord.longitude }
+      //   // );
+      // }
+      // totalDistance += distance;
+      // totalTime += timeee;
       return {
-        key: item._id,
-        journeyName: item?.journeyName,
-        startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
-        endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
-        createdBy: item?.createdBy,
-        totalDistance: formatDistance(item?.totalDistance),
-        totalDuration: formatDuration(item?.totalDuration),
+        journeyName: item.journeyName,
+        createdBy: item.createdBy,
+        distance: formatDistance(item.totalDistance),
+        duration: formatDuration(item.totalDuration),
+        endDate: moment(item.endDate).format("DD-MM-YYYY HH:mm:ss A"),
+        startDate: moment(item.startDate).format("DD-MM-YYYY HH:mm:ss A"),
       };
     });
+
     return data;
   };
-
   const handlePerPageData = (event: any) => {
     setPage(1);
     setSearchPageNumber(1);
@@ -153,12 +219,12 @@ const JourneyReport = (props: CustomProps) => {
         width="100%"
       >
         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          <Typography variant="h5" sx={classes.heading}>
+          {/* <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
-          </Typography>
+          </Typography> */}
         </Grid>
 
-        <Grid
+        {/* <Grid
           item
           xs={12}
           md={7}
@@ -168,7 +234,57 @@ const JourneyReport = (props: CustomProps) => {
             justifyContent: "flex-end",
             flexWrap: "wrap",
           }}
-        ></Grid>
+        >
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Typography
+              sx={{
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
+                fontWeight: "bold",
+              }}
+            >
+              Duration
+            </Typography>
+            <Select
+              id="campaigns_interval_dropdown"
+              sx={classes.dropDownStyle}
+              value={selectedRange}
+              onChange={handleChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              renderValue={() => selectedRange}
+            >
+              <MenuItem value="Past 1m" sx={classes.optionStyle}>
+                Past 1m
+              </MenuItem>
+              <MenuItem value="Past 5m" sx={classes.optionStyle}>
+                Past 5m
+              </MenuItem>
+              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                Past 15m
+              </MenuItem>
+              <MenuItem value="Past 30m" sx={classes.optionStyle}>
+                Past 30m
+              </MenuItem>
+              <MenuItem value="Past 1h" sx={classes.optionStyle}>
+                Past 1h
+              </MenuItem>
+              <MenuItem value="Past 3h" sx={classes.optionStyle}>
+                Past 3h
+              </MenuItem>
+              <MenuItem value="Past 12h" sx={classes.optionStyle}>
+                Past 12h
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 2d
+              </MenuItem>
+              <MenuItem value="Past 30d" sx={classes.optionStyle}>
+                Past 30d
+              </MenuItem>
+            </Select>
+          </Box>
+        </Grid> */}
       </Grid>
     );
   };
@@ -210,11 +326,7 @@ const JourneyReport = (props: CustomProps) => {
             sx={{ display: "flex", margin: "1rem 0rem" }}
           >
             <Typography variant="h5" sx={classes.heading}>
-              {`${
-                props.isFromDistanceReport
-                  ? "Distance Report"
-                  : "Journey Report"
-              }`}
+              Journey Report
             </Typography>
           </Grid>
 
@@ -236,17 +348,17 @@ const JourneyReport = (props: CustomProps) => {
             <CustomTable
               headers={[
                 { name: "Journey Name", field: "journeyName" },
-                { name: "Created By", field: "createdBy" },
                 { name: "Start Date", field: "startDate" },
-                { name: "End Date", field: "endDate" },
-                { name: "Total Distance", field: "totalDistance" },
-                { name: "Total Duration", field: "totalDuration" },
+                { name: "End Date", field: "startDate" },
+                { name: "Total Distance ", field: "distance" },
+                { name: "Total Duration ", field: "duration" },
+                { name: "Created By", field: "createdBy" },
               ]}
               rows={journeyTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}
-              paginationCount={count}
+              paginationCount={journeyTableData?.length}
               // rowsPerPage={rowsPerPage}
               pageNumber={page}
               setPage={setPage}

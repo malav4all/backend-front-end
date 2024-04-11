@@ -87,7 +87,7 @@ const ListOfMenus = () =>
         {
           icon: geoZoneSvg("#666"),
           activeIcon: geoZoneSvg(pinkDarkColor),
-          text: "Active",
+          text: "Active Journey",
           link: `${"/journey"}`,
           pageName: strings.ACTIVE_JOURNEY,
         },
@@ -118,14 +118,14 @@ const ListOfMenus = () =>
         {
           icon: geoZoneSvg("#666"),
           activeIcon: geoZoneSvg(pinkDarkColor),
-          text: "Distance Report",
+          text: "Distance Reports",
           link: `${"/distance-reports"}`,
           pageName: strings.LOCATION,
         },
         {
           icon: geoZoneSvg("#666"),
           activeIcon: geoZoneSvg(pinkDarkColor),
-          text: "Alert Report",
+          text: "Alert Reports",
           link: `${"/alert-reports"}`,
           pageName: strings.LOCATION,
         },

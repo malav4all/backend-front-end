@@ -5,6 +5,7 @@ export const journeyTableHeader = [
   { name: "End Date", field: "endDate" },
   { name: "Total Distance", field: "totalDistance" },
   { name: "Total Duration", field: "totalDuration" },
+  { name: "Location", field: "journeyData" },
   { name: "Action", field: "action" },
 ];
 

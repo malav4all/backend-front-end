@@ -29,8 +29,7 @@ import { logOutAction, selectName } from "../../../redux/authSlice";
 import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import LogoutIcon from "../../../assets/icons/Logout.png";
-import { onLogout } from "../../LandingPage/landingPageService";
-
+import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
 interface CustomProps {
   setMenuMobileVisible?: Function;
   isActive?: boolean;
@@ -252,19 +251,13 @@ const AppDrawer = (props: CustomProps) => {
     );
   };
 
-  const getMailzzyLogo = () => {
+  const getAppLogo = () => {
     return (
       <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
-          <img
-            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
-            height="13px"
-          />
+          <img src={ROUTEYE_LOGO} height="13px" />
         ) : (
-          <img
-            src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
-            height="50px"
-          />
+          <img src={ROUTEYE_LOGO} height="40px" />
         )}
       </Box>
     );
@@ -353,7 +346,7 @@ const AppDrawer = (props: CustomProps) => {
           <Box sx={classes.drawerWidth}>
             <Box>
               {!isDesktop && getCloseButton()}
-              {getMailzzyLogo()}
+              {getAppLogo()}
               {isDesktop && (
                 <Box
                   onClick={() => {

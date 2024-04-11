@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Box,
+  Chip,
   Grid,
   MenuItem,
   Select,
@@ -113,13 +114,39 @@ const Dashboard = () => {
       };
     });
     setAlertTableData(alertTableDataValue);
-    const deviceStatus = res2.getStatusDevice.map(
-      (item: any, index: number) => {
+    const deviceStatus = res2.getStatusDevice
+      .filter((val: any) => val.status === "offline")
+      .map((item: any, index: number) => {
         return {
           id: index,
           imei: item.imei,
           label: item.label,
-          status: item.status,
+          status: (
+            <Chip
+              label={item.status}
+              sx={{
+                backgroundColor: "red",
+                color: "white",
+                border: "1px solid white",
+                animation: "pulse 2s infinite",
+                "@keyframes pulse": {
+                  "0%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
+                  "50%": {
+                    transform: "scale(1.05)",
+                    opacity: 0.75,
+                  },
+                  "100%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
+                },
+              }}
+              variant="filled"
+            />
+          ),
           time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
           action: (
             <span style={{ color: "#845ADF" }}>
@@ -136,8 +163,7 @@ const Dashboard = () => {
             </span>
           ),
         };
-      }
-    );
+      });
     setStatData(deviceStatus);
   };
 
@@ -349,7 +375,7 @@ const Dashboard = () => {
                   color: "ivory",
                 }}
               >
-                <Typography>Tamper</Typography>
+                <Typography>Tamper/Misc</Typography>
                 <Typography sx={classes.statsValue}>
                   {
                     alertTableData.filter((item: any) => item.event === "other")
@@ -552,7 +578,7 @@ const Dashboard = () => {
             headers={[
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
-              { name: "Last Ping", field: "time" },
+              { name: "Alert Time", field: "time" },
               { name: "Event", field: "event" },
               { name: "Mode", field: "mode" },
               { name: "Source", field: "source" },
@@ -675,9 +701,9 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
           <Grid container spacing={2}>
-            <Grid item xs={12} md={12} lg={12} xl={12}>
+            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}

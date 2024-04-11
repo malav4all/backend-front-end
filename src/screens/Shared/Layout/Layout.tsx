@@ -32,7 +32,7 @@ import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
-import { openInfoNotification } from "../../../helpers/methods";
+import { openErrorNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
@@ -71,7 +71,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (data?.alertUpdated?.message) {
-      openInfoNotification(data?.alertUpdated?.message);
+      openErrorNotification(data?.alertUpdated?.message);
     }
   }, [data]);
 

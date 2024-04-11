@@ -24,7 +24,10 @@ import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
-import { fetchDashboardDetail } from "./service/Dashboard.service";
+import {
+  fetchDashboardDetail,
+  fetchDeviceList,
+} from "./service/Dashboard.service";
 import dummyData, {
   deviceDashboardTableHeader,
 } from "./DeviceDashboard.helper";
@@ -87,41 +90,77 @@ const DeviceDashboard = () => {
       redirection: {},
     },
   };
+
+  const updateStatus = (devices: any, assignments: any) => {
+    const currentTime = new Date();
+    const deviceMap: any = {};
+
+    devices.forEach((device: any) => {
+      if (
+        !(device.imei in deviceMap) ||
+        new Date(device.time) > new Date(deviceMap[device.imei].time)
+      ) {
+        deviceMap[device.imei] = device;
+      }
+    });
+
+    assignments.forEach((assignment: any) => {
+      const imei = assignment.imei;
+      const device = deviceMap[imei];
+
+      if (device) {
+        const thirtyMinutesAgo = new Date(currentTime.getTime() - 30 * 60000);
+        const deviceTime = new Date(device.time);
+
+        const isOnline = deviceTime > thirtyMinutesAgo;
+        assignment.status = isOnline ? "online" : "offline";
+        assignment.lat = deviceMap[imei]?.lat;
+        assignment.lng = deviceMap[imei]?.lng;
+        assignment.time = deviceMap[imei]?.time;
+      } else {
+        assignment.status = "offline";
+        assignment.lat = deviceMap[imei]?.lat;
+        assignment.lng = deviceMap[imei]?.lng;
+        assignment.time = deviceMap[imei]?.time;
+      }
+    });
+
+    return assignments;
+  };
   const alertData = async () => {
-    const [res2] = await Promise.all([
+    const [res2, res1] = await Promise.all([
       statusDevice({
         input: {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
         },
       }),
+      fetchDeviceList(),
     ]);
-
-    const deviceStatus = res2.getStatusDevice.map(
-      (item: any, index: number) => {
-        return {
-          id: index,
-          imei: item.imei,
-          label: item.label,
-          status: item.status,
-          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-          action: (
-            <span style={{ color: "#845ADF" }}>
-              <FcInfo
-                onClick={() => {
-                  history.push({
-                    pathname: "/view-offline",
-                    state: {
-                      data: item,
-                    },
-                  });
-                }}
-              />
-            </span>
-          ),
-        };
-      }
-    );
+    const finalData = updateStatus(res2.getStatusDevice, res1.getAllDeviceList);
+    const deviceStatus = finalData.map((item: any, index: number) => {
+      return {
+        id: index,
+        imei: item.imei,
+        label: item.labelName,
+        status: item.status,
+        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        action: (
+          <span style={{ color: "#845ADF" }}>
+            <FcInfo
+              onClick={() => {
+                history.push({
+                  pathname: "/view-offline",
+                  state: {
+                    data: item,
+                  },
+                });
+              }}
+            />
+          </span>
+        ),
+      };
+    });
     setStatDataTable(deviceStatus);
   };
 
@@ -231,59 +270,7 @@ const DeviceDashboard = () => {
             justifyContent: "flex-end",
             flexWrap: "wrap",
           }}
-        >
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Duration
-            </Typography>
-            <Box sx={{ display: "flex", gap: "1rem" }}>
-              <Select
-                id="campaigns_interval_dropdown"
-                sx={classes.dropDownStyle}
-                value={selectedRange}
-                onChange={handleChange}
-                displayEmpty
-                inputProps={{ "aria-label": "Without label" }}
-                renderValue={() => selectedRange}
-              >
-                <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                  Past 1m
-                </MenuItem>
-                <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                  Past 5m
-                </MenuItem>
-                <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                  Past 15m
-                </MenuItem>
-                <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                  Past 30m
-                </MenuItem>
-                <MenuItem value="Past 1h" sx={classes.optionStyle}>
-                  Past 1h
-                </MenuItem>
-                <MenuItem value="Past 3h" sx={classes.optionStyle}>
-                  Past 3h
-                </MenuItem>
-                <MenuItem value="Past 12h" sx={classes.optionStyle}>
-                  Past 12h
-                </MenuItem>
-                <MenuItem value="Past 2d" sx={classes.optionStyle}>
-                  Past 2d
-                </MenuItem>
-                <MenuItem value="Past 30d" sx={classes.optionStyle}>
-                  Past 30d
-                </MenuItem>
-              </Select>
-            </Box>
-          </Box>
-        </Grid>
+        ></Grid>
       </Grid>
     );
   };
