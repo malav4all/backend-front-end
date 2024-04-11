@@ -72,7 +72,6 @@ export const validateAddAssetAssingmentForm = (
     isValid = false;
   }
   if (errors.imei?.value && !/^\d{1,20}$/.test(errors.imei.value)) {
-    console.log("cal;;e");
     errors.imei.error =
       "IMEI must contain only digits and have a maximum length of 20";
     isValid = false;

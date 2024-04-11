@@ -57,8 +57,6 @@ const Settings = () => {
         ) : (
           <UnauthorizedPage pageName={strings.USERS} />
         );
-      case strings.ASSETASSIGNMENT:
-        return <AssetAssingment />;
       case strings.LOCATIONTYPE:
         return <LocationType />;
       default:
