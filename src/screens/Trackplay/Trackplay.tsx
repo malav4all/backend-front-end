@@ -378,13 +378,24 @@ const Trackplay = () => {
         >
           <CustomButton
             customClasses={{
-              width: "1rem",
               marginBottom: "8px",
               backgroundColor: stop ? "#ffffff" : "#f0ad4e",
               color: stop ? "#333" : "white",
             }}
             onClick={toggleMovement}
-            icon={stop ? <PlayCircleFilledIcon /> : <StopCircleIcon />}
+            icon={
+              stop ? (
+                <Box
+                  sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
+                >
+                  <Typography>Stop</Typography>
+                </Box>
+              ) : (
+                <Box sx={{ display: "flex", gap: "1rem" }}>
+                  <Typography>Start</Typography>
+                </Box>
+              )
+            }
           />
         </Box>
 
