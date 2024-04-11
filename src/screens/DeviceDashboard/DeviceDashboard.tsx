@@ -43,7 +43,7 @@ const DeviceDashboard = () => {
   const userName = useAppSelector(selectName);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [deviceDashboardData, setDeviceDashboardData] = useState([{}]);
-  const [statDataTable, setStatDataTable] = useState<any>();
+  const [statDataTable, setStatDataTable] = useState<any>([]);
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [statusPage, setStatusPage] = useState(1);
   const startDeviceIndex = (statusPage - 1) * 10;
@@ -67,8 +67,9 @@ const DeviceDashboard = () => {
   const stats = {
     executed: {
       title: "Online Devices",
-      value: statDataTable?.filter((item: any) => item?.status === "online")
-        ?.length,
+      value: statDataTable?.filter(
+        (item: any) => item?.deviceStatus === "online"
+      )?.length,
       //   icon: campaigns,
       resource: strings.campaign,
       redirection: {
@@ -77,8 +78,9 @@ const DeviceDashboard = () => {
     },
     outbounds: {
       title: "Offline Devices",
-      value: statDataTable?.filter((item: any) => item?.status === "offline")
-        ?.length,
+      value: statDataTable?.filter(
+        (item: any) => item?.deviceStatus === "offline"
+      )?.length,
       //   icon: campaigns,
       resource: strings.campaign,
       redirection: {},
@@ -144,6 +146,7 @@ const DeviceDashboard = () => {
         id: index,
         imei: item.imei,
         label: item.labelName,
+        deviceStatus: item?.status,
         status: (
           <Chip
             label={item?.status}
