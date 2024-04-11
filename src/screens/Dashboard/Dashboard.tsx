@@ -664,7 +664,12 @@ const Dashboard = () => {
               }}
               onClick={() => {
                 if (stat.title === strings.ACTIVE_JOURNEY) {
-                  history.push("/journey");
+                  history.push({
+                    pathname:'/journey',
+                    state:{
+                      isFromDashboard:true,
+                    }
+                  });
                 }
                 if (stat.title === "Offline Devices") {
                   history.push("/device-dashboard");

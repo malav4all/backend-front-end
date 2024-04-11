@@ -254,6 +254,7 @@ export class StringConstants {
   DISTANCE_REPORTS = "DISTANCE REPORTS";
   JOURNEY_REPORTS = "DISTANCE REPORTS";
   VIEW_OFFLINE = "VIEW OFFLINE";
+  ARCHIVED_JOURNEY = "ARCHIVED JOURNEY"
 }
 
 let strings = new StringConstants();

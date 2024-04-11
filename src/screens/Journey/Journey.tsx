@@ -31,6 +31,7 @@ import {
   primaryHeadingColor,
   boldFont,
   disabledBackgroundColor,
+  chipBackgroundColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
@@ -53,6 +54,8 @@ import history from "../../utils/history";
 import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
+import { RiCloseCircleFill } from "react-icons/ri";
+import { IoMdAddCircle } from "react-icons/io";
 
 const Journey = () => {
   const classes = journeyStyles;
@@ -281,73 +284,74 @@ const Journey = () => {
         journeyName: item?.journeyName,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
-        journeyData: (
-          <Tooltip
-            title={
-              <CustomPaper
-                className={{ backgroundColor: disabledBackgroundColor }}
-              >
-                <Typography sx={classes.liveTrackingTooltipText}>
-                  {"View Journey"}
-                </Typography>
-              </CustomPaper>
-            }
-            placement="top"
-            arrow
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  background: "none",
-                },
-              },
-            }}
-          >
-            <VisibilityIcon
-              key={item._id}
-              onClick={() => {
-                history.push({
-                  pathname: "/view-journey",
-                  state: {
-                    coordinates: coordinates,
-                    routeOrigin,
-                  },
-                });
-              }}
-            />
-          </Tooltip>
-        ),
         createdBy: item?.createdBy,
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
         action: (
-          <Tooltip
-            title={
-              <CustomPaper
-                className={{ backgroundColor: disabledBackgroundColor }}
-              >
-                <Typography sx={classes.liveTrackingTooltipText}>
-                  {"Live Tracking"}
-                </Typography>
-              </CustomPaper>
-            }
-            placement="top"
-            arrow
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  background: "none",
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Tooltip
+              title={
+                <CustomPaper
+                  className={{ backgroundColor: disabledBackgroundColor }}
+                >
+                  <Typography sx={classes.liveTrackingTooltipText}>
+                    {"Live Tracking"}
+                  </Typography>
+                </CustomPaper>
+              }
+              placement="top"
+              arrow
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    background: "none",
+                  },
                 },
-              },
-            }}
-          >
-            <VisibilityIcon
-              onClick={() => {
-                history.push({
-                  pathname: "/live-tracking",
-                });
               }}
-            />
-          </Tooltip>
+            >
+              <VisibilityIcon
+                onClick={() => {
+                  history.push({
+                    pathname: "/live-tracking",
+                  });
+                }}
+              />
+            </Tooltip>
+
+            <Tooltip
+              title={
+                <CustomPaper
+                  className={{ backgroundColor: disabledBackgroundColor }}
+                >
+                  <Typography sx={classes.liveTrackingTooltipText}>
+                    {"View Journey"}
+                  </Typography>
+                </CustomPaper>
+              }
+              placement="top"
+              arrow
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    background: "none",
+                  },
+                },
+              }}
+            >
+              <VisibilityIcon
+                key={item._id}
+                onClick={() => {
+                  history.push({
+                    pathname: "/view-journey",
+                    state: {
+                      coordinates: coordinates,
+                      routeOrigin,
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          </Box>
         ),
       };
     });
@@ -363,9 +367,7 @@ const Journey = () => {
           limit: 10,
         },
       });
-
       const data = tableRender(res.fetchJourney.data);
-
       setJourneyTableData(data);
       setCount(res.fetchJourney.paginatorInfo.count);
       setIsLoading(false);
@@ -389,10 +391,16 @@ const Journey = () => {
     }
   };
 
+  const getfilter = () => {
+    return <Box>
+      
+    </Box>;
+  };
+
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Journey</Typography>
+        <Typography sx={classes.mainCardHeading}>Active Journey</Typography>
       </Box>
     );
   };
@@ -523,6 +531,7 @@ const Journey = () => {
               error={formField?.journeyName?.error}
             />
           </Grid>
+
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Box>
               <InputLabel sx={classes.inputLabel} shrink>
@@ -569,6 +578,7 @@ const Journey = () => {
               />
             </Box>
           </Grid>
+
           {locationData?.map((item: any, index: number) => (
             <>
               <Grid item xs={12} sm={3} md={2.5} lg={2.5} xl={2.5} key={index}>
@@ -618,6 +628,7 @@ const Journey = () => {
                   </Box>
                 </Box>
               </Grid>
+
               <Grid
                 item
                 xs={0.5}
@@ -638,6 +649,7 @@ const Journey = () => {
               </Grid>
             </>
           ))}
+
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <Box>
               <InputLabel sx={classes.inputLabel} shrink>
@@ -683,6 +695,7 @@ const Journey = () => {
               />
             </Box>
           </Grid>
+
           {/* start data */}
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <CustomInput
@@ -702,6 +715,7 @@ const Journey = () => {
               }
             />
           </Grid>
+
           {/* end date */}
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <CustomInput
@@ -765,31 +779,57 @@ const Journey = () => {
         mt={2}
         mr={2}
       >
-        <CustomButton
-          id="users_add_button"
-          label={"Create Journey"}
-          onClick={() => {
-            setIsHideForm(!isHideForm);
-          }}
-          customClasses={{
-            width: "150px",
-          }}
-        />
+        {!isHideForm ? (
+          <CustomButton
+            id="users_add_button"
+            label={"Create Journey"}
+            onClick={() => {
+              setIsHideForm(!isHideForm);
+            }}
+            customClasses={{
+              width: "150px",
+            }}
+          />
+        ) : (
+          <Box
+            sx={{
+              padding: "1rem",
+              fontSize: "2rem",
+              cursor: "pointer",
+              borderRadius: "100%",
+            }}
+            onClick={() => {
+              setIsHideForm(!isHideForm);
+            }}
+          >
+            <RiCloseCircleFill />
+          </Box>
+        )}
       </Box>
       {isHideForm && (
-        <>
+        <Box
+          sx={{
+            width: "90%",
+            margin: "auto",
+            padding: "2rem",
+            backgroundColor: "white",
+            boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+            marginBottom: "2rem",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
               flexWrap: "wrap",
+              padding: "1rem 1rem",
             }}
             mt={2}
             mr={2}
           >
             <CustomButton
               id="users_add_button"
-              label={"Add Journey"}
+              label={"Add location"}
               onClick={addMoreLocation}
               customClasses={{
                 width: "150px",
@@ -813,7 +853,7 @@ const Journey = () => {
               }}
             />
           </Box>
-        </>
+        </Box>
       )}
 
       <Grid
