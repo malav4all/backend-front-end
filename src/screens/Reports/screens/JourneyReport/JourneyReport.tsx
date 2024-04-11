@@ -41,7 +41,6 @@ const JourneyReport = (props: CustomProps) => {
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
-
   useEffect(() => {
     fetchJourneyHandler();
   }, [dateFilter]);
@@ -169,11 +168,10 @@ const JourneyReport = (props: CustomProps) => {
       totalTime += timeee;
       return {
         imei: item.imei,
-        distance: distance,
-        duration: timeee,
+        distance: formatDistance(distance),
+        duration: formatDuration(timeee),
       };
     });
-    console.log(totalDistance, totalTime);
 
     return data;
   };
@@ -365,14 +363,14 @@ const JourneyReport = (props: CustomProps) => {
             <CustomTable
               headers={[
                 { name: "IMEI", field: "imei" },
-                { name: "Total Distance", field: "distance" },
-                { name: "Total Duration", field: "totalDuration" },
+                { name: "Total Distance (Approx)", field: "distance" },
+                { name: "Total Duration (Approx)", field: "duration" },
               ]}
               rows={journeyTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}
-              paginationCount={count}
+              paginationCount={journeyTableData?.length}
               // rowsPerPage={rowsPerPage}
               pageNumber={page}
               setPage={setPage}

@@ -339,11 +339,7 @@ const AlertReport = () => {
                 { name: "Message", field: "message" },
                 { name: "Time", field: "time" },
               ]}
-              rows={
-                filterData
-                  ? filterData
-                  : alertTableData.slice(startIndex, endIndex)
-              }
+              rows={alertTableData.slice(startIndex, endIndex)}
               paginationCount={alertTableData.length}
               rowsPerPage={10}
               pageNumber={page}
