@@ -56,7 +56,6 @@ const Trackplay = () => {
       body: JSON.stringify(payload),
     });
     const data = await res.json();
-    console.log("data", data);
     const route = data.routes[0];
     const reportData = route.sections[0].actions.map(
       (
@@ -78,7 +77,6 @@ const Trackplay = () => {
 
     setDataValue(reportData);
   };
-  // console.log(dataValue);
 
   function addPolylineToMap(data: any) {
     const mapLine = new window.H.geo.LineString();
@@ -108,7 +106,6 @@ const Trackplay = () => {
     addPolylineToMap(trackdata.getRowData);
     getReports(trackdata.getRowData);
     setRawData(trackdata.getRowData);
-    // console.log(rawData);
   };
 
   useEffect(() => {
@@ -169,7 +166,6 @@ const Trackplay = () => {
   };
 
   const downloadReport = () => {
-    // console.log("this is inside datavalue", rawData);
 
     return (
       <>

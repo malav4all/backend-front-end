@@ -1,32 +1,25 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { fetchJourney } from "../../../Journey/service/journey.service";
 import {
   Box,
   Grid,
   InputAdornment,
   MenuItem,
   Select,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import DistanceReport from "../DistanceReport/DistanceReport";
+import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 import { CustomInput, CustomTable } from "../../../../global/components";
-import moment from "moment";
+import strings from "../../../../global/constants/StringConstants";
 import {
   debounceEventHandler,
   openErrorNotification,
 } from "../../../../helpers/methods";
-import strings from "../../../../global/constants/StringConstants";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
+import SearchIcon from "@mui/icons-material/Search";
+import { ChangeEvent, useEffect, useState } from "react";
+import moment from "moment";
 import journeyReportStyles from "./JourneyReport.styles";
-import { getDistanceReport } from "./service/distance.service";
-import { getDistance } from "geolib";
-import { time } from "console";
-interface CustomProps {
-  isFromDistanceReport: boolean;
-}
-
-const JourneyReport = (props: CustomProps) => {
+import { archiveJourney } from "./service/JourneyReport.service";
+const JourneyReport = () => {
   const classes = journeyReportStyles;
   const [isLoading, setIsLoading] = useState<any>(false);
   const [count, setCount] = useState<number>(0);
@@ -43,20 +36,13 @@ const JourneyReport = (props: CustomProps) => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   useEffect(() => {
     fetchJourneyHandler();
-  }, [dateFilter]);
+  }, []);
 
   const fetchJourneyHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await getDistanceReport({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      });
-
-      const data = tableRender(res.fetchDistanceReport);
-
+      const res = await archiveJourney();
+      const data = tableRender(res.archiveJourney.data);
       setJourneyTableData(data);
       setIsLoading(false);
     } catch (error: any) {
@@ -150,26 +136,29 @@ const JourneyReport = (props: CustomProps) => {
     let totalTime = 0; // in seconds
 
     const data = tableData?.map((item: any, index: number) => {
-      let distance = 0;
-      let timeee = 0;
-      for (let i = 0; i < item.coordinates.length - 1; i++) {
-        const startCoord = item.coordinates[i];
-        const endCoord = item.coordinates[i + 1];
-        const startMoment = moment(startCoord.time);
-        const endMoment = moment(endCoord.time);
-        const duration = moment.duration(endMoment.diff(startMoment));
-        timeee += duration.asSeconds();
-        distance += getDistance(
-          { latitude: startCoord.latitude, longitude: startCoord.longitude },
-          { latitude: endCoord.latitude, longitude: endCoord.longitude }
-        );
-      }
-      totalDistance += distance;
-      totalTime += timeee;
+      // let distance = 0;
+      // let timeee = 0;
+      // for (let i = 0; i < item.coordinates.length - 1; i++) {
+      //   const startCoord = item.coordinates[i];
+      //   const endCoord = item.coordinates[i + 1];
+      //   const startMoment = moment(startCoord.time);
+      //   const endMoment = moment(endCoord.time);
+      //   const duration = moment.duration(endMoment.diff(startMoment));
+      //   timeee += duration.asSeconds();
+      //   // distance += getDistance(
+      //   //   { latitude: startCoord.latitude, longitude: startCoord.longitude },
+      //   //   { latitude: endCoord.latitude, longitude: endCoord.longitude }
+      //   // );
+      // }
+      // totalDistance += distance;
+      // totalTime += timeee;
       return {
-        imei: item.imei,
-        distance: formatDistance(distance),
-        duration: formatDuration(timeee),
+        journeyName: item.journeyName,
+        createdBy: item.createdBy,
+        distance: formatDistance(item.totalDistance),
+        duration: formatDuration(item.totalDuration),
+        endDate: moment(item.endDate).format("DD-MM-YYYY HH:mm:ss A"),
+        startDate: moment(item.startDate).format("DD-MM-YYYY HH:mm:ss A"),
       };
     });
 
@@ -235,7 +224,7 @@ const JourneyReport = (props: CustomProps) => {
           </Typography> */}
         </Grid>
 
-        <Grid
+        {/* <Grid
           item
           xs={12}
           md={7}
@@ -295,7 +284,7 @@ const JourneyReport = (props: CustomProps) => {
               </MenuItem>
             </Select>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   };
@@ -337,11 +326,7 @@ const JourneyReport = (props: CustomProps) => {
             sx={{ display: "flex", margin: "1rem 0rem" }}
           >
             <Typography variant="h5" sx={classes.heading}>
-              {`${
-                props.isFromDistanceReport
-                  ? "Distance Report"
-                  : "Journey Report"
-              }`}
+              Journey Report
             </Typography>
           </Grid>
 
@@ -362,9 +347,12 @@ const JourneyReport = (props: CustomProps) => {
           <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
             <CustomTable
               headers={[
-                { name: "IMEI", field: "imei" },
-                { name: "Total Distance (Approx)", field: "distance" },
-                { name: "Total Duration (Approx)", field: "duration" },
+                { name: "Journey Name", field: "journeyName" },
+                { name: "Start Date", field: "startDate" },
+                { name: "End Date", field: "startDate" },
+                { name: "Total Distance ", field: "distance" },
+                { name: "Total Duration ", field: "duration" },
+                { name: "Created By", field: "createdBy" },
               ]}
               rows={journeyTableData}
               size={[5]}
