@@ -75,6 +75,17 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
+      icon: geoZoneSvg("#666"),
+      activeIcon: geoZoneSvg(pinkDarkColor),
+      text: "Asset Assignment",
+      link: `${"/asset-assignment"}`,
+      pageName: strings.ASSET_ASSIGNMENT,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
+    {
       icon: journeyIcon("#666"),
       activeIcon: journeyIcon(pinkDarkColor),
       text: "Journey",

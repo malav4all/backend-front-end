@@ -275,25 +275,46 @@ const AssetAssingment = () => {
     );
   };
 
+  const getHeader = () => {
+    return (
+      <Box>
+        <Typography sx={classes.mainCardHeading}>Asset Assignment</Typography>
+      </Box>
+    );
+  };
   const getAssetAssingment = () => (
     <Box>
+      <CustomAppHeader
+        className={{
+          backgroundColor: "#f1edff",
+          padding: "10px 20px 15px 18px",
+        }}
+      >
+        <Stack
+          px={4}
+          pt={4}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
+          <Typography
+            sx={{
+              fontSize: getRelativeFontSize(6),
+              ...boldFont,
+              color: primaryHeadingColor,
+            }}
+          >
+            {getHeader()}
+          </Typography>
+        </Stack>
+      </CustomAppHeader>
       <Stack
         px={4}
         pt={2}
         direction={{ lg: "row", xs: "column" }}
-        justifyContent="space-between"
-        alignItems={{ lg: "center" }}
+        justifyContent="flex-end"
+        alignItems={{ lg: "" }}
       >
-        <Typography
-          sx={{
-            fontSize: getRelativeFontSize(6),
-            ...boldFont,
-            color: primaryHeadingColor,
-          }}
-        >
-          Asset Assignment
-        </Typography>
-
         <Stack
           direction={{ sm: "row", xs: "column" }}
           alignItems={{ sm: "center" }}
@@ -321,7 +342,6 @@ const AssetAssingment = () => {
           />
         </Stack>
       </Stack>
-
       <Box
         sx={{
           minWidth: "300px",

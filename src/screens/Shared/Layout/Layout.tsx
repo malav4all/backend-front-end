@@ -38,6 +38,7 @@ import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
 import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourney";
 import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourney";
+import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -92,7 +93,13 @@ const Layout = () => {
             component={Dashboard}
             componentName={strings.DASHBOARD}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/asset-assignment"}
+            component={AssetAssingment}
+            componentName={strings.ASSET_ASSIGNMENT}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

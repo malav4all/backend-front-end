@@ -6,10 +6,6 @@ export const tabConfig = () => [
     count: 0,
   },
   {
-    label: strings.ASSETASSIGNMENT,
-    count: 0,
-  },
-  {
     label: strings.LOCATIONTYPE,
     count: 0,
   },
