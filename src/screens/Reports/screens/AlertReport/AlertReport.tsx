@@ -36,7 +36,6 @@ const AlertReport = () => {
   const [statData, setStatData] = useState<any>([]);
   const startDeviceIndex = (statusPage - 1) * 10;
   const endDeviceIndex = startDeviceIndex + 10;
-  const serachInputValue = useRef<any>("");
   useEffect(() => {
     if (dateFilter) {
       alertData();
@@ -118,7 +117,7 @@ const AlertReport = () => {
     setPage(newPage);
   };
 
-  const getDashboardHeader = () => {
+  const getReportHeader = () => {
     return (
       <Grid
         container
@@ -214,7 +213,6 @@ const AlertReport = () => {
       <CustomInput
         placeHolder="Search Reports..."
         id="report_search_field"
-        // inputRef={serachInputValue}
         onChange={debounceEventHandler(
           handleSearchOnChange,
           strings.SEARCH_TIME_OUT
@@ -274,7 +272,7 @@ const AlertReport = () => {
       openErrorNotification(error.message);
     }
   };
-  const getDashboardBody = () => {
+  const getReportBody = () => {
     return (
       <Grid
         container
@@ -342,7 +340,7 @@ const AlertReport = () => {
                 { name: "Time", field: "time" },
               ]}
               rows={
-                serachInputValue.current.value
+                filterData
                   ? filterData
                   : alertTableData.slice(startIndex, endIndex)
               }
@@ -361,8 +359,8 @@ const AlertReport = () => {
 
   return (
     <Box>
-      {getDashboardHeader()}
-      {getDashboardBody()}
+      {getReportHeader()}
+      {getReportBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
