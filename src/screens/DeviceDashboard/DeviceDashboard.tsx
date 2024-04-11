@@ -1,6 +1,7 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
+  Chip,
   Grid,
   InputAdornment,
   MenuItem,
@@ -143,7 +144,35 @@ const DeviceDashboard = () => {
         id: index,
         imei: item.imei,
         label: item.labelName,
-        status: item.status,
+        status: (
+          <Chip
+            label={item.status}
+            sx={{
+              backgroundColor: item.status === "Online" ? "green" : "red",
+              color: item.status === "Online" ? "white" : "white",
+              border:
+                item.status === "Active"
+                  ? "1px solid #37b071"
+                  : "1px solid white",
+              animation: "pulse 2s infinite",
+              "@keyframes pulse": {
+                "0%": {
+                  transform: "scale(1)",
+                  opacity: 1,
+                },
+                "50%": {
+                  transform: "scale(1.05)",
+                  opacity: 0.75,
+                },
+                "100%": {
+                  transform: "scale(1)",
+                  opacity: 1,
+                },
+              },
+            }}
+            variant="filled"
+          />
+        ),
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
         action: (
           <span style={{ color: "#845ADF" }}>
