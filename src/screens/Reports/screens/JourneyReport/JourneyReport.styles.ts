@@ -3,6 +3,10 @@ import {
   theme,
   primaryHeadingColor,
   getRelativeFontSize,
+  regularFont,
+  purpleThemedSelectComponent,
+  pureWhiteColor,
+  pinkThemedMenuItems,
 } from "../../../../utils/styles";
 
 const journeyReportStyles = {
@@ -21,6 +25,20 @@ const journeyReportStyles = {
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
     },
+  },
+  dropDownStyle: {
+    ...regularFont,
+    ...purpleThemedSelectComponent,
+    backgroundColor: pureWhiteColor,
+    height: "47px",
+    padding: "2px",
+    width: " 180px",
+    borderRadius: "12px",
+    fontSize: "14px",
+  },
+  optionStyle: {
+    ...regularFont,
+    ...pinkThemedMenuItems,
   },
 };
 
