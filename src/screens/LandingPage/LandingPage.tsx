@@ -15,7 +15,7 @@ import ResetPassword from "./components/ResetPassword";
 import ActivateUser from "./components/ActivateUser";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef } from "react";
-
+import ROUTEYE_LOGO from "../../assets/images/ROUTEYE_LOGO.png";
 interface CustomProps {
   location?: Location;
 }
@@ -86,11 +86,7 @@ const LandingPage = (props: CustomProps) => {
                 marginBottom: "2rem",
               }}
             >
-              <Box
-                component="img"
-                src={"https://i.ibb.co/d4SVSTp/Microsoft-Teams-image.png"}
-                height={"50px"}
-              />
+              <Box component="img" src={ROUTEYE_LOGO} height={"50px"} />
             </Box>
 
             <Box>{getComponentBasedOnURL()}</Box>
