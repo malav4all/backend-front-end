@@ -230,9 +230,9 @@ const JourneyReport = (props: CustomProps) => {
         width="100%"
       >
         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          <Typography variant="h5" sx={classes.heading}>
+          {/* <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
-          </Typography>
+          </Typography> */}
         </Grid>
 
         <Grid
