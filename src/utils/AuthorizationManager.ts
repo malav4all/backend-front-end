@@ -93,7 +93,7 @@ const ListOfMenus = () =>
         },
         {
           text: "Archived",
-          link: `${"/trackplay"}`,
+          link: `${"/archived-journey"}`,
           pageName: strings.ACTIVE_JOURNEY,
         },
         {

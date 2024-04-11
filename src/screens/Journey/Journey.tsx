@@ -288,7 +288,7 @@ const Journey = () => {
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
         action: (
-          <Box sx={{display: "flex", gap: "1rem"}}>
+          <Box sx={{ display: "flex", gap: "1rem" }}>
             <Tooltip
               title={
                 <CustomPaper
@@ -391,10 +391,16 @@ const Journey = () => {
     }
   };
 
+  const getfilter = () => {
+    return <Box>
+      
+    </Box>;
+  };
+
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Journey</Typography>
+        <Typography sx={classes.mainCardHeading}>Active Journey</Typography>
       </Box>
     );
   };

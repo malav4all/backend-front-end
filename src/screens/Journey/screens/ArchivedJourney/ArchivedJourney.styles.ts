@@ -8,7 +8,7 @@ import {
   purpleThemedSelectComponent,
   pureWhiteColor,
 } from "../../../../utils/styles";
-const upcomingJourneyStyles = {
+const archivedJourneyStyles = {
   header: {
     display: "flex",
     alignItems: "center",
@@ -16,6 +16,14 @@ const upcomingJourneyStyles = {
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",
+  },
+  heading: {
+    ...boldFont,
+    color: primaryHeadingColor,
+    fontSize: getRelativeFontSize(7),
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(1),
+    },
   },
   mainCardHeading: {
     ...boldFont,
@@ -26,14 +34,6 @@ const upcomingJourneyStyles = {
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),
       marginBottom: theme.spacing(1),
-    },
-  },
-  heading: {
-    ...boldFont,
-    color: primaryHeadingColor,
-    fontSize: getRelativeFontSize(7),
-    [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(1),
     },
   },
   dropDownStyle: {
@@ -50,6 +50,12 @@ const upcomingJourneyStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
+  liveTrackingTooltipText: {
+    padding: "10px",
+    color: "white",
+    fontSize: "14px",
+    ...regularFont,
+  },
 } as const;
 
-export default upcomingJourneyStyles;
+export default archivedJourneyStyles;

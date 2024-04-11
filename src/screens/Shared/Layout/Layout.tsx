@@ -37,6 +37,7 @@ import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
 import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourney";
+import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourney";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -179,6 +180,7 @@ const Layout = () => {
             component={Trackplay}
             componentName={strings.ACTIVE_JOURNEY}
           />
+
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -192,6 +194,14 @@ const Layout = () => {
             path={"/view-offline"}
             component={ViewOfflineDevice}
             componentName={strings.VIEW_OFFLINE}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/archived-journey"}
+            component={ArchivedJoruney}
+            componentName={strings.ARCHIVED_JOURNEY}
           />
 
           <PrivateRoute

@@ -14,6 +14,7 @@ import {
   CustomAppHeader,
   CustomButton,
   CustomInput,
+  CustomPaper,
   CustomTable,
 } from "../../../../global/components";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
@@ -23,15 +24,23 @@ import {
 } from "../../../../helpers/methods";
 import strings from "../../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
-import upcomingJourneyStyles from "./UpcomingJourney.styles";
+// import history from "../../utils/history";
 import {
   alertRowData,
   statusDevice,
 } from "../../../Reports/service/Report.service";
-import { upComingJourney } from "./service/UpcomingJourney.service";
-import { boldFont, primaryHeadingColor } from "../../../../utils/styles";
-const UpcomingJourney = () => {
-  const classes = upcomingJourneyStyles;
+import archivedJourneyStyles from "./ArchivedJourney.styles";
+import { FaRoute } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+import {
+  boldFont,
+  disabledBackgroundColor,
+  primaryHeadingColor,
+} from "../../../../utils/styles";
+import { archiveJourney } from "./service/ArchivedJourney.service";
+import history from "../../../../utils/history";
+const ArchivedJoruney = () => {
+  const classes = archivedJourneyStyles;
   const [alertTableData, setAlertTableData] = useState([]);
   const [page, setPage] = useState(1);
   const [dateFilter, setDateFilter] = useState({
@@ -39,7 +48,6 @@ const UpcomingJourney = () => {
     endDate: moment().toISOString(),
   });
   const [filterData, setFilterData] = useState<any[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const startIndex = (page - 1) * 10;
@@ -49,7 +57,8 @@ const UpcomingJourney = () => {
   const startDeviceIndex = (statusPage - 1) * 10;
   const endDeviceIndex = startDeviceIndex + 10;
   const serachInputValue = useRef<any>("");
-  const [upcommingTableData, setUpcommingTableData] = useState([]);
+  const [archivedTableData, setArchivedTableData] = useState([]);
+
   useEffect(() => {
     if (dateFilter) {
       alertData();
@@ -63,81 +72,9 @@ const UpcomingJourney = () => {
     }
   }, [dateFilter.startDate, dateFilter.endDate]);
 
-  const handleChange = (event: any) => {
-    setSelectedRange(event.target.value);
-    const now = moment();
-    let startDate, endDate;
-    switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 1h":
-        startDate = now.clone().subtract(1, "hour").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 3h":
-        startDate = now.clone().subtract(3, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 6h":
-        startDate = now.clone().subtract(6, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 12h":
-        startDate = now.clone().subtract(12, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 24h":
-        startDate = now.clone().subtract(24, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 2d":
-        startDate = now.clone().subtract(2, "days").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30d":
-        startDate = now.clone().subtract(30, "days").toISOString();
-        endDate = now.toISOString();
-        break;
-      default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-    }
-
-    setDateFilter({
-      startDate: startDate,
-      endDate: endDate,
-    });
-  };
-
   useEffect(() => {
-    upcomingJourneyHandler();
+    fetchArchivedJourneys();
   }, []);
-
-  const upcomingJourneyHandler = async () => {
-    try {
-      const response = await upComingJourney();
-      const res = tableRender(response.upComingJourney.data);
-      setUpcommingTableData(res);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
-  };
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -146,71 +83,35 @@ const UpcomingJourney = () => {
     setPage(newPage);
   };
 
-  const formatDuration = (durationInHours: number) => {
-    if (durationInHours < 1) {
-      const minutes = Math.round(durationInHours * 60);
-      return `${minutes} Minutes`;
-    } else {
-      return `${durationInHours.toFixed(2)} Hours`;
-    }
-  };
-
-  const formatDistance = (distanceInKm: number) => {
-    const distance = Number(distanceInKm);
-    if (distance < 1) {
-      const meters = Math.round(distance * 1000);
-      return `${meters} m`;
-    } else {
-      return `${distance.toFixed(2)} Km`;
-    }
-  };
-
-  const tableRender = (tableData: any) => {
-    const data = tableData?.map((item: any, index: number) => {
-      return {
-        key: item._id,
-        journeyName: item?.journeyName,
-        startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
-        endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
-        createdBy: item?.createdBy,
-        totalDistance: formatDistance(item?.totalDistance),
-        totalDuration: formatDuration(item?.totalDuration),
-      };
-    });
-    return data;
-  };
-
-  // const getDashboardHeader = () => {
-  //   return (
-  //     <Grid
-  //       container
-  //       sx={classes.header}
-  //       xs={12}
-  //       md={12}
-  //       lg={12}
-  //       xl={12}
-  //       width="100%"
-  //     >
-  //       <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-  //         <Typography variant="h5" sx={classes.heading}>
-  //           {/* {getSearchBar()} */}
-  //         </Typography>
-  //       </Grid>
-
+  //   const getDashboardHeader = () => {
+  //     return (
   //       <Grid
-  //         item
+  //         container
+  //         sx={classes.header}
   //         xs={12}
-  //         md={7}
-  //         lg={4}
-  //         sx={{
-  //           display: "flex",
-  //           justifyContent: "flex-end",
-  //           flexWrap: "wrap",
-  //         }}
-  //       ></Grid>
-  //     </Grid>
-  //   );
-  // };
+  //         md={12}
+  //         lg={12}
+  //         xl={12}
+  //         width="100%"
+  //       >
+  //         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
+  //           <Typography variant="h5" sx={classes.heading}></Typography>
+  //         </Grid>
+
+  //         <Grid
+  //           item
+  //           xs={12}
+  //           md={7}
+  //           lg={4}
+  //           sx={{
+  //             display: "flex",
+  //             justifyContent: "flex-end",
+  //             flexWrap: "wrap",
+  //           }}
+  //         ></Grid>
+  //       </Grid>
+  //     );
+  //   };
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     const value = SearchEvent.target.value.toLocaleLowerCase();
@@ -231,10 +132,21 @@ const UpcomingJourney = () => {
     }
   };
 
+  const fetchArchivedJourneys = async () => {
+    try {
+      const response = await archiveJourney();
+      const res = tableRender(response.archiveJourney.data);
+      setArchivedTableData(res);
+    } catch (error: any) {
+      setIsLoading(false);
+      openErrorNotification(error.message);
+    }
+  };
+
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Upcoming Journey..."
+        placeHolder="Search Archived Journey."
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(
@@ -251,13 +163,20 @@ const UpcomingJourney = () => {
       />
     );
   };
-
-  const getHeader = () => {
-    return (
-      <Box>
-        <Typography sx={classes.mainCardHeading}>Upcoming Journey</Typography>
+  const dummyRow = {
+    journeyName: "journey5",
+    createdBy: "Tanishk",
+    startDate: "2024-04-01",
+    endDate: "2024-04-10",
+    totalDistance: "150 km",
+    totalDuration: "5 days",
+    action: (
+      <Box sx={{ fontSize: "1.5rem" }}>
+        <NavLink to={"/trackplay"}>
+          <FaRoute />
+        </NavLink>
       </Box>
-    );
+    ),
   };
 
   const alertData = async () => {
@@ -304,6 +223,7 @@ const UpcomingJourney = () => {
       openErrorNotification(error.message);
     }
   };
+
   const getDashboardBody = () => {
     return (
       <Grid
@@ -322,6 +242,83 @@ const UpcomingJourney = () => {
       </Grid>
     );
   };
+
+  const getHeader = () => {
+    return (
+      <Box>
+        <Typography sx={classes.mainCardHeading}>Active Journey</Typography>
+      </Box>
+    );
+  };
+
+  const formatDuration = (durationInHours: number) => {
+    if (durationInHours < 1) {
+      const minutes = Math.round(durationInHours * 60);
+      return `${minutes} Minutes`;
+    } else {
+      return `${durationInHours.toFixed(2)} Hours`;
+    }
+  };
+
+  const formatDistance = (distanceInKm: number) => {
+    const distance = Number(distanceInKm);
+    if (distance < 1) {
+      const meters = Math.round(distance * 1000);
+      return `${meters} m`;
+    } else {
+      return `${distance.toFixed(2)} Km`;
+    }
+  };
+
+  const tableRender = (tableData: any) => {
+    const data = tableData?.map((item: any, index: number) => {
+      return {
+        key: item._id,
+        journeyName: item?.journeyName,
+        startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
+        endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
+        createdBy: item?.createdBy,
+        totalDistance: formatDistance(item?.totalDistance),
+        totalDuration: formatDuration(item?.totalDuration),
+        action: (
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Tooltip
+              title={
+                <CustomPaper
+                  className={{ backgroundColor: disabledBackgroundColor }}
+                >
+                  <Typography sx={classes.liveTrackingTooltipText}>
+                    {"Live Tracking"}
+                  </Typography>
+                </CustomPaper>
+              }
+              placement="top"
+              arrow
+              componentsProps={{
+                tooltip: {
+                  sx: {
+                    background: "none",
+                  },
+                },
+              }}
+            >
+              <FaRoute
+                onClick={() => {
+                  history.push({
+                    pathname: "/trackplay",
+                  });
+                }}
+              />
+            </Tooltip>
+          </Box>
+        ),
+      };
+    });
+    return data;
+  };
+
+  console.log(archivedTableData);
+
   const getAlertsTable = () => {
     return (
       <Box
@@ -342,8 +339,8 @@ const UpcomingJourney = () => {
             sx={{ display: "flex", margin: "1rem 0rem" }}
           >
             {/* <Typography variant="h5" sx={classes.heading}>
-              Alerts Report
-            </Typography> */}
+                Alerts Report
+              </Typography> */}
           </Grid>
 
           <Grid
@@ -369,9 +366,10 @@ const UpcomingJourney = () => {
                 { name: "End Date", field: "endDate" },
                 { name: "Total Distance", field: "totalDistance" },
                 { name: "Total Duration", field: "totalDuration" },
+                { name: "Action", field: "action" },
               ]}
-              rows={upcommingTableData}
-              paginationCount={upcommingTableData.length}
+              rows={archivedTableData}
+              paginationCount={1}
               rowsPerPage={10}
               pageNumber={page}
               isRowPerPageEnable={true}
@@ -419,6 +417,7 @@ const UpcomingJourney = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
+
       {/* {getDashboardHeader()} */}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
@@ -426,4 +425,4 @@ const UpcomingJourney = () => {
   );
 };
 
-export default UpcomingJourney;
+export default ArchivedJoruney;
