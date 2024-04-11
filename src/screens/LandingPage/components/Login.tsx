@@ -169,10 +169,7 @@ const Login = () => {
   const getLoginScreen = () => {
     return (
       <Box sx={classes.getLoginScreen}>
-        <Typography sx={classes.getHeading} mb={4}>
-          Log In
-        </Typography>
-        <Box mx={4}>
+        <Box mx={2}>
           <Box>
             <CustomInput
               placeHolder="Enter Email Address"

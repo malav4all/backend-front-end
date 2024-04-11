@@ -56,7 +56,8 @@ const LandingPage = (props: CustomProps) => {
           sx={{
             alignItems: "center",
             height: "100vh",
-            backgroundColor: "#5F22E2",
+            backgroundImage:
+              "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
           }}
         >
           <Grid
@@ -67,7 +68,8 @@ const LandingPage = (props: CustomProps) => {
             lg={4}
             xl={3}
             style={{
-              background: "#ffffff",
+              backgroundImage:
+                "linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)",
               overflowY: "auto",
               padding: "2rem",
               width: "40px",
@@ -83,7 +85,7 @@ const LandingPage = (props: CustomProps) => {
                 width: "100%",
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: "2rem",
+                marginBottom: "1.5rem",
               }}
             >
               <Box component="img" src={ROUTEYE_LOGO} height={"50px"} />
