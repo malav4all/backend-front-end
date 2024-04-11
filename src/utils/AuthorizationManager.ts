@@ -2,6 +2,7 @@
 import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
+  assetSvg,
   geoZoneSvg,
   getHomeIcon,
   getSettingsIcon,
@@ -75,8 +76,8 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: geoZoneSvg("#666"),
-      activeIcon: geoZoneSvg(pinkDarkColor),
+      icon: assetSvg("#666"),
+      activeIcon: assetSvg(pinkDarkColor),
       text: "Asset Assignment",
       link: `${"/asset-assignment"}`,
       pageName: strings.ASSET_ASSIGNMENT,
