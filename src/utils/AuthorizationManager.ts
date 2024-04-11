@@ -92,7 +92,7 @@ const ListOfMenus = () =>
           pageName: strings.ACTIVE_JOURNEY,
         },
         {
-          text: "Archived",
+          text: "Archived Journey",
           link: `${"/archived-journey"}`,
           pageName: strings.ACTIVE_JOURNEY,
         },
