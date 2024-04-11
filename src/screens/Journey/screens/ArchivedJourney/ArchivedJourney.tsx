@@ -317,8 +317,6 @@ const ArchivedJoruney = () => {
     return data;
   };
 
-  console.log(archivedTableData);
-
   const getAlertsTable = () => {
     return (
       <Box

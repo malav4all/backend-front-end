@@ -257,9 +257,6 @@ const AddAssetAssingment = (props: CustomProps) => {
             <Stack direction="column">
               <InputLabel sx={classes.inputLabel} shrink>
                 Journey
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
               </InputLabel>
               <Select
                 sx={classes.dropDownStyle}
@@ -277,10 +274,6 @@ const AddAssetAssingment = (props: CustomProps) => {
                 }}
                 MenuProps={classes.menuProps}
                 displayEmpty
-                error={
-                  !isTruthy(assetAssingmentFormFields.journey?.value) &&
-                  assetAssingmentFormFields.journey?.error
-                }
               >
                 {journeyData.map((item: any, index: any) => (
                   <MenuItem
@@ -292,11 +285,6 @@ const AddAssetAssingment = (props: CustomProps) => {
                   </MenuItem>
                 ))}
               </Select>
-              {!isTruthy(assetAssingmentFormFields.status?.value) && (
-                <FormHelperText error sx={classes.errorStyle}>
-                  {assetAssingmentFormFields.status?.error}
-                </FormHelperText>
-              )}
             </Stack>
           </Box>
         </Grid>

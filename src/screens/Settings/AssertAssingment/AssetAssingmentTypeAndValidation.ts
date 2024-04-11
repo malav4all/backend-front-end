@@ -71,6 +71,12 @@ export const validateAddAssetAssingmentForm = (
     errors.imei.error = "Please enter IMEI Number";
     isValid = false;
   }
+  if (errors.imei?.value && !/^\d{1,20}$/.test(errors.imei.value)) {
+    console.log("cal;;e");
+    errors.imei.error =
+      "IMEI must contain only digits and have a maximum length of 20";
+    isValid = false;
+  }
 
   if (!errors.labelName?.value) {
     errors.labelName.error = "Please enter Label Name";
@@ -80,11 +86,6 @@ export const validateAddAssetAssingmentForm = (
   if (!errors.boxSet?.value) {
     errors.boxSet.error = "Please enter Box Set";
     isValid = false;
-  }
-
-  if (!errors.journey?.value) {
-    errors.journey.error = "Please select Journey";
-    isValid = true;
   }
 
   return { isValid, errors };
