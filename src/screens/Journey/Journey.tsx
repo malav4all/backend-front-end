@@ -391,12 +391,6 @@ const Journey = () => {
     }
   };
 
-  const getfilter = () => {
-    return <Box>
-      
-    </Box>;
-  };
-
   const getHeader = () => {
     return (
       <Box>
@@ -793,7 +787,7 @@ const Journey = () => {
         ) : (
           <Box
             sx={{
-              padding: "1rem",
+              padding: "0rem 2rem",
               fontSize: "2rem",
               cursor: "pointer",
               borderRadius: "100%",
