@@ -82,11 +82,6 @@ export const validateAddAssetAssingmentForm = (
     isValid = false;
   }
 
-  if (!errors.journey?.value) {
-    errors.journey.error = "Please select Journey";
-    isValid = true;
-  }
-
   return { isValid, errors };
 };
 
