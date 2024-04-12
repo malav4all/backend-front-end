@@ -41,6 +41,19 @@ export const DEVICE_STATUS = gql`
   }
 `;
 
+export const FETCH_DEVICE_STATUS = gql`
+  mutation {
+    getAllStatusDevice {
+      lat
+      lng
+      imei
+      label
+      status
+      time
+    }
+  }
+`;
+
 export const ALERTS_SUBSCRIPTION = gql`
   subscription ($topic: String!) {
     alertUpdated(topic: $topic) {

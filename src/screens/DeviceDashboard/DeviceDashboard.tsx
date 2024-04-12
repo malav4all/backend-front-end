@@ -33,7 +33,10 @@ import dummyData, {
   deviceDashboardTableHeader,
 } from "./DeviceDashboard.helper";
 import { CustomInput, CustomTable } from "../../global/components";
-import { statusDevice } from "../Dashboard/service/Dashboard.service";
+import {
+  getAllDeviceStatus,
+  statusDevice,
+} from "../Dashboard/service/Dashboard.service";
 import moment from "moment";
 import { FcInfo } from "react-icons/fc";
 
@@ -132,15 +135,13 @@ const DeviceDashboard = () => {
   };
   const alertData = async () => {
     const [res2, res1] = await Promise.all([
-      statusDevice({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      }),
+      getAllDeviceStatus(),
       fetchDeviceList(),
     ]);
-    const finalData = updateStatus(res2.getStatusDevice, res1.getAllDeviceList);
+    const finalData = updateStatus(
+      res2.getAllStatusDevice,
+      res1.getAllDeviceList
+    );
     const deviceStatus = finalData.map((item: any, index: number) => {
       return {
         id: index,
@@ -179,16 +180,18 @@ const DeviceDashboard = () => {
         time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
         action: (
           <span style={{ color: "#845ADF" }}>
-            <FcInfo
-              onClick={() => {
-                history.push({
-                  pathname: "/view-offline",
-                  state: {
-                    data: item,
-                  },
-                });
-              }}
-            />
+            {item.lat && item.lng && (
+              <FcInfo
+                onClick={() => {
+                  history.push({
+                    pathname: "/view-offline",
+                    state: {
+                      data: item,
+                    },
+                  });
+                }}
+              />
+            )}
           </span>
         ),
       };
