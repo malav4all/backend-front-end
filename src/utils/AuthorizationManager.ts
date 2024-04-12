@@ -34,7 +34,7 @@ export type AccessToResource = {
 const ListOfMenus = () =>
   [
     {
-      icon: getHomeIcon("#666"),
+      icon: getHomeIcon("#dbdbdb"),
       activeIcon: getHomeIcon(pinkDarkColor),
       text: "Dashboard",
       link: "/dashboard",
@@ -43,7 +43,7 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [
         {
-          icon: getHomeIcon("#666"),
+          icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
           text: "Live Monitoring",
           link: "/dashboard",
@@ -53,7 +53,7 @@ const ListOfMenus = () =>
           subMenu: [],
         },
         {
-          icon: getHomeIcon("#666"),
+          icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
           text: "All Devices",
           link: "/device-dashboard",
@@ -65,7 +65,7 @@ const ListOfMenus = () =>
       ],
     },
     {
-      icon: geoZoneSvg("#666"),
+      icon: geoZoneSvg("#dbdbdb"),
       activeIcon: geoZoneSvg(pinkDarkColor),
       text: "Location",
       link: `${"/location"}`,
@@ -76,7 +76,7 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: assetSvg("#666"),
+      icon: assetSvg("#dbdbdb"),
       activeIcon: assetSvg(pinkDarkColor),
       text: "Asset Assignment",
       link: `${"/asset-assignment"}`,
@@ -87,7 +87,7 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: journeyIcon("#666"),
+      icon: journeyIcon("#dbdbdb"),
       activeIcon: journeyIcon(pinkDarkColor),
       text: "Journey",
       link: `${""}`,
@@ -97,7 +97,7 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [
         {
-          icon: geoZoneSvg("#666"),
+          icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Active Journey",
           link: `${"/journey"}`,
@@ -109,7 +109,7 @@ const ListOfMenus = () =>
           pageName: strings.ACTIVE_JOURNEY,
         },
         {
-          icon: geoZoneSvg("#666"),
+          icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Upcoming Journey",
           link: `${"/upcoming-journey"}`,
@@ -118,7 +118,7 @@ const ListOfMenus = () =>
       ],
     },
     {
-      icon: geoZoneSvg("#666"),
+      icon: geoZoneSvg("#dbdbdb"),
       activeIcon: geoZoneSvg(pinkDarkColor),
       text: "Reports",
       link: `${"/reports"}`,
@@ -128,21 +128,21 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [
         {
-          icon: geoZoneSvg("#666"),
+          icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Distance Reports",
           link: `${"/distance-reports"}`,
           pageName: strings.LOCATION,
         },
         {
-          icon: geoZoneSvg("#666"),
+          icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Alert Reports",
           link: `${"/alert-reports"}`,
           pageName: strings.LOCATION,
         },
         {
-          icon: geoZoneSvg("#666"),
+          icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
           text: "Journey Reports",
           link: `${"/journey-reports"}`,
@@ -151,7 +151,7 @@ const ListOfMenus = () =>
       ],
     },
     {
-      icon: getSettingsIcon("#666"),
+      icon: getSettingsIcon("#dbdbdb"),
       activeIcon: getSettingsIcon(pinkDarkColor),
       text: "Settings",
       link: `${"/settings"}`,
