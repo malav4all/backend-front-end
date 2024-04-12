@@ -258,7 +258,7 @@ const AssetAssingment = () => {
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
           rowsPerPage={perPageData}
-          isExportCSV={searchCampaigner ? false : true}
+          isExportCSV={false}
           onClickExportCSV={handleDownload}
         />
       </Box>

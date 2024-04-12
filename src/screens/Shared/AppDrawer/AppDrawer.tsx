@@ -9,6 +9,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import React from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -257,7 +258,7 @@ const AppDrawer = (props: CustomProps) => {
         {!isDrawerOpen && isDesktop ? (
           <img src={ROUTEYE_LOGO} height="13px" />
         ) : (
-          <img src={ROUTEYE_LOGO} height="40px" />
+          <img src={ROUTEYE_LOGO} height="27px" />
         )}
       </Box>
     );
@@ -322,12 +323,8 @@ const AppDrawer = (props: CustomProps) => {
             },
           }}
         >
-          <Box ml={1} onClick={handleLogout}>
-            <img
-              src={LogoutIcon}
-              alt="logout"
-              style={classes.logoutImageStyle}
-            />
+          <Box ml={1} onClick={handleLogout} sx={{ color: "white" }}>
+            <RiLogoutCircleRLine size={25} />
           </Box>
         </Tooltip>
       </Box>
