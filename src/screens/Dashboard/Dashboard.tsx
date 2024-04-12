@@ -339,6 +339,7 @@ const Dashboard = () => {
           backgroundColor: "white",
           borderRadius: "8px",
           boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+          widows: "100%",
         }}
       >
         <Typography
@@ -352,8 +353,8 @@ const Dashboard = () => {
           Alerts
         </Typography>
 
-        <Grid container spacing={2} sx={{}}>
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -396,7 +397,7 @@ const Dashboard = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -440,7 +441,7 @@ const Dashboard = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -485,7 +486,7 @@ const Dashboard = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={3} xl={3} lg={3}>
+          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -665,10 +666,10 @@ const Dashboard = () => {
               onClick={() => {
                 if (stat.title === strings.ACTIVE_JOURNEY) {
                   history.push({
-                    pathname:'/journey',
-                    state:{
-                      isFromDashboard:true,
-                    }
+                    pathname: "/journey",
+                    state: {
+                      isFromDashboard: true,
+                    },
                   });
                 }
                 if (stat.title === "Offline Devices") {
@@ -697,9 +698,10 @@ const Dashboard = () => {
         container
         spacing={2}
         sx={{ padding: "0 16px", marginTop: "-48px" }}
+        md={12}
         xs={12}
       >
-        <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
+        <Grid item xs={12} sm={12} xl={12} md={12} lg={12}>
           <Grid container spacing={2}>
             {/* <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
