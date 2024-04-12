@@ -161,7 +161,7 @@ const Journey = () => {
       routeRequestParams.origin
     }&destination=${routeRequestParams.destination}&${viaQueryString}&return=${
       routeRequestParams.return
-    }&apiKey=${"7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI"}`;
+    }&apiKey=${"B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo"}`;
     const res = await fetch(url);
     const data = await res.json();
     const route = data.routes[0];

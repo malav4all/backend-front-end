@@ -15,7 +15,7 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
     }
 
     const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
 
     const defaultLayers = platform.createDefaultLayers({

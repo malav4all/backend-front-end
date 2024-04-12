@@ -65,7 +65,7 @@ const Trackplay = () => {
 
     const payload = { trace: finalArr };
 
-    const url = `https://router.hereapi.com/v8/import?transportMode=car&return=polyline,turnByTurnActions,actions,instructions,travelSummary&apiKey=7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI`;
+    const url = `https://router.hereapi.com/v8/import?transportMode=car&return=polyline,turnByTurnActions,actions,instructions,travelSummary&apiKey=B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo`;
 
     const res = await fetch(url, {
       method: "POST",
@@ -127,7 +127,7 @@ const Trackplay = () => {
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     const defaultLayers = platform.createDefaultLayers();
 
