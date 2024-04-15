@@ -1,171 +1,157 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Chip,
-  Grid,
-  MenuItem,
-  Select,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
-import {
-  options,
-  Counts,
-  CampaignRecipientCounts,
-  RecentCampaignStats,
-  CampaignCounts,
-  Last3DaysCampaigns,
-} from "./DashboardData";
+import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-
 import { FcInfo } from "react-icons/fc";
 import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
-
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
-import { useDispatch } from "react-redux";
-import {
-  alertRowData,
-  fetchDashboardDetail,
-  statusDevice,
-} from "./service/Dashboard.service";
+import { alertRowData, statusDevice } from "./service/Dashboard.service";
 import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
-import { useSubscription } from "@apollo/client";
-import { ALERT_TABLE_DATA } from "./service/Dashboard.mutation";
-import { isTruthy } from "../../helpers/methods";
-
-const CAMPAIGN_COLORS = ["#FFCDEE", "#0069A9", "#C20C85", "#ACC837", "#FFCE31"];
+import { isTruthy, openErrorNotification } from "../../helpers/methods";
 
 const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const [page, setPage] = useState(1);
-  const [statusPage, setStatusPage] = useState(1);
-  const userName = useAppSelector(selectName);
+  const [limit, setLimit] = useState(10);
+  const [count, setCount] = useState(0);
+
+  const [offlinePage, setOfflinePage] = useState(1);
+  const [offlineLimit, setOfflineLimit] = useState(10);
+  const [offlineCount, setOfflineCount] = useState<number>(0);
   const [alertTableData, setAlertTableData] = useState([]);
   const [dateFilter, setDateFilter] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  const [offlineDateFilter, setOfflineDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
-  const startIndex = (page - 1) * 10;
-  const endIndex = startIndex + 10;
-
-  const startDeviceIndex = (statusPage - 1) * 10;
-  const endDeviceIndex = startDeviceIndex + 10;
 
   useEffect(() => {
-    if (dateFilter) {
-      alertData();
-      const intervalId = setInterval(() => {
-        alertData();
-      }, 5000);
+    const fetchData = async () => {
+      if (dateFilter) {
+        try {
+          const res = await alertRowData({
+            input: {
+              startDate: dateFilter.startDate,
+              endDate: dateFilter.endDate,
+              page,
+              limit,
+            },
+          });
+          const alertTableDataValue = res?.getAlertData?.data?.map(
+            (item: any) => ({
+              imei: item.imei,
+              label: item.label,
+              mode: item.mode,
+              event: item.event,
+              message: item.message,
+              source: item.source,
+              time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+              action: (
+                <span style={{ color: "#845ADF" }}>
+                  <FcInfo />
+                </span>
+              ),
+            })
+          );
+          setAlertTableData(alertTableDataValue);
+          setCount(res?.getAlertData?.paginatorInfo?.count);
+        } catch (error: any) {
+          openErrorNotification(error.message);
+        }
+      }
+    };
 
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [dateFilter.startDate, dateFilter.endDate]);
+    const intervalId = setInterval(fetchData, 500000);
+    fetchData();
 
-  const getUserName = () => {
-    const name = userName.split(" ");
-    if (name.length > 0) {
-      return name[0];
-    }
-    return userName;
-  };
+    return () => clearInterval(intervalId);
+  }, [dateFilter, page, limit]);
 
-  const alertData = async () => {
-    const [res1, res2] = await Promise.all([
-      alertRowData({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      }),
-      statusDevice({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-        },
-      }),
-    ]);
-    const alertTableDataValue = res1.getAlertData.map((item: any) => {
-      return {
-        imei: item.imei,
-        label: item.label,
-        mode: item.mode,
-        event: item.event,
-        message: item.message,
-        source: item.source,
-        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        action: (
-          <span style={{ color: "#845ADF" }}>
-            <FcInfo />
-          </span>
-        ),
-      };
-    });
-    setAlertTableData(alertTableDataValue);
-    const deviceStatus = res2.getStatusDevice
-      .filter((val: any) => val.status === "offline")
-      .map((item: any, index: number) => {
-        return {
-          id: index,
-          imei: item.imei,
-          label: item.label,
-          status: (
-            <Chip
-              label={item.status}
-              sx={{
-                backgroundColor: "red",
-                color: "white",
-                border: "1px solid white",
-                animation: "pulse 2s infinite",
-                "@keyframes pulse": {
-                  "0%": {
-                    transform: "scale(1)",
-                    opacity: 1,
-                  },
-                  "50%": {
-                    transform: "scale(1.05)",
-                    opacity: 0.75,
-                  },
-                  "100%": {
-                    transform: "scale(1)",
-                    opacity: 1,
-                  },
-                },
-              }}
-              variant="filled"
-            />
-          ),
-          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-          action: (
-            <span style={{ color: "#845ADF" }}>
-              <FcInfo
-                onClick={() => {
-                  history.push({
-                    pathname: "/view-offline",
-                    state: {
-                      data: item,
+  useEffect(() => {
+    const fetchData = async () => {
+      if (offlineDateFilter) {
+        try {
+          const res = await statusDevice({
+            input: {
+              startDate: offlineDateFilter.startDate,
+              endDate: offlineDateFilter.endDate,
+              page: offlinePage,
+              limit: offlineLimit,
+            },
+          });
+          setOfflineCount(res?.getStatusDevice?.paginatorInfo?.count);
+          const deviceStatus = res?.getStatusDevice?.data?.map(
+            (item: any, index: number) => ({
+              id: index,
+              imei: item.imei,
+              label: item.label,
+              status: (
+                <Chip
+                  label={item.status}
+                  sx={{
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "1px solid white",
+                    animation: "pulse 2s infinite",
+                    "@keyframes pulse": {
+                      "0%": {
+                        transform: "scale(1)",
+                        opacity: 1,
+                      },
+                      "50%": {
+                        transform: "scale(1.05)",
+                        opacity: 0.75,
+                      },
+                      "100%": {
+                        transform: "scale(1)",
+                        opacity: 1,
+                      },
                     },
-                  });
-                }}
-              />
-            </span>
-          ),
-        };
-      });
-    setStatData(deviceStatus);
-  };
+                  }}
+                  variant="filled"
+                />
+              ),
+              time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+              action: (
+                <span style={{ color: "#845ADF" }}>
+                  <FcInfo
+                    onClick={() => {
+                      history.push({
+                        pathname: "/view-offline",
+                        state: {
+                          data: item,
+                        },
+                      });
+                    }}
+                  />
+                </span>
+              ),
+            })
+          );
+          setStatData(deviceStatus);
+        } catch (error: any) {
+          openErrorNotification(error.message);
+        }
+      }
+    };
+
+    const intervalId = setInterval(fetchData, 500000);
+    fetchData();
+
+    return () => clearInterval(intervalId);
+  }, [offlineDateFilter, offlinePage, offlineLimit]);
 
   const getDashboardHeader = () => {
     return (
@@ -325,6 +311,11 @@ const Dashboard = () => {
     }
 
     setDateFilter({
+      startDate: startDate,
+      endDate: endDate,
+    });
+
+    setOfflineDateFilter({
       startDate: startDate,
       endDate: endDate,
     });
@@ -541,7 +532,16 @@ const Dashboard = () => {
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setStatusPage(newPage);
+    setOfflinePage(newPage);
+  };
+  const handlePerPageData = (event: any) => {
+    setPage(1);
+    setLimit(event.target.value);
+  };
+
+  const handlePerOfflinePageData = (event: any) => {
+    setOfflinePage(1);
+    setOfflineLimit(event.target.value);
   };
 
   const getAlertsTable = () => {
@@ -553,7 +553,7 @@ const Dashboard = () => {
           xs={12}
           sm={12}
           md={12}
-          xl={7}
+          xl={6}
           lg={12}
           sx={{
             padding: "1.5rem 1.5rem",
@@ -584,15 +584,16 @@ const Dashboard = () => {
               { name: "Mode", field: "mode" },
               { name: "Source", field: "source" },
               { name: "Message", field: "message" },
-              // { name: "Action", field: "action" },
             ]}
-            rows={alertTableData.slice(startIndex, endIndex)}
-            paginationCount={alertTableData.length}
-            rowsPerPage={10}
+            rows={alertTableData}
+            paginationCount={count}
+            rowsPerPage={limit}
             pageNumber={page}
-            isRowPerPageEnable={true}
+            perPageData={limit}
+            isRowPerPageEnable={false}
             setPage={setPage}
             handlePageChange={handleChangePage}
+            handlePerPageData={handlePerPageData}
           />
         </Grid>
 
@@ -603,7 +604,7 @@ const Dashboard = () => {
           sm={12}
           md={12}
           lg={12}
-          xl={5}
+          xl={6}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: "white",
@@ -632,62 +633,17 @@ const Dashboard = () => {
               { name: "Last ping", field: "time" },
               { name: "Action", field: "action" },
             ]}
-            rows={statData.slice(startDeviceIndex, endDeviceIndex)}
-            isRowPerPageEnable={true}
-            rowsPerPage={10}
-            paginationCount={statData.length}
-            pageNumber={statusPage}
-            setPage={setStatusPage}
+            rows={statData}
+            isRowPerPageEnable={false}
+            rowsPerPage={offlineLimit}
+            perPageData={offlineLimit}
+            paginationCount={offlineCount}
+            pageNumber={offlinePage}
+            setPage={setOfflinePage}
             handlePageChange={handleStatusChangePage}
+            handlePerPageData={handlePerOfflinePageData}
           />
         </Grid>
-      </Grid>
-    );
-  };
-
-  const getStatsCard = () => {
-    return (
-      <Grid container spacing={2}>
-        {Object.values(stats).map((stat: any) => (
-          <Grid item xs={12} sm={12} md={6} xl={6} lg={6} key={stat.title}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "white",
-                borderRadius: "8px",
-                boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-                cursor: isTruthy(stat.redirection) ? "pointer" : "pointer",
-              }}
-              onClick={() => {
-                if (stat.title === strings.ACTIVE_JOURNEY) {
-                  history.push({
-                    pathname: "/journey",
-                    state: {
-                      isFromDashboard: true,
-                    },
-                  });
-                }
-                if (stat.title === "Offline Devices") {
-                  history.push("/device-dashboard");
-                }
-              }}
-            >
-              <Box>
-                <Typography sx={classes.statsTitle}>{stat.title}</Typography>
-                <Typography sx={classes.statsValue}>10</Typography>
-              </Box>
-              {/* 
-              <Box>
-                <img src={stat.icon} width={60} height={60} />
-              </Box> */}
-            </Box>
-          </Grid>
-        ))}
       </Grid>
     );
   };
@@ -703,10 +659,6 @@ const Dashboard = () => {
       >
         <Grid item xs={12} sm={12} xl={12} md={12} lg={12}>
           <Grid container spacing={2}>
-            {/* <Grid item xs={12} md={12} lg={12} xl={12}>
-              {getStatsCard()}
-            </Grid> */}
-
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getAlerts()}
             </Grid>

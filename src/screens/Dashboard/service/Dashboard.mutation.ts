@@ -15,15 +15,20 @@ export const FETCH_DASHBOARD_DETAIL = gql`
 export const ALERT_TABLE_DATA = gql`
   mutation ($input: AlertInputType!) {
     getAlertData(input: $input) {
-      lat
-      lng
-      mode
-      source
-      event
-      imei
-      label
-      message
-      time
+      paginatorInfo {
+        count
+      }
+      data {
+        lat
+        lng
+        mode
+        source
+        event
+        imei
+        label
+        message
+        time
+      }
     }
   }
 `;
@@ -31,12 +36,17 @@ export const ALERT_TABLE_DATA = gql`
 export const DEVICE_STATUS = gql`
   mutation ($input: AlertInputType!) {
     getStatusDevice(input: $input) {
-      lat
-      lng
-      imei
-      label
-      status
-      time
+      paginatorInfo {
+        count
+      }
+      data {
+        lat
+        lng
+        imei
+        label
+        status
+        time
+      }
     }
   }
 `;
@@ -44,12 +54,14 @@ export const DEVICE_STATUS = gql`
 export const FETCH_DEVICE_STATUS = gql`
   mutation {
     getAllStatusDevice {
-      lat
-      lng
-      imei
-      label
-      status
-      time
+      data {
+        lat
+        lng
+        imei
+        label
+        status
+        time
+      }
     }
   }
 `;
