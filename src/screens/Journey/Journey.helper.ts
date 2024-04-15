@@ -1,10 +1,10 @@
 export const journeyTableHeader = [
   { name: "Journey Name", field: "journeyName" },
-  { name: "Created By", field: "createdBy" },
-  { name: "Start Date", field: "startDate" },
-  { name: "End Date", field: "endDate" },
   { name: "Total Distance", field: "totalDistance" },
   { name: "Total Duration", field: "totalDuration" },
+  { name: "Start Date", field: "startDate" },
+  { name: "End Date", field: "endDate" },
+  { name: "Created By", field: "createdBy" },
   { name: "Action", field: "action" },
 ];
 

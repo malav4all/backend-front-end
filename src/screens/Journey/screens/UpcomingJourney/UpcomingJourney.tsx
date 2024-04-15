@@ -39,7 +39,7 @@ const UpcomingJourney = () => {
     endDate: moment().toISOString(),
   });
   const [filterData, setFilterData] = useState<any[]>([]);
-
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const startIndex = (page - 1) * 10;
@@ -212,22 +212,25 @@ const UpcomingJourney = () => {
   //   );
   // };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    const value = SearchEvent.target.value.toLocaleLowerCase();
+  const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
+    const value = searchEvent?.target?.value.toLowerCase().trim();
     if (value) {
       setIsLoading(true);
-      const searchedReports = alertTableData?.filter(
+      const searchedReports = upcommingTableData?.filter(
         (data: any) =>
-          data?.imei?.toLowerCase()?.includes(value) ||
-          data?.label?.toLowerCase()?.includes(value) ||
-          data?.event?.toLowerCase()?.includes(value) ||
-          data?.message?.toLowerCase()?.includes(value) ||
-          data!?.mode!?.toLowerCase()?.includes(value) ||
-          data?.source?.toLowerCase()?.includes(value) ||
-          data!?.time!?.toLowerCase()?.includes(value)
+          data?.journeyName?.toLowerCase()?.includes(value) ||
+          data?.createdBy?.toLowerCase()?.includes(value) ||
+          data?.startDate?.toLowerCase()?.includes(value) ||
+          data?.endDate?.toLowerCase()?.includes(value) ||
+          data!?.totalDistance!?.toLowerCase()?.includes(value) ||
+          data?.totalDuration?.toLowerCase()?.includes(value)
       );
-      setFilterData([...searchedReports]);
+      setFilterData(searchedReports);
+      setIsSearching(true);
       setIsLoading(false);
+    } else {
+      setFilterData([...upcommingTableData]);
+      setIsSearching(false);
     }
   };
 
@@ -364,13 +367,13 @@ const UpcomingJourney = () => {
             <CustomTable
               headers={[
                 { name: "Journey Name", field: "journeyName" },
-                { name: "Created By", field: "createdBy" },
-                { name: "Start Date", field: "startDate" },
-                { name: "End Date", field: "endDate" },
                 { name: "Total Distance", field: "totalDistance" },
                 { name: "Total Duration", field: "totalDuration" },
+                { name: "Start Date", field: "startDate" },
+                { name: "End Date", field: "endDate" },
+                { name: "Created By", field: "createdBy" },
               ]}
-              rows={upcommingTableData}
+              rows={isSearching ? filterData : upcommingTableData}
               paginationCount={upcommingTableData.length}
               rowsPerPage={10}
               pageNumber={page}
