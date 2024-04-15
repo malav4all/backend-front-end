@@ -59,18 +59,6 @@ const ArchivedJoruney = () => {
   const endDeviceIndex = startDeviceIndex + 10;
   const serachInputValue = useRef<any>("");
   const [archivedTableData, setArchivedTableData] = useState([]);
-  useEffect(() => {
-    if (dateFilter) {
-      alertData();
-      const intervalId = setInterval(() => {
-        alertData();
-      }, 30000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [dateFilter.startDate, dateFilter.endDate]);
 
   useEffect(() => {
     fetchArchivedJourneys();
@@ -81,36 +69,6 @@ const ArchivedJoruney = () => {
   ) => {
     setPage(newPage);
   };
-
-  //   const getDashboardHeader = () => {
-  //     return (
-  //       <Grid
-  //         container
-  //         sx={classes.header}
-  //         xs={12}
-  //         md={12}
-  //         lg={12}
-  //         xl={12}
-  //         width="100%"
-  //       >
-  //         <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-  //           <Typography variant="h5" sx={classes.heading}></Typography>
-  //         </Grid>
-
-  //         <Grid
-  //           item
-  //           xs={12}
-  //           md={7}
-  //           lg={4}
-  //           sx={{
-  //             display: "flex",
-  //             justifyContent: "flex-end",
-  //             flexWrap: "wrap",
-  //           }}
-  //         ></Grid>
-  //       </Grid>
-  //     );
-  //   };
 
   const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
     const value = searchEvent?.target?.value.toLowerCase().trim();

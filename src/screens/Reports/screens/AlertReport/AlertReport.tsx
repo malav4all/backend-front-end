@@ -21,7 +21,6 @@ import SearchIcon from "@mui/icons-material/Search";
 const AlertReport = () => {
   const classes = alertReportStyles;
   const [alertTableData, setAlertTableData] = useState([]);
-  const [page, setPage] = useState(1);
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
@@ -30,24 +29,15 @@ const AlertReport = () => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedRange, setSelectedRange] = useState("Past 30m");
-  const startIndex = (page - 1) * 10;
-  const endIndex = startIndex + 10;
-  const [statusPage, setStatusPage] = useState(1);
-  const [statData, setStatData] = useState<any>([]);
-  const startDeviceIndex = (statusPage - 1) * 10;
-  const endDeviceIndex = startDeviceIndex + 10;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     if (dateFilter) {
       alertData();
-      const intervalId = setInterval(() => {
-        alertData();
-      }, 30000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
     }
-  }, [dateFilter.startDate, dateFilter.endDate]);
+  }, [dateFilter, page, limit]);
 
   const handleChange = (event: any) => {
     setSelectedRange(event.target.value);
@@ -156,55 +146,6 @@ const AlertReport = () => {
           <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
           </Typography>
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Duration
-            </Typography>
-            <Select
-              id="campaigns_interval_dropdown"
-              sx={classes.dropDownStyle}
-              value={selectedRange}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              renderValue={() => selectedRange}
-            >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
-              <MenuItem value="Past 1h" sx={classes.optionStyle}>
-                Past 1h
-              </MenuItem>
-              <MenuItem value="Past 3h" sx={classes.optionStyle}>
-                Past 3h
-              </MenuItem>
-              <MenuItem value="Past 12h" sx={classes.optionStyle}>
-                Past 12h
-              </MenuItem>
-              <MenuItem value="Past 2d" sx={classes.optionStyle}>
-                Past 2d
-              </MenuItem>
-              <MenuItem value="Past 30d" sx={classes.optionStyle}>
-                Past 30d
-              </MenuItem>
-            </Select>
-          </Box>
         </Grid>
       </Grid>
     );
@@ -256,21 +197,16 @@ const AlertReport = () => {
   const alertData = async () => {
     try {
       setIsLoading(true);
-      const [res1, res2] = await Promise.all([
-        alertRowData({
-          input: {
-            startDate: dateFilter.startDate,
-            endDate: dateFilter.endDate,
-          },
-        }),
-        statusDevice({
-          input: {
-            startDate: dateFilter.startDate,
-            endDate: dateFilter.endDate,
-          },
-        }),
-      ]);
-      const alertTableDataValue = res1.getAlertData.map((item: any) => {
+      const res = await alertRowData({
+        input: {
+          startDate: dateFilter.startDate,
+          endDate: dateFilter.endDate,
+          page,
+          limit,
+        },
+      });
+
+      const alertTableDataValue = res?.getAlertData?.data?.map((item: any) => {
         return {
           imei: item.imei,
           label: item.label,
@@ -282,15 +218,7 @@ const AlertReport = () => {
         };
       });
       setAlertTableData(alertTableDataValue);
-      const deviceStatus = res2.getStatusDevice.map((item: any) => {
-        return {
-          imei: item.imei,
-          label: item.label,
-          status: item.status,
-          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        };
-      });
-      setStatData(deviceStatus);
+      setCount(res?.getAlertData?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -315,6 +243,12 @@ const AlertReport = () => {
       </Grid>
     );
   };
+
+  const handlePerPageData = (event: any) => {
+    setPage(1);
+    setLimit(event.target.value);
+  };
+
   const getAlertsTable = () => {
     return (
       <Box
@@ -326,30 +260,52 @@ const AlertReport = () => {
           boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
-        <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
-          <Grid
-            item
-            xs={12}
-            md={12}
-            lg={12}
-            sx={{ display: "flex", margin: "1rem 0rem" }}
-          >
+        <Grid container xs={12} md={12} lg={12} xl={12}>
+          <Grid item xs={12} md={12} lg={12} xl={6}>
             <Typography variant="h5" sx={classes.heading}>
               Alerts Report
             </Typography>
           </Grid>
 
-          <Grid
-            item
-            xs={12}
-            md={12}
-            lg={12}
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              flexWrap: "wrap",
-            }}
-          ></Grid>
+          <Grid item xs={12} md={12} lg={12} xl={6}>
+            <Select
+              id="campaigns_interval_dropdown"
+              sx={classes.dropDownStyle}
+              value={selectedRange}
+              onChange={handleChange}
+              displayEmpty
+              inputProps={{ "aria-label": "Without label" }}
+              renderValue={() => selectedRange}
+            >
+              <MenuItem value="Past 1m" sx={classes.optionStyle}>
+                Past 1m
+              </MenuItem>
+              <MenuItem value="Past 5m" sx={classes.optionStyle}>
+                Past 5m
+              </MenuItem>
+              <MenuItem value="Past 15m" sx={classes.optionStyle}>
+                Past 15m
+              </MenuItem>
+              <MenuItem value="Past 30m" sx={classes.optionStyle}>
+                Past 30m
+              </MenuItem>
+              <MenuItem value="Past 1h" sx={classes.optionStyle}>
+                Past 1h
+              </MenuItem>
+              <MenuItem value="Past 3h" sx={classes.optionStyle}>
+                Past 3h
+              </MenuItem>
+              <MenuItem value="Past 12h" sx={classes.optionStyle}>
+                Past 12h
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 2d
+              </MenuItem>
+              <MenuItem value="Past 30d" sx={classes.optionStyle}>
+                Past 30d
+              </MenuItem>
+            </Select>
+          </Grid>
         </Grid>
 
         <Grid container>
@@ -364,17 +320,15 @@ const AlertReport = () => {
                 { name: "Message", field: "message" },
                 { name: "Time", field: "time" },
               ]}
-              rows={
-                isSearching
-                  ? filterData
-                  : alertTableData.slice(startIndex, endIndex)
-              }
-              paginationCount={alertTableData.length}
-              rowsPerPage={10}
+              rows={alertTableData}
+              paginationCount={count}
+              rowsPerPage={limit}
               pageNumber={page}
-              isRowPerPageEnable={true}
+              perPageData={limit}
+              isRowPerPageEnable={false}
               setPage={setPage}
               handlePageChange={handleChangePage}
+              handlePerPageData={handlePerPageData}
             />
           </Grid>
         </Grid>

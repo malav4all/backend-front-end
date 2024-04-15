@@ -41,88 +41,8 @@ const UpcomingJourney = () => {
   const [filterData, setFilterData] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedRange, setSelectedRange] = useState("Past 30m");
-  const startIndex = (page - 1) * 10;
-  const endIndex = startIndex + 10;
-  const [statusPage, setStatusPage] = useState(1);
   const [statData, setStatData] = useState<any>([]);
-  const startDeviceIndex = (statusPage - 1) * 10;
-  const endDeviceIndex = startDeviceIndex + 10;
-  const serachInputValue = useRef<any>("");
   const [upcommingTableData, setUpcommingTableData] = useState([]);
-  useEffect(() => {
-    if (dateFilter) {
-      alertData();
-      const intervalId = setInterval(() => {
-        alertData();
-      }, 30000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [dateFilter.startDate, dateFilter.endDate]);
-
-  const handleChange = (event: any) => {
-    setSelectedRange(event.target.value);
-    const now = moment();
-    let startDate, endDate;
-    switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 1h":
-        startDate = now.clone().subtract(1, "hour").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 3h":
-        startDate = now.clone().subtract(3, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 6h":
-        startDate = now.clone().subtract(6, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 12h":
-        startDate = now.clone().subtract(12, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 24h":
-        startDate = now.clone().subtract(24, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 2d":
-        startDate = now.clone().subtract(2, "days").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30d":
-        startDate = now.clone().subtract(30, "days").toISOString();
-        endDate = now.toISOString();
-        break;
-      default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-    }
-
-    setDateFilter({
-      startDate: startDate,
-      endDate: endDate,
-    });
-  };
 
   useEffect(() => {
     upcomingJourneyHandler();
