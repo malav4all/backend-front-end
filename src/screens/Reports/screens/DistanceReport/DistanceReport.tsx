@@ -43,6 +43,8 @@ const DistanceReport = (props: CustomProps) => {
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
+  const [filterData, setFilterData] = useState<any>([]);
+  const [isSearching, setIsSearching] = useState(false);
   useEffect(() => {
     fetchJourneyHandler();
   }, [dateFilter]);
@@ -66,8 +68,6 @@ const DistanceReport = (props: CustomProps) => {
       openErrorNotification(error.message);
     }
   };
-
-
 
   const handleChange = (event: any) => {
     setSelectedRange(event.target.value);
@@ -182,13 +182,22 @@ const DistanceReport = (props: CustomProps) => {
     setPage(newPage);
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchJourney(SearchEvent.target.value.trim());
-      setPage(1);
-      setRowsPerPage(10);
+  const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
+    const value = searchEvent?.target?.value.toLowerCase().trim();
+    if (value) {
+      setIsLoading(true);
+      const searchedReports = journeyTableData?.filter(
+        (data: any) =>
+          data?.imei?.toLowerCase()?.includes(value) ||
+          data!?.totalDistance!?.toLowerCase()?.includes(value) ||
+          data?.totalDuration?.toLowerCase()?.includes(value)
+      );
+      setFilterData(searchedReports);
+      setIsSearching(true);
+      setIsLoading(false);
     } else {
-      setSearchJourney("");
+      setFilterData([...journeyTableData]);
+      setIsSearching(false);
     }
   };
 
@@ -252,10 +261,16 @@ const DistanceReport = (props: CustomProps) => {
         xl={12}
         width="100%"
       >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          {/* <Typography variant="h5" sx={classes.heading}>
+        <Grid
+          item
+          xs={12}
+          md={5}
+          lg={8}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
-          </Typography> */}
+          </Typography>
         </Grid>
 
         <Grid
@@ -387,7 +402,7 @@ const DistanceReport = (props: CustomProps) => {
                 { name: "Total Distance (Approx)", field: "distance" },
                 { name: "Total Duration (Approx)", field: "duration" },
               ]}
-              rows={journeyTableData}
+              rows={isSearching ? filterData : journeyTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}

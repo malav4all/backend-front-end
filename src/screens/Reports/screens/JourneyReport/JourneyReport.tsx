@@ -34,6 +34,8 @@ const JourneyReport = () => {
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [filterData, setFilterData] = useState<any[]>([]);
   useEffect(() => {
     fetchJourneyHandler();
   }, []);
@@ -177,13 +179,25 @@ const JourneyReport = () => {
     setPage(newPage);
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchJourney(SearchEvent.target.value.trim());
-      setPage(1);
-      setRowsPerPage(10);
+  const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
+    const value = searchEvent?.target?.value.toLowerCase().trim();
+    if (value) {
+      setIsLoading(true);
+      const searchedReports = journeyTableData?.filter(
+        (data: any) =>
+          data?.journeyName?.toLowerCase()?.includes(value) ||
+          data?.createdBy?.toLowerCase()?.includes(value) ||
+          data?.startDate?.toLowerCase()?.includes(value) ||
+          data?.endDate?.toLowerCase()?.includes(value) ||
+          data!?.totalDistance!?.toLowerCase()?.includes(value) ||
+          data?.totalDuration?.toLowerCase()?.includes(value)
+      );
+      setFilterData(searchedReports);
+      setIsSearching(true);
+      setIsLoading(false);
     } else {
-      setSearchJourney("");
+      setFilterData([...journeyTableData]);
+      setIsSearching(false);
     }
   };
 
@@ -217,77 +231,24 @@ const JourneyReport = () => {
         lg={12}
         xl={12}
         width="100%"
+        justifyContent="flex-end"
+        paddingRight={3}
       >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          {/* <Typography variant="h5" sx={classes.heading}>
-            {getSearchBar()}
-          </Typography> */}
-        </Grid>
-
-        {/* <Grid
+        <Grid
           item
           xs={12}
-          md={7}
-          lg={4}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            flexWrap: "wrap",
-          }}
+          md={5}
+          lg={8}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
         >
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Duration
-            </Typography>
-            <Select
-              id="campaigns_interval_dropdown"
-              sx={classes.dropDownStyle}
-              value={selectedRange}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              renderValue={() => selectedRange}
-            >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
-              <MenuItem value="Past 1h" sx={classes.optionStyle}>
-                Past 1h
-              </MenuItem>
-              <MenuItem value="Past 3h" sx={classes.optionStyle}>
-                Past 3h
-              </MenuItem>
-              <MenuItem value="Past 12h" sx={classes.optionStyle}>
-                Past 12h
-              </MenuItem>
-              <MenuItem value="Past 2d" sx={classes.optionStyle}>
-                Past 2d
-              </MenuItem>
-              <MenuItem value="Past 30d" sx={classes.optionStyle}>
-                Past 30d
-              </MenuItem>
-            </Select>
-          </Box>
-        </Grid> */}
+          <Typography variant="h5" sx={classes.heading}>
+            {getSearchBar()}
+          </Typography>
+        </Grid>
       </Grid>
     );
   };
+
   const getDashboardBody = () => {
     return (
       <Grid
@@ -348,13 +309,13 @@ const JourneyReport = () => {
             <CustomTable
               headers={[
                 { name: "Journey Name", field: "journeyName" },
-                { name: "Start Date", field: "startDate" },
-                { name: "End Date", field: "startDate" },
                 { name: "Total Distance ", field: "distance" },
                 { name: "Total Duration ", field: "duration" },
+                { name: "Start Date", field: "startDate" },
+                { name: "End Date", field: "startDate" },
                 { name: "Created By", field: "createdBy" },
               ]}
-              rows={journeyTableData}
+              rows={isSearching ? filterData : journeyTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}

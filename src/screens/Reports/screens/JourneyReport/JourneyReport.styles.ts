@@ -17,6 +17,7 @@ const journeyReportStyles = {
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",
+    paddingRight: "30px",
   },
   heading: {
     ...boldFont,

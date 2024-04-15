@@ -27,7 +27,7 @@ const AlertReport = () => {
     endDate: moment().toISOString(),
   });
   const [filterData, setFilterData] = useState<any[]>([]);
-
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const startIndex = (page - 1) * 10;
@@ -128,10 +128,16 @@ const AlertReport = () => {
         xl={12}
         width="100%"
       >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          {/* <Typography variant="h5" sx={classes.heading}>
-            {getSearchBar()}
-          </Typography> */}
+        <Grid
+          item
+          xs={12}
+          md={5}
+          lg={8}
+          sx={{ display: "flex", justifyContent: "flex-end" }}
+        >
+          <Typography variant="h5" sx={classes.heading}>
+            {/* {getSearchBar()} */}
+          </Typography>
         </Grid>
 
         <Grid
@@ -143,9 +149,24 @@ const AlertReport = () => {
             display: "flex",
             justifyContent: "flex-end",
             flexWrap: "wrap",
+            gap: 2,
+            paddingRight: "17px",
           }}
         >
+          <Typography variant="h5" sx={classes.heading}>
+            {getSearchBar()}
+          </Typography>
           <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Typography
+              sx={{
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
+                fontWeight: "bold",
+              }}
+            >
+              Duration
+            </Typography>
             <Select
               id="campaigns_interval_dropdown"
               sx={classes.dropDownStyle}
@@ -203,8 +224,12 @@ const AlertReport = () => {
           data?.source?.toLowerCase()?.includes(value) ||
           data!?.time!?.toLowerCase()?.includes(value)
       );
-      setFilterData([...searchedReports]);
+      setFilterData(searchedReports);
+      setIsSearching(true);
       setIsLoading(false);
+    } else {
+      setFilterData([...alertTableData]);
+      setIsSearching(false);
     }
   };
 
@@ -339,7 +364,11 @@ const AlertReport = () => {
                 { name: "Message", field: "message" },
                 { name: "Time", field: "time" },
               ]}
-              rows={alertTableData.slice(startIndex, endIndex)}
+              rows={
+                isSearching
+                  ? filterData
+                  : alertTableData.slice(startIndex, endIndex)
+              }
               paginationCount={alertTableData.length}
               rowsPerPage={10}
               pageNumber={page}
