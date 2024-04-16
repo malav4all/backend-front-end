@@ -21,12 +21,19 @@ import {
   primaryHeadingColor,
   boldFont,
 } from "../../utils/styles";
-import { debounceEventHandler } from "../../helpers/methods";
+import {
+  debounceEventHandler,
+  isTruthy,
+  openErrorNotification,
+} from "../../helpers/methods";
 import strings from "../../global/constants/StringConstants";
 
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { UserData, alertConfigTableHeader } from "./AlertConfig.helpers";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import AddFilter from "./Component/AddFilter";
+import { fetchUserDataHandler } from "../Settings/Users/service/user.service";
+import notifiers from "../../global/constants/NotificationConstants";
 
 const AlertConfig = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,16 +41,19 @@ const AlertConfig = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState<Number>(10);
   const [pageNumber, setPageNumber] = useState<number>(1);
-
+  const [selectedAlertConfigRowData, setSelectedAlertConfigRowData] =
+    useState<any>({});
   const [searchCampaigner, setSearchCampaigner] = useState<string>("");
   const [count, setCount] = useState(1);
-
+  const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
   const [searchAlertConfig, setSearchAlertConfig] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [addFilterDialogHandler, setAddFilterDialogHandler] = useState(false);
+  const [roles, setRoles] = useState([]);
 
   const classes = alertConfigStyles;
+
   const getHeader = () => {
     return (
       <Box>
@@ -51,6 +61,7 @@ const AlertConfig = () => {
       </Box>
     );
   };
+
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchAlertConfig(SearchEvent.target.value.trim());
@@ -60,6 +71,7 @@ const AlertConfig = () => {
       setSearchAlertConfig("");
     }
   };
+
   const getSearchBar = () => {
     return (
       <CustomInput
@@ -79,17 +91,43 @@ const AlertConfig = () => {
       />
     );
   };
+
+  const getUsersDetailTable = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchUserDataHandler({
+        input: {
+          page: pageNumber,
+          limit: perPageData,
+        },
+      });
+      tableDataShowHandler(res?.userListAll?.data);
+      setCount(res?.userListAll?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+      );
+      setIsLoading(false);
+    }
+  };
+
   const addFilterButton = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label={"Filter"}
+        label={"Add Filter"}
         onClick={() => setAddFilterDialogHandler(true)}
         customClasses={{
           width: "150px",
         }}
       />
     );
+  };
+
+  const closeAddFilterDialogHandler = () => {
+    setAddFilterDialogHandler(false);
+    // setSelectedUserRowData(null);
   };
 
   const tableDataShowHandler = (usersData: any) => {
@@ -102,6 +140,20 @@ const AlertConfig = () => {
       };
     });
     setUserDataSource([...source]);
+  };
+
+  const addFilterDialogBox = () => {
+    return (
+      <AddFilter
+        openAddUserDialog={addFilterDialogHandler}
+        handleCloseAddUserDialog={closeAddFilterDialogHandler}
+        managerMail={activeCampaigner}
+        roles={roles}
+        tableData={getUsersDetailTable}
+        selectedUserRowData={selectedAlertConfigRowData}
+        isLoading={isLoading}
+      />
+    );
   };
 
   const handleSearchChangePage = (
@@ -191,7 +243,16 @@ const AlertConfig = () => {
         </Grid>
 
         <Grid item padding={2}>
-          <Box>{campaignerTable()}</Box>
+          <Box
+            sx={{
+              minWidth: "300px",
+              overflow: "auto",
+              padding: "30px",
+            }}
+          >
+            {campaignerTable()}
+            {addFilterDialogBox()}
+          </Box>
         </Grid>
       </Grid>
       <CustomLoader isLoading={isLoading} />

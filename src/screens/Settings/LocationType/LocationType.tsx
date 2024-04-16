@@ -188,7 +188,7 @@ const LocationType = () => {
         id="assetAssingment_display_table"
         sx={{
           minWidth: "300px",
-          width: "30%",
+          width: "100%",
           overflow: "auto",
         }}
       >

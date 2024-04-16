@@ -168,7 +168,6 @@ const usersStyles = {
   },
   rowColor: {
     ...mediumFont,
-    color: pinkDarkColor,
     padding: "0",
     wordBreak: "break-all",
     fontSize: "14px",

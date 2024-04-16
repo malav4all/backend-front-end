@@ -133,7 +133,7 @@ const Geozone = () => {
 
   const setUpClickListener = (evt: any) => {
     const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     var coord = mapCheck.screenToGeo(
       evt.currentPointer.viewportX,
@@ -236,7 +236,7 @@ const Geozone = () => {
   }
   useEffect(() => {
     const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     const defaultLayers = platform.createDefaultLayers();
 
@@ -244,14 +244,14 @@ const Geozone = () => {
       document.getElementById("map"),
       defaultLayers.vector.normal.map,
       {
-        center: { lat: 28.495831757053296, lng: 77.07923644083718 },
-        zoom: 5,
+        center: { lat: 28.7041, lng: 77.1025 },
+        zoom: 8,
         pixelRatio: window.devicePixelRatio || 1,
         key: mapKey,
       }
     );
 
-    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
+    window.addEventListener("resize", () => initialMap.getViewPort().resize());
 
     new window.H.mapevents.Behavior(
       new window.H.mapevents.MapEvents(initialMap)
@@ -558,7 +558,7 @@ const Geozone = () => {
   let bubbleNew: any;
   function openBubbleNew(position: any, text: any) {
     var platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     var defaultLayers = platform.createDefaultLayers();
     var ui = window.H.ui.UI.createDefault(mapCheck, defaultLayers);
@@ -750,7 +750,7 @@ const Geozone = () => {
 
   const handleSearchLocation = () => {
     const platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     const geocoder = platform.getSearchService();
     const geocodingParameters = {
@@ -773,7 +773,7 @@ const Geozone = () => {
   let bubble: any;
   function openBubble(position: any, text: any) {
     var platform = new window.H.service.Platform({
-      apikey: "7snf2Sz_ORd8AClElg9h43HXV8YPI1pbVHyz2QvPsZI",
+      apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
     var defaultLayers = platform.createDefaultLayers();
     var ui = window.H.ui.UI.createDefault(mapCheck, defaultLayers);

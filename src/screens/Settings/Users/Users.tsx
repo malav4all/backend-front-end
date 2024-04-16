@@ -370,6 +370,7 @@ const Users = () => {
           {getSearchBar()}
           {addUserButton()}
         </Stack>
+        
       </Stack>
 
       <Box
