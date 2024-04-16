@@ -50,7 +50,6 @@ const ArchivedJoruney = () => {
   const [filterData, setFilterData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [selectedRange, setSelectedRange] = useState("Past 30m");
   const startIndex = (page - 1) * 10;
   const endIndex = startIndex + 10;
   const [statusPage, setStatusPage] = useState(1);
