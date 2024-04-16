@@ -122,7 +122,7 @@ const DeviceDashboard = () => {
         assignment.status = isOnline ? "online" : "offline";
         assignment.lat = deviceMap[imei]?.lat;
         assignment.lng = deviceMap[imei]?.lng;
-        // assignment.time = deviceMap[imei]?.time;
+        assignment.time = deviceMap[imei]?.time;
       } else {
         assignment.status = "offline";
         assignment.lat = deviceMap[imei]?.lat;
