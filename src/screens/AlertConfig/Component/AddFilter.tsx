@@ -278,14 +278,15 @@ const AddFilter = (props: CustomProps) => {
               />
             </Grid>
           </Stack>
+
           <Stack>
             <Grid
               item
               xs={12}
-              sm={6}
-              md={6}
-              lg={6}
-              xl={6}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={12}
               sx={{ margin: "1rem 0rem", display: "flex", justifyContent: "" }}
             >
               <CustomInput
@@ -309,10 +310,10 @@ const AddFilter = (props: CustomProps) => {
               <Grid
                 item
                 xs={12}
-                sm={6}
-                md={6}
-                lg={6}
-                xl={6}
+                sm={12}
+                md={12}
+                lg={12}
+                xl={12}
               >
                 <CustomInput
                   label="End Date"
@@ -333,6 +334,7 @@ const AddFilter = (props: CustomProps) => {
               </Grid>
             </Grid>
           </Stack>
+
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
