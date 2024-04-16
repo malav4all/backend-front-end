@@ -768,6 +768,7 @@ const Journey = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
+
       <Box
         sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
         mt={2}
@@ -800,6 +801,7 @@ const Journey = () => {
           </Box>
         )}
       </Box>
+      
       {isHideForm && (
         <Box
           sx={{

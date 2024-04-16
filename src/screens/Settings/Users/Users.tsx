@@ -92,6 +92,7 @@ const Users = () => {
   ) => {
     setPageNumber(newPage);
   };
+  
   const handlePerPageData = (event: any) => {
     setPageNumber(1);
     setSearchPageNumber(1);

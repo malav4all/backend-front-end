@@ -52,7 +52,10 @@ const DeviceDashboard = () => {
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
-
+  const [searchData, setSearchData] = useState<any>([]);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filterResultes, setFilterResultes] = useState([]);
   const handleStatusChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -130,6 +133,7 @@ const DeviceDashboard = () => {
 
     return assignments;
   };
+
   const alertData = async () => {
     const [res2, res1] = await Promise.all([
       statusDevice({
@@ -140,7 +144,9 @@ const DeviceDashboard = () => {
       }),
       fetchDeviceList(),
     ]);
+
     const finalData = updateStatus(res2.getStatusDevice, res1.getAllDeviceList);
+
     const deviceStatus = finalData.map((item: any, index: number) => {
       return {
         id: index,
@@ -193,6 +199,7 @@ const DeviceDashboard = () => {
         ),
       };
     });
+
     setStatDataTable(deviceStatus);
   };
 
@@ -346,6 +353,8 @@ const DeviceDashboard = () => {
     );
   };
 
+  console.log(searchData);
+
   const getCustomTable = () => {
     return (
       <Box
@@ -356,25 +365,61 @@ const DeviceDashboard = () => {
           overflow: "auto",
         }}
       >
-        <CustomTable
-          headers={[
-            { name: "Name", field: "label" },
-            { name: "IMEI", field: "imei" },
-            { name: "Status", field: "status" },
-            { name: "Last ping", field: "time" },
-            { name: "Action", field: "action" },
-          ]}
-          rows={statDataTable?.slice(startDeviceIndex, endDeviceIndex)}
-          isRowPerPageEnable={true}
-          rowsPerPage={10}
-          paginationCount={statDataTable?.length}
-          pageNumber={statusPage}
-          setPage={setStatusPage}
-          handlePageChange={handleStatusChangePage}
-        />
+        {searchData.length !== 0 ? (
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Status", field: "status" },
+              { name: "Last ping", field: "time" },
+            ]}
+            rows={filterResultes?.slice(startDeviceIndex, endDeviceIndex)}
+            isRowPerPageEnable={true}
+            rowsPerPage={10}
+            paginationCount={searchData?.length}
+            pageNumber={statusPage}
+            setPage={setStatusPage}
+            handlePageChange={handleStatusChangePage}
+          />
+        ) : (
+          <CustomTable
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Status", field: "status" },
+              { name: "Last ping", field: "time" },
+              { name: "Action", field: "action" },
+            ]}
+            rows={statDataTable?.slice(startDeviceIndex, endDeviceIndex)}
+            isRowPerPageEnable={true}
+            rowsPerPage={10}
+            paginationCount={statDataTable?.length}
+            pageNumber={statusPage}
+            setPage={setStatusPage}
+            handlePageChange={handleStatusChangePage}
+          />
+        )}
       </Box>
     );
   };
+
+  // console.log(searchData, statDataTable);
+  // console.log("this is filterResultes", filterResultes);
+  useEffect(() => {
+    searchWithIMEI();
+  }, [searchData]);
+
+  console.log(statDataTable);
+
+  function searchWithIMEI() {
+    const searchArrey = statDataTable.filter((item: any) => {
+      if (searchData !== "") {
+        console.log(item.imei, searchData);
+        return item.imei == searchData || item.label == searchData;
+      }
+    });
+    setFilterResultes(searchArrey);
+  }
 
   const getSearchBar = () => {
     return (
@@ -398,11 +443,13 @@ const DeviceDashboard = () => {
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      // setSearchJourney(SearchEvent.target.value.replace(/\s/g, ""));
+      setSearchData(SearchEvent.target.value.trim().toLowerCase());
+      console.log(SearchEvent.target.value);
+      searchWithIMEI();
       // setPage(1);
       // setRowsPerPage(10);
     } else {
-      // setSearchJourney("");
+      setSearchData("");
     }
   };
 

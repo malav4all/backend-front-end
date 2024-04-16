@@ -161,6 +161,17 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
+    {
+      icon: getSettingsIcon("#dbdbdb"),
+      activeIcon: getSettingsIcon(pinkDarkColor),
+      text: "Alert Config",
+      link: `${"/alert-config"}`,
+      pageName: strings.ALERT_CONFIG,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {

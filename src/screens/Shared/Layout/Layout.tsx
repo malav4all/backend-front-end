@@ -39,6 +39,7 @@ import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
 import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourney";
 import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourney";
 import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
+import AlertConfig from "../../AlertConfig/AlertConfig";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -209,6 +210,14 @@ const Layout = () => {
             path={"/archived-journey"}
             component={ArchivedJoruney}
             componentName={strings.ARCHIVED_JOURNEY}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/alert-config"}
+            component={AlertConfig}
+            componentName={strings.ALERT_CONFIG}
           />
 
           <PrivateRoute

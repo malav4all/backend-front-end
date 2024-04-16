@@ -823,6 +823,8 @@ const Geozone = () => {
     mapCheck.setCenter(group.getBoundingBox().getCenter());
   };
 
+  console.log(geozoneData)
+  
   return (
     <>
       <Box
@@ -968,6 +970,7 @@ const Geozone = () => {
                     return true;
                   }
                 })
+
                 .map((item: any, index) => (
                   <ListItem key={item._id}>
                     <ListItemAvatar
@@ -1024,6 +1027,7 @@ const Geozone = () => {
                     </ListItemAvatar> */}
                   </ListItem>
                 ))}
+                
             </List>
           </Box>
         </PerfectScrollbar>
