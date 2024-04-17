@@ -177,7 +177,7 @@ const DeviceDashboard = () => {
             variant="filled"
           />
         ),
-        time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+        time: moment(item.time).fromNow(),
         action: (
           <span style={{ color: "#845ADF" }}>
             {item.lat && item.lng && (
