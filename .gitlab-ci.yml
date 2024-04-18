@@ -1,0 +1,55 @@
+stages:
+  - build_image
+  - push_image
+  - deploy_container
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
+
+build_image:
+  stage: build_image
+  tags:
+    - server-3-docker-runner
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/event-console/console .
+    - docker logout $CI_REGISTRY
+  only:
+    - development
+
+push_image:
+  stage: push_image
+  tags:
+    - server-3-docker-runner
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE/event-console/console
+    - docker logout $CI_REGISTRY
+  only:
+    - development
+
+deploy_container:
+  stage: deploy_container
+  tags:
+    - server-3-docker-runner
+  image: docker:stable
+  services:
+    - docker:dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker stop $DOCKER_CONTAINER_NAME || true
+    - docker rm $DOCKER_CONTAINER_NAME || true
+    - docker rmi $CI_REGISTRY_IMAGE/event-console/console || true
+    - docker pull $CI_REGISTRY_IMAGE/event-console/console
+    - docker run -itd --name $DOCKER_CONTAINER_NAME -p 9393:80 $CI_REGISTRY_IMAGE/event-console/console
+    - docker logout $CI_REGISTRY
+
+  only:
+    - development
