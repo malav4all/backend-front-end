@@ -204,6 +204,20 @@ const AddFilter = (props: CustomProps) => {
           />
         </Grid>
 
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <CustomInput
+            required
+            id="add_mobile_number_field"
+            placeHolder="Enter Mobile Number"
+            name="mobileNo"
+            label="Mobile Number"
+            onChange={handleFormDataChange}
+            value={userFormFields?.mobileNo?.value}
+            error={userFormFields?.mobileNo?.error}
+            propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
+          />
+        </Grid>
+
         <Grid
           item
           xs={12}
@@ -259,6 +273,35 @@ const AddFilter = (props: CustomProps) => {
           </Box>
         </Grid>
 
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
+          sx={{
+            backgroundColor: "#F1EDFF",
+            borderRadius: "5px",
+            padding: "1rem",
+            marginTop: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Box>this is area to display multiple events</Box>
+          <CustomButton
+            id="add_user_cancel_button"
+            label="Add"
+            onClick={() => {
+              props?.handleCloseAddUserDialog();
+              console.log(userFormFields);
+            }}
+            customClasses={classes.cancelButtonStyle}
+          />
+        </Grid>
+
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <CustomInput
@@ -289,28 +332,6 @@ const AddFilter = (props: CustomProps) => {
               }}
             />
           </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_mobile_number_field"
-            placeHolder="Enter Mobile Number"
-            name="mobileNo"
-            label="Mobile Number"
-            onChange={handleFormDataChange}
-            value={userFormFields?.mobileNo?.value}
-            error={userFormFields?.mobileNo?.error}
-            propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{ display: "flex", alignItems: "end" }}
-          ></Stack>
         </Grid>
       </Grid>
     );
