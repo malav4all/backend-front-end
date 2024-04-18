@@ -5,22 +5,13 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Stack,
   Typography,
   SelectChangeEvent,
-  InputAdornment,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import uploadUser from "../../../../../assets/images/uploadUser.svg";
-
 import _ from "lodash";
-import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
-import showPasswordIcon from "../../../assets/images/Show.svg";
 import {
   createUser,
   updateUser,
@@ -31,16 +22,13 @@ import {
   openErrorNotification,
   openSuccessNotification,
 } from "../../../helpers/methods";
-import {
-  insertUserField,
-  validateAddUserForm,
-} from "../../Settings/Users/UserTypeAndValidation";
 import usersStyles from "../../Settings/Users/Users.styles";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { CustomDialog, CustomInput } from "../../../global/components";
 import strings from "../../../global/constants/StringConstants";
 import CustomButton from "../../../global/components/NewCustomButton/CustomButton";
 import moment from "moment";
+import { insertUserField, validateAddUserForm } from "../AlertConfig.helpers";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -55,6 +43,31 @@ interface CustomProps {
 }
 
 const AddFilter = (props: CustomProps) => {
+  const handleFormDataChange = (
+    formFillEvent: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = formFillEvent.target;
+
+    if (name === "eventName") {
+      setUserFormFields((prevState: any) => ({
+        ...prevState,
+        alertData: [
+          {
+            eventName: { value, error: "" },
+          },
+        ],
+      }));
+    } else {
+      setUserFormFields((prevState: any) => ({
+        ...prevState,
+        [name]: {
+          value,
+          error: "",
+        },
+      }));
+    }
+  };
+
   const classes = usersStyles;
   const [userFormFields, setUserFormFields] = useState<any>(
     insertUserField(props?.selectedUserRowData)
@@ -87,16 +100,7 @@ const AddFilter = (props: CustomProps) => {
     return isValid;
   };
 
-  const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
-    setUserFormFields({
-      ...userFormFields,
-      [formFillEvent?.target?.name]: {
-        ...userFormFields[formFillEvent?.target?.name],
-        value: formFillEvent?.target?.value,
-        error: "",
-      },
-    });
-  };
+  console.log(userFormFields);
 
   const handleClickShowPassword = () => {
     setShowPassword(showPassword);
@@ -136,14 +140,14 @@ const AddFilter = (props: CustomProps) => {
     try {
       setLoading(true);
       const insertUserBody = {
-        firstName: userFormFields?.firstName?.value?.trim(),
-        lastName: userFormFields?.lastName?.value?.trim(),
-        email: userFormFields?.email?.value?.trim()?.toLowerCase(),
-        mobileNumber: userFormFields?.mobileNumber?.value,
-        userName: userFormFields?.userName?.value?.trim(),
-        password: userFormFields?.password?.value,
-        roleId: userFormFields?.roleId?.value,
-        status: userFormFields?.status?.value,
+        // imei: userFormFields?.imei?.value?.trim(),
+        // alert: userFormFields?.lastName?.value?.trim(),
+        // email: userFormFields?.email?.value?.trim()?.toLowerCase(),
+        // mobileNumber: userFormFields?.mobileNumber?.value,
+        // userName: userFormFields?.userName?.value?.trim(),
+        // password: userFormFields?.password?.value,
+        // roleId: userFormFields?.roleId?.value,
+        // status: userFormFields?.status?.value,
       };
       if (handleValidation()) {
         if (props.edit) {
@@ -183,10 +187,32 @@ const AddFilter = (props: CustomProps) => {
     event.preventDefault();
   };
 
+  // console.log(userFormFields);
+
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <CustomInput
+            label="Alert Name"
+            placeHolder="Enter Alert name"
+            value={userFormFields?.alertName?.value}
+            required
+            name="alertName"
+            onChange={handleFormDataChange}
+            error={userFormFields?.alertName?.error}
+          />
+        </Grid>
+
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={6}
+          lg={6}
+          xl={6}
+          sx={{ marginBottom: "0.5rem" }}
+        >
           <CustomInput
             required
             id="add_field"
@@ -194,147 +220,75 @@ const AddFilter = (props: CustomProps) => {
             name="imei"
             label="IMEI"
             onChange={handleFormDataChange}
-            value={userFormFields?.firstName?.value}
-            error={userFormFields?.firstName?.error}
+            value={userFormFields?.imei?.value}
+            error={userFormFields?.imei?.error}
             propsToInputElement={{ maxLength: strings.USER_FIRST_NAME_LIMIT }}
           />
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          sx={{ margin: "1.5rem 0rem" }}
-        >
-          <Typography
-            sx={{
-              color: "#212121",
-              fontFamily: "SourceSans3_Bold",
-              fontWeight: 700,
-              marginBottom: "1rem",
-            }}
-          >
-            Set Configuration
-          </Typography>
-
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{ display: "flex", alignItems: "end" }}
-          >
-            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-              <Box>
-                <Stack direction="column">
-                  <InputLabel sx={classes.inputLabel} shrink>
-                    Event
-                    <Box ml={0.4} sx={classes.star}>
-                      *
-                    </Box>
-                  </InputLabel>
-                  <Select
-                    sx={classes.dropDownStyle}
-                    id="add_filter_status_dropdown"
-                    name="event"
-                    value={userFormFields?.status?.value}
-                    onChange={handleSelectStatus}
-                    MenuProps={classes.menuProps}
-                    displayEmpty
-                    renderValue={() =>
-                      userFormFields?.status?.value || "Select Status"
-                    }
-                    error={
-                      !isTruthy(userFormFields?.status?.value) &&
-                      userFormFields?.status?.error
-                    }
-                  >
-                    {["Active", "Inactive"].map((item, index) => (
-                      <MenuItem
-                        key={index}
-                        value={item}
-                        sx={classes.dropDownOptionsStyle}
-                      >
-                        {item}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {!isTruthy(userFormFields?.status?.value) && (
-                    <FormHelperText error sx={classes.errorStyle}>
-                      {userFormFields.status?.error}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Box>
-            </Grid>
-
-            <Grid xs={6} sm={6} md={6} lg={6} xl={6}>
-              <FormControlLabel
-                value="end"
-                control={<Checkbox />}
-                label="Active"
-                labelPlacement="end"
-              />
-            </Grid>
-          </Stack>
-
-          <Stack>
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              md={12}
-              lg={12}
-              xl={12}
-              sx={{ margin: "1rem 0rem", display: "flex", justifyContent: "" }}
-            >
-              <CustomInput
-                label="Start Date"
-                type="datetime-local"
-                id="scheduleTime"
-                name="startDate"
-                required
-                propsToInputElement={{
-                  min: moment().format("YYYY-MM-DDTkk:mm"),
-                }}
-                // value={formField?.startDate?.value}
-                // onChange={handleOnChange}
-                // error={
-                //   !isTruthy(formField?.startDate?.value) &&
-                //   formField?.startDate?.error
-                // }
-              />
-              <Grid />
-
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                xl={12}
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Event
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                id="add_filter_status_dropdown"
+                name="eventName"
+                value={userFormFields.alertDate[0].eventName?.value}
+                onChange={handleFormDataChange}
+                MenuProps={classes.menuProps}
+                displayEmpty
+                renderValue={() =>
+                  userFormFields.alertDate[0].eventName?.value || "Select Event"
+                }
               >
-                <CustomInput
-                  label="End Date"
-                  type="datetime-local"
-                  id="scheduleTime"
-                  name="endDate"
-                  required
-                  propsToInputElement={{
-                    min: moment().format("YYYY-MM-DDTkk:mm"),
-                  }}
-                  // value={formField?.startDate?.value}
-                  // onChange={handleOnChange}
-                  // error={
-                  //   !isTruthy(formField?.startDate?.value) &&
-                  //   formField?.startDate?.error
-                  // }
-                />
-              </Grid>
-            </Grid>
-          </Stack>
+                <MenuItem value={"Geozone In"}>Geozone In</MenuItem>
+                <MenuItem value={"Geozone Out"}>Geozone Out</MenuItem>
+              </Select>
 
+              {!isTruthy(userFormFields?.status?.value) && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.status?.error}
+                </FormHelperText>
+              )}
+            </Stack>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <CustomInput
+              label="Start Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="startDate"
+              value={userFormFields?.startDate?.value}
+              onChange={handleFormDataChange}
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+            />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <CustomInput
+              label="End Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="endDate"
+              value={userFormFields?.endDate?.value}
+              onChange={handleFormDataChange}
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+            />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -342,13 +296,21 @@ const AddFilter = (props: CustomProps) => {
             required
             id="add_mobile_number_field"
             placeHolder="Enter Mobile Number"
-            name="mobilenumber"
+            name="mobileNo"
             label="Mobile Number"
             onChange={handleFormDataChange}
-            value={userFormFields?.lastName?.value}
-            error={userFormFields?.lastName?.error}
+            value={userFormFields?.mobileNo?.value}
+            error={userFormFields?.mobileNo?.error}
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{ display: "flex", alignItems: "end" }}
+          ></Stack>
         </Grid>
       </Grid>
     );
@@ -361,7 +323,10 @@ const AddFilter = (props: CustomProps) => {
           <CustomButton
             id="add_user_cancel_button"
             label="Cancel"
-            onClick={() => props?.handleCloseAddUserDialog()}
+            onClick={() => {
+              props?.handleCloseAddUserDialog();
+              console.log(userFormFields);
+            }}
             customClasses={classes.cancelButtonStyle}
           />
           <CustomButton
