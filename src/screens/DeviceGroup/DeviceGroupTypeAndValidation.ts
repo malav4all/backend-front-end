@@ -38,11 +38,13 @@ export const validateAddDeviceGroupForm = (
 ) => {
   let isValid = true;
   let errors: any = { ...deviceGroupFromFields };
-
   if (!errors.deviceGroupName?.value) {
     errors.deviceGroupName.error = "Please enter Device Group Name";
     isValid = false;
   }
-
+  if (!errors.imeiList?.value) {
+    errors.imeiList.error = "Please select Imei";
+    isValid = false;
+  }
   return { isValid, errors };
 };

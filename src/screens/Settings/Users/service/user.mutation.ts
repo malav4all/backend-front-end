@@ -34,6 +34,8 @@ export const FETCH_USER = gql`
         createdBy
         roleId
         status
+        deviceGroup
+        deviceGroupId
       }
     }
   }

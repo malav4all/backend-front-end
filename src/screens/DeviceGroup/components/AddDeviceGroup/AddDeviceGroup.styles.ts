@@ -2,6 +2,8 @@ import {
   boldFont,
   centerItemFlex,
   getRelativeFontSize,
+  inputLabelRequiredColor,
+  theme,
 } from "../../../../utils/styles";
 
 const addDeviceGroupStyles = {
@@ -31,6 +33,32 @@ const addDeviceGroupStyles = {
     "&:hover": {
       background: "none",
     },
+  },
+  inputLabel: {
+    display: "flex",
+    color: "#212121",
+    fontSize: getRelativeFontSize(7),
+    fontColor: theme.palette.common.black + " !important",
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
+  star: {
+    color: inputLabelRequiredColor,
+  },
+  errorStyle: {
+    paddingLeft: "15px",
   },
 } as const;
 

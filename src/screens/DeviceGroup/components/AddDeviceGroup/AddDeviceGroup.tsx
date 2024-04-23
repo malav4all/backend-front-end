@@ -4,6 +4,7 @@ import {
   Checkbox,
   Chip,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputLabel,
   SelectChangeEvent,
@@ -190,8 +191,8 @@ const AddDeviceGroup = (props: CustomProps) => {
   };
   const addDeviceGroupDialogBody = () => {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+      <Grid container spacing={2} sx={{ padding: "1rem" }}>
+        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
           <CustomInput
             required
             id="add_device_group_name_field"
@@ -204,52 +205,72 @@ const AddDeviceGroup = (props: CustomProps) => {
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Autocomplete
-            multiple
-            id="checkboxes-tags-demo"
-            options={["Select All", ...imeiData]}
-            disableCloseOnSelect
-            getOptionLabel={(option: any) =>
-              typeof option === "string" ? option : option.imei
-            }
-            value={selectedImeis?.map((imei: any) =>
-              imeiData?.find((option: any) => option?.imei === imei)
-            )}
-            onChange={handleChange}
-            placeholder="Enter Device Group Name"
-            renderOption={(props, option, { selected }) => {
-              if (typeof option === "string") {
+        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+          <Box>
+            <InputLabel sx={classes.inputLabel} shrink>
+              Imei
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={["Select All", ...imeiData]}
+              disableCloseOnSelect
+              getOptionLabel={(option: any) =>
+                typeof option === "string" ? option : option.imei
+              }
+              value={selectedImeis?.map((imei: any) =>
+                imeiData?.find((option: any) => option?.imei === imei)
+              )}
+              onChange={handleChange}
+              placeholder="Enter Device Group Name"
+              renderOption={(props, option, { selected }) => {
+                if (typeof option === "string") {
+                  return (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selectedImeis?.length === imeiData?.length}
+                        onChange={handleSelectAll}
+                      />
+                      Select All
+                    </li>
+                  );
+                }
                 return (
                   <li {...props}>
                     <Checkbox
                       icon={icon}
                       checkedIcon={checkedIcon}
                       style={{ marginRight: 8 }}
-                      checked={selectedImeis?.length === imeiData?.length}
-                      onChange={handleSelectAll}
+                      checked={isOptionSelected(option)}
                     />
-                    Select All
+                    {option.imei}
                   </li>
                 );
-              }
-              return (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    style={{ marginRight: 8 }}
-                    checked={isOptionSelected(option)}
-                  />
-                  {option.imei}
-                </li>
-              );
-            }}
-            style={{ width: 500 }}
-            renderInput={(params) => (
-              <TextField {...params} placeholder="Imei" />
-            )}
-          />
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={selectedImeis.length === 0 ? "Select Imei" : ""}
+                  error={
+                    !isTruthy(deviceGroupFromFields.imeiList.value) &&
+                    deviceGroupFromFields.imeiList.error
+                  }
+                />
+              )}
+            />
+            {!isTruthy(deviceGroupFromFields.imeiList.value) &&
+              deviceGroupFromFields.imeiList.error && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {deviceGroupFromFields.imeiList.error}
+                </FormHelperText>
+              )}
+          </Box>
         </Grid>
       </Grid>
     );
