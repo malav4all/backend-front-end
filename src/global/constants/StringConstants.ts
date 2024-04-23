@@ -256,6 +256,7 @@ export class StringConstants {
   VIEW_OFFLINE = "VIEW OFFLINE";
   ARCHIVED_JOURNEY = "ARCHIVED JOURNEY";
   ASSET_ASSIGNMENT = "ASSET ASSIGNMENT";
+  DEVICE_GROUP = "DEVICE GROUP";
 }
 
 let strings = new StringConstants();
