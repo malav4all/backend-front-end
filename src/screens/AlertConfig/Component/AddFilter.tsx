@@ -7,10 +7,11 @@ import {
   Select,
   Stack,
   Typography,
-  SelectChangeEvent,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-
+import AddIcon from "@mui/icons-material/Add";
 import _ from "lodash";
 import {
   createUser,
@@ -27,8 +28,13 @@ import notifiers from "../../../global/constants/NotificationConstants";
 import { CustomDialog, CustomInput } from "../../../global/components";
 import strings from "../../../global/constants/StringConstants";
 import CustomButton from "../../../global/components/NewCustomButton/CustomButton";
-import moment from "moment";
 import { insertUserField, validateAddUserForm } from "../AlertConfig.helpers";
+import { fetchGeozoneHandler } from "../../Geozone/service/geozone.service";
+import moment from "moment";
+import {
+  addAlertConfigRecord,
+  updateAlertRecord,
+} from "../service/alert.service";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -43,37 +49,24 @@ interface CustomProps {
 }
 
 const AddFilter = (props: CustomProps) => {
-  const handleFormDataChange = (
-    formFillEvent: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = formFillEvent.target;
-
-    if (name === "eventName") {
-      setUserFormFields((prevState: any) => ({
-        ...prevState,
-        alertData: [
-          {
-            eventName: { value, error: "" },
-          },
-        ],
-      }));
-    } else {
-      setUserFormFields((prevState: any) => ({
-        ...prevState,
-        [name]: {
-          value,
-          error: "",
-        },
-      }));
-    }
-  };
-
   const classes = usersStyles;
+  const [selectedValues, setSelectedValues] = React.useState<any>({});
+  const [locationType, setLocationType] = useState([]);
   const [userFormFields, setUserFormFields] = useState<any>(
     insertUserField(props?.selectedUserRowData)
   );
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [alertData, setAlertData] = useState<any>([]);
+  const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
+  const [alertDataInput, setAlertDataInput] = useState<any>({
+    event: "",
+    location: "",
+    startDate: "",
+    endDate: "",
+  });
+
+  useEffect(() => {
+    fetchLocationTypeHandler();
+  }, []);
 
   useEffect(() => {
     props.setEdit?.(false);
@@ -87,10 +80,19 @@ const AddFilter = (props: CustomProps) => {
     }
   }, [props?.selectedUserRowData]);
 
-  // useEffect(() => {
-  //   fetchAccountData();
-  //   fetchRoleData();
-  // }, []);
+  const handleFormDataChange = (
+    formFillEvent: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setUserFormFields({
+      ...userFormFields,
+      [formFillEvent?.target?.name]: {
+        ...userFormFields[formFillEvent?.target?.name],
+        value: formFillEvent?.target?.value,
+        error: "",
+      },
+    });
+  };
+
   const handleValidation = () => {
     const { isValid, errors }: any = validateAddUserForm(
       userFormFields,
@@ -100,30 +102,22 @@ const AddFilter = (props: CustomProps) => {
     return isValid;
   };
 
-  console.log(userFormFields);
-
-  const handleClickShowPassword = () => {
-    setShowPassword(showPassword);
-  };
-
-  const handleSelectRole = (formFillEvent: SelectChangeEvent<any>) => {
-    setUserFormFields({
-      ...userFormFields,
-      roleId: {
-        value: formFillEvent.target.value,
-        error: "",
-      },
-    });
-  };
-
-  const handleSelectStatus = (formFillEvent: SelectChangeEvent<any>) => {
-    setUserFormFields({
-      ...userFormFields,
-      status: {
-        value: formFillEvent.target.value,
-        error: "",
-      },
-    });
+  const handleAutocompleteChange = (newValue: any) => {
+    if (
+      newValue?.value &&
+      newValue?.value?._id &&
+      !finalLocationIds.includes(newValue?.value?._id)
+    ) {
+      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
+      setAlertDataInput({
+        ...alertDataInput,
+        location: newValue?.value,
+      });
+      setSelectedValues((prev: any) => ({
+        ...prev,
+        [newValue?.value?._id]: newValue,
+      }));
+    }
   };
 
   const addUserDialogTitle = () => {
@@ -138,40 +132,36 @@ const AddFilter = (props: CustomProps) => {
 
   const insertUserDetails = async () => {
     try {
-      setLoading(true);
       const insertUserBody = {
-        // imei: userFormFields?.imei?.value?.trim(),
-        // alert: userFormFields?.lastName?.value?.trim(),
-        // email: userFormFields?.email?.value?.trim()?.toLowerCase(),
-        // mobileNumber: userFormFields?.mobileNumber?.value,
-        // userName: userFormFields?.userName?.value?.trim(),
-        // password: userFormFields?.password?.value,
-        // roleId: userFormFields?.roleId?.value,
-        // status: userFormFields?.status?.value,
+        mobileNo: userFormFields.mobileNo.value,
+        alertName: userFormFields.alertName.value,
+        alertConfig: {
+          imei: userFormFields.imei.value,
+          alertData: alertData,
+        },
       };
-      if (handleValidation()) {
-        if (props.edit) {
-          const res = await updateUser({
-            input: {
-              _id: props?.selectedUserRowData?._id,
-              ...insertUserBody,
-              createdBy: store.getState().auth.userName,
-            },
-          });
-          props.handleCloseAddUserDialog(false);
-          openSuccessNotification(res?.updateUser?.message);
-          await props.tableData?.();
-        } else {
-          const res = await createUser({
-            input: {
-              ...insertUserBody,
-              createdBy: store.getState().auth.userName,
-            },
-          });
-          props.handleCloseAddUserDialog(false);
-          openSuccessNotification(res?.createUser?.message);
-          await props.tableData?.();
-        }
+
+      if (props.edit) {
+        const res = await updateAlertRecord({
+          input: {
+            _id: props?.selectedUserRowData?._id,
+            ...insertUserBody,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        props.handleCloseAddUserDialog(false);
+        openSuccessNotification(res?.updateAlert?.message);
+        await props.tableData?.();
+      } else {
+        const res = await addAlertConfigRecord({
+          input: {
+            ...insertUserBody,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        props.handleCloseAddUserDialog(false);
+        openSuccessNotification(res?.addAlert?.message);
+        await props.tableData?.();
       }
     } catch (error: any) {
       openErrorNotification(
@@ -180,14 +170,19 @@ const AddFilter = (props: CustomProps) => {
     }
   };
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    setShowPassword(!showPassword);
-    event.preventDefault();
+  const fetchLocationTypeHandler = async () => {
+    try {
+      const res = await fetchGeozoneHandler({
+        input: {
+          page: -1,
+          limit: 0,
+        },
+      });
+      setLocationType(res?.listGeozone?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
-
-  // console.log(userFormFields);
 
   const addUserDialogBody = () => {
     return (
@@ -221,10 +216,10 @@ const AddFilter = (props: CustomProps) => {
         <Grid
           item
           xs={12}
-          sm={6}
-          md={6}
-          lg={6}
-          xl={6}
+          sm={12}
+          md={12}
+          lg={12}
+          xl={12}
           sx={{ marginBottom: "0.5rem" }}
         >
           <CustomInput
@@ -240,7 +235,7 @@ const AddFilter = (props: CustomProps) => {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <Grid item xs={12} sm={5.2} md={5.2} lg={5.2} xl={5.2}>
           <Box>
             <Stack direction="column">
               <InputLabel sx={classes.inputLabel} shrink>
@@ -252,16 +247,41 @@ const AddFilter = (props: CustomProps) => {
               <Select
                 id="add_filter_status_dropdown"
                 name="eventName"
-                value={userFormFields.alertDate[0].eventName?.value}
-                onChange={handleFormDataChange}
+                value={alertDataInput.event}
+                onChange={(e: any) => {
+                  setAlertDataInput({
+                    ...alertDataInput,
+                    event: e.target.value,
+                  });
+                }}
                 MenuProps={classes.menuProps}
                 displayEmpty
-                renderValue={() =>
-                  userFormFields.alertDate[0].eventName?.value || "Select Event"
-                }
+                renderValue={(selectedValue: any) => {
+                  const selectedItem = [
+                    { code: "geo_in", value: "Geo In" },
+                    { code: "geo_out", value: "Geo Out" },
+                    { code: "locked", value: "Locked" },
+                    { code: "unlocked", value: "Unlocked" },
+                    { code: "other", value: "Tamper" },
+                  ].find((item: any) => item.code === selectedValue);
+                  return selectedItem ? selectedItem.value : "Select Event";
+                }}
               >
-                <MenuItem value={"Geozone In"}>Geozone In</MenuItem>
-                <MenuItem value={"Geozone Out"}>Geozone Out</MenuItem>
+                {[
+                  { code: "geo_in", value: "Geo In" },
+                  { code: "geo_out", value: "Geo Out" },
+                  { code: "locked", value: "Locked" },
+                  { code: "unlocked", value: "Unlocked" },
+                  { code: "other", value: "Tamper" },
+                ].map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item.code}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.value}
+                  </MenuItem>
+                ))}
               </Select>
 
               {!isTruthy(userFormFields?.status?.value) && (
@@ -273,33 +293,73 @@ const AddFilter = (props: CustomProps) => {
           </Box>
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          lg={12}
-          xl={12}
-          sx={{
-            backgroundColor: "#F1EDFF",
-            borderRadius: "5px",
-            padding: "1rem",
-            marginTop: "1rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Box>this is area to display multiple events</Box>
-          <CustomButton
-            id="add_user_cancel_button"
-            label="Add"
+        <Grid item xs={12} sm={5.2} md={5.2} lg={5.2} xl={5.2}>
+          <Box>
+            <InputLabel sx={classes.inputLabel} shrink>
+              Location
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+
+            <Autocomplete
+              sx={classes.emailDropDownStyle}
+              inputValue={alertDataInput.location.name || ""}
+              options={
+                locationType
+                  ?.filter(
+                    (tItem) =>
+                      !Object.values(selectedValues).find(
+                        (selected: any) => selected?.value === tItem
+                      )
+                  )
+                  .map((item: any) => ({
+                    key: item._id,
+                    label: `${item.name}`,
+                    value: item,
+                  })) || []
+              }
+              onChange={(event, newValue) => {
+                handleAutocompleteChange(newValue);
+              }}
+              renderInput={(params) => {
+                const InputProps = { ...params.InputProps };
+                InputProps.endAdornment = null;
+                return (
+                  <TextField
+                    sx={classes.select2}
+                    {...params}
+                    value={alertDataInput.location.name}
+                    name="startLocation"
+                    placeholder="Search location"
+                    onSelect={() => {}}
+                    InputProps={InputProps}
+                  />
+                );
+              }}
+            />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={1} md={1} lg={1} xl={1} mt={4}>
+          <Box
+            component={"div"}
             onClick={() => {
-              props?.handleCloseAddUserDialog();
-              console.log(userFormFields);
+              if (alertDataInput.location.name !== "") {
+                setAlertData((prev: any) => [...prev, alertDataInput]);
+                setAlertDataInput({
+                  event: "",
+                  location: {
+                    name: "",
+                  },
+                  startDate: "",
+                  endDate: "",
+                });
+              }
             }}
-            customClasses={classes.cancelButtonStyle}
-          />
+          >
+            <AddIcon fontSize="large" style={{ cursor: "pointer" }} />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -309,10 +369,15 @@ const AddFilter = (props: CustomProps) => {
               type="datetime-local"
               id="scheduleTime"
               name="startDate"
-              value={userFormFields?.startDate?.value}
-              onChange={handleFormDataChange}
+              value={alertDataInput?.startDate}
+              onChange={(e: any) => {
+                setAlertDataInput({
+                  ...alertDataInput,
+                  startDate: e.target.value,
+                });
+              }}
               propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
+                min: moment().format("YYYY-MM-DDTHH:mm"),
               }}
             />
           </Box>
@@ -325,10 +390,15 @@ const AddFilter = (props: CustomProps) => {
               type="datetime-local"
               id="scheduleTime"
               name="endDate"
-              value={userFormFields?.endDate?.value}
-              onChange={handleFormDataChange}
+              value={alertDataInput.endDate}
+              onChange={(e: any) => {
+                setAlertDataInput({
+                  ...alertDataInput,
+                  endDate: e.target.value,
+                });
+              }}
               propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
+                min: moment().format("YYYY-MM-DDTkk:mm A"),
               }}
             />
           </Box>

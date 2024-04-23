@@ -34,8 +34,10 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import AddFilter from "./Component/AddFilter";
 import { fetchUserDataHandler } from "../Settings/Users/service/user.service";
 import notifiers from "../../global/constants/NotificationConstants";
+import { listAlertRecord } from "./service/alert.service";
 
 const AlertConfig = () => {
+  const classes = alertConfigStyles;
   const [isLoading, setIsLoading] = useState(false);
   const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
@@ -52,7 +54,9 @@ const AlertConfig = () => {
   const [addFilterDialogHandler, setAddFilterDialogHandler] = useState(false);
   const [roles, setRoles] = useState([]);
 
-  const classes = alertConfigStyles;
+  useEffect(() => {
+    getUsersDetailTable();
+  }, []);
 
   const getHeader = () => {
     return (
@@ -95,14 +99,14 @@ const AlertConfig = () => {
   const getUsersDetailTable = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchUserDataHandler({
+      const res = await listAlertRecord({
         input: {
           page: pageNumber,
           limit: perPageData,
         },
       });
-      tableDataShowHandler(res?.userListAll?.data);
-      setCount(res?.userListAll?.paginatorInfo?.count);
+      tableDataShowHandler(res?.fetchAlert?.data);
+      setCount(res?.fetchAlert?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -133,10 +137,11 @@ const AlertConfig = () => {
   const tableDataShowHandler = (usersData: any) => {
     const source = usersData.map((usersData: any, index: number) => {
       return {
-        name: usersData?.name,
-        imei: usersData?.imei,
-        geozoneIn: usersData?.geozoneIn,
-        geozoneOut: usersData?.geozoneOut,
+        name: usersData?.alertName,
+        imei: usersData?.alertConfig?.imei,
+        mobileNo: usersData?.mobileNo,
+        // geozoneIn: usersData?.geozoneIn,
+        // geozoneOut: usersData?.geozoneOut,
       };
     });
     setUserDataSource([...source]);

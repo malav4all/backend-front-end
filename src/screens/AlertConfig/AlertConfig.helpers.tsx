@@ -9,13 +9,8 @@ export const alertConfigTableHeader = [
   },
 
   {
-    name: "Geozone in",
-    field: "geozoneIn",
-  },
-
-  {
-    name: "Geozone in",
-    field: "geozoneOut",
+    name: "Mobile No",
+    field: "mobileNo",
   },
 ];
 
@@ -29,19 +24,15 @@ export const insertUserField = (data?: any) => {
       value: data?.imei ?? "",
       error: "",
     },
-    alertDate: [
-      {
-        eventName: {
-          value: data?.eventName ?? "",
-          error: "",
-        },
-        isAlreadyGenerateAlert: {
-          value: data?.isAlreadyGenerateAlert ?? false,
-          error: "",
-        },
-      },
-    ],
     mobileNo: {
+      value: data?.mobileNo ?? "",
+      error: "",
+    },
+    startDate: {
+      value: data?.mobileNo ?? "",
+      error: "",
+    },
+    endDate: {
       value: data?.mobileNo ?? "",
       error: "",
     },

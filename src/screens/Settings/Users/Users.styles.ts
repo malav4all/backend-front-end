@@ -91,7 +91,7 @@ const usersStyles = {
     "& .MuiOutlinedInput-root": {
       padding: "0, 9px",
       height: "47px",
-      borderRadius: "12px !important",
+      // borderRadius: "12px !important",
       "&.Mui-focused fieldset": {
         borderColor: "#0675f9",
       },
@@ -140,6 +140,21 @@ const usersStyles = {
     "& .MuiOutlinedInput-root": {
       height: "47px",
       borderRadius: "12px",
+      fontSize: getRelativeFontSize(),
+
+      "&.Mui-focused fieldset": {
+        borderColor: "#0675f9",
+      },
+      "& .MuiAutocomplete-input  ": {
+        padding: "0px",
+      },
+    },
+  },
+
+  select2: {
+    "& .MuiOutlinedInput-root": {
+      height: "50px",
+      // borderRadius: "12px",
       fontSize: getRelativeFontSize(),
 
       "&.Mui-focused fieldset": {
