@@ -192,6 +192,19 @@ const AddDeviceGroup = (props: CustomProps) => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <CustomInput
+            required
+            id="add_device_group_name_field"
+            placeHolder="Enter Device Group Name"
+            name="deviceGroupName"
+            label="Device Group Name"
+            onChange={handleFormDataChange}
+            value={deviceGroupFromFields.deviceGroupName?.value}
+            error={deviceGroupFromFields.deviceGroupName?.error}
+            propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Autocomplete
             multiple
             id="checkboxes-tags-demo"
@@ -238,19 +251,6 @@ const AddDeviceGroup = (props: CustomProps) => {
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <CustomInput
-            required
-            id="add_device_group_name_field"
-            placeHolder="Enter Device Group Name"
-            name="deviceGroupName"
-            label="Device Group Name"
-            onChange={handleFormDataChange}
-            value={deviceGroupFromFields.deviceGroupName?.value}
-            error={deviceGroupFromFields.deviceGroupName?.error}
-            propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
-          />
-        </Grid>
       </Grid>
     );
   };
@@ -267,7 +267,6 @@ const AddDeviceGroup = (props: CustomProps) => {
           />
           <CustomButton
             id="add_device_group_submit_button"
-            // label="Add"
             label={props.edit ? "Update" : "Add"}
             onClick={insertDeviceGroupDetails}
           />
