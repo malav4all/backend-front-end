@@ -43,6 +43,7 @@ import { store } from "../../../../../utils/store";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
 import showPasswordIcon from "../../../../../assets/images/Show.svg";
+import { fetchDeviceGroup } from "../../../../DeviceGroup/service/DeviceGroup.service";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -61,9 +62,9 @@ const AddUser = (props: CustomProps) => {
   const [userFormFields, setUserFormFields] = useState<any>(
     insertUserField(props?.selectedUserRowData)
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<any>(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const [deviceGroup, setDeviceGroup] = useState<any>([]);
   useEffect(() => {
     props.setEdit?.(false);
     setUserFormFields(insertUserField());
@@ -76,10 +77,29 @@ const AddUser = (props: CustomProps) => {
     }
   }, [props?.selectedUserRowData]);
 
-  // useEffect(() => {
-  //   fetchAccountData();
-  //   fetchRoleData();
-  // }, []);
+  useEffect(() => {
+    fetchDeviceGroupData();
+  }, []);
+
+  const fetchDeviceGroupData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchDeviceGroup({
+        input: {
+          page: 1,
+          limit: 10,
+        },
+      });
+      setDeviceGroup(res?.fetchDeviceGroup?.data);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+      );
+      setIsLoading(false);
+    }
+  };
+
   const handleValidation = () => {
     const { isValid, errors }: any = validateAddUserForm(
       userFormFields,
@@ -124,6 +144,21 @@ const AddUser = (props: CustomProps) => {
     });
   };
 
+  const handleSelectDeviceGroup = (formFillEvent: SelectChangeEvent<any>) => {
+    const deviceGroup = formFillEvent.target.value;
+    setUserFormFields({
+      ...userFormFields,
+      deviceGroup: {
+        value: deviceGroup.deviceGroupName,
+        error: "",
+      },
+      deviceGroupID: {
+        value: deviceGroup._id,
+        error: "",
+      },
+    });
+  };
+
   const addUserDialogTitle = () => {
     return (
       <Box>
@@ -136,7 +171,7 @@ const AddUser = (props: CustomProps) => {
 
   const insertUserDetails = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       const insertUserBody = {
         firstName: userFormFields?.firstName?.value?.trim(),
         lastName: userFormFields?.lastName?.value?.trim(),
@@ -146,6 +181,8 @@ const AddUser = (props: CustomProps) => {
         password: userFormFields?.password?.value,
         roleId: userFormFields?.roleId?.value,
         status: userFormFields?.status?.value,
+        deviceGroupId: userFormFields?.deviceGroupID?.value,
+        deviceGroup: userFormFields?.deviceGroup?.value,
       };
       if (handleValidation()) {
         if (props.edit) {
@@ -387,6 +424,49 @@ const AddUser = (props: CustomProps) => {
             </Stack>
           </Box>
         </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Device Group
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_device_group_dropdown"
+                name="deviceGroup"
+                value={userFormFields?.deviceGroup?.value}
+                onChange={handleSelectDeviceGroup}
+                MenuProps={classes.menuProps}
+                displayEmpty
+                renderValue={() =>
+                  userFormFields?.deviceGroup?.value || "Select Device Group"
+                }
+                error={
+                  !isTruthy(userFormFields?.deviceGroup?.value) &&
+                  userFormFields?.deviceGroup?.error
+                }
+              >
+                {deviceGroup.map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.deviceGroupName}
+                  </MenuItem>
+                ))}
+              </Select>
+              {!isTruthy(userFormFields?.deviceGroup?.value) && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.deviceGroup?.error}
+                </FormHelperText>
+              )}
+            </Stack>
+          </Box>
+        </Grid>
       </Grid>
     );
   };
@@ -403,7 +483,6 @@ const AddUser = (props: CustomProps) => {
           />
           <CustomButton
             id="add_user_submit_button"
-            // label="Add"
             label={props.edit ? "Update" : "Add"}
             onClick={insertUserDetails}
           />

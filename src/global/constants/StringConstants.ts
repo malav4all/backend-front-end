@@ -257,6 +257,7 @@ export class StringConstants {
   ARCHIVED_JOURNEY = "ARCHIVED JOURNEY";
   ASSET_ASSIGNMENT = "ASSET ASSIGNMENT";
   ALERT_CONFIG = "ALERT CONFIG";
+  DEVICE_GROUP = "DEVICE GROUP";
 }
 
 let strings = new StringConstants();

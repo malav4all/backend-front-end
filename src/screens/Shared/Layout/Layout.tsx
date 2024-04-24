@@ -40,6 +40,7 @@ import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourn
 import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourney";
 import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
+import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -211,7 +212,13 @@ const Layout = () => {
             component={ArchivedJoruney}
             componentName={strings.ARCHIVED_JOURNEY}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-group"}
+            component={DeviceGroup}
+            componentName={strings.DEVICE_GROUP}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

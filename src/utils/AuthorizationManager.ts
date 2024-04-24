@@ -87,6 +87,17 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
+      icon: assetSvg("#dbdbdb"),
+      activeIcon: assetSvg(pinkDarkColor),
+      text: "Device Group",
+      link: `${"/device-group"}`,
+      pageName: strings.DEVICE_GROUP,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
+    {
       icon: journeyIcon("#dbdbdb"),
       activeIcon: journeyIcon(pinkDarkColor),
       text: "Journey",

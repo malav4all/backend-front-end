@@ -78,6 +78,10 @@ export const insertUserField = (data?: any) => {
       value: data?.password ?? "",
       error: "",
     },
+    deviceGroup: {
+      value: data?.deviceGroup ?? "",
+      error: "",
+    },
   } as any;
 };
 
@@ -143,7 +147,10 @@ export const validateAddUserForm = (userFormFields: any, edit = false) => {
     errors.status.error = "Please select status";
     isValid = false;
   }
-
+  if (!errors?.deviceGroup?.value) {
+    errors.deviceGroup.error = "Please select device group";
+    isValid = false;
+  }
   return { isValid, errors };
 };
 

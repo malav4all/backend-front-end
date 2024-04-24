@@ -57,7 +57,7 @@ const Dashboard = () => {
               event: item.event,
               message: item.message,
               source: item.source,
-              time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+              time: moment(item.time).fromNow(),
               action: (
                 <span style={{ color: "#845ADF" }}>
                   <FcInfo />
@@ -123,7 +123,7 @@ const Dashboard = () => {
                   variant="filled"
                 />
               ),
-              time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
+              time: moment(item.time).fromNow(),
               action: (
                 <span style={{ color: "#845ADF" }}>
                   <FcInfo

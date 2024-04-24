@@ -320,7 +320,7 @@ const AlertReport = () => {
                 { name: "Message", field: "message" },
                 { name: "Time", field: "time" },
               ]}
-              rows={alertTableData}
+              rows={isSearching ? filterData : alertTableData}
               paginationCount={count}
               rowsPerPage={limit}
               pageNumber={page}
