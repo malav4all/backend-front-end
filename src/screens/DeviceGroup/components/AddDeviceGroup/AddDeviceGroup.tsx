@@ -120,6 +120,7 @@ const AddDeviceGroup = (props: CustomProps) => {
       openErrorNotification(error.message);
     }
   };
+  
   const insertDeviceGroupDetails = async () => {
     try {
       const insertDeviceGroupBody = {
