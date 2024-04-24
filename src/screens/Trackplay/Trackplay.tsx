@@ -5,14 +5,10 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Autocomplete,
   Box,
   Button,
   Grid,
-  InputLabel,
   Slider,
-  Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
@@ -40,7 +36,6 @@ const Trackplay = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stop, setStop] = useState(false);
   const [lastStoppedIndex, setLastStoppedIndex] = useState(0);
-  const [journeyStarted, setJourneyStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataValue, setDataValue] = useState([]);
   const [rawData, setRawData] = useState([]);
