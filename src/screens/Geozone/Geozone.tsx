@@ -823,7 +823,6 @@ const Geozone = () => {
     mapCheck.setCenter(group.getBoundingBox().getCenter());
   };
 
-  console.log(geozoneData)
   
   return (
     <>
