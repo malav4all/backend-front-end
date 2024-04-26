@@ -192,7 +192,7 @@ const AddDeviceGroup = (props: CustomProps) => {
   const addDeviceGroupDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
-        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <CustomInput
             required
             id="add_device_group_name_field"
@@ -205,7 +205,7 @@ const AddDeviceGroup = (props: CustomProps) => {
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
         </Grid>
-        <Grid item xs={12} sm={12} md={8} lg={8} xl={8}>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
               Imei

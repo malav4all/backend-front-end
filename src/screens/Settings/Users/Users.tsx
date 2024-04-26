@@ -4,7 +4,14 @@ import {
   Chip,
   Grid,
   InputAdornment,
+  Paper,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -23,6 +30,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import {
   CustomAppHeader,
+  CustomDialog,
   CustomInput,
   CustomTable,
 } from "../../../global/components";
@@ -41,6 +49,7 @@ import {
 import { fetchUserDataHandler, searchUser } from "./service/user.service";
 import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
+import uploadUser from "../../../assets/images/uploadUser.svg";
 
 const Users = () => {
   useTitle(strings.UsersTitle);
@@ -69,7 +78,9 @@ const Users = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
-
+  const [imeiListDialogHandler, setImeiListDialogHandler] =
+    useState<any>(false);
+  const [selectedImeiData, setSelectedImeiData] = useState<any>([]);
   useEffect(() => {
     if (searchCampaigner === "") {
       setPageNumber(1);
@@ -92,7 +103,7 @@ const Users = () => {
   ) => {
     setPageNumber(newPage);
   };
-  
+
   const handlePerPageData = (event: any) => {
     setPageNumber(1);
     setSearchPageNumber(1);
@@ -100,7 +111,7 @@ const Users = () => {
   };
 
   const tableDataShowHandler = (usersData: any) => {
-    const source = usersData.map((usersData: any, index: number) => {
+    const source = usersData?.map((usersData: any, index: number) => {
       return {
         email: (
           <Typography key={usersData._id} sx={classes.rowColor}>
@@ -111,6 +122,20 @@ const Users = () => {
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
         roleId: usersData?.roleId,
+        deviceGroupName: (
+          <>
+            <Tooltip
+              title="Show Imeis"
+              placement="top"
+              arrow
+              onClick={() => {
+                showImeis(usersData);
+              }}
+            >
+              {usersData?.deviceGroup?.deviceGroupName}
+            </Tooltip>
+          </>
+        ),
         status: (
           <Chip
             label={usersData.status}
@@ -179,6 +204,10 @@ const Users = () => {
     [edit]
   );
 
+  const showImeis = (imeiData: any) => {
+    setImeiListDialogHandler(true);
+    setSelectedImeiData(imeiData.deviceGroup.imeiData);
+  };
   const getUsersDetailTable = async () => {
     try {
       setIsLoading(true);
@@ -277,6 +306,74 @@ const Users = () => {
     );
   };
 
+  const imeiDialogTitle = () => {
+    return (
+      <Box>
+        <Typography sx={classes.boldFonts}>{"IMEI LIST"}</Typography>
+      </Box>
+    );
+  };
+
+  const addUserDialogBody = () => {
+    return (
+      <Grid container spacing={2} sx={{ padding: "1rem" }}>
+        <Grid item xs={12} sm={6} md={12} lg={12} xl={12}>
+          <TableContainer component={Paper}>
+            <Table aria-label="IMEI Table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>S No.</TableCell>
+                  <TableCell>IMEIs</TableCell>
+                  <TableCell align="right">Label Name</TableCell>
+                  <TableCell align="right">Box Set</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {selectedImeiData?.map((imei: any, index: number) => (
+                  <TableRow key={imei?.imei}>
+                    <TableCell component="th" scope="row">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell>{imei?.imei}</TableCell>
+                    <TableCell align="right">{imei?.labelName}</TableCell>
+                    <TableCell align="right">{imei?.boxSet}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const showImeiHeaderImg = () => {
+    return (
+      <Box display={"flex"}>
+        <img src={uploadUser} alt="Add user not found!" />
+      </Box>
+    );
+  };
+
+  const showImesListDialogBox = () => {
+    return (
+      <Grid container sx={classes.centerItemFlex}>
+        <CustomDialog
+          isDialogOpen={imeiListDialogHandler}
+          closable
+          closeButtonVisibility
+          handleDialogClose={closeImeiListDialogHandler}
+          dialogHeaderContent={showImeiHeaderImg()}
+          dialogTitleContent={imeiDialogTitle()}
+          dialogBodyContent={addUserDialogBody()}
+          // dialogFooterContent={addUserDialogFooter()}
+          width={"700px"}
+          fullScreen={false}
+        />
+      </Grid>
+    );
+  };
+
   const changePasswordDialogBox = () => {
     return (
       <ChangePassword
@@ -291,6 +388,10 @@ const Users = () => {
   const closeAddUserDialogHandler = () => {
     setAddUserDialogHandler(false);
     setSelectedUserRowData(null);
+  };
+
+  const closeImeiListDialogHandler = () => {
+    setImeiListDialogHandler(false);
   };
 
   const updateUserDialogBox = () => {
@@ -370,7 +471,6 @@ const Users = () => {
           {getSearchBar()}
           {addUserButton()}
         </Stack>
-        
       </Stack>
 
       <Box
@@ -382,6 +482,7 @@ const Users = () => {
       >
         {campaignerTable()}
         {addUserDialogBox()}
+        {showImesListDialogBox()}
         {updateUserDialogBox()}
         {changePasswordDialogBox()}
       </Box>

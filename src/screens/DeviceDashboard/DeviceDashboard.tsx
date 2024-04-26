@@ -59,6 +59,11 @@ const DeviceDashboard = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterResultes, setFilterResultes] = useState([]);
+
+  useEffect(() => {
+    searchWithIMEI();
+  }, [searchData]);
+
   const handleStatusChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -343,18 +348,12 @@ const DeviceDashboard = () => {
                 <Typography sx={classes.statsTitle}>{stat.title}</Typography>
                 <Typography sx={classes.statsValue}>{stat.value}</Typography>
               </Box>
-
-              {/* <Box>
-                <img src={stat.icon} width={60} height={60} />
-              </Box> */}
             </Box>
           </Grid>
         ))}
       </Grid>
     );
   };
-
-  console.log(searchData);
 
   const getCustomTable = () => {
     return (
@@ -404,18 +403,9 @@ const DeviceDashboard = () => {
     );
   };
 
-  // console.log(searchData, statDataTable);
-  // console.log("this is filterResultes", filterResultes);
-  useEffect(() => {
-    searchWithIMEI();
-  }, [searchData]);
-
-  console.log(statDataTable);
-
   function searchWithIMEI() {
     const searchArrey = statDataTable.filter((item: any) => {
       if (searchData !== "") {
-        console.log(item.imei, searchData);
         return item.imei == searchData || item.label == searchData;
       }
     });

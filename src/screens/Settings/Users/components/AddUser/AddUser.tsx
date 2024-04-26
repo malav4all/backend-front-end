@@ -80,13 +80,12 @@ const AddUser = (props: CustomProps) => {
   useEffect(() => {
     fetchDeviceGroupData();
   }, []);
-
   const fetchDeviceGroupData = async () => {
     try {
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
-          page: 1,
+          page: -1,
           limit: 10,
         },
       });
@@ -148,7 +147,7 @@ const AddUser = (props: CustomProps) => {
     const deviceGroup = formFillEvent.target.value;
     setUserFormFields({
       ...userFormFields,
-      deviceGroup: {
+      deviceGroupName: {
         value: deviceGroup.deviceGroupName,
         error: "",
       },
@@ -182,7 +181,7 @@ const AddUser = (props: CustomProps) => {
         roleId: userFormFields?.roleId?.value,
         status: userFormFields?.status?.value,
         deviceGroupId: userFormFields?.deviceGroupID?.value,
-        deviceGroup: userFormFields?.deviceGroup?.value,
+        deviceGroupName: userFormFields?.deviceGroupName?.value,
       };
       if (handleValidation()) {
         if (props.edit) {
@@ -437,16 +436,17 @@ const AddUser = (props: CustomProps) => {
                 sx={classes.dropDownStyle}
                 id="add_user_device_group_dropdown"
                 name="deviceGroup"
-                value={userFormFields?.deviceGroup?.value}
+                value={userFormFields?.deviceGroupName?.value}
                 onChange={handleSelectDeviceGroup}
                 MenuProps={classes.menuProps}
                 displayEmpty
                 renderValue={() =>
-                  userFormFields?.deviceGroup?.value || "Select Device Group"
+                  userFormFields?.deviceGroupName?.value ||
+                  "Select Device Group"
                 }
                 error={
-                  !isTruthy(userFormFields?.deviceGroup?.value) &&
-                  userFormFields?.deviceGroup?.error
+                  !isTruthy(userFormFields?.deviceGroupName?.value) &&
+                  userFormFields?.deviceGroupName?.error
                 }
               >
                 {deviceGroup.map((item: any, index: any) => (
@@ -459,9 +459,9 @@ const AddUser = (props: CustomProps) => {
                   </MenuItem>
                 ))}
               </Select>
-              {!isTruthy(userFormFields?.deviceGroup?.value) && (
+              {!isTruthy(userFormFields?.deviceGroupName?.value) && (
                 <FormHelperText error sx={classes.errorStyle}>
-                  {userFormFields.deviceGroup?.error}
+                  {userFormFields.deviceGroupName?.error}
                 </FormHelperText>
               )}
             </Stack>
