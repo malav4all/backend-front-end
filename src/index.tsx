@@ -61,9 +61,9 @@ ReactDOM.render(
         <ThemeProvider theme={theme}>
           <Provider store={store}>
             <React.StrictMode>
-            <ErrorBoundary>
-              <App />
-            </ErrorBoundary>
+              <ErrorBoundary>
+                <App />
+              </ErrorBoundary>
             </React.StrictMode>
           </Provider>
         </ThemeProvider>
