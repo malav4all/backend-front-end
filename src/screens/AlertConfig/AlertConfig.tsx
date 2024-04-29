@@ -2,9 +2,11 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Chip,
+  FormControlLabel,
   Grid,
   InputAdornment,
   Stack,
+  Switch,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -171,6 +173,13 @@ const AlertConfig = () => {
           </Box>
         ),
         mobileNo: usersData?.mobileNo,
+        isAlertDisable: (
+          <Switch
+            checked={usersData?.isAlertDisable}
+            color="warning"
+            disabled
+          />
+        ),
         createdBy: usersData?.createdBy,
       };
     });

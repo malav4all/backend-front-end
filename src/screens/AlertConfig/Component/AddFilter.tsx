@@ -83,7 +83,6 @@ const AddFilter = (props: CustomProps) => {
     location: "",
     startDate: "",
     endDate: "",
-    isDailyAlert: false,
     startAlertTime: "",
     endAlertTime: "",
   });

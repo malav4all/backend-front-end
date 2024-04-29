@@ -18,6 +18,7 @@ export const ALERT_TABLE_CONFIG_DATA = gql`
       data {
         _id
         alertName
+        isAlertDisable
         alertConfig {
           alertImeiGroup {
             deviceGroupName

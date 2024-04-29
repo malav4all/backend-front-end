@@ -19,6 +19,11 @@ export const alertConfigTableHeader = [
   },
 
   {
+    name: "Alert Enable",
+    field: "isAlertDisable",
+  },
+
+  {
     name: "Created By",
     field: "createdBy",
   },
