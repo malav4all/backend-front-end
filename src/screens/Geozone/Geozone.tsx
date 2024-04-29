@@ -484,7 +484,7 @@ const Geozone = () => {
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible((prevVisibility) => !prevVisibility);
+    setGeozonesVisible(prevVisibility => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -807,8 +807,6 @@ const Geozone = () => {
     mapCheck.addObject(group);
     mapCheck.setCenter(group.getBoundingBox().getCenter());
   };
-
-  console.log(geozoneData);
 
   return (
     <>

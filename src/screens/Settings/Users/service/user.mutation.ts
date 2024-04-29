@@ -34,8 +34,16 @@ export const FETCH_USER = gql`
         createdBy
         roleId
         status
-        deviceGroup
-        deviceGroupId
+        deviceGroup {
+          deviceGroupName
+          _id
+          imeiData {
+            imei
+            labelName
+            _id
+            boxSet
+          }
+        }
       }
     }
   }

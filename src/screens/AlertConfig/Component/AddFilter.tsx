@@ -582,7 +582,6 @@ const AddFilter = (props: CustomProps) => {
             label="Cancel"
             onClick={() => {
               props?.handleCloseAddUserDialog();
-              console.log(userFormFields);
             }}
             customClasses={classes.cancelButtonStyle}
           />

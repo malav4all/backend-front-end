@@ -10,7 +10,10 @@ export const userTableHeader = [
     name: "User Email",
     field: "email",
   },
-
+  {
+    name: "Device Group",
+    field: "deviceGroupName",
+  },
   {
     name: "Role Name",
     field: "roleId",
@@ -78,8 +81,8 @@ export const insertUserField = (data?: any) => {
       value: data?.password ?? "",
       error: "",
     },
-    deviceGroup: {
-      value: data?.deviceGroup ?? "",
+    deviceGroupName: {
+      value: data?.deviceGroup?.deviceGroupName ?? "",
       error: "",
     },
   } as any;
@@ -147,8 +150,8 @@ export const validateAddUserForm = (userFormFields: any, edit = false) => {
     errors.status.error = "Please select status";
     isValid = false;
   }
-  if (!errors?.deviceGroup?.value) {
-    errors.deviceGroup.error = "Please select device group";
+  if (!errors?.deviceGroupName?.value) {
+    errors.deviceGroupName.error = "Please select device group";
     isValid = false;
   }
   return { isValid, errors };
