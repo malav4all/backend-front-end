@@ -57,6 +57,7 @@ interface CustomProps {
   selectedDeviceGroupRowData?: any;
   setEdit?: any;
 }
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 
 const AddFilter = (props: CustomProps) => {
   const classes = usersStyles;
@@ -73,6 +74,7 @@ const AddFilter = (props: CustomProps) => {
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
   const [alertData, setAlertData] = useState<any>([]);
+  const [deviceName, setDeviceName] = useState<any>([]);
   const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
   const [deviceGroupData, setDeviceGroupData] = useState([]);
   const [deviceGroupInput, setDeviceGroupInput] = useState<string>("");
@@ -86,13 +88,14 @@ const AddFilter = (props: CustomProps) => {
     endAlertTime: "",
   });
 
-  const [isAlertActivated, setIsAlertActivated] = useState(false);
+  const [isAlertActivated, setIsAlertActivated] = useState(true);
   const isGeoEvent =
     alertDataInput.event === "geo_in" ||
     alertDataInput.event === "" ||
     alertDataInput.event === "geo_out";
 
   const isDeviceAlert =
+    alertDataInput.event === "" ||
     alertDataInput.event === "locked" ||
     alertDataInput.event === "unlocked" ||
     alertDataInput.event === "other";
@@ -128,11 +131,8 @@ const AddFilter = (props: CustomProps) => {
     });
   };
 
-  const handleSwitchChange = (event: any) => {
-    setIsAlertActivated({
-      ...alertDataInput,
-      isDailyAlert: event.target.checked,
-    });
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsAlertActivated(event.target.checked);
   };
 
   const handleEventChange = (event: any) => {
@@ -162,7 +162,7 @@ const AddFilter = (props: CustomProps) => {
       newValue?.value?._id &&
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
+      setFinalLocationIds(prevIds => [...prevIds, newValue?.value?._id]);
       setAlertDataInput({
         ...alertDataInput,
         location: newValue?.value,
@@ -176,11 +176,33 @@ const AddFilter = (props: CustomProps) => {
 
   const addUserDialogTitle = () => {
     return (
-      <Box>
-        <Typography sx={classes.boldFonts}>
-          {props.edit ? "Update Filter" : "Add Filter"}
-        </Typography>
-      </Box>
+      <>
+        <Box>
+          <Typography sx={classes.boldFonts}>
+            {props.edit
+              ? "Update Alert Configuration"
+              : "Add Alert Configuration"}
+          </Typography>
+        </Box>
+        <Box sx={{ textAlign: "end", display: "flex", justifyContent: "end" }}>
+          <FormGroup
+            sx={{ textAlign: "end", display: "flex", justifyContent: "end" }}
+          >
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={isAlertActivated}
+                  onChange={handleSwitchChange}
+                  color="warning"
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              }
+              label="Enable"
+              labelPlacement="start"
+            />
+          </FormGroup>
+        </Box>
+      </>
     );
   };
 
@@ -189,8 +211,13 @@ const AddFilter = (props: CustomProps) => {
       const insertUserBody = {
         mobileNo: userFormFields.mobileNo.value,
         alertName: userFormFields.alertName.value,
+        isAlertDisable: isAlertActivated,
         alertConfig: {
-          imei: selectedImeis,
+          alertImeiGroup: {
+            deviceGroupName: deviceGroupInput,
+            imei: selectedImeis,
+          },
+          userSelectedImei: deviceGroupFromFields?.imeiList?.value || [],
           alertData: alertData,
         },
       };
@@ -270,6 +297,41 @@ const AddFilter = (props: CustomProps) => {
     setSelectedImeis(imeiData);
   };
 
+  const isOptionSelected = (option: any) => {
+    return deviceName?.includes(option?.imei);
+  };
+
+  const handleSelectAll = (event: any) => {
+    if (event?.target?.checked) {
+      setDeviceName(imeiData?.map((option: any) => option?.imei));
+      const newData = imeiData?.map((option: any) => String(option?.imei));
+      setDeviceGroupFromFields({
+        ...deviceGroupFromFields,
+        imeiList: {
+          value: newData,
+          error: "",
+        },
+      });
+    } else {
+      setDeviceName([]);
+    }
+  };
+
+  const handleChange = (event: any, value: any) => {
+    const filteredValues = value?.filter((v: any) => typeof v !== "string");
+    setDeviceName(filteredValues?.map((option: any) => option?.imei));
+    const filteredImeis = filteredValues?.map((option: any) =>
+      String(option?.imei)
+    );
+    setDeviceGroupFromFields({
+      ...deviceGroupFromFields,
+      imeiList: {
+        value: filteredImeis,
+        error: "",
+      },
+    });
+  };
+
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
@@ -297,6 +359,65 @@ const AddFilter = (props: CustomProps) => {
             error={userFormFields?.mobileNo?.error}
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Box>
+            <InputLabel sx={classes.inputLabel} shrink>
+              Device Name
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={["Select All", ...imeiData]}
+              disableCloseOnSelect
+              getOptionLabel={(option: any) =>
+                typeof option === "string" ? option : option?.labelName
+              }
+              value={deviceName?.map((imei: any) =>
+                imeiData?.find((option: any) => option?.imei === imei)
+              )}
+              onChange={handleChange}
+              placeholder="Enter Device Group Name"
+              renderOption={(props, option, { selected }) => {
+                if (typeof option === "string") {
+                  return (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={deviceName?.length === imeiData?.length}
+                        onChange={handleSelectAll}
+                      />
+                      Select All
+                    </li>
+                  );
+                }
+                return (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={isOptionSelected(option)}
+                    />
+                    {option.labelName}
+                  </li>
+                );
+              }}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  placeholder={
+                    deviceName.length === 0 ? "Select Device Name" : ""
+                  }
+                />
+              )}
+            />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -396,7 +517,7 @@ const AddFilter = (props: CustomProps) => {
                 options={
                   locationType
                     ?.filter(
-                      (tItem) =>
+                      tItem =>
                         !Object.values(selectedValues).find(
                           (selected: any) => selected?.value === tItem
                         )
@@ -410,7 +531,7 @@ const AddFilter = (props: CustomProps) => {
                 onChange={(event, newValue) => {
                   handleAutocompleteChange(newValue);
                 }}
-                renderInput={(params) => {
+                renderInput={params => {
                   const InputProps = { ...params.InputProps };
                   InputProps.endAdornment = null;
                   return (
@@ -442,7 +563,6 @@ const AddFilter = (props: CustomProps) => {
                 },
                 startDate: "",
                 endDate: "",
-                isDailyAlert: false,
                 startAlertTime: "",
                 endAlertTime: "",
               });
@@ -495,54 +615,36 @@ const AddFilter = (props: CustomProps) => {
 
         {!isGeoEvent && (
           <>
-            <Grid item xs={12} sm={12} md={2} lg={2} xl={2} mt={4}>
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={isAlertActivated}
-                      onChange={handleSwitchChange}
-                    />
-                  }
-                  label="Alerts"
-                />
-              </FormGroup>
+            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+              <CustomInput
+                label="Start Time"
+                type="time"
+                id="endDate"
+                name="endDate"
+                value={alertDataInput.startAlertTime}
+                onChange={(event: any) => {
+                  setAlertDataInput({
+                    ...alertDataInput,
+                    startAlertTime: event.target.value,
+                  });
+                }}
+              />
             </Grid>
-
-            {isAlertActivated && (
-              <>
-                <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
-                  <CustomInput
-                    label="Start Time"
-                    type="time"
-                    id="endDate"
-                    name="endDate"
-                    value={alertDataInput.startAlertTime}
-                    onChange={(event: any) => {
-                      setAlertDataInput({
-                        ...alertDataInput,
-                        startAlertTime: event.target.value,
-                      });
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={5} lg={5} xl={5}>
-                  <CustomInput
-                    label="End Time"
-                    type="time"
-                    id="endDate"
-                    name="endDate"
-                    value={alertDataInput.endAlertTime}
-                    onChange={(event: any) => {
-                      setAlertDataInput({
-                        ...alertDataInput,
-                        endAlertTime: event.target.value,
-                      });
-                    }}
-                  />
-                </Grid>
-              </>
-            )}
+            <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+              <CustomInput
+                label="End Time"
+                type="time"
+                id="endDate"
+                name="endDate"
+                value={alertDataInput.endAlertTime}
+                onChange={(event: any) => {
+                  setAlertDataInput({
+                    ...alertDataInput,
+                    endAlertTime: event.target.value,
+                  });
+                }}
+              />
+            </Grid>
           </>
         )}
 

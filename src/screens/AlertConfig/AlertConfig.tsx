@@ -139,38 +139,39 @@ const AlertConfig = () => {
       return {
         key: index,
         name: usersData?.alertName,
-        imei: (
-          <>
-            <Box
-              key={index}
-              sx={{
-                width: "100%",
-                minWidth: "150px",
-                display: "flex",
-                flexDirection: "row",
-                flex: "wrap",
-              }}
-            >
-              {usersData?.alertConfig?.imei?.map((item: any) => (
-                <Box>
-                  <Chip
-                    key={index}
-                    label={item}
-                    sx={{
-                      marginLeft: "20px",
-                      marginTop: "8px",
-                      borderRadius: "5px",
-                      fontSize: "15px",
-                      backgroundColor: "#ECF9FF",
-                    }}
-                    variant="filled"
-                  />
-                </Box>
-              ))}
-            </Box>
-          </>
+        deviceGroupName:
+          usersData?.alertConfig?.alertImeiGroup?.deviceGroupName,
+        userSelectedImei: (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              minWidth: "150px",
+              display: "flex",
+              flexDirection: "row",
+              flex: "wrap",
+            }}
+          >
+            {usersData?.alertConfig?.userSelectedImei?.map((item: any) => (
+              <Box>
+                <Chip
+                  key={index}
+                  label={item}
+                  sx={{
+                    marginLeft: "20px",
+                    marginTop: "8px",
+                    borderRadius: "5px",
+                    fontSize: "15px",
+                    backgroundColor: "#ECF9FF",
+                  }}
+                  variant="filled"
+                />
+              </Box>
+            ))}
+          </Box>
         ),
         mobileNo: usersData?.mobileNo,
+        createdBy: usersData?.createdBy,
       };
     });
     setUserDataSource([...source]);

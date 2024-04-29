@@ -19,7 +19,11 @@ export const ALERT_TABLE_CONFIG_DATA = gql`
         _id
         alertName
         alertConfig {
-          imei
+          alertImeiGroup {
+            deviceGroupName
+            imei
+          }
+          userSelectedImei
           alertData {
             event
             location

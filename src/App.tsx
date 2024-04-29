@@ -1,6 +1,5 @@
 import history from "./utils/history";
 import { BrowserRouter, Router, Switch, Route } from "react-router-dom";
-
 import withClearCache from "./ClearCache";
 import Box from "@mui/system/Box";
 import Notifications from "./utils/notifications";

@@ -4,13 +4,23 @@ export const alertConfigTableHeader = [
     field: "name",
   },
   {
-    name: "IMEI",
-    field: "imei",
+    name: "Device Group",
+    field: "deviceGroupName",
+  },
+
+  {
+    name: "Selected Device",
+    field: "userSelectedImei",
   },
 
   {
     name: "Mobile No",
     field: "mobileNo",
+  },
+
+  {
+    name: "Created By",
+    field: "createdBy",
   },
 ];
 
