@@ -219,21 +219,6 @@ const Geozone = () => {
     );
   };
 
-  function getLocation() {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  }
   useEffect(() => {
     const platform = new window.H.service.Platform({
       apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
@@ -251,7 +236,7 @@ const Geozone = () => {
       }
     );
 
-    window.addEventListener("resize", () => initialMap.getViewPort().resize());
+    // window.addEventListener("resize", () => initialMap.getViewPort().resize());
 
     new window.H.mapevents.Behavior(
       new window.H.mapevents.MapEvents(initialMap)
@@ -499,7 +484,7 @@ const Geozone = () => {
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible((prevVisibility) => !prevVisibility);
+    setGeozonesVisible(prevVisibility => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -823,7 +808,6 @@ const Geozone = () => {
     mapCheck.setCenter(group.getBoundingBox().getCenter());
   };
 
-  
   return (
     <>
       <Box
@@ -1026,7 +1010,6 @@ const Geozone = () => {
                     </ListItemAvatar> */}
                   </ListItem>
                 ))}
-                
             </List>
           </Box>
         </PerfectScrollbar>
