@@ -17,16 +17,19 @@ import { updateTokens } from "../../redux/authSlice";
 import { split } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename";
 
 interface AccessToken {
   accessToken: string;
 }
 
+const removeTypenameLink = removeTypenameFromVariables();
+
 let apiCount = 0;
 const customFetch = async (uri: any, options: any): Promise<any> => {
   try {
     apiCount++;
-    const response = await fetch(uri, options).then((response) => {
+    const response = await fetch(uri, options).then(response => {
       if (response.status >= 500) {
         apiCount--;
         return Promise.reject(response.status);
@@ -71,7 +74,7 @@ const errorLink = onError(
         switch (err.extensions.exception?.status) {
           case 401:
             const observable = new Observable<FetchResult<Record<string, any>>>(
-              (observer) => {
+              observer => {
                 (async () => {
                   try {
                     const accessToken = await refreshToken();
@@ -128,7 +131,7 @@ const link = split(
     );
   },
   wsLink,
-  authLink.concat(from([UploadLink, errorLink]))
+  authLink.concat(from([removeTypenameLink, UploadLink, errorLink]))
 );
 
 const refreshToken = async () => {

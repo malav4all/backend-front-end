@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   CustomAppHeader,
   CustomButton,
@@ -55,6 +56,8 @@ const AlertConfig = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [addFilterDialogHandler, setAddFilterDialogHandler] = useState(false);
   const [roles, setRoles] = useState([]);
+  const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     getUsersDetailTable();
@@ -181,10 +184,34 @@ const AlertConfig = () => {
           />
         ),
         createdBy: usersData?.createdBy,
+        action: (
+          <>
+            <Tooltip
+              title="Edit"
+              onClick={() => {
+                editUser(usersData);
+              }}
+            >
+              <EditIcon
+                htmlColor={"#5F22E2"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
+            </Tooltip>
+          </>
+        ),
       };
     });
     setUserDataSource([...source]);
   };
+
+  const editUser = React.useCallback(
+    (rowdata: any) => {
+      setAddFilterDialogHandler(true);
+      setSelectedAlertConfigRowData(rowdata);
+      setEdit(true);
+    },
+    [edit]
+  );
 
   const addFilterDialogBox = () => {
     return (
@@ -196,6 +223,8 @@ const AlertConfig = () => {
         tableData={getUsersDetailTable}
         selectedUserRowData={selectedAlertConfigRowData}
         isLoading={isLoading}
+        edit={edit}
+        setEdit={setEdit}
       />
     );
   };

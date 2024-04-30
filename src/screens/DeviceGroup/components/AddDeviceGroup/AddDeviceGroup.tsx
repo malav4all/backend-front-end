@@ -55,7 +55,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const AddDeviceGroup = (props: CustomProps) => {
   const classes = addDeviceGroupStyles;
   const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>(
-    insertDeviceGroupField(props?.selectedDeviceGroupRowData, props.edit)
+    insertDeviceGroupField(props?.selectedDeviceGroupRowData)
   );
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
@@ -120,7 +120,7 @@ const AddDeviceGroup = (props: CustomProps) => {
       openErrorNotification(error.message);
     }
   };
-  
+
   const insertDeviceGroupDetails = async () => {
     try {
       const insertDeviceGroupBody = {
@@ -228,6 +228,7 @@ const AddDeviceGroup = (props: CustomProps) => {
               onChange={handleChange}
               placeholder="Enter Device Group Name"
               renderOption={(props, option, { selected }) => {
+                console.log({ option });
                 if (typeof option === "string") {
                   return (
                     <li {...props}>
@@ -254,7 +255,7 @@ const AddDeviceGroup = (props: CustomProps) => {
                   </li>
                 );
               }}
-              renderInput={(params) => (
+              renderInput={params => (
                 <TextField
                   {...params}
                   placeholder={selectedImeis.length === 0 ? "Select Imei" : ""}

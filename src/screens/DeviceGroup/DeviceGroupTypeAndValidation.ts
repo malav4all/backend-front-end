@@ -15,7 +15,7 @@ export const deviceGroupTableHeader = [
   },
 ];
 
-export const insertDeviceGroupField = (data?: any, edit?: any) => {
+export const insertDeviceGroupField = (data?: any) => {
   return {
     deviceGroupName: {
       value: data?.deviceGroupName ?? "",

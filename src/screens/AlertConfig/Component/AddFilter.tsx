@@ -62,9 +62,9 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const AddFilter = (props: CustomProps) => {
   const classes = usersStyles;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
-  const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>(
-    insertDeviceGroupField(props?.selectedDeviceGroupRowData, props.edit)
-  );
+  const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>({
+    imeiList: [],
+  });
   const [selectedValues, setSelectedValues] = React.useState<any>({});
   const [locationType, setLocationType] = useState([]);
   const [userFormFields, setUserFormFields] = useState<any>(
@@ -77,7 +77,9 @@ const AddFilter = (props: CustomProps) => {
   const [deviceName, setDeviceName] = useState<any>([]);
   const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
   const [deviceGroupData, setDeviceGroupData] = useState([]);
-  const [deviceGroupInput, setDeviceGroupInput] = useState<string>("");
+  const [deviceGroupInput, setDeviceGroupInput] = useState<string>(
+    props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
+  );
   const [alertDataInput, setAlertDataInput] = useState<any>({
     event: "",
     location: "",
@@ -108,14 +110,33 @@ const AddFilter = (props: CustomProps) => {
   useEffect(() => {
     props.setEdit?.(false);
     setUserFormFields(insertUserField());
+    setDeviceGroupInput("");
+    setDeviceName([]);
+    setAlertData([]);
+    setSelectedImeis([]);
+    setDeviceGroupFromFields({
+      imeiList: [],
+    });
   }, [props?.openAddUserDialog]);
 
   useEffect(() => {
     if (props?.edit && props?.selectedUserRowData) {
       props.setEdit?.(true);
+      setDeviceGroupInput(
+        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
+      );
+      setDeviceName(props?.selectedUserRowData?.alertConfig?.userSelectedImei);
+      setAlertData(props?.selectedUserRowData?.alertConfig?.alertData);
+      setSelectedImeis(
+        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.imei
+      );
+      setDeviceGroupFromFields({
+        imeiList: props?.selectedUserRowData?.alertConfig?.userSelectedImei,
+      });
       setUserFormFields(insertUserField(props?.selectedUserRowData));
+      // fetchImeiData();
     }
-  }, [props?.selectedUserRowData]);
+  }, [props?.selectedUserRowData, props.edit]);
 
   const handleFormDataChange = (
     formFillEvent: React.ChangeEvent<HTMLInputElement>
@@ -146,7 +167,7 @@ const AddFilter = (props: CustomProps) => {
       const res = await fetchAssetAssingmentDataHandler({
         input: {
           page: -1,
-          limit: 100,
+          limit: 10,
         },
       });
       setImeiData(res.fetchAssertAssingmentModule.data);
@@ -216,7 +237,7 @@ const AddFilter = (props: CustomProps) => {
             deviceGroupName: deviceGroupInput,
             imei: selectedImeis,
           },
-          userSelectedImei: deviceGroupFromFields?.imeiList?.value || [],
+          userSelectedImei: deviceGroupFromFields?.imeiList || [],
           alertData: alertData,
         },
       };
@@ -227,6 +248,7 @@ const AddFilter = (props: CustomProps) => {
             _id: props?.selectedUserRowData?._id,
             ...insertUserBody,
             createdBy: store.getState().auth.userName,
+            __typename: undefined,
           },
         });
         props.handleCloseAddUserDialog(false);
@@ -306,10 +328,7 @@ const AddFilter = (props: CustomProps) => {
       const newData = imeiData?.map((option: any) => String(option?.imei));
       setDeviceGroupFromFields({
         ...deviceGroupFromFields,
-        imeiList: {
-          value: newData,
-          error: "",
-        },
+        imeiList: newData,
       });
     } else {
       setDeviceName([]);
@@ -324,10 +343,7 @@ const AddFilter = (props: CustomProps) => {
     );
     setDeviceGroupFromFields({
       ...deviceGroupFromFields,
-      imeiList: {
-        value: filteredImeis,
-        error: "",
-      },
+      imeiList: filteredImeis,
     });
   };
 

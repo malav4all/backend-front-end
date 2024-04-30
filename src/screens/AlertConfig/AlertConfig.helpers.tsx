@@ -27,6 +27,10 @@ export const alertConfigTableHeader = [
     name: "Created By",
     field: "createdBy",
   },
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
 export const insertUserField = (data?: any) => {
@@ -35,19 +39,7 @@ export const insertUserField = (data?: any) => {
       value: data?.alertName ?? "",
       error: "",
     },
-    imei: {
-      value: data?.imei ?? "",
-      error: "",
-    },
     mobileNo: {
-      value: data?.mobileNo ?? "",
-      error: "",
-    },
-    startDate: {
-      value: data?.mobileNo ?? "",
-      error: "",
-    },
-    endDate: {
       value: data?.mobileNo ?? "",
       error: "",
     },
