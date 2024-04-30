@@ -38,6 +38,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import {
   addDeviceGroup,
+  fetchDeviceList,
   updateDeviceGroup,
 } from "../../service/DeviceGroup.service";
 interface CustomProps {
@@ -109,13 +110,8 @@ const AddDeviceGroup = (props: CustomProps) => {
 
   const fetchImeiData = async () => {
     try {
-      const res = await fetchAssetAssingmentDataHandler({
-        input: {
-          page: -1,
-          limit: 10,
-        },
-      });
-      setImeiData(res.fetchAssertAssingmentModule.data);
+      const res = await fetchDeviceList();
+      setImeiData(res.getAllDeviceList);
     } catch (error: any) {
       openErrorNotification(error.message);
     }

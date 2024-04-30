@@ -60,3 +60,14 @@ export const SEARCH_DEVICE_GROUP = gql`
     }
   }
 `;
+
+export const GET_ALL_DEVICE = gql`
+  mutation {
+    getAllDeviceList {
+      imei
+      labelName
+      _id
+      createdBy
+    }
+  }
+`;
