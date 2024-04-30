@@ -72,6 +72,7 @@ const AddFilter = (props: CustomProps) => {
   );
   const [isLoading, setIsLoading] = useState<any>(false);
   const [imeiData, setImeiData] = useState<any>([]);
+  const [imeiUser, setImeiUser] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
   const [alertData, setAlertData] = useState<any>([]);
   const [deviceName, setDeviceName] = useState<any>([]);
@@ -134,7 +135,6 @@ const AddFilter = (props: CustomProps) => {
         imeiList: props?.selectedUserRowData?.alertConfig?.userSelectedImei,
       });
       setUserFormFields(insertUserField(props?.selectedUserRowData));
-      // fetchImeiData();
     }
   }, [props?.selectedUserRowData, props.edit]);
 
@@ -171,6 +171,7 @@ const AddFilter = (props: CustomProps) => {
         },
       });
       setImeiData(res.fetchAssertAssingmentModule.data);
+      setImeiUser(res.fetchAssertAssingmentModule.data);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -324,8 +325,8 @@ const AddFilter = (props: CustomProps) => {
 
   const handleSelectAll = (event: any) => {
     if (event?.target?.checked) {
-      setDeviceName(imeiData?.map((option: any) => option?.imei));
-      const newData = imeiData?.map((option: any) => String(option?.imei));
+      setDeviceName(imeiUser?.map((option: any) => option?.imei));
+      const newData = imeiUser?.map((option: any) => String(option?.imei));
       setDeviceGroupFromFields({
         ...deviceGroupFromFields,
         imeiList: newData,
@@ -386,13 +387,13 @@ const AddFilter = (props: CustomProps) => {
             <Autocomplete
               multiple
               id="checkboxes-tags-demo"
-              options={["Select All", ...imeiData]}
+              options={["Select All", ...imeiUser]}
               disableCloseOnSelect
               getOptionLabel={(option: any) =>
                 typeof option === "string" ? option : option?.labelName
               }
               value={deviceName?.map((imei: any) =>
-                imeiData?.find((option: any) => option?.imei === imei)
+                imeiUser?.find((option: any) => option?.imei === imei)
               )}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
@@ -404,7 +405,7 @@ const AddFilter = (props: CustomProps) => {
                         icon={icon}
                         checkedIcon={checkedIcon}
                         style={{ marginRight: 8 }}
-                        checked={deviceName?.length === imeiData?.length}
+                        checked={deviceName?.length === imeiUser?.length}
                         onChange={handleSelectAll}
                       />
                       Select All
@@ -427,7 +428,7 @@ const AddFilter = (props: CustomProps) => {
                 <TextField
                   {...params}
                   placeholder={
-                    deviceName.length === 0 ? "Select Device Name" : ""
+                    deviceName?.length === 0 ? "Select Device Name" : ""
                   }
                 />
               )}
