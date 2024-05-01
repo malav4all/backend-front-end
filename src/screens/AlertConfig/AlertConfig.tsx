@@ -37,7 +37,7 @@ import LockResetIcon from "@mui/icons-material/LockReset";
 import AddFilter from "./Component/AddFilter";
 import { fetchUserDataHandler } from "../Settings/Users/service/user.service";
 import notifiers from "../../global/constants/NotificationConstants";
-import { listAlertRecord } from "./service/alert.service";
+import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
 import history from "../../utils/history";
 
 const AlertConfig = () => {
@@ -61,8 +61,10 @@ const AlertConfig = () => {
   const [edit, setEdit] = useState(false);
 
   useEffect(() => {
-    getUsersDetailTable();
-  }, [pageNumber, rowsPerPage]);
+    if (searchAlertConfig) {
+      searchDetailTable();
+    } else getUsersDetailTable();
+  }, [searchAlertConfig, pageNumber, rowsPerPage]);
 
   const getHeader = () => {
     return (
@@ -100,6 +102,27 @@ const AlertConfig = () => {
         }}
       />
     );
+  };
+
+  const searchDetailTable = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchAlertRecord({
+        input: {
+          search: searchAlertConfig,
+          page: pageNumber,
+          limit: perPageData,
+        },
+      });
+      tableDataShowHandler(res?.searchAlert?.data);
+      setCount(res?.searchAlert?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+      );
+      setIsLoading(false);
+    }
   };
 
   const getUsersDetailTable = async () => {
