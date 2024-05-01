@@ -23,6 +23,7 @@ export const ALERT_TABLE_CONFIG_DATA = gql`
           alertImeiGroup {
             deviceGroupName
             imei
+            deviceGroupId
           }
           userSelectedImei
           alertData {
