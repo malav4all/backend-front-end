@@ -50,6 +50,7 @@ import { fetchUserDataHandler, searchUser } from "./service/user.service";
 import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import uploadUser from "../../../assets/images/uploadUser.svg";
+import history from "../../../utils/history";
 
 const Users = () => {
   useTitle(strings.UsersTitle);
@@ -110,6 +111,10 @@ const Users = () => {
     setPerPageData(event.target.value);
   };
 
+  const getRedirectionUrl=(_id:any)=>{
+    return history.push(`/device-group/view/${_id}`)
+  }
+  
   const tableDataShowHandler = (usersData: any) => {
     const source = usersData?.map((usersData: any, index: number) => {
       return {
@@ -129,7 +134,7 @@ const Users = () => {
               placement="top"
               arrow
               onClick={() => {
-                showImeis(usersData);
+                getRedirectionUrl(usersData?.deviceGroup?._id);
               }}
             >
               {usersData?.deviceGroup?.deviceGroupName}

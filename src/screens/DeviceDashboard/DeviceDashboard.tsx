@@ -435,7 +435,6 @@ const DeviceDashboard = () => {
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchData(SearchEvent.target.value.trim().toLowerCase());
-      console.log(SearchEvent.target.value);
       searchWithIMEI();
       // setPage(1);
       // setRowsPerPage(10);

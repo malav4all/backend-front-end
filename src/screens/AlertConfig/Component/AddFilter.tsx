@@ -65,6 +65,7 @@ const AddFilter = (props: CustomProps) => {
   const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>({
     imeiList: [],
   });
+  const [deviceGroupId, setDeviceGroupId] = React.useState<any>("");
   const [selectedValues, setSelectedValues] = React.useState<any>({});
   const [locationType, setLocationType] = useState([]);
   const [userFormFields, setUserFormFields] = useState<any>(
@@ -115,6 +116,7 @@ const AddFilter = (props: CustomProps) => {
     setDeviceName([]);
     setAlertData([]);
     setSelectedImeis([]);
+    setDeviceGroupId("");
     setDeviceGroupFromFields({
       imeiList: [],
     });
@@ -134,6 +136,9 @@ const AddFilter = (props: CustomProps) => {
       setDeviceGroupFromFields({
         imeiList: props?.selectedUserRowData?.alertConfig?.userSelectedImei,
       });
+      setDeviceGroupId(
+        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupId
+      );
       setUserFormFields(insertUserField(props?.selectedUserRowData));
     }
   }, [props?.selectedUserRowData, props.edit]);
@@ -237,6 +242,7 @@ const AddFilter = (props: CustomProps) => {
           alertImeiGroup: {
             deviceGroupName: deviceGroupInput,
             imei: selectedImeis,
+            deviceGroupId: deviceGroupId,
           },
           userSelectedImei: deviceGroupFromFields?.imeiList || [],
           alertData: alertData,
@@ -307,12 +313,11 @@ const AddFilter = (props: CustomProps) => {
 
   const handleDeviceGroupSelect = (e: any) => {
     const deviceGroupName = e.target.value;
-    setDeviceGroupInput(deviceGroupName);
-
+    setDeviceGroupId(deviceGroupName);
     const matchedImeis: any = deviceGroupData?.find(
-      (i: any) => i.deviceGroupName === deviceGroupName
+      (i: any) => i._id === deviceGroupName
     );
-
+    setDeviceGroupInput(matchedImeis.deviceGroupName);
     const imeiData =
       matchedImeis?.imeiData?.map((item: any) => String(item.imei)) || [];
 
@@ -460,7 +465,7 @@ const AddFilter = (props: CustomProps) => {
                 {deviceGroupData.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item?.deviceGroupName}
+                    value={item?._id}
                     sx={classes.dropDownOptionsStyle}
                   >
                     {item?.deviceGroupName}

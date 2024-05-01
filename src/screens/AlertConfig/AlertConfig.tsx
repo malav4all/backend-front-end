@@ -38,6 +38,7 @@ import AddFilter from "./Component/AddFilter";
 import { fetchUserDataHandler } from "../Settings/Users/service/user.service";
 import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord } from "./service/alert.service";
+import history from "../../utils/history";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
@@ -61,7 +62,7 @@ const AlertConfig = () => {
 
   useEffect(() => {
     getUsersDetailTable();
-  }, []);
+  }, [pageNumber, rowsPerPage]);
 
   const getHeader = () => {
     return (
@@ -138,14 +139,31 @@ const AlertConfig = () => {
     setAddFilterDialogHandler(false);
     // setSelectedUserRowData(null);
   };
+  const getRedirectionUrl = (_id: any) => {
+    return history.push(`/device-group/view/${_id}`);
+  };
 
   const tableDataShowHandler = (usersData: any) => {
     const source = usersData.map((usersData: any, index: number) => {
       return {
         key: index,
         name: usersData?.alertName,
-        deviceGroupName:
-          usersData?.alertConfig?.alertImeiGroup?.deviceGroupName,
+        deviceGroupName: (
+          <>
+            <Tooltip
+              title="Show Imei List"
+              placement="top"
+              arrow
+              onClick={() => {
+                getRedirectionUrl(
+                  usersData?.alertConfig?.alertImeiGroup?.deviceGroupId
+                );
+              }}
+            >
+              {usersData?.alertConfig?.alertImeiGroup?.deviceGroupName}
+            </Tooltip>
+          </>
+        ),
         userSelectedImei: (
           <Box
             key={index}
@@ -257,11 +275,9 @@ const AlertConfig = () => {
           rows={userDataSource}
           paginationCount={count}
           // handleRowClick={updateUserDetails}
-          handlePageChange={
-            searchCampaigner ? handleSearchChangePage : handleChangePage
-          }
-          pageNumber={searchCampaigner ? searchPageNumber : pageNumber}
-          setPage={searchCampaigner ? setSearchPageNumber : setPageNumber}
+          handlePageChange={handleChangePage}
+          pageNumber={pageNumber}
+          setPage={setPageNumber}
           isLoading={isLoading}
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
