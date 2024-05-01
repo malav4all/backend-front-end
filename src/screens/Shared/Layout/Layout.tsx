@@ -41,6 +41,7 @@ import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourn
 import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
 import DeviceGroup from "../../DeviceGroup/DeviceGroup";
+import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -218,7 +219,14 @@ const Layout = () => {
             path={"/device-group"}
             component={DeviceGroup}
             componentName={strings.DEVICE_GROUP}
-          />
+          />    
+          <PrivateRoute
+          exact
+          isLoggedIn={isAuthenticated}
+          path={`/device-group/view/:id`}
+          component={ViewDeviceGroupList}
+          componentName={strings.DEVICE_GROUP}
+        />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

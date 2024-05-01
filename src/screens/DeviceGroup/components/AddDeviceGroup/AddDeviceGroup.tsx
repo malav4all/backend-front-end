@@ -224,7 +224,6 @@ const AddDeviceGroup = (props: CustomProps) => {
               onChange={handleChange}
               placeholder="Enter Device Group Name"
               renderOption={(props, option, { selected }) => {
-                console.log({ option });
                 if (typeof option === "string") {
                   return (
                     <li {...props}>
