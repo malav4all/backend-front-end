@@ -519,6 +519,7 @@ const Journey = () => {
               label="Journey Name"
               placeHolder="Enter Journey name"
               value={formField?.journeyName?.value}
+              maxLength={100}
               required
               name="journeyName"
               onChange={handleOnChange}

@@ -19,6 +19,7 @@ interface CustomProps {
   propsToInputElement?: any;
   onKeyPress?: any;
   onBlur?: any;
+  maxLength?: number;
 }
 
 const CustomInput = (props: CustomProps) => {
@@ -43,7 +44,10 @@ const CustomInput = (props: CustomProps) => {
         value={props.value}
         InputProps={props.InputProps}
         onBlur={props.onBlur}
-        inputProps={props.propsToInputElement}
+        inputProps={{
+          maxLength: props?.maxLength,
+          ...props?.propsToInputElement
+        }}
         onChange={props.onChange}
         required={props.required}
         onKeyPress={props.onKeyPress}
