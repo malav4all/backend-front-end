@@ -633,7 +633,7 @@ const Journey = () => {
                         sx={classes.select}
                         {...params}
                         name="startLocation"
-                        placeholder="Search Start location here....."
+                        placeholder="Select Start location"
                         onSelect={handleOnChange}
                         InputProps={InputProps}
                       />
@@ -697,7 +697,7 @@ const Journey = () => {
                               sx={classes.select}
                               {...params}
                               name={`location-${item._id}`}
-                              placeholder="Search Start location here....."
+                              placeholder="Search location"
                               onSelect={() => {}}
                               InputProps={InputProps}
                             />
@@ -765,7 +765,7 @@ const Journey = () => {
                         sx={classes.select}
                         {...params}
                         name="endLocation"
-                        placeholder="Search End location here....."
+                        placeholder="Select End location"
                         onSelect={handleOnChange}
                         InputProps={InputProps}
                       />
