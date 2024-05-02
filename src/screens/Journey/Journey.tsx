@@ -128,7 +128,7 @@ const Journey = () => {
       newValue?.value?._id &&
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds(prevIds => [...prevIds, newValue?.value?._id]);
+      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
       setCoordinatesArray((prev: any) => [
         ...prev,
         {
@@ -550,7 +550,7 @@ const Journey = () => {
                   options={
                     tableData
                       ?.filter(
-                        tItem =>
+                        (tItem) =>
                           !Object.values(selectedValues).find(
                             (selected: any) => selected?.value === tItem
                           )
@@ -564,7 +564,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue, "startLocation")
                   }
-                  renderInput={params => {
+                  renderInput={(params) => {
                     const InputProps = { ...params.InputProps };
                     InputProps.endAdornment = null;
                     return (
@@ -609,7 +609,7 @@ const Journey = () => {
                         options={
                           tableData
                             ?.filter(
-                              tItem =>
+                              (tItem) =>
                                 !Object.values(selectedValues).find(
                                   (selected: any) => selected?.value === tItem
                                 )
@@ -623,7 +623,7 @@ const Journey = () => {
                         onChange={(event, newValue) =>
                           handleAutocompleteChange(newValue, item.name)
                         }
-                        renderInput={params => {
+                        renderInput={(params) => {
                           const InputProps = { ...params.InputProps };
                           InputProps.endAdornment = null;
                           return (
@@ -634,6 +634,7 @@ const Journey = () => {
                               placeholder="Select location"
                               onSelect={() => {}}
                               InputProps={InputProps}
+                              inputProps={{ maxLength: 100 }}
                             />
                           );
                         }}
@@ -677,7 +678,7 @@ const Journey = () => {
                   options={
                     tableData
                       ?.filter(
-                        tItem =>
+                        (tItem) =>
                           !Object.values(selectedValues).find(
                             (selected: any) => selected?.value === tItem
                           )
@@ -691,7 +692,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue, "endLocation")
                   }
-                  renderInput={params => {
+                  renderInput={(params) => {
                     const InputProps = { ...params.InputProps };
                     InputProps.endAdornment = null;
                     return (
@@ -701,6 +702,7 @@ const Journey = () => {
                         name="endLocation"
                         placeholder="Select End location"
                         onSelect={() => {}}
+                        inputProps={{ maxLength: 100 }}
                         InputProps={InputProps}
                       />
                     );
