@@ -916,7 +916,7 @@ const Geozone = () => {
       >
         <Box sx={{ margin: "5px 5px", width: "300px" }}>
           <CustomInput
-            placeHolder="Search....."
+            placeHolder="Search Geozone"
             id="users_search_field"
             onChange={(e: any) => {
               setSearchText(e.target.value);
@@ -1027,7 +1027,7 @@ const Geozone = () => {
       >
         <Box sx={{ margin: "5px 5px", width: "350px" }}>
           <CustomInput
-            placeHolder="Search location....."
+            placeHolder="Search Location"
             id="users_search_field"
             onKeyPress={handleKeyPress}
             onChange={(e: any) => {

@@ -194,10 +194,10 @@ const CreateGeoZone = ({
           <CustomInput
             required
             type="number"
-            label="Mobile No"
+            label="Mobile Number"
             id="mobileNo"
             name="mobileNumber"
-            placeHolder="Enter Mobile No"
+            placeHolder="Enter Mobile Number"
             error={formField?.mobileNumber?.error}
             value={formField?.mobileNumber?.value}
             onChange={handleOnChange}

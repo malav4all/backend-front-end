@@ -14,7 +14,7 @@ export const alertConfigTableHeader = [
   },
 
   {
-    name: "Mobile No",
+    name: "Mobile Number",
     field: "mobileNo",
   },
 
