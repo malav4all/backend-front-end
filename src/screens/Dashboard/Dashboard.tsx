@@ -182,16 +182,6 @@ const Dashboard = () => {
           }}
         >
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Duration
-            </Typography>
             <Select
               id="campaigns_interval_dropdown"
               sx={classes.dropDownStyle}
@@ -212,21 +202,6 @@ const Dashboard = () => {
               </MenuItem>
               <MenuItem value="Past 30m" sx={classes.optionStyle}>
                 Past 30m
-              </MenuItem>
-              <MenuItem value="Past 1h" sx={classes.optionStyle}>
-                Past 1h
-              </MenuItem>
-              <MenuItem value="Past 3h" sx={classes.optionStyle}>
-                Past 3h
-              </MenuItem>
-              <MenuItem value="Past 12h" sx={classes.optionStyle}>
-                Past 12h
-              </MenuItem>
-              <MenuItem value="Past 2d" sx={classes.optionStyle}>
-                Past 2d
-              </MenuItem>
-              <MenuItem value="Past 30d" sx={classes.optionStyle}>
-                Past 30d
               </MenuItem>
             </Select>
           </Box>
@@ -274,34 +249,6 @@ const Dashboard = () => {
         break;
       case "Past 30m":
         startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 1h":
-        startDate = now.clone().subtract(1, "hour").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 3h":
-        startDate = now.clone().subtract(3, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 6h":
-        startDate = now.clone().subtract(6, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 12h":
-        startDate = now.clone().subtract(12, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 24h":
-        startDate = now.clone().subtract(24, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 2d":
-        startDate = now.clone().subtract(2, "days").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30d":
-        startDate = now.clone().subtract(30, "days").toISOString();
         endDate = now.toISOString();
         break;
       default:

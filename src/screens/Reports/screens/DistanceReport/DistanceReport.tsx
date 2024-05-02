@@ -41,7 +41,7 @@ const DistanceReport = (props: CustomProps) => {
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
-  const [selectedRange, setSelectedRange] = useState("Past 30m");
+  const [selectedRange, setSelectedRange] = useState("Past 1h");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [filterData, setFilterData] = useState<any>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -74,22 +74,6 @@ const DistanceReport = (props: CustomProps) => {
     const now = moment();
     let startDate, endDate;
     switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
       case "Past 1h":
         startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
@@ -285,16 +269,6 @@ const DistanceReport = (props: CustomProps) => {
           }}
         >
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Typography
-              sx={{
-                display: "flex",
-                gap: "1rem",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}
-            >
-              Duration
-            </Typography>
             <Select
               id="campaigns_interval_dropdown"
               sx={classes.dropDownStyle}
@@ -304,18 +278,6 @@ const DistanceReport = (props: CustomProps) => {
               inputProps={{ "aria-label": "Without label" }}
               renderValue={() => selectedRange}
             >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
               <MenuItem value="Past 1h" sx={classes.optionStyle}>
                 Past 1h
               </MenuItem>

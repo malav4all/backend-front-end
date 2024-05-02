@@ -28,7 +28,7 @@ const AlertReport = () => {
   const [filterData, setFilterData] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedRange, setSelectedRange] = useState("Past 30m");
+  const [selectedRange, setSelectedRange] = useState("Past 1h");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
@@ -44,22 +44,6 @@ const AlertReport = () => {
     const now = moment();
     let startDate, endDate;
     switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
       case "Past 1h":
         startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
@@ -277,18 +261,6 @@ const AlertReport = () => {
               inputProps={{ "aria-label": "Without label" }}
               renderValue={() => selectedRange}
             >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
               <MenuItem value="Past 1h" sx={classes.optionStyle}>
                 Past 1h
               </MenuItem>
