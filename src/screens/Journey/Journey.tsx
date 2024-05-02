@@ -128,7 +128,7 @@ const Journey = () => {
       newValue?.value?._id &&
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
+      setFinalLocationIds(prevIds => [...prevIds, newValue?.value?._id]);
       setCoordinatesArray((prev: any) => [
         ...prev,
         {
@@ -513,7 +513,7 @@ const Journey = () => {
   const inputSection = () => {
     return (
       <>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} direction="column">
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
             <CustomInput
               label="Journey Name"
@@ -526,169 +526,188 @@ const Journey = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <Box>
-              <InputLabel sx={classes.inputLabel} shrink>
-                Start Location
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-
-              <Autocomplete
-                sx={classes.emailDropDownStyle}
-                id="update_user_manager_field"
-                options={
-                  tableData
-                    ?.filter(
-                      (tItem) =>
-                        !Object.values(selectedValues).find(
-                          (selected: any) => selected?.value === tItem
-                        )
-                    )
-                    .map((item: any) => ({
-                      key: item._id,
-                      label: `${item.name} - ${item.description}`,
-                      value: item,
-                    })) || []
-                }
-                onChange={(event, newValue) =>
-                  handleAutocompleteChange(newValue, "startLocation")
-                }
-                renderInput={(params) => {
-                  const InputProps = { ...params.InputProps };
-                  InputProps.endAdornment = null;
-                  return (
-                    <TextField
-                      sx={classes.select}
-                      {...params}
-                      name="startLocation"
-                      placeholder="Search Start location here....."
-                      onSelect={() => {}}
-                      InputProps={InputProps}
-                    />
-                  );
-                }}
-              />
-            </Box>
-          </Grid>
-
-          {locationData?.map((item: any, index: number) => (
-            <>
-              <Grid item xs={12} sm={3} md={2.5} lg={2.5} xl={2.5} key={index}>
-                <Box>
-                  <InputLabel sx={classes.inputLabel} shrink>
-                    {item.name}
-                    <Box ml={0.4} sx={classes.star}>
-                      *
-                    </Box>
-                  </InputLabel>
-                  <Box>
-                    <Autocomplete
-                      sx={classes.emailDropDownStyle}
-                      id={`location-${item._id}`}
-                      options={
-                        tableData
-                          ?.filter(
-                            (tItem) =>
-                              !Object.values(selectedValues).find(
-                                (selected: any) => selected?.value === tItem
-                              )
-                          )
-                          .map((tItem: any) => ({
-                            key: tItem._id,
-                            label: `${tItem.name} - ${tItem.description}`,
-                            value: tItem,
-                          })) || []
-                      }
-                      onChange={(event, newValue) =>
-                        handleAutocompleteChange(newValue, item.name)
-                      }
-                      renderInput={(params) => {
-                        const InputProps = { ...params.InputProps };
-                        InputProps.endAdornment = null;
-                        return (
-                          <TextField
-                            sx={classes.select}
-                            {...params}
-                            name={`location-${item._id}`}
-                            placeholder="Search Start location here....."
-                            onSelect={() => {}}
-                            InputProps={InputProps}
-                          />
-                        );
-                      }}
-                    />
+          <Stack
+            sx={{
+              display: "flex",
+              height: "250px",
+              overflowY: "scroll",
+              padding: "0.5rem",
+            }}
+          >
+            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4} mt={4}>
+              <Box>
+                <InputLabel sx={classes.inputLabel} shrink>
+                  Start Location
+                  <Box ml={0.4} sx={classes.star}>
+                    *
                   </Box>
-                </Box>
-              </Grid>
+                </InputLabel>
 
-              <Grid
-                item
-                xs={0.5}
-                sm={0.5}
-                md={0.5}
-                lg={0.5}
-                xl={0.5}
-                key={index}
-              >
-                <DeleteIcon
-                  style={{ marginTop: "40px" }}
-                  onClick={() =>
-                    setLocationData(
-                      locationData.filter((_: any, i: any) => i !== index)
-                    )
+                <Autocomplete
+                  sx={classes.emailDropDownStyle}
+                  id="update_user_manager_field"
+                  options={
+                    tableData
+                      ?.filter(
+                        tItem =>
+                          !Object.values(selectedValues).find(
+                            (selected: any) => selected?.value === tItem
+                          )
+                      )
+                      .map((item: any) => ({
+                        key: item._id,
+                        label: `${item.name} - ${item.description}`,
+                        value: item,
+                      })) || []
                   }
+                  onChange={(event, newValue) =>
+                    handleAutocompleteChange(newValue, "startLocation")
+                  }
+                  renderInput={params => {
+                    const InputProps = { ...params.InputProps };
+                    InputProps.endAdornment = null;
+                    return (
+                      <TextField
+                        sx={classes.select}
+                        {...params}
+                        name="startLocation"
+                        placeholder="Search Start location here....."
+                        onSelect={() => {}}
+                        InputProps={InputProps}
+                      />
+                    );
+                  }}
                 />
-              </Grid>
-            </>
-          ))}
+              </Box>
+            </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <Box>
-              <InputLabel sx={classes.inputLabel} shrink>
-                End Location
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Autocomplete
-                sx={classes.emailDropDownStyle}
-                id="update_user_manager_field"
-                options={
-                  tableData
-                    ?.filter(
-                      (tItem) =>
-                        !Object.values(selectedValues).find(
-                          (selected: any) => selected?.value === tItem
-                        )
-                    ) // Filter out selected values
-                    .map((item: any) => ({
-                      key: item._id,
-                      label: `${item.name} - ${item.description}`,
-                      value: item,
-                    })) || []
-                }
-                onChange={(event, newValue) =>
-                  handleAutocompleteChange(newValue, "endLocation")
-                }
-                renderInput={(params) => {
-                  const InputProps = { ...params.InputProps };
-                  InputProps.endAdornment = null;
-                  return (
-                    <TextField
-                      sx={classes.select}
-                      {...params}
-                      name="endLocation"
-                      placeholder="Search End location here....."
-                      onSelect={() => {}}
-                      InputProps={InputProps}
-                    />
-                  );
-                }}
-              />
-            </Box>
-          </Grid>
+            {locationData?.map((item: any, index: number) => (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={3}
+                  md={3}
+                  lg={3}
+                  xl={3}
+                  ml={4}
+                  mt={2}
+                  key={index}
+                >
+                  <Box>
+                    <InputLabel sx={classes.inputLabel} shrink>
+                      {item.name}
+                      <Box ml={0.4} sx={classes.star}>
+                        *
+                      </Box>
+                    </InputLabel>
+                    <Box>
+                      <Autocomplete
+                        sx={classes.emailDropDownStyle}
+                        id={`location-${item._id}`}
+                        options={
+                          tableData
+                            ?.filter(
+                              tItem =>
+                                !Object.values(selectedValues).find(
+                                  (selected: any) => selected?.value === tItem
+                                )
+                            )
+                            .map((tItem: any) => ({
+                              key: tItem._id,
+                              label: `${tItem.name} - ${tItem.description}`,
+                              value: tItem,
+                            })) || []
+                        }
+                        onChange={(event, newValue) =>
+                          handleAutocompleteChange(newValue, item.name)
+                        }
+                        renderInput={params => {
+                          const InputProps = { ...params.InputProps };
+                          InputProps.endAdornment = null;
+                          return (
+                            <TextField
+                              sx={classes.select}
+                              {...params}
+                              name={`location-${item._id}`}
+                              placeholder="Search Start location here....."
+                              onSelect={() => {}}
+                              InputProps={InputProps}
+                            />
+                          );
+                        }}
+                      />
+                    </Box>
+                  </Box>
+                </Grid>
+
+                <Grid
+                  item
+                  xs={0.5}
+                  sm={0.5}
+                  md={0.5}
+                  lg={0.5}
+                  xl={0.5}
+                  key={index}
+                >
+                  <DeleteIcon
+                    style={{ marginTop: "50px" }}
+                    onClick={() =>
+                      setLocationData(
+                        locationData.filter((_: any, i: any) => i !== index)
+                      )
+                    }
+                  />
+                </Grid>
+              </Box>
+            ))}
+
+            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4} mt={2}>
+              <Box>
+                <InputLabel sx={classes.inputLabel} shrink>
+                  End Location
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+                <Autocomplete
+                  sx={classes.emailDropDownStyle}
+                  id="update_user_manager_field"
+                  options={
+                    tableData
+                      ?.filter(
+                        tItem =>
+                          !Object.values(selectedValues).find(
+                            (selected: any) => selected?.value === tItem
+                          )
+                      ) // Filter out selected values
+                      .map((item: any) => ({
+                        key: item._id,
+                        label: `${item.name} - ${item.description}`,
+                        value: item,
+                      })) || []
+                  }
+                  onChange={(event, newValue) =>
+                    handleAutocompleteChange(newValue, "endLocation")
+                  }
+                  renderInput={params => {
+                    const InputProps = { ...params.InputProps };
+                    InputProps.endAdornment = null;
+                    return (
+                      <TextField
+                        sx={classes.select}
+                        {...params}
+                        name="endLocation"
+                        placeholder="Search End location here....."
+                        onSelect={() => {}}
+                        InputProps={InputProps}
+                      />
+                    );
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Stack>
 
           {/* start data */}
           <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
@@ -801,7 +820,7 @@ const Journey = () => {
           </Box>
         )}
       </Box>
-      
+
       {isHideForm && (
         <Box
           sx={{
