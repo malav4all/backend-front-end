@@ -217,7 +217,7 @@ const DistanceReport = (props: CustomProps) => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Report..."
+        placeHolder="Search Report"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

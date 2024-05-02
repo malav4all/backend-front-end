@@ -161,7 +161,7 @@ const AlertReport = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Reports..."
+        placeHolder="Search Report"
         id="report_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
