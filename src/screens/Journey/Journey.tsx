@@ -493,7 +493,7 @@ const Journey = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search journey..."
+        placeHolder="Search Journey"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

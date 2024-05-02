@@ -157,7 +157,7 @@ const UpcomingJourney = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Upcoming Journey..."
+        placeHolder="Search Upcoming Journey"
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(

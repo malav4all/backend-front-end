@@ -105,7 +105,7 @@ const ArchivedJoruney = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Archived Journey."
+        placeHolder="Search Archived Journey"
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(

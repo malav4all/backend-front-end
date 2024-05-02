@@ -575,7 +575,7 @@ const Dashboard = () => {
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
               { name: "Status", field: "status" },
-              { name: "Last ping", field: "time" },
+              { name: "Last Ping", field: "time" },
               { name: "Action", field: "action" },
             ]}
             rows={statData}

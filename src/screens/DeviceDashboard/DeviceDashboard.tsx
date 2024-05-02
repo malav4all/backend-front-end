@@ -371,7 +371,7 @@ const DeviceDashboard = () => {
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
               { name: "Status", field: "status" },
-              { name: "Last ping", field: "time" },
+              { name: "Last Ping", field: "time" },
             ]}
             rows={filterResultes?.slice(startDeviceIndex, endDeviceIndex)}
             isRowPerPageEnable={true}
@@ -387,7 +387,7 @@ const DeviceDashboard = () => {
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
               { name: "Status", field: "status" },
-              { name: "Last ping", field: "time" },
+              { name: "Last Ping", field: "time" },
               { name: "Action", field: "action" },
             ]}
             rows={statDataTable?.slice(startDeviceIndex, endDeviceIndex)}
@@ -415,7 +415,7 @@ const DeviceDashboard = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Devices..."
+        placeHolder="Search Device"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

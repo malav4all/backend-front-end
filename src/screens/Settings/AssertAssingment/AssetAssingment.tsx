@@ -176,7 +176,7 @@ const AssetAssingment = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search asset..."
+        placeHolder="Search Asset"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

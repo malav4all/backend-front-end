@@ -227,7 +227,7 @@ const DeviceGroup = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search journey..."
+        placeHolder="Search Device Group"
         id="deviceGroup_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
