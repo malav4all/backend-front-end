@@ -91,11 +91,12 @@ const Login = () => {
   );
 
   const handleOnChangeInputField = (event: React.ChangeEvent<any>) => {
+    const newValue=event.target.value.trim();
     setFormFields({
       ...formFields,
       [event.target.name]: {
         ...formFields[event.target.name],
-        value: event.target.value,
+        value:newValue,
       },
     });
   };
