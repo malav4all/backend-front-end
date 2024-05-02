@@ -156,7 +156,6 @@ const AddFilter = (props: CustomProps) => {
     });
   };
 
-  console.log(userFormFields);
   const handleValidation = () => {
     const { isValid, errors } = validateAddFilterForm(
       userFormFields,

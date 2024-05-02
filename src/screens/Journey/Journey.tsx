@@ -119,8 +119,6 @@ const Journey = () => {
     }
   }, [searchJourney, page, rowsPerPage, searchPageNumber]);
 
-  console.log(formField);
-
   const handleOnChange = (event: React.ChangeEvent<any>) => {
     
 
