@@ -205,7 +205,7 @@ const AddDeviceGroup = (props: CustomProps) => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
-              Imei
+              Device Name
               <Box ml={0.4} sx={classes.star}>
                 *
               </Box>
