@@ -29,7 +29,7 @@ import notifiers from "../../../global/constants/NotificationConstants";
 import { CustomDialog, CustomInput } from "../../../global/components";
 import strings from "../../../global/constants/StringConstants";
 import CustomButton from "../../../global/components/NewCustomButton/CustomButton";
-import { insertUserField, validateAddUserForm } from "../AlertConfig.helpers";
+import { insertUserField, validateAddFilterForm } from "../AlertConfig.helpers";
 import { fetchGeozoneHandler } from "../../Geozone/service/geozone.service";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import moment from "moment";
@@ -156,15 +156,37 @@ const AddFilter = (props: CustomProps) => {
     });
   };
 
+  console.log(userFormFields);
+  const handleValidation = () => {
+    const { isValid, errors } = validateAddFilterForm(
+      userFormFields,
+      alertDataInput,
+      isDeviceAlert
+    );
+    setUserFormFields({ ...errors });
+    return isValid;
+  };
+
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsAlertActivated(event.target.checked);
   };
 
   const handleEventChange = (event: any) => {
+    let eventType = event.target.value;
+
     setAlertDataInput({
       ...alertDataInput,
-      event: event.target.value,
+      event: eventType,
     });
+
+    setUserFormFields((prev: any, event: any) => ({
+      ...prev,
+      eventName: {
+        ...prev.eventName,
+        value: eventType,
+        error: "",
+      },
+    }));
   };
 
   const fetchImeiData = async () => {
@@ -188,7 +210,7 @@ const AddFilter = (props: CustomProps) => {
       newValue?.value?._id &&
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds(prevIds => [...prevIds, newValue?.value?._id]);
+      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
       setAlertDataInput({
         ...alertDataInput,
         location: newValue?.value,
@@ -248,29 +270,30 @@ const AddFilter = (props: CustomProps) => {
           alertData: alertData,
         },
       };
-
-      if (props.edit) {
-        const res = await updateAlertRecord({
-          input: {
-            _id: props?.selectedUserRowData?._id,
-            ...insertUserBody,
-            createdBy: store.getState().auth.userName,
-            __typename: undefined,
-          },
-        });
-        props.handleCloseAddUserDialog(false);
-        openSuccessNotification(res?.updateAlert?.message);
-        await props.tableData?.();
-      } else {
-        const res = await addAlertConfigRecord({
-          input: {
-            ...insertUserBody,
-            createdBy: store.getState().auth.userName,
-          },
-        });
-        props.handleCloseAddUserDialog(false);
-        openSuccessNotification(res?.addAlert?.message);
-        await props.tableData?.();
+      if (handleValidation()) {
+        if (props.edit) {
+          const res = await updateAlertRecord({
+            input: {
+              _id: props?.selectedUserRowData?._id,
+              ...insertUserBody,
+              createdBy: store.getState().auth.userName,
+              __typename: undefined,
+            },
+          });
+          props.handleCloseAddUserDialog(false);
+          openSuccessNotification(res?.updateAlert?.message);
+          await props.tableData?.();
+        } else {
+          const res = await addAlertConfigRecord({
+            input: {
+              ...insertUserBody,
+              createdBy: store.getState().auth.userName,
+            },
+          });
+          props.handleCloseAddUserDialog(false);
+          openSuccessNotification(res?.addAlert?.message);
+          await props.tableData?.();
+        }
       }
     } catch (error: any) {
       openErrorNotification(
@@ -314,6 +337,23 @@ const AddFilter = (props: CustomProps) => {
   const handleDeviceGroupSelect = (e: any) => {
     const deviceGroupName = e.target.value;
     setDeviceGroupId(deviceGroupName);
+    setDeviceGroupInput(deviceGroupName);
+
+    setUserFormFields((prev: any) => ({
+      ...prev,
+      deviceGroup: {
+        ...prev.deviceGroup,
+        value: deviceGroupName,
+        error: "",
+      },
+
+      deviceName: {
+        ...prev.deviceName,
+        value: imeiData.join(", "),
+        error: "",
+      },
+    }));
+
     const matchedImeis: any = deviceGroupData?.find(
       (i: any) => i._id === deviceGroupName
     );
@@ -351,6 +391,14 @@ const AddFilter = (props: CustomProps) => {
       ...deviceGroupFromFields,
       imeiList: filteredImeis,
     });
+
+    setUserFormFields((prev: any) => ({
+      ...prev,
+      deviceName: {
+        ...prev.deviceName,
+        value: value.map((option: any) => option.labelName).join(", "),
+      },
+    }));
   };
 
   const addUserDialogBody = () => {
@@ -381,6 +429,7 @@ const AddFilter = (props: CustomProps) => {
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           />
         </Grid>
+
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
@@ -429,7 +478,7 @@ const AddFilter = (props: CustomProps) => {
                   </li>
                 );
               }}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   placeholder={
@@ -438,6 +487,11 @@ const AddFilter = (props: CustomProps) => {
                 />
               )}
             />
+            {deviceName.length === 0 && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {userFormFields.deviceName?.error}
+              </FormHelperText>
+            )}
           </Box>
         </Grid>
 
@@ -473,9 +527,9 @@ const AddFilter = (props: CustomProps) => {
                 ))}
               </Select>
 
-              {!isTruthy(userFormFields?.status?.value) && (
+              {!deviceGroupInput && (
                 <FormHelperText error sx={classes.errorStyle}>
-                  {userFormFields.status?.error}
+                  {userFormFields.deviceGroup?.error}
                 </FormHelperText>
               )}
             </Stack>
@@ -519,6 +573,11 @@ const AddFilter = (props: CustomProps) => {
                 ))}
               </Select>
             </Stack>
+            {!alertDataInput.event && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {userFormFields.eventName?.error}
+              </FormHelperText>
+            )}
           </Box>
         </Grid>
 
@@ -538,7 +597,7 @@ const AddFilter = (props: CustomProps) => {
                 options={
                   locationType
                     ?.filter(
-                      tItem =>
+                      (tItem) =>
                         !Object.values(selectedValues).find(
                           (selected: any) => selected?.value === tItem
                         )
@@ -552,7 +611,7 @@ const AddFilter = (props: CustomProps) => {
                 onChange={(event, newValue) => {
                   handleAutocompleteChange(newValue);
                 }}
-                renderInput={params => {
+                renderInput={(params) => {
                   const InputProps = { ...params.InputProps };
                   InputProps.endAdornment = null;
                   return (
@@ -568,6 +627,11 @@ const AddFilter = (props: CustomProps) => {
                   );
                 }}
               />
+              {!alertDataInput.location.name && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.startLocation?.error}
+                </FormHelperText>
+              )}
             </Box>
           </Grid>
         )}
@@ -612,6 +676,11 @@ const AddFilter = (props: CustomProps) => {
                   min: moment().format("YYYY-MM-DDTHH:mm"),
                 }}
               />
+              {!userFormFields.startDate && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.startDate?.error}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
               <CustomInput
@@ -630,6 +699,11 @@ const AddFilter = (props: CustomProps) => {
                   min: moment().format("YYYY-MM-DDTkk:mm A"),
                 }}
               />
+              {!userFormFields.endDate && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.endDate?.error}
+                </FormHelperText>
+              )}
             </Grid>
           </>
         )}
@@ -640,8 +714,8 @@ const AddFilter = (props: CustomProps) => {
               <CustomInput
                 label="Start Time"
                 type="time"
-                id="endDate"
-                name="endDate"
+                id="startAlertTime"
+                name="startAlertTime"
                 value={alertDataInput.startAlertTime}
                 onChange={(event: any) => {
                   setAlertDataInput({
@@ -650,13 +724,18 @@ const AddFilter = (props: CustomProps) => {
                   });
                 }}
               />
+              {!userFormFields.startAlertTime && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.startAlertTime?.error}
+                </FormHelperText>
+              )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
               <CustomInput
                 label="End Time"
                 type="time"
-                id="endDate"
-                name="endDate"
+                id="endAlertTime"
+                name="endAlertTime"
                 value={alertDataInput.endAlertTime}
                 onChange={(event: any) => {
                   setAlertDataInput({
@@ -665,6 +744,11 @@ const AddFilter = (props: CustomProps) => {
                   });
                 }}
               />
+              {!userFormFields.endAlertTime && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.endAlertTime?.error}
+                </FormHelperText>
+              )}
             </Grid>
           </>
         )}
