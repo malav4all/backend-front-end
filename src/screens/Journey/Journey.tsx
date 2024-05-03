@@ -634,7 +634,6 @@ const Journey = () => {
                               placeholder="Select location"
                               onSelect={() => {}}
                               InputProps={InputProps}
-                              inputProps={{ maxLength: 100 }}
                             />
                           );
                         }}
@@ -702,7 +701,6 @@ const Journey = () => {
                         name="endLocation"
                         placeholder="Select End location"
                         onSelect={() => {}}
-                        inputProps={{ maxLength: 100 }}
                         InputProps={InputProps}
                       />
                     );
