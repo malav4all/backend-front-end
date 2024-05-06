@@ -102,6 +102,8 @@ const CreateGeoZone = ({
     );
   };
 
+  console.log(formField);
+
   const geoZoneBody = () => {
     return (
       <Grid container spacing={2}>
@@ -276,6 +278,11 @@ const CreateGeoZone = ({
                 />
               )}
             />
+            {!isTruthy(formField?.zipCode.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {formField.zipCode?.error}
+              </FormHelperText>
+            )}
           </Box>
         </Grid>
 
