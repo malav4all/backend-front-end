@@ -150,8 +150,32 @@ const geozoneStyle = {
       borderRadius: "12px !important",
     },
   },
-  errorStyle:{
-    marginLeft:"14px"
-  }
+  errorStyle: {
+    marginLeft: "14px",
+  },
+  mobileNumber: {
+    width: "100%",
+    "& .MuiInputBase-input": {
+      borderRadius: "10px",
+      position: "relative",
+      background: "#ffffff",
+      padding: "12px 12px",
+      [`@media screen and (max-width: ${1370}px)`]: {
+        padding: "10px 12px",
+      },
+      "&::placeholder": {
+        ...regularFont,
+      },
+    },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      "&.Mui-focused fieldset": {
+        borderColor: "#0675f9",
+      },
+      "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline": {
+        borderColor: "dark grey",
+      },
+    },
+  },
 } as const;
 export default geozoneStyle;
