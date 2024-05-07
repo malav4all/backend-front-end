@@ -120,8 +120,6 @@ const Journey = () => {
   }, [searchJourney, page, rowsPerPage, searchPageNumber]);
 
   const handleOnChange = (event: React.ChangeEvent<any>) => {
-    
-
     if (event.target.value.length <= 50) {
       setFormField({
         ...formField,
@@ -636,6 +634,10 @@ const Journey = () => {
                         placeholder="Select Start location"
                         onSelect={handleOnChange}
                         InputProps={InputProps}
+                        error={
+                          !isTruthy(formField.startLocation.value) &&
+                          formField.startLocation.error
+                        }
                       />
                     );
                   }}
@@ -768,6 +770,10 @@ const Journey = () => {
                         placeholder="Select End location"
                         onSelect={handleOnChange}
                         InputProps={InputProps}
+                        error={
+                          !isTruthy(formField.startLocation.value) &&
+                          formField.startLocation.error
+                        }
                       />
                     );
                   }}
