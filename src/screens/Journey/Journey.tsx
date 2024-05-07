@@ -573,12 +573,20 @@ const Journey = () => {
                 name="endDate"
                 required
                 propsToInputElement={{
-                  min: moment().format("YYYY-MM-DDTkk:mm"),
+                  min: formField?.startDate?.value
+                    ? moment(formField.startDate.value)
+                        .add(1, "minutes")
+                        .format("YYYY-MM-DDTHH:mm")
+                    : moment().format("YYYY-MM-DDTHH:mm"),
                 }}
                 value={formField?.endDate?.value}
                 onChange={handleOnChange}
                 error={
-                  !isTruthy(formField?.endDate?.value) &&
+                  (!isTruthy(formField?.endDate?.value) ||
+                    formField?.endDate?.value.length >= 50 ||
+                    (formField?.startDate?.value &&
+                      formField?.endDate?.value <=
+                        formField?.startDate?.value)) &&
                   formField?.endDate?.error
                 }
               />
