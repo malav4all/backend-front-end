@@ -17,7 +17,7 @@ import {
 } from "../../../global/components";
 import addGeozone from "../../../assets/images/uploadUser.svg";
 import geozoneStyle from "../Geozone.styles";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { isTruthy, openErrorNotification } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import { getAddressDetailsByPincode } from "../service/geozone.service";
@@ -82,6 +82,28 @@ const CreateGeoZone = ({
     });
   };
 
+  const handleZipCodeChange = (e: any) => {
+    const value = e.target.value;
+    if (value.length <= 6) {
+      setFormField({
+        ...formField,
+        zipCode: {
+          value,
+          error: "",
+        },
+      });
+      fetchZipCodeHandler(value);
+    }
+  };
+
+  const myAutocompleteRef = useRef<HTMLInputElement | null>(null);
+
+  const handleClick = () => {
+    if (myAutocompleteRef.current) {
+      myAutocompleteRef.current.focus();
+    }
+  };
+
   const updateUserDialogFooter = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
@@ -101,8 +123,6 @@ const CreateGeoZone = ({
       </Grid>
     );
   };
-
-  console.log(formField);
 
   const geoZoneBody = () => {
     return (
@@ -192,6 +212,7 @@ const CreateGeoZone = ({
             )}
           </Box>
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <CustomInput
             required
@@ -256,21 +277,11 @@ const CreateGeoZone = ({
                   {...params}
                   value={formField.zipCode?.value}
                   name="assignBy"
-                  placeholder="Enter zipcode here....."
+                  ref={myAutocompleteRef}
+                  onClick={handleClick}
+                  placeholder="Enter zipcode here"
                   onSelect={() => {}}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setFormField({
-                      ...formField,
-                      zipCode: {
-                        value: value,
-                        error: "",
-                      },
-                    });
-                    if (value.length >= 6) {
-                      fetchZipCodeHandler(value);
-                    }
-                  }}
+                  onChange={handleZipCodeChange}
                   error={
                     !isTruthy(formField.zipCode.value) &&
                     formField.zipCode.error
