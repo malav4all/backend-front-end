@@ -79,7 +79,11 @@ export const validateGeoZoneForm = (formField: any) => {
     isValid = false;
   }
   if (!errors.description.value) {
-    errors.description.error = "Please add description";
+    errors.description.error = "Please enter description";
+    isValid = false;
+  }
+  if (!errors.zipCode.value) {
+    errors.zipCode.error = "Please enter zipcode";
     isValid = false;
   }
   if (!errors.mobileNumber.value) {
@@ -105,3 +109,5 @@ export const validateGeoZoneForm = (formField: any) => {
   return { isValid, errors };
 }
 
+  return { isValid, errors };
+};
