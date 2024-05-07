@@ -17,7 +17,7 @@ import {
 } from "../../../global/components";
 import addGeozone from "../../../assets/images/uploadUser.svg";
 import geozoneStyle from "../Geozone.styles";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { isTruthy, openErrorNotification } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import { getAddressDetailsByPincode } from "../service/geozone.service";
@@ -81,6 +81,28 @@ const CreateGeoZone = ({
         error: "",
       },
     });
+  };
+
+  const handleZipCodeChange = (e: any) => {
+    const value = e.target.value;
+    if (value.length <= 6) {
+      setFormField({
+        ...formField,
+        zipCode: {
+          value,
+          error: "",
+        },
+      });
+      fetchZipCodeHandler(value);
+    }
+  };
+
+  const myAutocompleteRef = useRef<HTMLInputElement | null>(null);
+
+  const handleClick = () => {
+    if (myAutocompleteRef.current) {
+      myAutocompleteRef.current.focus();
+    }
   };
 
   const updateUserDialogFooter = () => {
@@ -225,6 +247,7 @@ const CreateGeoZone = ({
             </Box>
           </Stack>
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
