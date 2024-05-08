@@ -105,9 +105,5 @@ export const validateGeoZoneForm = (formField: any) => {
     errors.zipCode.error = "Please enter zipcode";
     isValid = false;
   }
-  
-  return { isValid, errors };
-}
-
-  return { isValid, errors };
+    return { isValid, errors };
 };
