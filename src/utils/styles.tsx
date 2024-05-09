@@ -37,7 +37,7 @@ const completeChipBackgroundColor = "#E7EEBD";
 const activeMenuBackgroundColor = "#f1edff";
 const cardBorderColor = "#f0f5f5";
 const warningColor = "red";
-
+const primaryBorderColor = "#E7E7E7";
 const mainContainer: CSSProperties = {
   margin: "20px",
 };
@@ -288,5 +288,6 @@ export {
   completeChipBackgroundColor,
   warningColor,
   cardBorderColor,
+  primaryBorderColor,
   activeMenuBackgroundColor,
 };
