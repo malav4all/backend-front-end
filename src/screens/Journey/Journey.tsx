@@ -55,7 +55,9 @@ import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { IoMdAddCircle } from "react-icons/io";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const Journey = () => {
   const classes = journeyStyles;
@@ -528,6 +530,26 @@ const Journey = () => {
     );
   };
 
+  const handleStartDate = (event: Date | null) => {
+    setFormField({
+      ...formField,
+      startDate: {
+        value: event,
+        error: "",
+      },
+    });
+  };
+
+  const handleEndDate = (event: Date | null) => {
+    setFormField({
+      ...formField,
+      endDate: {
+        value: event,
+        error: "",
+      },
+    });
+  };
+
   const inputSection = () => {
     return (
       <>
@@ -546,50 +568,69 @@ const Journey = () => {
             </Grid>
 
             <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-              <CustomInput
-                label="Start Date"
-                type="datetime-local"
-                id="scheduleTime"
-                name="startDate"
-                required
-                propsToInputElement={{
-                  min: moment().format("YYYY-MM-DDTkk:mm"),
-                }}
-                value={formField?.startDate?.value}
-                onChange={handleOnChange}
-                error={
-                  (!isTruthy(formField?.startDate?.value) ||
-                    formField?.startDate?.value.length >= 50) &&
-                  formField?.startDate?.error
-                }
-              />
+              <Stack direction="column">
+                <InputLabel sx={classes.inputLabel} shrink>
+                  Start Date
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+                <Box>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      value={formField?.startDate?.value}
+                      onChange={handleStartDate}
+                      format="dd/MM/yyyy hh:mm a"
+                      ampm={true}
+                      slotProps={{
+                        textField: {
+                          sx: classes.datePicker,
+                          variant: "outlined",
+                          fullWidth: true,
+                          error: isTruthy(formField?.startDate?.error),
+                          helperText: formField?.startDate?.error,
+                          inputProps: {
+                            placeholder: "DD/MM/YYYY",
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
+              </Stack>
             </Grid>
 
-            <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
-              <CustomInput
-                label="End Date"
-                type="datetime-local"
-                id="scheduleTime"
-                name="endDate"
-                required
-                propsToInputElement={{
-                  min: formField?.startDate?.value
-                    ? moment(formField.startDate.value)
-                        .add(1, "minutes")
-                        .format("YYYY-MM-DDTHH:mm")
-                    : moment().format("YYYY-MM-DDTHH:mm"),
-                }}
-                value={formField?.endDate?.value}
-                onChange={handleOnChange}
-                error={
-                  (!isTruthy(formField?.endDate?.value) ||
-                    formField?.endDate?.value.length >= 50 ||
-                    (formField?.startDate?.value &&
-                      formField?.endDate?.value <=
-                        formField?.startDate?.value)) &&
-                  formField?.endDate?.error
-                }
-              />
+            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+              <Stack direction="column">
+                <InputLabel sx={classes.inputLabel} shrink>
+                  End Date
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+                <Box>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      value={formField?.endDate?.value}
+                      onChange={handleEndDate}
+                      format="dd/MM/yyyy hh:mm a"
+                      ampm={true}
+                      slotProps={{
+                        textField: {
+                          sx: classes.datePicker,
+                          variant: "outlined",
+                          fullWidth: true,
+                          error: isTruthy(formField?.endDate?.error),
+                          helperText: formField?.endDate?.error,
+                          inputProps: {
+                            placeholder: "DD/MM/YYYY",
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
+              </Stack>
             </Grid>
           </Grid>
 
@@ -674,9 +715,6 @@ const Journey = () => {
                   <Box>
                     <InputLabel sx={classes.inputLabel} shrink>
                       {item.name.slice(0, -1) + " " + (index + 1)}
-                      <Box ml={0.4} sx={classes.star}>
-                        *
-                      </Box>
                     </InputLabel>
                     <Box>
                       <Autocomplete
