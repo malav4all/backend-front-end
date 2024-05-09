@@ -23,8 +23,8 @@ interface CustomDateRange {
 
 const Dashboard = () => {
   const initialState: any = {
-    fromDate : moment().clone().subtract(1, "month").toISOString(),
-    toDate : moment().toISOString()
+    fromDate: moment().clone().subtract(1, "month").toISOString(),
+    toDate: moment().toISOString(),
   };
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
@@ -53,7 +53,7 @@ const Dashboard = () => {
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (dateFilter) {
@@ -234,7 +234,6 @@ const Dashboard = () => {
     );
   };
 
-
   const CustomChange = () => {
     setOpenModal(true);
     setDateRange({
@@ -242,16 +241,21 @@ const Dashboard = () => {
       toDate: lastSelectedRange.endDate,
     });
   };
-  
-
 
   const handleCloseModel = () => {
     setOpenModal(false);
   };
   const datePickerChanged = () => {
+    setDateFilter({
+      startDate: dateRange.fromDate,
+      endDate: dateRange.toDate,
+    });
+    setOfflineDateFilter({
+      startDate: dateRange.fromDate,
+      endDate: dateRange.toDate,
+    });
     handleCloseModel();
   };
-
 
   const addEmailsDialogFooter = () => {
     return (
@@ -277,22 +281,16 @@ const Dashboard = () => {
       </>
     );
   };
+
   const handleDaterangeChange = (value: string, date: string) => {
-    console.log({value});
-    console.log({date})
-    // console.log({event})
     const formattedDate =
-      value && value != "Invalid Date"
-        ? moment(value).toISOString()
-        : null;
-        console.log({formattedDate});
-    const year = moment(value).format("YYYY") > "1999" ? true : false;
+      value && value != "Invalid Date" ? moment(value).toISOString() : null;
     setDateRange({
       ...dateRange,
       [date]: formattedDate,
     });
   };
-  console.log({dateRange})
+
   const customDate = () => {
     return (
       <>
@@ -372,10 +370,10 @@ const Dashboard = () => {
         startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
         break;
-        case "Custom":
-          startDate = lastSelectedRange.startDate;
-          endDate = lastSelectedRange.endDate;
-          break;
+      case "Custom":
+        startDate = lastSelectedRange.startDate;
+        endDate = lastSelectedRange.endDate;
+        break;
       default:
         startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
@@ -753,4 +751,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
