@@ -75,6 +75,14 @@ const Journey = () => {
       value: "",
       error: "",
     },
+    startLocation: {
+      value: "",
+      error: "",
+    },
+    endLocation: {
+      value: "",
+      error: "",
+    },
   });
   const [coordinatesArray, setCoordinatesArray] = useState<any>([]);
   const [isHideForm, setIsHideForm] = useState<boolean>(false);
@@ -114,14 +122,16 @@ const Journey = () => {
   }, [searchJourney, page, rowsPerPage, searchPageNumber]);
 
   const handleOnChange = (event: React.ChangeEvent<any>) => {
-    setFormField({
-      ...formField,
-      [event.target.name]: {
-        ...formField[event?.target?.name],
-        value: event?.target?.value,
-        error: "",
-      },
-    });
+    if (event.target.value.length <= 50) {
+      setFormField({
+        ...formField,
+        [event.target.name]: {
+          ...formField[event?.target?.name],
+          value: event?.target?.value,
+          error: "",
+        },
+      });
+    }
   };
 
   const handleAutocompleteChange = (newValue: any, name: string) => {
@@ -130,7 +140,7 @@ const Journey = () => {
       newValue?.value?._id &&
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
-      setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
+      setFinalLocationIds(prevIds => [...prevIds, newValue?.value?._id]);
       setCoordinatesArray((prev: any) => [
         ...prev,
         {
@@ -214,6 +224,14 @@ const Journey = () => {
             error: "",
           },
           endDate: {
+            value: "",
+            error: "",
+          },
+          endLocation: {
+            value: "",
+            error: "",
+          },
+          startLocation: {
             value: "",
             error: "",
           },
@@ -495,7 +513,7 @@ const Journey = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Journey"
+        placeHolder="Search Journey..."
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -623,9 +641,10 @@ const Journey = () => {
               height: "250px",
               overflowY: "scroll",
               padding: "0.5rem",
+              marginTop: "2rem",
             }}
           >
-            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4} mt={4}>
+            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4}>
               <Box>
                 <InputLabel sx={classes.inputLabel} shrink>
                   Start Location
@@ -640,7 +659,7 @@ const Journey = () => {
                   options={
                     tableData
                       ?.filter(
-                        (tItem) =>
+                        tItem =>
                           !Object.values(selectedValues).find(
                             (selected: any) => selected?.value === tItem
                           )
@@ -654,7 +673,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue, "startLocation")
                   }
-                  renderInput={(params) => {
+                  renderInput={params => {
                     const InputProps = { ...params.InputProps };
                     InputProps.endAdornment = null;
                     return (
@@ -663,12 +682,21 @@ const Journey = () => {
                         {...params}
                         name="startLocation"
                         placeholder="Select Start location"
-                        onSelect={() => {}}
+                        onSelect={handleOnChange}
                         InputProps={InputProps}
+                        error={
+                          !isTruthy(formField.startLocation.value) &&
+                          formField.startLocation.error
+                        }
                       />
                     );
                   }}
                 />
+                {!formField.startLocation.value && (
+                  <FormHelperText error sx={classes.errorStyle}>
+                    {formField.startLocation?.error}
+                  </FormHelperText>
+                )}
               </Box>
             </Grid>
 
@@ -696,7 +724,7 @@ const Journey = () => {
                         options={
                           tableData
                             ?.filter(
-                              (tItem) =>
+                              tItem =>
                                 !Object.values(selectedValues).find(
                                   (selected: any) => selected?.value === tItem
                                 )
@@ -710,7 +738,7 @@ const Journey = () => {
                         onChange={(event, newValue) =>
                           handleAutocompleteChange(newValue, item.name)
                         }
-                        renderInput={(params) => {
+                        renderInput={params => {
                           const InputProps = { ...params.InputProps };
                           InputProps.endAdornment = null;
                           return (
@@ -718,7 +746,7 @@ const Journey = () => {
                               sx={classes.select}
                               {...params}
                               name={`location-${item._id}`}
-                              placeholder="Select location"
+                              placeholder="Search location"
                               onSelect={() => {}}
                               InputProps={InputProps}
                             />
@@ -764,7 +792,7 @@ const Journey = () => {
                   options={
                     tableData
                       ?.filter(
-                        (tItem) =>
+                        tItem =>
                           !Object.values(selectedValues).find(
                             (selected: any) => selected?.value === tItem
                           )
@@ -778,7 +806,7 @@ const Journey = () => {
                   onChange={(event, newValue) =>
                     handleAutocompleteChange(newValue, "endLocation")
                   }
-                  renderInput={(params) => {
+                  renderInput={params => {
                     const InputProps = { ...params.InputProps };
                     InputProps.endAdornment = null;
                     return (
@@ -787,55 +815,24 @@ const Journey = () => {
                         {...params}
                         name="endLocation"
                         placeholder="Select End location"
-                        onSelect={() => {}}
+                        onSelect={handleOnChange}
                         InputProps={InputProps}
+                        error={
+                          !isTruthy(formField.startLocation.value) &&
+                          formField.startLocation.error
+                        }
                       />
                     );
                   }}
                 />
+                {!formField.endLocation.value && (
+                  <FormHelperText error sx={classes.errorStyle}>
+                    {formField.endLocation?.error}
+                  </FormHelperText>
+                )}
               </Box>
             </Grid>
           </Stack>
-
-          {/* start data */}
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Start Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="startDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-              value={formField?.startDate?.value}
-              onChange={handleOnChange}
-              error={
-                !isTruthy(formField?.startDate?.value) &&
-                formField?.startDate?.error
-              }
-            />
-          </Grid>
-
-          {/* end date */}
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="End Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="endDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-              value={formField?.endDate?.value}
-              onChange={handleOnChange}
-              error={
-                !isTruthy(formField?.endDate?.value) &&
-                formField?.endDate?.error
-              }
-            />
-          </Grid>
         </Grid>
       </>
     );

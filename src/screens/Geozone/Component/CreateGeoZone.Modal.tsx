@@ -17,11 +17,12 @@ import {
 } from "../../../global/components";
 import addGeozone from "../../../assets/images/uploadUser.svg";
 import geozoneStyle from "../Geozone.styles";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { isTruthy, openErrorNotification } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import { getAddressDetailsByPincode } from "../service/geozone.service";
 import _ from "lodash";
+import InputMask from "react-input-mask";
 
 interface GeoZoneProps {
   isOpenModal: boolean;
@@ -82,6 +83,28 @@ const CreateGeoZone = ({
     });
   };
 
+  const handleZipCodeChange = (e: any) => {
+    const value = e.target.value;
+    if (value.length <= 6) {
+      setFormField({
+        ...formField,
+        zipCode: {
+          value,
+          error: "",
+        },
+      });
+      fetchZipCodeHandler(value);
+    }
+  };
+
+  const myAutocompleteRef = useRef<HTMLInputElement | null>(null);
+
+  const handleClick = () => {
+    if (myAutocompleteRef.current) {
+      myAutocompleteRef.current.focus();
+    }
+  };
+
   const updateUserDialogFooter = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
@@ -100,6 +123,29 @@ const CreateGeoZone = ({
         </Box>
       </Grid>
     );
+  };
+  const getFormattedNumbers = (value: string) => {
+    const matches = value.match(/\d+/g);
+    let number = "";
+    if (matches !== null) {
+      matches.forEach((match) => {
+        number += match;
+      });
+    }
+    if (number.length === 10) {
+      value = number.replace(/^(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    }
+    return { number: number, maskedNumber: value };
+  };
+  const handleMaskInputChange = (event: React.ChangeEvent<any>) => {
+    const response = getFormattedNumbers(event.target.value);
+    setFormField({
+      ...formField,
+      [event.target.name]: {
+        ...formField[event.target.name],
+        value: response.number,
+      },
+    });
   };
 
   const geoZoneBody = () => {
@@ -155,6 +201,7 @@ const CreateGeoZone = ({
             label="Name"
             id="Name"
             placeHolder="Enter Name"
+            maxLength={100}
             name="name"
             value={formField?.name?.value}
             error={formField?.name?.error}
@@ -162,49 +209,46 @@ const CreateGeoZone = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
-            <Box display={"flex"}>
-              <Typography sx={classes.label}>Description </Typography>
-              <Typography sx={classes.star}>*</Typography>
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Stack direction="column">
+            <InputLabel sx={classes.inputLabel} shrink>
+              Mobile Number
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+            <Box>
+              <InputMask
+                mask="999 999 9999"
+                name="mobileNumber"
+                placeholder="(999) 999-9999"
+                value={formField?.mobileNumber?.value}
+                onChange={handleMaskInputChange}
+              >
+                {() => (
+                  <TextField
+                    required
+                    id="mobile-number"
+                    sx={classes.mobileNumber}
+                    placeholder="(999) 999-9999"
+                    value={formField?.mobileNumber?.value}
+                    onChange={handleMaskInputChange}
+                    name="mobileNumber"
+                    error={formField?.mobileNumber?.error}
+                  />
+                )}
+              </InputMask>
+              {!isTruthy(formField?.mobileNumber?.value) &&
+                formField?.mobileNumber?.error && (
+                  <FormHelperText error sx={{ ml: "14px" }}>
+                    {formField?.mobileNumber?.error}
+                  </FormHelperText>
+                )}
             </Box>
-            <TextField
-              multiline
-              minRows={3}
-              inputProps={{ maxLength: 500 }}
-              sx={classes.testAreaStyle}
-              name="description"
-              id="comment"
-              placeholder="Enter your description"
-              value={formField?.description?.value}
-              error={
-                !isTruthy(formField?.description?.value) &&
-                formField?.description?.error
-              }
-              onChange={handleOnChange}
-            />
-            {!isTruthy(formField?.description?.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {formField?.description?.error}
-              </FormHelperText>
-            )}
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            type="number"
-            label="Mobile Number"
-            id="mobileNo"
-            name="mobileNumber"
-            placeHolder="Enter Mobile Number"
-            error={formField?.mobileNumber?.error}
-            value={formField?.mobileNumber?.value}
-            onChange={handleOnChange}
-          />
+          </Stack>
         </Grid>
 
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Box>
             <InputLabel sx={classes.inputLabel} shrink>
               Zip Code
@@ -214,7 +258,7 @@ const CreateGeoZone = ({
             </InputLabel>
             <Autocomplete
               sx={classes.emailDropDownStyle}
-              id="update_user_manager_field"
+              id="zipCode"
               options={
                 zipCodeDate?.map((item: any) => ({
                   label: `${item.Pincode} - ${item.Country} - ${item.State} - ${item.Name} - ${item.Block} - ${item.District}`,
@@ -224,26 +268,14 @@ const CreateGeoZone = ({
               onChange={(event, newValue) => {
                 setFormField({
                   ...formField,
-                  country: {
-                    value: newValue?.value?.Country,
-                  },
-                  state: {
-                    value: newValue?.value?.State,
-                  },
-                  area: {
-                    value: newValue?.value?.Name,
-                  },
-                  district: {
-                    value: newValue?.value?.District,
-                  },
-                  city: {
-                    value: newValue?.value?.Block,
-                  },
-                  zipCode: {
-                    value: newValue?.value?.Pincode,
-                  },
+                  country: { value: newValue?.value?.Country },
+                  state: { value: newValue?.value?.State },
+                  area: { value: newValue?.value?.Name },
+                  district: { value: newValue?.value?.District },
+                  city: { value: newValue?.value?.Block },
+                  zipCode: { value: newValue?.value?.Pincode },
                   address: {
-                    value: `${newValue?.value?.Country} - ${newValue?.value?.State}-${newValue?.value?.Name}-${newValue?.value?.District}-${newValue?.value?.Block}`,
+                    value: `${newValue?.value?.Country} - ${newValue?.value?.State} - ${newValue?.value?.Name} - ${newValue?.value?.District} - ${newValue?.value?.Block}`,
                   },
                 });
               }}
@@ -253,18 +285,21 @@ const CreateGeoZone = ({
                   sx={classes.select}
                   {...params}
                   value={formField.zipCode?.value}
-                  name="assignBy"
-                  placeholder="Enter zipcode here....."
+                  name="zipCode"
+                  placeholder="Enter Zipcode"
                   onSelect={() => {}}
                   onChange={(e) => {
+                    const regex = /^\D*\d{0,6}\D*$/;
                     const value = e.target.value;
-                    setFormField({
-                      ...formField,
-                      zipCode: {
-                        value: value,
-                        error: "",
-                      },
-                    });
+                    if (regex.test(value)) {
+                      setFormField({
+                        ...formField,
+                        zipCode: {
+                          value: value,
+                          error: "",
+                        },
+                      });
+                    }
                     if (value.length >= 6) {
                       fetchZipCodeHandler(value);
                     }
@@ -276,6 +311,12 @@ const CreateGeoZone = ({
                 />
               )}
             />
+
+            {!isTruthy(formField?.zipCode?.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {formField?.zipCode?.error}
+              </FormHelperText>
+            )}
           </Box>
         </Grid>
 
@@ -348,8 +389,8 @@ const CreateGeoZone = ({
           </Box>
           <TextField
             multiline
-            minRows={3}
-            inputProps={{ maxLength: 500 }}
+            minRows={2}
+            inputProps={{ maxLength: 300 }}
             sx={classes.testAreaStyle}
             name="address"
             id="address"
@@ -365,6 +406,34 @@ const CreateGeoZone = ({
               {formField.address?.error}
             </FormHelperText>
           )}
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
+            <Box display={"flex"}>
+              <Typography sx={classes.label}>Description </Typography>
+              <Typography sx={classes.star}>*</Typography>
+            </Box>
+            <TextField
+              multiline
+              minRows={2}
+              inputProps={{ maxLength: 300 }}
+              sx={classes.testAreaStyle}
+              name="description"
+              id="comment"
+              placeholder="Enter Description"
+              value={formField?.description?.value}
+              error={
+                !isTruthy(formField?.description?.value) &&
+                formField?.description?.error
+              }
+              onChange={handleOnChange}
+            />
+            {!isTruthy(formField?.description?.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {formField?.description?.error}
+              </FormHelperText>
+            )}
+          </Box>
         </Grid>
       </Grid>
     );

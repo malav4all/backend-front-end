@@ -23,6 +23,14 @@ export const validateJourneyForm = (formField: any) => {
     errors.endDate.error = "Please enter journey end date";
     isValid = false;
   }
+  if (!errors?.startLocation.value) {
+    errors.startLocation.error = "Please enter start location";
+    isValid = false;
+  }
+  if (!errors?.endLocation.value) {
+    errors.endLocation.error = "Please enter end location";
+    isValid = false;
+  }
 
   return { isValid, errors };
 };

@@ -195,17 +195,6 @@ const journeyStyles = {
     fontSize: "14px",
     ...regularFont,
   },
-  nameField: {
-    ...boldFont,
-    fontSize : getRelativeFontSize(),
-    color : "#202730",
-    display:"flex",
-  },
-  CustomRequired: {
-    color: "#24CBC7",
-    ...regularFont,
-    marginRight: "7px",
-  },
   datePicker: {
     width: "100%",
     "& .MuiInputBase-input": {

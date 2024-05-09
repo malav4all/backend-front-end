@@ -43,56 +43,107 @@ export const insertUserField = (data?: any) => {
       value: data?.mobileNo ?? "",
       error: "",
     },
+    deviceGroup: {
+      value: data?.deviceGroupInput ?? "",
+      error: "",
+    },
+    deviceName:{
+      value: data?.deviceName ?? "",
+      error: ""
+    },
+    eventName: {
+      value: data?.eventName ?? "",
+      error: ""
+    },
+    startLocation: {
+      value: data?.startLocation ?? "",
+      error: "",
+    },
+    startDate: {
+      value: data?.startDate ?? "",
+      error: "",
+    },
+    endDate: {
+      value: data?.endDate ?? "",
+      error: "",
+    },
+    startAlertTime: {
+      value: data?.startAlertTime ?? "",
+      error: "",
+    },
+    endAlertTime: {
+      value: data?.endAlertTime ?? "",
+      error: "",
+    },
   } as any;
 };
 
-export const validateAddUserForm = (userFormFields: any, edit = false) => {
+export const validateAddFilterForm = (
+  userFormFields: any,
+  alertDataInput: any,
+  isDeviceAlert: any,
+  edit = false
+) => {
   let isValid = true;
   let errors: any = { ...userFormFields };
-  if (!errors?.firstName?.value) {
-    errors.firstName.error = "Please enter first name";
+
+  if (!errors?.alertName?.value) {
+    errors.alertName.error = "Please enter Alert Name";
     isValid = false;
   }
 
-  if (!errors?.lastName?.value) {
-    errors.lastName.error = "Please enter last name";
+  if (!errors?.mobileNo?.value) {
+    errors.mobileNo.error = "Please enter Mobile Number";
     isValid = false;
-  }
-
-  if (!errors?.email?.value) {
-    errors.email.error = "Please enter email";
-    isValid = false;
-  }
-
-  if (!errors.mobileNumber.value) {
-    errors.mobileNumber.error = "Please enter a mobile number";
-    isValid = false;
-  }
-  if (errors.mobileNumber.value) {
-    const re = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
-    if (!re.test(errors.mobileNumber.value)) {
-      errors.mobileNumber.error = "Mobile Number must be of 10 digits!";
+  } else {
+    const re = /^\d{10}$/;
+    if (!re.test(errors.mobileNo.value)) {
+      errors.mobileNo.error = "Mobile Number must be of 10 digits!";
       isValid = false;
     }
   }
 
-  if (!errors?.userName?.value) {
-    errors.userName.error = "Please enter username";
+  if (!errors?.deviceGroup?.value) {
+    errors.deviceGroup.error = "Please select device group";
     isValid = false;
   }
 
-  if (!errors?.password?.value) {
-    errors.password.error = "Please enter password";
-    isValid = edit;
-  }
-
-  if (!errors?.roleId?.value) {
-    errors.roleId.error = "Please select role";
+  if (!errors?.deviceName?.value) {
+    errors.deviceName.error = "Please select device Name";
     isValid = false;
   }
 
-  if (!errors?.status?.value) {
-    errors.status.error = "Please select status";
+  if (!errors?.eventName?.value) {
+    errors.eventName.error = "Please select Event";
+    isValid = false;
+  }
+
+  const eventName = errors.eventName.value;
+  const requiresLocationValidation = eventName === ["geo_in", "geo_out"].includes(eventName);
+
+  if (requiresLocationValidation && !errors.startLocation.value) {
+    errors.startLocation.error = "Please select a location";
+    isValid = false;
+  }
+
+  const requiresDateAndTimeValidation = eventName === ["locked", "unlocked","other"].includes(eventName);
+  if (requiresDateAndTimeValidation && !errors.startDate.value) {
+    errors.startDate.error = "Please select start date";
+    isValid = false;
+  }
+
+  if (requiresDateAndTimeValidation && !errors.endDate.value) {
+    errors.endDate.error = "Please select end date";
+    isValid = false;
+  }
+
+  if (requiresDateAndTimeValidation && !errors.endAlertTime.value) {
+    errors.endAlertTime.error = "Please select end time";
+    isValid = false;
+  }
+
+  if (requiresDateAndTimeValidation && !errors.startAlertTime.value) {
+    errors.startAlertTime.error = "Please select start time";
     isValid = false;
   }
 

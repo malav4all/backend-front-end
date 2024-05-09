@@ -29,7 +29,7 @@ export const geoZoneInsertField = (data?: any) => {
       error: "",
     },
     zipCode: {
-      value: data?.address?.zipCode ?? "",
+      value: data?.zipCode ?? "",
       error: "",
     },
     country: {
@@ -79,7 +79,11 @@ export const validateGeoZoneForm = (formField: any) => {
     isValid = false;
   }
   if (!errors.description.value) {
-    errors.description.error = "Please add description";
+    errors.description.error = "Please enter description";
+    isValid = false;
+  }
+  if (!errors.zipCode.value) {
+    errors.zipCode.error = "Please enter zipcode";
     isValid = false;
   }
   if (!errors.mobileNumber.value) {
@@ -97,7 +101,9 @@ export const validateGeoZoneForm = (formField: any) => {
     errors.address.error = "Please enter address";
     isValid = false;
   }
-  
-  return { isValid, errors };
-}
-
+  if (!errors.zipCode.value) {
+    errors.zipCode.error = "Please enter zipcode";
+    isValid = false;
+  }
+    return { isValid, errors };
+};
