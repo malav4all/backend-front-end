@@ -13,8 +13,19 @@ import { alertRowData, statusDevice } from "./service/Dashboard.service";
 import { FaBell } from "react-icons/fa6";
 import CustomTable from "../../global/components/CustomTable/CustomTable";
 import { isTruthy, openErrorNotification } from "../../helpers/methods";
+import { weekValue, weekValueNextMonth } from "./DashboardData";
+import { CustomButton, CustomDialog } from "../../global/components";
+import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
+interface CustomDateRange {
+  fromDate: string;
+  toDate: string;
+}
 
 const Dashboard = () => {
+  const initialState: any = {
+    fromDate : moment().clone().subtract(1, "month").toISOString(),
+    toDate : moment().toISOString()
+  };
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const [page, setPage] = useState(1);
@@ -36,7 +47,13 @@ const Dashboard = () => {
   const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
-
+  const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
+  const [openModal, setOpenModal] = useState(false);
+  const [lastSelectedRange, setLastSelectedRange] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  
   useEffect(() => {
     const fetchData = async () => {
       if (dateFilter) {
@@ -203,6 +220,13 @@ const Dashboard = () => {
               <MenuItem value="Past 30m" sx={classes.optionStyle}>
                 Past 30m
               </MenuItem>
+              <MenuItem
+                value="Custom"
+                onClick={CustomChange}
+                sx={classes.optionStyle}
+              >
+                Custom
+              </MenuItem>
             </Select>
           </Box>
         </Grid>
@@ -210,24 +234,121 @@ const Dashboard = () => {
     );
   };
 
-  const stats = {
-    executed: {
-      title: strings.ACTIVE_JOURNEY,
-      value: statData?.totalJourney,
-      // icon: campaigns,
-      resource: strings.campaign,
-      redirection: {
-        pathname: "",
-      },
-    },
 
-    outbounds: {
-      title: "Offline Devices",
-      value: statData?.totalUser,
+  const CustomChange = () => {
+    setOpenModal(true);
+    setDateRange({
+      fromDate: lastSelectedRange.startDate,
+      toDate: lastSelectedRange.endDate,
+    });
+  };
+  
 
-      resource: strings.campaign,
-      redirection: {},
-    },
+
+  const handleCloseModel = () => {
+    setOpenModal(false);
+  };
+  const datePickerChanged = () => {
+    handleCloseModel();
+  };
+
+
+  const addEmailsDialogFooter = () => {
+    return (
+      <>
+        <Box mt={3} width={"100%"} mb={3}>
+          <Box sx={classes.buttonWrapper} gap={3}>
+            <CustomButton
+              label="Cancel"
+              onClick={() => handleCloseModel()}
+              customClasses={{ width: "110px" }}
+              // variant={"outlined"}
+            />
+            <CustomButton
+              label={"Submit"}
+              onClick={() => {
+                datePickerChanged();
+              }}
+              customClasses={{ width: "110px" }}
+              // buttonType={"contained"}
+            />
+          </Box>
+        </Box>
+      </>
+    );
+  };
+  const handleDaterangeChange = (value: string, date: string) => {
+    console.log({value});
+    console.log({date})
+    // console.log({event})
+    const formattedDate =
+      value && value != "Invalid Date"
+        ? moment(value).toISOString()
+        : null;
+        console.log({formattedDate});
+    const year = moment(value).format("YYYY") > "1999" ? true : false;
+    setDateRange({
+      ...dateRange,
+      [date]: formattedDate,
+    });
+  };
+  console.log({dateRange})
+  const customDate = () => {
+    return (
+      <>
+        <Box
+          mt={5}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box>
+            <CustomDatePicker
+              handleDaterangeChange={handleDaterangeChange}
+              dateRange={dateRange}
+              customWidth={{
+                xl: "480px",
+                lg: "480px",
+                md: "320px",
+                sm: "260px",
+                xs: "260px",
+              }}
+              toDate="toDate"
+              fromDate="fromDate"
+              labelFirst="From Date"
+              labelSecond="To Date"
+              labelWidth={{
+                xl: "250px",
+                lg: "250px",
+                md: "160px",
+                sm: "130px",
+                xs: "130px",
+              }}
+              placeholderstart="Select From Date"
+              placeholderend="Select To Date"
+            />
+          </Box>
+        </Box>
+      </>
+    );
+  };
+
+  const customDialog = () => {
+    return (
+      <CustomDialog
+        isDialogOpen={openModal}
+        handleDialogClose={handleCloseModel}
+        dialogBodyContent={customDate()}
+        dialogFooterContent={addEmailsDialogFooter()}
+        width="550px"
+        closable={true}
+        // closeIcon={true}
+        closeButtonVisibility
+        // cancelIcon={true}
+        borderRadius="33px"
+      />
+    );
   };
 
   const handleChange = (event: any) => {
@@ -251,12 +372,18 @@ const Dashboard = () => {
         startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
         break;
+        case "Custom":
+          startDate = lastSelectedRange.startDate;
+          endDate = lastSelectedRange.endDate;
+          break;
       default:
         startDate = now.clone().subtract(30, "minutes").toISOString();
         endDate = now.toISOString();
         break;
     }
-
+    if (event.target.value !== "Custom") {
+      setLastSelectedRange({ startDate, endDate });
+    }
     setDateFilter({
       startDate: startDate,
       endDate: endDate,
@@ -619,9 +746,11 @@ const Dashboard = () => {
     <Box>
       {getDashboardHeader()}
       {getDashboardBody()}
+      {customDialog()}
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
 };
 
 export default Dashboard;
+

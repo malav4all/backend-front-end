@@ -208,6 +208,12 @@ const dashboardStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
+  buttonWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    alignItem: "center",
+    alignSelf: "center",
+  },
 } as const;
 
 export default dashboardStyles;

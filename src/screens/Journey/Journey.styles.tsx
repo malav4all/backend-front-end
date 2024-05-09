@@ -195,6 +195,33 @@ const journeyStyles = {
     fontSize: "14px",
     ...regularFont,
   },
+  nameField: {
+    ...boldFont,
+    fontSize : getRelativeFontSize(),
+    color : "#202730",
+    display:"flex",
+  },
+  CustomRequired: {
+    color: "#24CBC7",
+    ...regularFont,
+    marginRight: "7px",
+  },
+  datePicker: {
+    width: "100%",
+    "& .MuiInputBase-input": {
+      borderRadius: "10px",
+      position: "relative",
+      padding: "12px 12px",
+      backgroundColor: "#FFFFFF",
+    },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+      borderColor: "#E7E7E7",
+      "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline":{
+        borderColor :"#E7E7E7",
+      } 
+    },
+  },
 };
 
 export default journeyStyles;

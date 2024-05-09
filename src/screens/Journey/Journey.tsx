@@ -55,7 +55,9 @@ import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { IoMdAddCircle } from "react-icons/io";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const Journey = () => {
   const classes = journeyStyles;
@@ -510,21 +512,109 @@ const Journey = () => {
     );
   };
 
+  const handleStartDate = (event: Date | null) => {
+    setFormField({
+      ...formField,
+      startDate: {
+        value: event,
+        error: "",
+      },
+    });
+  };
+
+  const handleEndDate = (event: Date | null) => {
+    setFormField({
+      ...formField,
+      endDate: {
+        value: event,
+        error: "",
+      },
+    });
+  };
+
   const inputSection = () => {
     return (
       <>
         <Grid container spacing={4} direction="column">
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Journey Name"
-              placeHolder="Enter Journey name"
-              value={formField?.journeyName?.value}
-              maxLength={100}
-              required
-              name="journeyName"
-              onChange={handleOnChange}
-              error={formField?.journeyName?.error}
-            />
+          <Grid item sx={{ display: "flex", gap: "1rem" }}>
+            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+              <CustomInput
+                label="Journey Name"
+                placeHolder="Enter Journey name"
+                value={formField?.journeyName?.value}
+                maxLength={100}
+                required
+                name="journeyName"
+                onChange={handleOnChange}
+                error={formField?.journeyName?.error}
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+              <Stack direction="column">
+                <InputLabel sx={classes.inputLabel} shrink>
+                  Start Date
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+                <Box>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      value={formField?.startDate?.value}
+                      onChange={handleStartDate}
+                      format="dd/MM/yyyy hh:mm a"
+                      ampm={true}
+                      slotProps={{
+                        textField: {
+                          sx: classes.datePicker,
+                          variant: "outlined",
+                          fullWidth: true,
+                          error: isTruthy(formField?.startDate?.error),
+                          helperText: formField?.startDate?.error,
+                          inputProps: {
+                            placeholder: "DD/MM/YYYY",
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+              <Stack direction="column">
+                <InputLabel sx={classes.inputLabel} shrink>
+                  End Date
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+                <Box>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                      value={formField?.endDate?.value}
+                      onChange={handleEndDate}
+                      format="dd/MM/yyyy hh:mm a"
+                      ampm={true}
+                      slotProps={{
+                        textField: {
+                          sx: classes.datePicker,
+                          variant: "outlined",
+                          fullWidth: true,
+                          error: isTruthy(formField?.endDate?.error),
+                          helperText: formField?.endDate?.error,
+                          inputProps: {
+                            placeholder: "DD/MM/YYYY",
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
+              </Stack>
+            </Grid>
           </Grid>
 
           <Stack
@@ -597,10 +687,7 @@ const Journey = () => {
                 >
                   <Box>
                     <InputLabel sx={classes.inputLabel} shrink>
-                      {item.name}
-                      <Box ml={0.4} sx={classes.star}>
-                        *
-                      </Box>
+                      {item.name.slice(0, -1) + " " + (index + 1)}
                     </InputLabel>
                     <Box>
                       <Autocomplete
