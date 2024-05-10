@@ -44,6 +44,8 @@ import { MultiInputTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputTime
 import { insertDeviceGroupField } from "../../DeviceGroup/DeviceGroupTypeAndValidation";
 import { fetchAssetAssingmentDataHandler } from "../../Settings/AssertAssingment/service/AssetAssingment.service";
 import { fetchDeviceGroup } from "../../DeviceGroup/service/DeviceGroup.service";
+import { Card, CardContent,  IconButton, CardActions } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -380,6 +382,24 @@ const AddFilter = (props: CustomProps) => {
     }
   };
 
+  const AlertDataCard = ({ data, onDelete }: any) => {
+    return (
+      <Card variant="outlined" sx={classes.alertCardStyle}>
+        <Box position="absolute" top={0} right={0} p={1}>
+          <IconButton onClick={onDelete} aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography variant="subtitle1">Event: {data.event}</Typography>
+          {data.location.name && <Typography variant="subtitle1">Location: {data.location.name}</Typography>}
+          {data.startDate && <Typography variant="subtitle1">Start Date: {data.startDate}</Typography>}
+          {data.endDate && <Typography variant="subtitle1">End Date: {data.endDate}</Typography>}
+        </CardContent>
+      </Card>
+    );
+  };
+  
   const handleChange = (event: any, value: any) => {
     const filteredValues = value?.filter((v: any) => typeof v !== "string");
     setDeviceName(filteredValues?.map((option: any) => option?.imei));
@@ -751,8 +771,18 @@ const AddFilter = (props: CustomProps) => {
             </Grid>
           </>
         )}
+<Grid container spacing={2} sx={{ padding: "1rem" }}>
+  {alertData.map((item:any, index:any) => (
+    <Grid item xs={12} sm={12} md={6} lg={6} xl={6} key={index}>
+      <AlertDataCard
+        data={item}
+        onDelete={() => setAlertData(alertData.filter((_:any, i:any) => i !== index))}
+      />
+    </Grid>
+  ))}
+</Grid>
 
-        <Grid container>
+        {/* <Grid container>
           <Box sx={{ display: "flex", flexDirection: "row" }}>
             {alertData?.map((tag: any, index: any) => (
               <Chip
@@ -774,7 +804,7 @@ const AddFilter = (props: CustomProps) => {
               />
             ))}
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   };

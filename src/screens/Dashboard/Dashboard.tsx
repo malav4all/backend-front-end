@@ -58,6 +58,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       if (dateFilter) {
         try {
+          setIsLoading(true);
           const res = await alertRowData({
             input: {
               startDate: dateFilter.startDate,
@@ -84,7 +85,9 @@ const Dashboard = () => {
           );
           setAlertTableData(alertTableDataValue);
           setCount(res?.getAlertData?.paginatorInfo?.count);
+          setIsLoading(false);
         } catch (error: any) {
+          setIsLoading(false);
           openErrorNotification(error.message);
         }
       }
@@ -100,6 +103,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       if (offlineDateFilter) {
         try {
+          setIsLoading(true);
           const res = await statusDevice({
             input: {
               startDate: offlineDateFilter.startDate,
@@ -158,7 +162,9 @@ const Dashboard = () => {
             })
           );
           setStatData(deviceStatus);
+          setIsLoading(false);
         } catch (error: any) {
+          setIsLoading(false);
           openErrorNotification(error.message);
         }
       }
@@ -340,10 +346,8 @@ const Dashboard = () => {
         dialogBodyContent={customDate()}
         dialogFooterContent={addEmailsDialogFooter()}
         width="550px"
-        closable={true}
-        // closeIcon={true}
+        closable
         closeButtonVisibility
-        // cancelIcon={true}
         borderRadius="33px"
       />
     );
@@ -694,25 +698,28 @@ const Dashboard = () => {
           >
             Offline Devices
           </Typography>
-
-          <CustomTable
-            headers={[
-              { name: "Name", field: "label" },
-              { name: "IMEI", field: "imei" },
-              { name: "Status", field: "status" },
-              { name: "Last Ping", field: "time" },
-              { name: "Action", field: "action" },
-            ]}
-            rows={statData}
-            isRowPerPageEnable={false}
-            rowsPerPage={offlineLimit}
-            perPageData={offlineLimit}
-            paginationCount={offlineCount}
-            pageNumber={offlinePage}
-            setPage={setOfflinePage}
-            handlePageChange={handleStatusChangePage}
-            handlePerPageData={handlePerOfflinePageData}
-          />
+          {isLoading ? (
+            <CustomLoader />
+          ) : (
+            <CustomTable
+              headers={[
+                { name: "Name", field: "label" },
+                { name: "IMEI", field: "imei" },
+                { name: "Status", field: "status" },
+                { name: "Last Ping", field: "time" },
+                { name: "Action", field: "action" },
+              ]}
+              rows={statData}
+              isRowPerPageEnable={false}
+              rowsPerPage={offlineLimit}
+              perPageData={offlineLimit}
+              paginationCount={offlineCount}
+              pageNumber={offlinePage}
+              setPage={setOfflinePage}
+              handlePageChange={handleStatusChangePage}
+              handlePerPageData={handlePerOfflinePageData}
+            />
+          )}
         </Grid>
       </Grid>
     );
