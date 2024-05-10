@@ -263,6 +263,14 @@ const usersStyles = {
       background: "none",
     },
   },
+  alertCardStyle: {
+    width: "100%",
+    marginBottom: 2,
+    position: "relative",
+    borderRadius: "16px",
+    display: "flex",
+    flexDirection: "column",
+  },
 } as const;
 
 export default usersStyles;
