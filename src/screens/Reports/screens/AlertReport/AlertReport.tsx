@@ -10,7 +10,12 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import alertReportStyles from "./AlertReport.styles";
 import { alertRowData, statusDevice } from "./service/alertReport.service";
-import { CustomInput, CustomTable } from "../../../../global/components";
+import {
+  CustomButton,
+  CustomDialog,
+  CustomInput,
+  CustomTable,
+} from "../../../../global/components";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 import {
   debounceEventHandler,
@@ -18,7 +23,18 @@ import {
 } from "../../../../helpers/methods";
 import strings from "../../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
+import CustomDatePicker from "../../../../global/components/CustomDatePicker/CustomDatePicker";
+
+interface CustomDateRange {
+  fromDate: string;
+  toDate: string;
+}
+
 const AlertReport = () => {
+  const initialState: any = {
+    fromDate: moment().clone().subtract(1, "hour").toISOString(),
+    toDate: moment().toISOString(),
+  };
   const classes = alertReportStyles;
   const [alertTableData, setAlertTableData] = useState([]);
   const [dateFilter, setDateFilter] = useState({
@@ -32,11 +48,47 @@ const AlertReport = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
+  const [lastSelectedRange, setLastSelectedRange] = useState({
+    startDate: moment().clone().subtract(1, "hour").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
 
   useEffect(() => {
-    if (dateFilter) {
-      alertData();
-    }
+    const fetchData = async () => {
+      if (dateFilter) {
+        try {
+          const res = await alertRowData({
+            input: {
+              startDate: dateFilter.startDate,
+              endDate: dateFilter.endDate,
+              page,
+              limit,
+            },
+          });
+          const alertTableDataValue = res?.getAlertData?.data?.map(
+            (item: any) => {
+              return {
+                imei: item.imei,
+                label: item.label,
+                mode: item.mode,
+                event: item.event,
+                message: item.message,
+                source: item.source,
+                time: moment(item.time).fromNow(),
+              };
+            }
+          );
+          setAlertTableData(alertTableDataValue);
+          setCount(res?.getAlertData?.paginatorInfo?.count);
+        } catch (error: any) {
+          openErrorNotification(error.message);
+        }
+      }
+    };
+
+    fetchData();
   }, [dateFilter, page, limit]);
 
   const handleChange = (event: any) => {
@@ -78,6 +130,10 @@ const AlertReport = () => {
         break;
     }
 
+    if (event.target.value !== "Custom") {
+      setLastSelectedRange({ startDate, endDate });
+    }
+
     setDateFilter({
       startDate: startDate,
       endDate: endDate,
@@ -93,24 +149,10 @@ const AlertReport = () => {
 
   const getReportHeader = () => {
     return (
-      <Grid
-        container
-        sx={classes.header}
-        xs={12}
-        md={12}
-        lg={12}
-        xl={12}
-        width="100%"
-      >
-        <Grid
-          item
-          xs={12}
-          md={5}
-          lg={8}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
+      <Grid container sx={classes.header}>
+        <Grid item xs={12} md={5} lg={6} xl={6}>
           <Typography variant="h5" sx={classes.heading}>
-            {/* {getSearchBar()} */}
+            Alerts Reports
           </Typography>
         </Grid>
 
@@ -118,7 +160,8 @@ const AlertReport = () => {
           item
           xs={12}
           md={7}
-          lg={4}
+          lg={6}
+          xl={6}
           sx={{
             display: "flex",
             justifyContent: "flex-end",
@@ -130,6 +173,38 @@ const AlertReport = () => {
           <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
           </Typography>
+          <Select
+            id="campaigns_interval_dropdown"
+            sx={classes.dropDownStyle}
+            value={selectedRange}
+            onChange={handleChange}
+            displayEmpty
+            inputProps={{ "aria-label": "Without label" }}
+            renderValue={() => selectedRange}
+          >
+            <MenuItem value="Past 1h" sx={classes.optionStyle}>
+              Past 1h
+            </MenuItem>
+            <MenuItem value="Past 3h" sx={classes.optionStyle}>
+              Past 3h
+            </MenuItem>
+            <MenuItem value="Past 12h" sx={classes.optionStyle}>
+              Past 12h
+            </MenuItem>
+            <MenuItem value="Past 2d" sx={classes.optionStyle}>
+              Past 2d
+            </MenuItem>
+            <MenuItem value="Past 30d" sx={classes.optionStyle}>
+              Past 30d
+            </MenuItem>
+            <MenuItem
+              value="Custom"
+              onClick={CustomChange}
+              sx={classes.optionStyle}
+            >
+              Custom
+            </MenuItem>
+          </Select>
         </Grid>
       </Grid>
     );
@@ -178,37 +253,6 @@ const AlertReport = () => {
     );
   };
 
-  const alertData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await alertRowData({
-        input: {
-          startDate: dateFilter.startDate,
-          endDate: dateFilter.endDate,
-          page,
-          limit,
-        },
-      });
-
-      const alertTableDataValue = res?.getAlertData?.data?.map((item: any) => {
-        return {
-          imei: item.imei,
-          label: item.label,
-          mode: item.mode,
-          event: item.event,
-          message: item.message,
-          source: item.source,
-          time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        };
-      });
-      setAlertTableData(alertTableDataValue);
-      setCount(res?.getAlertData?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
-  };
   const getReportBody = () => {
     return (
       <Grid
@@ -233,6 +277,127 @@ const AlertReport = () => {
     setLimit(event.target.value);
   };
 
+  const CustomChange = () => {
+    setOpenModal(true);
+    setDateRange({
+      fromDate: lastSelectedRange.startDate,
+      toDate: lastSelectedRange.endDate,
+    });
+  };
+
+  const handleCloseModel = () => {
+    setOpenModal(false);
+  };
+
+  const datePickerChanged = () => {
+    setDateFilter({
+      startDate: dateRange.fromDate,
+      endDate: dateRange.toDate,
+    });
+
+    handleCloseModel();
+  };
+
+  const addEmailsDialogFooter = () => {
+    return (
+      <>
+        <Box mt={3} width={"100%"} mb={3}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItem: "center",
+              alignSelf: "center",
+            }}
+            gap={3}
+          >
+            <CustomButton
+              label="Cancel"
+              onClick={() => handleCloseModel()}
+              customClasses={{ width: "110px" }}
+              // variant={"outlined"}
+            />
+            <CustomButton
+              label={"Submit"}
+              onClick={() => {
+                datePickerChanged();
+              }}
+              customClasses={{ width: "110px" }}
+              // buttonType={"contained"}
+            />
+          </Box>
+        </Box>
+      </>
+    );
+  };
+
+  const customDialog = () => {
+    return (
+      <CustomDialog
+        isDialogOpen={openModal}
+        handleDialogClose={handleCloseModel}
+        dialogBodyContent={customDate()}
+        dialogFooterContent={addEmailsDialogFooter()}
+        width="550px"
+        closable={true}
+        // closeIcon={true}
+        closeButtonVisibility
+        // cancelIcon={true}
+        borderRadius="33px"
+      />
+    );
+  };
+
+  const handleDaterangeChange = (value: string, date: string) => {
+    const formattedDate =
+      value && value != "Invalid Date" ? moment(value).toISOString() : null;
+    setDateRange({
+      ...dateRange,
+      [date]: formattedDate,
+    });
+  };
+
+  const customDate = () => {
+    return (
+      <>
+        <Box
+          mt={5}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box>
+            <CustomDatePicker
+              handleDaterangeChange={handleDaterangeChange}
+              dateRange={dateRange}
+              customWidth={{
+                xl: "480px",
+                lg: "480px",
+                md: "320px",
+                sm: "260px",
+                xs: "260px",
+              }}
+              toDate="toDate"
+              fromDate="fromDate"
+              labelFirst="From Date"
+              labelSecond="To Date"
+              labelWidth={{
+                xl: "250px",
+                lg: "250px",
+                md: "160px",
+                sm: "130px",
+                xs: "130px",
+              }}
+              placeholderstart="Select From Date"
+              placeholderend="Select To Date"
+            />
+          </Box>
+        </Box>
+      </>
+    );
+  };
+
   const getAlertsTable = () => {
     return (
       <Box
@@ -244,41 +409,18 @@ const AlertReport = () => {
           boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
-        <Grid container xs={12} md={12} lg={12} xl={12}>
-          <Grid item xs={12} md={12} lg={12} xl={6}>
-            <Typography variant="h5" sx={classes.heading}>
-              Alerts Report
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12} md={12} lg={12} xl={6}>
-            <Select
-              id="campaigns_interval_dropdown"
-              sx={classes.dropDownStyle}
-              value={selectedRange}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              renderValue={() => selectedRange}
-            >
-              <MenuItem value="Past 1h" sx={classes.optionStyle}>
-                Past 1h
-              </MenuItem>
-              <MenuItem value="Past 3h" sx={classes.optionStyle}>
-                Past 3h
-              </MenuItem>
-              <MenuItem value="Past 12h" sx={classes.optionStyle}>
-                Past 12h
-              </MenuItem>
-              <MenuItem value="Past 2d" sx={classes.optionStyle}>
-                Past 2d
-              </MenuItem>
-              <MenuItem value="Past 30d" sx={classes.optionStyle}>
-                Past 30d
-              </MenuItem>
-            </Select>
-          </Grid>
-        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h5" sx={classes.heading}>
+            {/* Alerts Report */}
+          </Typography>
+        </Box>
 
         <Grid container>
           <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
@@ -312,6 +454,7 @@ const AlertReport = () => {
     <Box>
       {getReportHeader()}
       {getReportBody()}
+      {customDialog()}
       <CustomLoader isLoading={isLoading} />
     </Box>
   );

@@ -38,6 +38,7 @@ import notifiers from "../../global/constants/NotificationConstants";
 import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import EditIcon from "@mui/icons-material/Edit";
+import history from "../../utils/history";
 
 const DeviceGroup = () => {
   const classes = deviceGroupStyles;
@@ -71,11 +72,28 @@ const DeviceGroup = () => {
     setSearchPageNumber(newPage);
   };
 
+  const getRedirectionUrl = (_id: any) => {
+    return history.push(`/device-group/view/${_id}`);
+  };
+
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
       return {
         key: item._id,
-        deviceGroupName: item.deviceGroupName,
+        deviceGroupName: (
+          <>
+            <Tooltip
+              title="Show Imei List"
+              placement="top"
+              arrow
+              onClick={() => {
+                getRedirectionUrl(item?._id);
+              }}
+            >
+              {item?.deviceGroupName}
+            </Tooltip>
+          </>
+        ),
         createdBy: item?.createdBy,
         action: (
           <>
