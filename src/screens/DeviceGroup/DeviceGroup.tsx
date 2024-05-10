@@ -90,7 +90,19 @@ const DeviceGroup = () => {
                 getRedirectionUrl(item?._id);
               }}
             >
-              {item?.deviceGroupName}
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  display: "inline-block",
+                  color: "#5F22E2",
+                  fontSize: "13px",
+                  "&:hover": {
+                    borderBottom: "1px solid #5F22E2",
+                  },
+                }}
+              >
+                {item?.deviceGroupName}
+              </Typography>
             </Tooltip>
           </>
         ),
@@ -266,7 +278,7 @@ const DeviceGroup = () => {
     return (
       <CustomButton
         id="deviceGroup_add_button"
-        label={"Add Device Group"}
+        label={"Add Group"}
         onClick={() => setAddDeviceGroupDialogHandler(true)}
         customClasses={{
           width: "150px",
