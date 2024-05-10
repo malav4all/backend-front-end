@@ -183,7 +183,19 @@ const AlertConfig = () => {
                 );
               }}
             >
-              {usersData?.alertConfig?.alertImeiGroup?.deviceGroupName}
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  display: "inline-block",
+                  color: "#5F22E2",
+                  fontSize: "13px",
+                  "&:hover": {
+                    borderBottom: "1px solid #5F22E2",
+                  },
+                }}
+              >
+                {usersData?.alertConfig?.alertImeiGroup?.deviceGroupName}
+              </Typography>
             </Tooltip>
           </>
         ),

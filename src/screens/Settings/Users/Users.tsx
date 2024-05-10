@@ -137,7 +137,17 @@ const Users = () => {
                 getRedirectionUrl(usersData?.deviceGroup?._id);
               }}
             >
+              <Typography sx={{
+                  fontWeight: 600,
+                  display: "inline-block",
+                  color: "#5F22E2",
+                  fontSize: "13px",
+                  "&:hover": {
+                    borderBottom: "1px solid #5F22E2",
+                  },
+                }}>
               {usersData?.deviceGroup?.deviceGroupName}
+              </Typography>
             </Tooltip>
           </>
         ),
