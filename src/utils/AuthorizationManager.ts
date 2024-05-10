@@ -2,12 +2,15 @@
 import strings from "../global/constants/StringConstants";
 import { store } from "./store";
 import {
+  alertConfigIcon,
   assetSvg,
+  deviceGroupIcon,
   geoZoneSvg,
   getHomeIcon,
   getSettingsIcon,
   journeyIcon,
   liveSvg,
+  reportIcon,
   reportSvg,
   trackPlaySvg,
 } from "./SidebarSvgConstant";
@@ -87,8 +90,8 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: assetSvg("#dbdbdb"),
-      activeIcon: assetSvg(pinkDarkColor),
+      icon: deviceGroupIcon("#dbdbdb"),
+      activeIcon: deviceGroupIcon(pinkDarkColor),
       text: "Device Group",
       link: `${"/device-group"}`,
       pageName: strings.DEVICE_GROUP,
@@ -129,8 +132,8 @@ const ListOfMenus = () =>
       ],
     },
     {
-      icon: geoZoneSvg("#dbdbdb"),
-      activeIcon: geoZoneSvg(pinkDarkColor),
+      icon: reportIcon("#dbdbdb"),
+      activeIcon: reportIcon(pinkDarkColor),
       text: "Reports",
       link: `${"/reports"}`,
       pageName: strings.LOCATION,
@@ -173,8 +176,8 @@ const ListOfMenus = () =>
       subMenu: [],
     },
     {
-      icon: getSettingsIcon("#dbdbdb"),
-      activeIcon: getSettingsIcon(pinkDarkColor),
+      icon: alertConfigIcon("#dbdbdb"),
+      activeIcon: alertConfigIcon(pinkDarkColor),
       text: "Alert Config",
       link: `${"/alert-config"}`,
       pageName: strings.ALERT_CONFIG,
