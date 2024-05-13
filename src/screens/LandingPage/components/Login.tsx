@@ -21,7 +21,7 @@ import { useAppDispatch } from "../../../utils/hooks";
 import loginStyles from "./Login.styles";
 import { loginAction } from "../../../redux/authSlice";
 import history from "../../../utils/history";
-import { mediumFont, theme } from "../../../utils/styles";
+import { regularFont, theme } from "../../../utils/styles";
 import { CustomButton, CustomInput } from "../../../global/components";
 import { loginForm, loginValidation } from "./LoginTypesAndValidation";
 import strings from "../../../global/constants/StringConstants";
@@ -91,12 +91,12 @@ const Login = () => {
   );
 
   const handleOnChangeInputField = (event: React.ChangeEvent<any>) => {
-    const newValue=event.target.value.trim();
+    const newValue = event.target.value.trim();
     setFormFields({
       ...formFields,
       [event.target.name]: {
         ...formFields[event.target.name],
-        value:newValue,
+        value: newValue,
       },
     });
   };
@@ -171,7 +171,7 @@ const Login = () => {
     return (
       <Box sx={classes.getLoginScreen}>
         <Box mx={2}>
-          <Box>
+          <Box my={1}>
             <CustomInput
               placeHolder="Enter Email Address"
               id="email"
@@ -187,11 +187,15 @@ const Login = () => {
               }
             />
             {!emailRegex.test(formFields.email.value) &&
-              formFields.email.value.length > 0 && (
+            formFields.email.value.length > 0 ? (
+              <>
                 <FormHelperText error sx={classes.errorStyling}>
-                  Please enter valid email id
+                  Invalid email id
                 </FormHelperText>
-              )}
+              </>
+            ) : (
+              <FormHelperText>{"\u00A0"}</FormHelperText>
+            )}
           </Box>
 
           <Box>
@@ -233,16 +237,18 @@ const Login = () => {
             <Typography
               sx={{
                 textDecoration: "none",
-                ...mediumFont,
+                ...regularFont,
                 color: "black",
                 cursor: "pointer",
+                fontSize: "12px",
+                marginTop: "-0.8rem",
               }}
               onClick={forgetPassword}
             >
-              Forgot Password?
+              Forgot Password
             </Typography>
           </Box>
-          <Box mt={2}>
+          <Box mt={4}>
             <CustomButton
               label="Sign In"
               onClick={handleLogin}

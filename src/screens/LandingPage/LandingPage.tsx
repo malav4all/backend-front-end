@@ -33,6 +33,7 @@ const LandingPage = (props: CustomProps) => {
       case strings.LOGIN: {
         return <Login />;
       }
+      
       case strings.FORGOT_PASSWORD: {
         return <ForgotPassword />;
       }
@@ -88,7 +89,7 @@ const LandingPage = (props: CustomProps) => {
                 marginBottom: "1.5rem",
               }}
             >
-              <Box component="img" src={ROUTEYE_LOGO} height={"50px"} />
+              <Box component="img" src={ROUTEYE_LOGO} height={"30px"} sx={{marginBottom: "1rem"}}/>
             </Box>
 
             <Box>{getComponentBasedOnURL()}</Box>

@@ -3,6 +3,7 @@ import {
   inputLabelRequiredColor,
   mediumFont,
   pureWhiteColor,
+  semiBoldFont,
 } from "../../../utils/styles";
 
 const customInputStyles = {
@@ -25,8 +26,9 @@ const customInputStyles = {
     },
   },
   nameField: {
-    ...boldFont,
-    color: "#212121",
+    ...semiBoldFont,
+    fontSize: "14px",
+    color: "#465465",
     "& .MuiFormLabel-asterisk": {
       color: inputLabelRequiredColor,
     },

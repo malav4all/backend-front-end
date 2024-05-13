@@ -58,22 +58,40 @@ const rowItemFlex: CSSProperties = {
   justifyContent: "center",
 };
 
-const blackFont: CSSProperties = {
-  fontFamily: "Geist_Black",
-  fontWeight: 900,
-  fontStyle: "normal",
+const thinFont: CSSProperties = {
+  fontFamily: "Geist_Thin",
 };
 
-const boldFont: CSSProperties = {
-  fontFamily: "Geist_Bold",
+const ultraLightFont: CSSProperties = {
+  fontFamily: "Geist_UltraLight",
+};
+
+const lightFont: CSSProperties = {
+  fontFamily: "Geist_Light",
+};
+
+const regularFont: CSSProperties = {
+  fontFamily: "Geist_Regular",
 };
 
 const mediumFont: CSSProperties = {
   fontFamily: "Geist_Medium",
 };
 
-const regularFont: CSSProperties = {
-  fontFamily: "Geist_Regular",
+const semiBoldFont: CSSProperties = {
+  fontFamily: "Geist_SemiBold",
+};
+
+const boldFont: CSSProperties = {
+  fontFamily: "Geist_Bold",
+};
+
+const blackFont: CSSProperties = {
+  fontFamily: "Geist_Black",
+};
+
+const ultraBlackFont: CSSProperties = {
+  fontFamily: "Geist_UltraBlack",
 };
 
 
@@ -82,6 +100,11 @@ const theme = createTheme({
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
+      "Geist_Thin",
+      "Geist_UltraLight",
+      "Geist_Light",
+      "Geist_SemiBold",
+      "Geist_UltraBlack",
       "Geist_Regular",
       "Geist_Medium",
       "Geist_Bold",
@@ -103,7 +126,6 @@ const customButtonStyle: CSSProperties = {
   textAlign: "center",
   backgroundColor: purplePrimaryColor,
   padding: "10px 15px",
-  // boxShadow: " 4px 4px 30px rgba(0, 0, 0, 0.03)",
   boxShadow: "0 2px 0 rgb(0 0 0 / 2%)",
   color: "#FFFFFF",
   cursor: "pointer",
@@ -262,6 +284,11 @@ export {
   CustomSwitch,
   CustomCheckbox,
   CustomRadio,
+  thinFont,
+  ultraLightFont,
+  lightFont,
+  ultraBlackFont,
+  semiBoldFont,
   regularFont,
   blackFont,
   boldFont,
