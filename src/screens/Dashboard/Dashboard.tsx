@@ -434,7 +434,7 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
                   color: "ivory",
                 }}
@@ -477,7 +477,7 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
                   color: "ivory",
                 }}
@@ -521,7 +521,7 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
                   color: "ivory",
                 }}
@@ -566,7 +566,7 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
                   color: "ivory",
                 }}

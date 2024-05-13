@@ -46,45 +46,46 @@ const mainFlexContainer: CSSProperties = {
   flexWrap: "wrap",
   justifyContent: "space-between",
 };
-const blackFont: CSSProperties = {
-  fontFamily: "SourceSans3_Black",
-  fontWeight: 900,
-  fontStyle: "normal",
-};
-
-const boldFont: CSSProperties = {
-  fontFamily: "SourceSans3_Bold",
-  fontWeight: 700,
-};
 const leftItemFlex: CSSProperties = {
   display: "flex",
   alignItems: "left",
   justifyContent: "left",
 };
 
-const mediumFont: CSSProperties = {
-  fontFamily: "SourceSans3_Medium",
-  fontWeight: 500,
-};
 const rowItemFlex: CSSProperties = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "center",
 };
-const regularFont: CSSProperties = {
-  fontFamily: "SourceSans3_Regular",
-  fontWeight: 400,
+
+const blackFont: CSSProperties = {
+  fontFamily: "Geist_Black",
+  fontWeight: 900,
+  fontStyle: "normal",
 };
+
+const boldFont: CSSProperties = {
+  fontFamily: "Geist_Bold",
+};
+
+const mediumFont: CSSProperties = {
+  fontFamily: "Geist_Medium",
+};
+
+const regularFont: CSSProperties = {
+  fontFamily: "Geist_Regular",
+};
+
 
 const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
-      "Poppins_Regular",
-      "Poppins_Medium",
-      "Poppins_Bold",
-      "Poppins_Black",
+      "Geist_Regular",
+      "Geist_Medium",
+      "Geist_Bold",
+      "Geist_Black",
       "sans-serif",
     ].join(","),
   },

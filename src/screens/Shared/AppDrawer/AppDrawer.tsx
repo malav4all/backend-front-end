@@ -31,6 +31,7 @@ import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import LogoutIcon from "../../../assets/icons/Logout.png";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
+import ROUTEYE_LOGO_MINI from "../../../assets/images/ROUTEYE_LOGO_MINI.png"
 interface CustomProps {
   setMenuMobileVisible?: Function;
   isActive?: boolean;
@@ -256,7 +257,7 @@ const AppDrawer = (props: CustomProps) => {
     return (
       <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
-          <img src={ROUTEYE_LOGO} height="13px" />
+          <img src={ROUTEYE_LOGO_MINI} height="13px" />
         ) : (
           <img src={ROUTEYE_LOGO} height="27px" />
         )}
