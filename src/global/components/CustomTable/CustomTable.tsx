@@ -94,7 +94,7 @@ const CustomTable = (props: CustomProps) => {
       );
     return (
       <TableHead>
-        <TableRow style={{ borderRadius: "10px" }}>
+        <TableRow style={{ borderRadius: "8px" }}>
           {props.checkboxSelection && (
             <TableCell padding="checkbox" sx={classes.tableHeaderCell}>
               <Checkbox
@@ -253,7 +253,7 @@ const CustomTable = (props: CustomProps) => {
             <TableCell
               colSpan={8}
               style={{
-                border: "1px solid #F0F0F0",
+                // border: "1px solid #F0F0F0",
                 backgroundColor: "#FFFFFF",
               }}
             >

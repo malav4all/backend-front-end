@@ -3,6 +3,7 @@ import {
   getRelativeFontSize,
   regularFont,
   theme,
+  offWhiteColor,
   pureWhiteColor,
   primaryHeadingColor,
   mediumFont,
@@ -13,16 +14,16 @@ import {
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
 
 const dashboardStyles = {
-  thoughtsBox: {
-    height: "100%",
-    backgroundImage: "url(" + thoughtsbg + ") ",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-    borderRadius: "8px",
-    textAlign: "center",
-    padding: "0px",
-  },
+  // thoughtsBox: {
+  //   height: "100%",
+  //   backgroundImage: "url(" + thoughtsbg + ") ",
+  //   backgroundRepeat: "no-repeat",
+  //   backgroundSize: "cover",
+  //   boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+  //   borderRadius: "8px",
+  //   textAlign: "center",
+  //   padding: "0px",
+  // },
   campaignDate: {
     color: "#929292",
     ...mediumFont,
@@ -57,19 +58,21 @@ const dashboardStyles = {
     },
   },
   statsTitle: {
-    ...boldFont,
+    ...regularFont,
     color: textLightColor,
   },
   statsValue: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    ...regularFont,
+    fontSize: getRelativeFontSize(42),
+    lineHeight: "1",
+    marginTop: "1rem"
   },
   dropdown: {
     ...regularFont,
     ...purpleThemedSelectComponent,
     height: "40px",
     width: "200px",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: offWhiteColor,
     borderRadius: "8px",
     color: "#22222C",
     border: 0,
@@ -111,7 +114,7 @@ const dashboardStyles = {
   },
   container: {
     padding: "8px",
-    backgroundColor: "white",
+    backgroundColor: "red",
     borderRadius: "8px",
     boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
   },

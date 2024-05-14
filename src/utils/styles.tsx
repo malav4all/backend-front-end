@@ -16,11 +16,12 @@ const infoTextColor = "#888888";
 const disabledBackgroundColor = "#888888";
 const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
-const drawerWidth = 250;
+const drawerWidth = 240;
 const textLightColor = "#666666";
 const purplePrimaryColor = "#5F22E2";
 const pinkDarkColor = "#ffffff";
 const pureWhiteColor = "#ffffff";
+const offWhiteColor = "#F1F5F9";
 const primaryHeadingColor = "#001529";
 const primaryGreenColor = "#adc804";
 const primaryBlackColor = "#000000";
@@ -301,6 +302,7 @@ export {
   purplePrimaryColor,
   pinkDarkColor,
   pureWhiteColor,
+  offWhiteColor,
   primaryHeadingColor,
   primaryGreenColor,
   primaryBlue,

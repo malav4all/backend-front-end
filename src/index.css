@@ -44,45 +44,45 @@
   font-weight: 900;
 }
 
-
 body {
   margin: 0;
   font-family: Geist_Regular, Geist_Black, Geist_Bold,
   Geist_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: "#F1F5F9";
 }
 
 .MuiTableRow-root td:first-child {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-left: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
 }
 
 .MuiTableRow-root td:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
 }
 
 .MuiTableRow-head th:first-child {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-left: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
 }
 
 .MuiTableRow-head th:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
 }
 
 .MuiStepConnector-root {

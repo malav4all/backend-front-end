@@ -1,5 +1,6 @@
 import {
   boldFont,
+  borderColor,
   darkPurpledColor,
   getRelativeFontSize,
   lightPinkColor,
@@ -17,6 +18,7 @@ const customTableStyles = {
     borderSpacing: "0px",
     borderTopRadius: "5px",
     borderBottomRadius: "5px",
+    borderColor: "white",
     width: "100%",
     mt: 2,
     [theme.breakpoints.down("xl")]: {
@@ -28,11 +30,12 @@ const customTableStyles = {
     overflow: "auto",
   },
   tableHeaderCell: {
-    ...boldFont,
+    ...mediumFont,
     color: "#FFFFFF",
     backgroundColor: "#5F22E2",
-    borderTop: "1px solid #F0F0F0",
-    borderBottom: "1px solid #F0F0F0",
+    borderTop: "1px solid #ffffff",
+    borderBottom: "1px solid #ffffff",
+    padding: "0.8rem",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -40,18 +43,14 @@ const customTableStyles = {
   },
   tableCell: {
     ...regularFont,
-    fontSize: getRelativeFontSize(1),
-    height: "25px",
-    borderTop: "1px solid #F0F0F0",
-    borderBottom: "1px solid #F0F0F0",
+    fontSize: "12px",
+    padding: "0.5rem",
+    // borderBottom: "1px solid #F0F0F0",
     textAlign: "left",
   },
   tableRow: {
-    margin: "10px 0",
-    backgroundColor: "#ffffff",
-    "&:hover": {
-      cursor: "pointer",
-    },
+    margin: "0px 0",
+    backgroundColor: "white",
   },
 
   checkBoxStyle: {
@@ -69,7 +68,7 @@ const customTableStyles = {
     },
   },
   mediumFonts: {
-    ...mediumFont,
+    ...regularFont,
     fontSize: getRelativeFontSize(5),
   },
   regularFonts: {
