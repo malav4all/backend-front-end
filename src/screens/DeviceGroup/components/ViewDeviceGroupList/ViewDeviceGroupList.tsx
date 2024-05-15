@@ -190,7 +190,7 @@ const ViewDeviceGroupList = () => {
   const getHeader = () => {
     return (
       <Stack display={"flex"} alignItems={"center"} justifyContent={"s"}>
-        <Box ml={2}>
+        <Box>
           <IconButton>
             <KeyboardBackspaceIcon
               style={{ color: "#828282" }}

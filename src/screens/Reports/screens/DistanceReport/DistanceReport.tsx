@@ -98,6 +98,10 @@ const DistanceReport = (props: CustomProps) => {
         startDate = now.clone().subtract(2, "days").toISOString();
         endDate = now.toISOString();
         break;
+      case "Past 7d":
+        startDate = now.clone().subtract(7, "days").toISOString();
+        endDate = now.toISOString();
+        break;
       case "Past 30d":
         startDate = now.clone().subtract(30, "days").toISOString();
         endDate = now.toISOString();
@@ -236,15 +240,7 @@ const DistanceReport = (props: CustomProps) => {
 
   const getDashboardHeader = () => {
     return (
-      <Grid
-        container
-        sx={classes.header}
-        xs={12}
-        md={12}
-        lg={12}
-        xl={12}
-        width="100%"
-      >
+      <Grid container sx={classes.header}>
         <Grid
           item
           xs={12}
@@ -253,7 +249,7 @@ const DistanceReport = (props: CustomProps) => {
           sx={{ display: "flex", justifyContent: "flex-end" }}
         >
           <Typography variant="h5" sx={classes.heading}>
-            {getSearchBar()}
+            {/* {getSearchBar()} */}
           </Typography>
         </Grid>
 
@@ -289,6 +285,9 @@ const DistanceReport = (props: CustomProps) => {
               </MenuItem>
               <MenuItem value="Past 2d" sx={classes.optionStyle}>
                 Past 2d
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 7d
               </MenuItem>
               <MenuItem value="Past 30d" sx={classes.optionStyle}>
                 Past 30d
