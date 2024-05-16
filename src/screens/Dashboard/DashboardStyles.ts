@@ -181,7 +181,7 @@ const dashboardStyles = {
   bgColor: {
     color: "#ffffff",
     backgroundColor: "#1a0224",
-    borderRadius: "12px",
+    borderRadius: "8px",
     padding: "2px 0",
   },
   headingMargins: {
@@ -204,7 +204,7 @@ const dashboardStyles = {
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "12px",
+    borderRadius: "8px",
     fontSize: "14px",
   },
   optionStyle: {

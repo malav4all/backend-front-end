@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import { FcInfo } from "react-icons/fc";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -16,6 +16,7 @@ import { isTruthy, openErrorNotification } from "../../helpers/methods";
 import { weekValue, weekValueNextMonth } from "./DashboardData";
 import { CustomButton, CustomDialog } from "../../global/components";
 import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
+import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -76,7 +77,7 @@ const Dashboard = () => {
               time: moment(item.time).fromNow(),
               action: (
                 <span style={{ color: "#845ADF" }}>
-                  <FcInfo />
+                  <IoMdInformationCircleOutline />
                 </span>
               ),
             })
@@ -119,7 +120,9 @@ const Dashboard = () => {
                   sx={{
                     backgroundColor: "red",
                     color: "white",
-                    border: "1px solid white",
+                    borderRadius: "5px",
+                    padding: "0.1rem 0.2rem",
+                    fontFamily: "Geist_Regular",
                     animation: "pulse 2s infinite",
                     "@keyframes pulse": {
                       "0%": {
@@ -127,7 +130,7 @@ const Dashboard = () => {
                         opacity: 1,
                       },
                       "50%": {
-                        transform: "scale(1.05)",
+                        transform: "scale(1.1)",
                         opacity: 0.75,
                       },
                       "100%": {
@@ -141,8 +144,8 @@ const Dashboard = () => {
               ),
               time: moment(item.time).fromNow(),
               action: (
-                <span style={{ color: "#845ADF" }}>
-                  <FcInfo
+                <span style={{ color: "#5f22e1", fontSize:"1.5rem",cursor: "pointer", display: "flex", justifyContent: "center" }}>
+                  <IoMdInformationCircleOutline
                     onClick={() => {
                       history.push({
                         pathname: "/view-offline",
@@ -436,10 +439,16 @@ const Dashboard = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.5rem",
-                  color: "#3C424Dad",
+                  color: "#3C424D",
                 }}
               >
-                <Typography sx={{ fontFamily: "Geist_Medium" }}>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
                   Tamper/Misc
                 </Typography>
                 <Typography sx={classes.statsValue}>
@@ -663,8 +672,16 @@ const Dashboard = () => {
 
   const getAlertsTable = () => {
     return (
-      <Grid container spacing={3} sx={{paddingLeft: "24px", paddingTop: "24px", display: "flex", justifyContent: "space-between"}}>
-
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          paddingLeft: "24px",
+          paddingTop: "24px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Grid
           item
           xs={12}
@@ -692,13 +709,13 @@ const Dashboard = () => {
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
               borderLeft: "7px solid #5F22E1",
-              backgroundColor: "#e8ecf06b"
+              backgroundColor: "#e8ecf06b",
             }}
           >
             Alert Logs
           </Typography>
 
-          <CustomTable
+          <CustomTableDashboard
             headers={[
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
@@ -745,13 +762,13 @@ const Dashboard = () => {
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
               borderLeft: "7px solid #5F22E1",
-              backgroundColor: "#e8ecf06b"
+              backgroundColor: "#e8ecf06b",
             }}
           >
             Offline Devices
           </Typography>
 
-          <CustomTable
+          <CustomTableDashboard
             headers={[
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
@@ -776,7 +793,7 @@ const Dashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid md={12} xs={12} sx={{ margin: "auto" }}>
+      <Grid md={12} xs={12} sx={{ margin: "auto", backgroundColor: "#F0F5F9" }}>
         <Grid
           container
           spacing={3}
@@ -802,7 +819,7 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#F0F5F9",
         width: "100%",
         height: "100%",
         margin: "auto",

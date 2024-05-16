@@ -21,6 +21,7 @@ const customTableStyles = {
   tableHeaderCell: {
     ...boldFont,
     color: "#ffffff",
+    fontSize: "13px",
     backgroundColor: "#5F22E2",
     "&:first-child": {
       borderRadius: "10px 0px 0px 10px",
@@ -32,13 +33,13 @@ const customTableStyles = {
   },
   tableCell: {
     borderBottom: "none",
-    borderRight: "1px solid  #E5E5E5",
+    // borderRight: "1px solid  #E5E5E5",
   },
   tableRow: {
     // margin: "10px 0",
     //borderRadius: "15px",
     "&:hover": {
-      // backgroundColor: "rgba(237,237,237,0.7)",
+      backgroundColor: "rgba(237,237,237,0.7)",
       cursor: "pointer",
       // backgroundColor: contrastBackgroundColor,
     },

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import customTableStyles from "./customTable.styles";
 import {
   Box,
   Checkbox,
@@ -16,10 +15,11 @@ import {
 } from "@mui/material";
 import NoData from "../../../assets/images/tableNoData.svg";
 import Pagination from "@mui/material/Pagination";
-import usePagination from "./Pagination";
-import paginationStyles from "./Pagination.styles";
 import { theme } from "../../../utils/styles";
 import CustomButton from "../CustomButton/CustomButton";
+import customTableDashboardStyles from "./customTableDashboard.styles";
+import paginationStyles from "../CustomTable/Pagination.styles";
+import usePagination from "../CustomTable/Pagination";
 interface CustomProps {
   headers: any[];
   rows: any[];
@@ -48,8 +48,8 @@ interface CustomProps {
   onClickExportCSV?: () => void;
 }
 
-const CustomTable = (props: CustomProps) => {
-  const classes = customTableStyles;
+const CustomTableDashboard = (props: CustomProps) => {
+  const classes = customTableDashboardStyles;
   const pagination = paginationStyles;
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
@@ -95,7 +95,7 @@ const CustomTable = (props: CustomProps) => {
     return (
       <TableHead>
         <TableRow>
-          {props.checkboxSelection && (
+          {/* {props.checkboxSelection && (
             <TableCell
               padding="checkbox"
               sx={{
@@ -114,7 +114,7 @@ const CustomTable = (props: CustomProps) => {
                 }}
               />
             </TableCell>
-          )}
+          )} */}
           {props.headers.slice(0, 2).map((column, index) => (
             <TableCell
               sx={{
@@ -145,67 +145,52 @@ const CustomTable = (props: CustomProps) => {
 
   const getRows = () => {
     return (
-      <TableBody sx={classes.tableBody}>
-        {finalTableData.currentData()?.map((row: any, index: any) => {
-          return (
-            <>
-              <TableRow
-                sx={classes.tableRow}
-                key={index}
-                {...getRowOnClickHandler(row)}
-              >
-                {props.checkboxSelection && (
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      sx={classes.checkbox}
-                      onClick={(event) =>
-                        props.handleClick ? props.handleClick(event, row) : null
-                      }
-                      checked={
-                        props.isSelected ? props.isSelected(row.id) : null
-                      }
-                      inputProps={{
-                        "aria-labelledby": `enhanced-table-checkbox-${index}`,
-                      }}
-                    />
-                  </TableCell>
-                )}
-                {getRowData(row)
-                  .slice(0, 2)
-                  .map(
-                    (
-                      data: any,
-                      dataIndex: number
-                    ) => (
-                      <TableCell
-                        key={dataIndex}
-                        sx={{
-                          ...classes.tableCell,
-                          position: "sticky",
-                          left: 0,
-                          zIndex: 1,
-                        }}
-                      >
-                        {data}
-                      </TableCell>
-                    )
-                  )}
-                {getRowData(row)
-                  .slice(2)
-                  .map(
-                    (
-                      data: any,
-                      dataIndex: number 
-                    ) => (
-                      <TableCell key={dataIndex + 2} sx={classes.tableCell}>
-                        {data}
-                      </TableCell>
-                    )
-                  )}
-              </TableRow>
-            </>
-          );
-        })}
+      <TableBody 
+        sx={classes.tableBody}>
+        {finalTableData.currentData()?.map((row: any, index: any) => (
+          <TableRow
+            sx={{borderBottom: 1, borderColor: 'grey.500'}}
+            key={index}
+            {...getRowOnClickHandler(row)}
+          >
+            {props.checkboxSelection && (
+              <TableCell padding="checkbox">
+                <Checkbox
+                  sx={classes.checkbox}
+                  onClick={(event) =>
+                    props.handleClick ? props.handleClick(event, row) : null
+                  }
+                  checked={props.isSelected ? props.isSelected(row.id) : null}
+                  inputProps={{
+                    "aria-labelledby": `enhanced-table-checkbox-${index}`,
+                  }}
+                />
+              </TableCell>
+            )}
+            {getRowData(row)
+              .slice(0, 2)
+              .map((data: any, dataIndex: number) => (
+                <TableCell
+                  key={dataIndex}
+                  sx={{
+                    ...classes.tableCell,
+                    position: "sticky",
+                    left: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  {data}
+                </TableCell>
+              ))}
+            {getRowData(row)
+              .slice(2)
+              .map((data: any, dataIndex: number) => (
+                <TableCell key={dataIndex + 2} sx={classes.tableCell}>
+                  {data}
+                </TableCell>
+              ))}
+          </TableRow>
+        ))}
       </TableBody>
     );
   };
@@ -299,7 +284,7 @@ const CustomTable = (props: CustomProps) => {
 
   const getTable = () => {
     return (
-      <Box sx={{overflowX: "scroll"}}>
+      <Box sx={{ overflowX: "scroll" }}>
         {rowData?.length ? getTablePagination() : null}
         <Table sx={classes.table}>
           {getHeaders()}
@@ -307,7 +292,6 @@ const CustomTable = (props: CustomProps) => {
             <TableCell
               colSpan={8}
               style={{
-                // border: "1px solid #F0F0F0",
                 backgroundColor: "#FFFFFF",
               }}
             >
@@ -334,4 +318,4 @@ const CustomTable = (props: CustomProps) => {
   return getTable();
 };
 
-export default CustomTable;
+export default CustomTableDashboard;

@@ -50,39 +50,47 @@ body {
   Geist_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: "#F1F5F9";
+  background-color: "#F0F5F9";
 }
 
-.MuiTableRow-root td:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+.MuiTableRow-root > td:first-child{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
   border-top: 1px solid #ffffff;
   border-left: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
-.MuiTableRow-root td:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+.MuiTableRow-root > td:last-child{
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
   border-top: 1px solid #ffffff;
   border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
 .MuiTableRow-head th:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top: 1px solid #ffffff;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top: 1px solid #E9ECEF;
   border-left: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-bottom: 1px solid #E9ECEF;
 }
 
-.MuiTableRow-head th:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+.MuiTableRow-head th {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  font-size: 13px;
+  border-top: 1px solid #E9ECEF;
+  border-bottom: 1px solid #E9ECEF;
+} 
+
+.MuiTableRow-root > td{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
   border-top: 1px solid #ffffff;
-  border-right: 1px solid #ffffff;
-  border-bottom: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
 .MuiStepConnector-root {
