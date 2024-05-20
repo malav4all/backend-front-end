@@ -465,7 +465,12 @@ const DeviceDashboard = () => {
       <Grid
         container
         spacing={2}
-        sx={{ padding: "0 16px", marginTop: "-48px" }}
+        sx={{
+          padding: "0 16px",
+          marginTop: "-48px",
+          margin: "auto",
+          backgroundColor: "#F0F5F9",
+        }}
         xs={12}
       >
         <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
@@ -494,7 +499,8 @@ const DeviceDashboard = () => {
                     justifyContent: "flex-end",
                     flexWrap: "wrap",
                     backgroundColor: "white",
-                    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
                     padding: "1rem",
                     borderRadius: "0.5rem",
                   }}
@@ -511,7 +517,17 @@ const DeviceDashboard = () => {
                       marginBottom: "2rem",
                     }}
                   >
-                    <Typography variant="h5" sx={classes.heading}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontFamily: "Geist_Light",
+                        fontSize: "1.5rem",
+                        marginBottom: "0.5rem",
+                        padding: "0.2rem 0.8rem",
+                        borderRadius: "5px",
+                        borderLeft: "7px solid #5F22E1",
+                      }}
+                    >
                       All Devices Table
                     </Typography>
 
@@ -532,7 +548,14 @@ const DeviceDashboard = () => {
   }, []);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: "#F0F5F9",
+        width: "100%",
+        height: "100%",
+        margin: "auto",
+      }}
+    >
       {getDashboardHeader()}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />

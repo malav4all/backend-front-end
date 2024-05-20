@@ -17,7 +17,7 @@ const alertReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#d1bbff",
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",

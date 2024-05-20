@@ -46,8 +46,8 @@ const customTableStyles = {
 
   tableCell: {
     ...regularFont,
-    fontSize: "12px",
-    padding: "0.5rem 1rem",
+    fontSize: "14px",
+    padding: "0.5rem 0.4rem",
     textAlign: "left",
     backgroundColor: "white",
      borderBottom: "none",

@@ -46,10 +46,11 @@ const journeyStyles = {
   },
   mainCardHeader: {},
   mainCardHeading: {
-    ...boldFont,
-    margin: "32px 0 20px 0",
+    ...regularFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0 0",
     width: "100%",
-    fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),

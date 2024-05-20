@@ -286,7 +286,17 @@ const JourneyReport = () => {
             lg={12}
             sx={{ display: "flex", margin: "1rem 0rem" }}
           >
-            <Typography variant="h5" sx={classes.heading}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontFamily: "Geist_Light",
+                fontSize: "1.5rem",
+                marginBottom: "0.5rem",
+                padding: "0.2rem 0.8rem",
+                borderRadius: "5px",
+                borderLeft: "7px solid #5F22E1",
+              }}
+            >
               Journey Report
             </Typography>
           </Grid>

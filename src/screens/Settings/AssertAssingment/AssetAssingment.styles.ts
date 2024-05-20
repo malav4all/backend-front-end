@@ -201,7 +201,8 @@ const AssetAssingmentStyles = {
   },
   mainCardHeading: {
     ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(3),

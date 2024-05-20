@@ -69,7 +69,7 @@ const AlertConfig = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Alert Config</Typography>
+        <Typography sx={classes.mainCardHeading}>Alerts</Typography>
       </Box>
     );
   };

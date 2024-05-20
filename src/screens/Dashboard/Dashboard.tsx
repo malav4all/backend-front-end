@@ -717,7 +717,6 @@ const Dashboard = () => {
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
               borderLeft: "7px solid #5F22E1",
-              backgroundColor: "#e8ecf06b",
             }}
           >
             Alert Logs
@@ -770,7 +769,6 @@ const Dashboard = () => {
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
               borderLeft: "7px solid #5F22E1",
-              backgroundColor: "#e8ecf06b",
             }}
           >
             Offline Devices

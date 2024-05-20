@@ -5,14 +5,14 @@ import {
   theme,
 } from "../../utils/styles";
 
- const SettingStyles = {
+const SettingStyles = {
   headerBackgroundColor: {
     backgroundColor: "#f1edff",
     padding: "35px 31px 31px 32px",
   },
   settingsTitle: {
-    fontSize: getRelativeFontSize(10),
-    ...boldFont,
+    fontFamily: "Geist_Light",
+    fontSize: "2rem",
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(4),

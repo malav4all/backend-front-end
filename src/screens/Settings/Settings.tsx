@@ -32,7 +32,7 @@ const Settings = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>My Settings</Typography>
+          <Typography style={classes.settingsTitle}>Settings</Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
