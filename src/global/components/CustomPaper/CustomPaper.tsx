@@ -1,31 +1,33 @@
 import React from "react";
 import customPaperStyles from "./CustomPaper.styles";
-import { Paper } from "@mui/material";
+import { Paper, SxProps } from "@mui/material";
 
 interface CustomProps {
   children: React.ReactNode;
   className?: any;
   isWeb?: boolean;
   removeBorder?: boolean;
+  sx?: SxProps;
 }
 
 const CustomPaper = (props: CustomProps) => {
   const classes = customPaperStyles;
-  if (props.removeBorder) {
-    if (!props.isWeb) {
+  const { children, className, isWeb, removeBorder, sx } = props;
+  if (removeBorder) {
+    if (!isWeb) {
       return (
         <Paper
           variant="outlined"
-          sx={[classes.customPaperMobile, props.className]}
+          sx={[classes.customPaperMobile, className, sx]}
         >
-          {props.children}
+          {children}
         </Paper>
       );
     }
   }
   return (
-    <Paper variant="outlined" sx={[classes.customPaper, props.className]}>
-      {props.children}
+    <Paper variant="outlined" sx={[classes.customPaper, className, sx]}>
+      {children}
     </Paper>
   );
 };

@@ -144,7 +144,15 @@ const Dashboard = () => {
               ),
               time: moment(item.time).fromNow(),
               action: (
-                <span style={{ color: "#5f22e1", fontSize:"1.5rem",cursor: "pointer", display: "flex", justifyContent: "center" }}>
+                <span
+                  style={{
+                    color: "#5f22e1",
+                    fontSize: "1.5rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
                   <IoMdInformationCircleOutline
                     onClick={() => {
                       history.push({

@@ -61,8 +61,11 @@ const dashboardStyles = {
     color: textLightColor,
   },
   statsValue: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    ...regularFont,
+    fontSize: getRelativeFontSize(42),
+    lineHeight: "1",
+    marginTop: "1rem",
+    color: "#3C424D"
   },
   dropdown: {
     ...regularFont,

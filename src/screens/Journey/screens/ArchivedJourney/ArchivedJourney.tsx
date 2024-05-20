@@ -130,9 +130,9 @@ const ArchivedJoruney = () => {
     totalDistance: "150 km",
     totalDuration: "5 days",
     action: (
-      <Box sx={{ fontSize: "1.5rem" }}>
+      <Box>
         <NavLink to={"/trackplay"}>
-          <FaRoute />
+          <FaRoute style={{ fontSize: "4rem" }} />
         </NavLink>
       </Box>
     ),
