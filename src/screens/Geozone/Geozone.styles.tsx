@@ -8,7 +8,7 @@ import {
   purpleThemedSelectComponent,
   regularFont,
   pinkThemedMenuItems,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
 const geozoneStyle = {
   mainCardHeading: {
@@ -93,7 +93,9 @@ const geozoneStyle = {
     },
   },
 
-  locationHeading: { ...boldFont, fontSize: "14px", },
+  locationHeading: { ...boldFont, fontSize: "14px", color: "#3C424D" },
+
+  locationDescription: { ...regularFont, fontSize: "13px", color: "#3C424D" },
 
   star: {
     color: inputLabelRequiredColor,
@@ -182,5 +184,5 @@ const geozoneStyle = {
       },
     },
   },
-} as const;
-export default geozoneStyle;
+} as const
+export default geozoneStyle

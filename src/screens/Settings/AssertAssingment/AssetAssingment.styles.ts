@@ -13,7 +13,7 @@ import {
   purpleThemedSelectComponent,
   buttonWhiteBg,
   purplePrimaryColor,
-} from "../../../utils/styles";
+} from "../../../utils/styles"
 
 const AssetAssingmentStyles = {
   mainHeader: {
@@ -291,6 +291,7 @@ const AssetAssingmentStyles = {
     minWidth: "300px",
     width: "100%",
     overflow: "auto",
+    padding: "0rem 1rem",
   },
   searchInputWrapper: {
     display: "flex",
@@ -321,6 +322,6 @@ const AssetAssingmentStyles = {
       background: "none",
     },
   },
-} as const;
+} as const
 
-export default AssetAssingmentStyles;
+export default AssetAssingmentStyles

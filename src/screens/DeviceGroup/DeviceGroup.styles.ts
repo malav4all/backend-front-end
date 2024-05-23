@@ -3,7 +3,7 @@ import {
   theme,
   primaryHeadingColor,
   getRelativeFontSize,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
 const deviceGroupStyles = {
   divderResponsive: {
@@ -16,7 +16,7 @@ const deviceGroupStyles = {
   },
 
   mainSection: {
-    padding: theme.spacing(2),
+    padding: "30px",
     paddingTop: "2px",
     marginTop: "10px",
     [theme.breakpoints.down("md")]: {
@@ -35,6 +35,6 @@ const deviceGroupStyles = {
       marginBottom: theme.spacing(1),
     },
   },
-};
+}
 
-export default deviceGroupStyles;
+export default deviceGroupStyles

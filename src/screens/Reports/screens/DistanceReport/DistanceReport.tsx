@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { fetchJourney } from "../../../Journey/service/journey.service";
+import { ChangeEvent, useEffect, useState } from "react"
+import { fetchJourney } from "../../../Journey/service/journey.service"
 import {
   Box,
   Grid,
@@ -8,211 +8,211 @@ import {
   Select,
   Tooltip,
   Typography,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { CustomInput, CustomTable } from "../../../../global/components";
-import moment from "moment";
+} from "@mui/material"
+import SearchIcon from "@mui/icons-material/Search"
+import { CustomInput, CustomTable } from "../../../../global/components"
+import moment from "moment"
 import {
   debounceEventHandler,
   openErrorNotification,
-} from "../../../../helpers/methods";
-import strings from "../../../../global/constants/StringConstants";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
+} from "../../../../helpers/methods"
+import strings from "../../../../global/constants/StringConstants"
+import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader"
 
 // import { getDistanceReport } from "./service/distance.service";
-import { getDistance } from "geolib";
-import { time } from "console";
-import distanceReportStyles from "./DistanceReport.styles";
-import { getDistanceReport } from "./service/distance.service";
+import { getDistance } from "geolib"
+import { time } from "console"
+import distanceReportStyles from "./DistanceReport.styles"
+import { getDistanceReport } from "./service/distance.service"
 interface CustomProps {
-  isFromJourneyReport: boolean;
+  isFromJourneyReport: boolean
 }
 
 const DistanceReport = (props: CustomProps) => {
-  const classes = distanceReportStyles;
-  const [isLoading, setIsLoading] = useState<any>(false);
-  const [count, setCount] = useState<number>(0);
-  const [tableData, setTableData] = useState([]);
-  const [journeyTableData, setJourneyTableData] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [page, setPage] = useState<number>(1);
-  const [searchJourney, setSearchJourney] = useState<string>("");
+  const classes = distanceReportStyles
+  const [isLoading, setIsLoading] = useState<any>(false)
+  const [count, setCount] = useState<number>(0)
+  const [tableData, setTableData] = useState([])
+  const [journeyTableData, setJourneyTableData] = useState([])
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10)
+  const [page, setPage] = useState<number>(1)
+  const [searchJourney, setSearchJourney] = useState<string>("")
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
-  });
-  const [selectedRange, setSelectedRange] = useState("Past 1h");
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
-  const [filterData, setFilterData] = useState<any>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  })
+  const [selectedRange, setSelectedRange] = useState("Past 1h")
+  const [searchPageNumber, setSearchPageNumber] = useState<number>(1)
+  const [filterData, setFilterData] = useState<any>([])
+  const [isSearching, setIsSearching] = useState(false)
   useEffect(() => {
-    fetchJourneyHandler();
-  }, [dateFilter]);
+    fetchJourneyHandler()
+  }, [dateFilter])
 
   const fetchJourneyHandler = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await getDistanceReport({
         input: {
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
         },
-      });
+      })
 
-      const data = tableRender(res.fetchDistanceReport);
+      const data = tableRender(res.fetchDistanceReport)
 
-      setJourneyTableData(data);
-      setIsLoading(false);
+      setJourneyTableData(data)
+      setIsLoading(false)
     } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
+      setIsLoading(false)
+      openErrorNotification(error.message)
     }
-  };
+  }
 
   const handleChange = (event: any) => {
-    setSelectedRange(event.target.value);
-    const now = moment();
-    let startDate, endDate;
+    setSelectedRange(event.target.value)
+    const now = moment()
+    let startDate, endDate
     switch (event.target.value) {
       case "Past 1h":
-        startDate = now.clone().subtract(1, "hour").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(1, "hour").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 3h":
-        startDate = now.clone().subtract(3, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(3, "hours").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 6h":
-        startDate = now.clone().subtract(6, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(6, "hours").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 12h":
-        startDate = now.clone().subtract(12, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(12, "hours").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 24h":
-        startDate = now.clone().subtract(24, "hours").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(24, "hours").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 2d":
-        startDate = now.clone().subtract(2, "days").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(2, "days").toISOString()
+        endDate = now.toISOString()
+        break
       case "Past 30d":
-        startDate = now.clone().subtract(30, "days").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(30, "days").toISOString()
+        endDate = now.toISOString()
+        break
       default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
+        startDate = now.clone().subtract(30, "minutes").toISOString()
+        endDate = now.toISOString()
+        break
     }
 
     setDateFilter({
       startDate: startDate,
       endDate: endDate,
-    });
-  };
+    })
+  }
   const formatDistance = (distanceInMeters: number) => {
     if (distanceInMeters < 1000) {
-      return `${distanceInMeters} m`;
+      return `${distanceInMeters} m`
     } else {
-      const distanceInKm = distanceInMeters / 1000;
-      return `${distanceInKm.toFixed(2)} km`;
+      const distanceInKm = distanceInMeters / 1000
+      return `${distanceInKm.toFixed(2)} km`
     }
-  };
+  }
 
   const tableRender = (tableData: any) => {
-    let totalDistance = 0;
-    let totalTime = 0;
+    let totalDistance = 0
+    let totalTime = 0
 
     const data = tableData?.map((item: any, index: number) => {
-      let distance = 0;
-      let timeee = 0;
+      let distance = 0
+      let timeee = 0
       for (let i = 0; i < item.coordinates.length - 1; i++) {
-        const startCoord = item.coordinates[i];
-        const endCoord = item.coordinates[i + 1];
-        const startMoment = moment(startCoord.time);
-        const endMoment = moment(endCoord.time);
-        const duration = moment.duration(endMoment.diff(startMoment));
-        timeee += duration.asSeconds();
+        const startCoord = item.coordinates[i]
+        const endCoord = item.coordinates[i + 1]
+        const startMoment = moment(startCoord.time)
+        const endMoment = moment(endCoord.time)
+        const duration = moment.duration(endMoment.diff(startMoment))
+        timeee += duration.asSeconds()
         distance += getDistance(
           { latitude: startCoord.latitude, longitude: startCoord.longitude },
           { latitude: endCoord.latitude, longitude: endCoord.longitude }
-        );
+        )
       }
-      totalDistance += distance;
-      totalTime += timeee;
-      const formattedDistance = formatDistance(distance);
+      totalDistance += distance
+      totalTime += timeee
+      const formattedDistance = formatDistance(distance)
       return {
         imei: item.imei,
         distance: formattedDistance,
         duration: calculateApproxTime(formattedDistance),
-      };
-    });
+      }
+    })
 
-    return data;
-  };
+    return data
+  }
   const handlePerPageData = (event: any) => {
-    setPage(1);
-    setSearchPageNumber(1);
-    setRowsPerPage(event?.target?.value);
-  };
+    setPage(1)
+    setSearchPageNumber(1)
+    setRowsPerPage(event?.target?.value)
+  }
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
-    const value = searchEvent?.target?.value.toLowerCase().trim();
+    const value = searchEvent?.target?.value.toLowerCase().trim()
     if (value) {
-      setIsLoading(true);
+      setIsLoading(true)
       const searchedReports = journeyTableData?.filter(
         (data: any) =>
           data?.imei?.toLowerCase()?.includes(value) ||
           data!?.totalDistance!?.toLowerCase()?.includes(value) ||
           data?.totalDuration?.toLowerCase()?.includes(value)
-      );
-      setFilterData(searchedReports);
-      setIsSearching(true);
-      setIsLoading(false);
+      )
+      setFilterData(searchedReports)
+      setIsSearching(true)
+      setIsLoading(false)
     } else {
-      setFilterData([...journeyTableData]);
-      setIsSearching(false);
+      setFilterData([...journeyTableData])
+      setIsSearching(false)
     }
-  };
+  }
 
   const calculateApproxTime = (formattedDistance: string) => {
-    const speedKmPerHour = 40;
-    let distanceInKm: number = 0;
+    const speedKmPerHour = 40
+    let distanceInKm: number = 0
 
     if (formattedDistance.includes("m")) {
-      distanceInKm = parseFloat(formattedDistance) / 1000;
+      distanceInKm = parseFloat(formattedDistance) / 1000
     }
     if (formattedDistance.includes("km")) {
-      distanceInKm = parseFloat(formattedDistance.split(" ")[0]);
+      distanceInKm = parseFloat(formattedDistance.split(" ")[0])
     }
 
-    const timeInHours = distanceInKm / speedKmPerHour;
-    const timeInMinutes = timeInHours * 60;
+    const timeInHours = distanceInKm / speedKmPerHour
+    const timeInMinutes = timeInHours * 60
 
     if (timeInMinutes < 60) {
-      return `${Math.round(timeInMinutes)} minutes`;
+      return `${Math.round(timeInMinutes)} minutes`
     } else {
-      const hours = Math.floor(timeInMinutes / 60);
-      const remainingMinutes = Math.round(timeInMinutes % 60);
+      const hours = Math.floor(timeInMinutes / 60)
+      const remainingMinutes = Math.round(timeInMinutes % 60)
       if (remainingMinutes === 0) {
-        return `${hours} hour${hours > 1 ? "s" : ""}`;
+        return `${hours} hour${hours > 1 ? "s" : ""}`
       } else {
         return `${hours} hour${
           hours > 1 ? "s" : ""
-        } and ${remainingMinutes} minutes`;
+        } and ${remainingMinutes} minutes`
       }
     }
-  };
+  }
 
   const getSearchBar = () => {
     return (
@@ -231,29 +231,15 @@ const DistanceReport = (props: CustomProps) => {
           ),
         }}
       />
-    );
-  };
+    )
+  }
 
   const getDashboardHeader = () => {
     return (
-      <Grid
-        container
-        sx={classes.header}
-        xs={12}
-        md={12}
-        lg={12}
-        xl={12}
-        width="100%"
-      >
-        <Grid
-          item
-          xs={12}
-          md={5}
-          lg={8}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
-        >
+      <Grid container sx={classes.header}>
+        <Grid item xs={12} md={5} lg={6} xl={6}>
           <Typography variant="h5" sx={classes.heading}>
-            {getSearchBar()}
+            Distance Reports
           </Typography>
         </Grid>
 
@@ -261,15 +247,20 @@ const DistanceReport = (props: CustomProps) => {
           item
           xs={12}
           md={7}
-          lg={4}
+          lg={6}
+          xl={6}
           sx={{
             display: "flex",
             justifyContent: "flex-end",
             flexWrap: "wrap",
+            gap: 2,
+            paddingRight: "17px",
           }}
         >
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Select
+          <Typography variant="h5" sx={classes.heading}>
+            {getSearchBar()}
+          </Typography>
+          <Select
               id="campaigns_interval_dropdown"
               sx={classes.dropDownStyle}
               value={selectedRange}
@@ -294,11 +285,65 @@ const DistanceReport = (props: CustomProps) => {
                 Past 30d
               </MenuItem>
             </Select>
-          </Box>
         </Grid>
       </Grid>
-    );
-  };
+    )
+  }
+
+  const getDistanceHeader = () => {
+    ;<Grid container sx={classes.header}>
+      <Grid item xs={12} md={5} lg={6} xl={6}>
+        <Typography variant="h5" sx={classes.heading}>
+          Alerts Reports
+        </Typography>
+      </Grid>
+
+      <Grid
+        item
+        xs={12}
+        md={7}
+        lg={6}
+        xl={6}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flexWrap: "wrap",
+          gap: 2,
+          paddingRight: "17px",
+        }}
+      >
+        <Typography variant="h5" sx={classes.heading}>
+          {getSearchBar()}
+        </Typography>
+        <Select
+          id="campaigns_interval_dropdown"
+          sx={classes.dropDownStyle}
+          value={selectedRange}
+          onChange={handleChange}
+          displayEmpty
+          inputProps={{ "aria-label": "Without label" }}
+          renderValue={() => selectedRange}
+        >
+          <MenuItem value="Past 1h" sx={classes.optionStyle}>
+            Past 1h
+          </MenuItem>
+          <MenuItem value="Past 3h" sx={classes.optionStyle}>
+            Past 3h
+          </MenuItem>
+          <MenuItem value="Past 12h" sx={classes.optionStyle}>
+            Past 12h
+          </MenuItem>
+          <MenuItem value="Past 2d" sx={classes.optionStyle}>
+            Past 2d
+          </MenuItem>
+          <MenuItem value="Past 30d" sx={classes.optionStyle}>
+            Past 30d
+          </MenuItem>
+        </Select>
+      </Grid>
+    </Grid>
+  }
+
   const getDashboardBody = () => {
     return (
       <Grid
@@ -315,8 +360,9 @@ const DistanceReport = (props: CustomProps) => {
           </Grid>
         </Grid>
       </Grid>
-    );
-  };
+    )
+  }
+
   const getAlertsTable = () => {
     return (
       <Box
@@ -347,9 +393,7 @@ const DistanceReport = (props: CustomProps) => {
                 borderLeft: "7px solid #5F22E1",
               }}
             >
-              {`${
-                props.isFromJourneyReport ? "Journey Report" : "Distance Report"
-              }`}
+              Distance Report
             </Typography>
           </Grid>
 
@@ -389,16 +433,17 @@ const DistanceReport = (props: CustomProps) => {
           </Grid>
         </Grid>
       </Box>
-    );
-  };
+    )
+  }
 
   return (
     <Box>
       {getDashboardHeader()}
+      {/* {getDistanceHeader()} */}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>
-  );
-};
+  )
+}
 
-export default DistanceReport;
+export default DistanceReport

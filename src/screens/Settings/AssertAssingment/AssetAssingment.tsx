@@ -248,7 +248,7 @@ const AssetAssingment = () => {
 
   const campaignerTable = () => {
     return (
-      <Box id="assetAssingment_display_table" sx={classes.campaignerTable}>
+      <Box id="assetAssingment_display_table" >
         <CustomTable
           headers={assetAssingmentTableHeader}
           rows={assetAssingmentDataSource}

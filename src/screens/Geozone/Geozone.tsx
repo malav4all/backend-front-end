@@ -909,7 +909,7 @@ const Geozone = () => {
           top: 25,
           right: "25px",
           zIndex: 0,
-          padding: "0.5rem",
+          padding: "0.7rem",
           backgroundColor: "white",
           boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
           borderRadius: "0.3rem",
@@ -993,7 +993,7 @@ const Geozone = () => {
                           </Typography>
                         </ListItemText>
                         <ListItemText>
-                          <Typography sx={{ fontSize: "14px" }}>
+                          <Typography sx={classes.locationDescription}>
                             {item.description}
                           </Typography>
                         </ListItemText>

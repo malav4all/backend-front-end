@@ -250,10 +250,9 @@ const UpcomingJourney = () => {
       <Box
         id="Alerts_panel"
         sx={{
-          padding: "1.5rem 1.5rem",
+          padding: "0rem 1.5rem",
           backgroundColor: "white",
           borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
         <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
