@@ -12,6 +12,7 @@ import {
   pinkThemedMenuItems,
 } from "../../utils/styles";
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
+import { Height } from "@mui/icons-material";
 
 const dashboardStyles = {
   // thoughtsBox: {
@@ -65,7 +66,7 @@ const dashboardStyles = {
     ...regularFont,
     fontSize: getRelativeFontSize(42),
     lineHeight: "1",
-    marginTop: "1rem"
+    marginTop: "1rem",
   },
   dropdown: {
     ...regularFont,
@@ -106,11 +107,13 @@ const dashboardStyles = {
   },
   header: {
     display: "flex",
+    marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: "#d1bbff",
+    backgroundColor: "#D1BBFF",
     padding: "16px",
-    paddingBottom: "64px",
-    paddingTop: "35px",
+    // paddingBottom: "64px",
+    height: "10rem",
+    // paddingTop: "35px",
   },
   container: {
     padding: "8px",

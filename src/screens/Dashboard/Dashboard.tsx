@@ -191,11 +191,7 @@ const Dashboard = () => {
         xl={12}
         width="100%"
       >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          {/* <Typography variant="h5" sx={classes.heading}>
-            Hello, {getUserName()}!
-          </Typography> */}
-        </Grid>
+        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}></Grid>
 
         <Grid
           item
@@ -205,40 +201,37 @@ const Dashboard = () => {
           sx={{
             display: "flex",
             justifyContent: "flex-end",
-            flexWrap: "wrap",
           }}
         >
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Select
-              id="campaigns_interval_dropdown"
-              sx={classes.dropDownStyle}
-              value={selectedRange}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              renderValue={() => selectedRange}
+          <Select
+            id="campaigns_interval_dropdown"
+            sx={classes.dropDownStyle}
+            value={selectedRange}
+            onChange={handleChange}
+            displayEmpty
+            inputProps={{ "aria-label": "Without label" }}
+            renderValue={() => selectedRange}
+          >
+            <MenuItem value="Past 1m" sx={classes.optionStyle}>
+              Past 1m
+            </MenuItem>
+            <MenuItem value="Past 5m" sx={classes.optionStyle}>
+              Past 5m
+            </MenuItem>
+            <MenuItem value="Past 15m" sx={classes.optionStyle}>
+              Past 15m
+            </MenuItem>
+            <MenuItem value="Past 30m" sx={classes.optionStyle}>
+              Past 30m
+            </MenuItem>
+            <MenuItem
+              value="Custom"
+              onClick={CustomChange}
+              sx={classes.optionStyle}
             >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
-              <MenuItem
-                value="Custom"
-                onClick={CustomChange}
-                sx={classes.optionStyle}
-              >
-                Custom
-              </MenuItem>
-            </Select>
-          </Box>
+              Custom
+            </MenuItem>
+          </Select>
         </Grid>
       </Grid>
     );
@@ -649,6 +642,7 @@ const Dashboard = () => {
               </Box>
             </Box>
           </Grid>
+          
         </Grid>
       </Box>
     );
@@ -799,7 +793,7 @@ const Dashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid md={12} xs={12} sx={{ margin: "auto", backgroundColor: "#F0F5F9" }}>
+      <Grid md={12} xs={12} sx={{ margin: "auto" }}>
         <Grid
           container
           spacing={3}

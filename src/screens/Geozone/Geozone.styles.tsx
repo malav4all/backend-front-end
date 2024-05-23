@@ -70,6 +70,8 @@ const geozoneStyle = {
     },
   },
 
+  searchStyles: { margin: "5px 5px", width: "95%" },
+
   inputLabel: {
     display: "flex",
     color: "#212121",
@@ -90,6 +92,9 @@ const geozoneStyle = {
       color: "red",
     },
   },
+
+  locationHeading: { ...boldFont, fontSize: "14px", },
+
   star: {
     color: inputLabelRequiredColor,
   },
