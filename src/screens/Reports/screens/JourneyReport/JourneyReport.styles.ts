@@ -7,22 +7,22 @@ import {
   purpleThemedSelectComponent,
   pureWhiteColor,
   pinkThemedMenuItems,
-} from "../../../../utils/styles";
+} from "../../../../utils/styles"
 
 const journeyReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
     backgroundColor: "#d1bbff",
-    padding: "16px",
+    padding: "16px 3rem",
     paddingBottom: "64px",
     paddingTop: "35px",
-    paddingRight: "30px",
   },
+
   heading: {
-    ...boldFont,
+    fontFamily: "Geist_Medium",
     color: primaryHeadingColor,
-    fontSize: getRelativeFontSize(7),
+    fontSize: "2rem",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
     },
@@ -41,6 +41,6 @@ const journeyReportStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-};
+}
 
-export default journeyReportStyles;
+export default journeyReportStyles

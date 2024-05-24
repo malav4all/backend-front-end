@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react"
 import {
   Box,
   Chip,
@@ -14,107 +14,107 @@ import {
   TableRow,
   Tooltip,
   Typography,
-} from "@mui/material";
-import usersStyles from "./Users.styles";
-import CustomButton from "../../../global/components/CustomButton/CustomButton";
-import AddUser from "./components/AddUser/AddUser";
-import { RowData, UserData } from "../../../models/interfaces";
-import SearchIcon from "@mui/icons-material/Search";
+} from "@mui/material"
+import usersStyles from "./Users.styles"
+import CustomButton from "../../../global/components/CustomButton/CustomButton"
+import AddUser from "./components/AddUser/AddUser"
+import { RowData, UserData } from "../../../models/interfaces"
+import SearchIcon from "@mui/icons-material/Search"
 import {
   debounceEventHandler,
   getFormattedStatsCount,
   isTruthy,
   openErrorNotification,
-} from "../../../helpers/methods";
-import EditIcon from "@mui/icons-material/Edit";
-import LockResetIcon from "@mui/icons-material/LockReset";
+} from "../../../helpers/methods"
+import EditIcon from "@mui/icons-material/Edit"
+import LockResetIcon from "@mui/icons-material/LockReset"
 import {
   CustomAppHeader,
   CustomDialog,
   CustomInput,
   CustomTable,
-} from "../../../global/components";
-import UpdateUser from "./components/UpdateUser/UpdateUser";
-import { userTableHeader } from "./UserTypeAndValidation";
-import strings from "../../../global/constants/StringConstants";
-import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import notifiers from "../../../global/constants/NotificationConstants";
-import { useTitle } from "../../../utils/UseTitle";
+} from "../../../global/components"
+import UpdateUser from "./components/UpdateUser/UpdateUser"
+import { userTableHeader } from "./UserTypeAndValidation"
+import strings from "../../../global/constants/StringConstants"
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader"
+import notifiers from "../../../global/constants/NotificationConstants"
+import { useTitle } from "../../../utils/UseTitle"
 
 import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
-} from "../../../utils/styles";
-import { fetchUserDataHandler, searchUser } from "./service/user.service";
-import { store } from "../../../utils/store";
-import ChangePassword from "./components/ChangePassword/ChangePassword";
-import uploadUser from "../../../assets/images/uploadUser.svg";
-import history from "../../../utils/history";
+  regularFont,
+} from "../../../utils/styles"
+import { fetchUserDataHandler, searchUser } from "./service/user.service"
+import { store } from "../../../utils/store"
+import ChangePassword from "./components/ChangePassword/ChangePassword"
+import uploadUser from "../../../assets/images/uploadUser.svg"
+import history from "../../../utils/history"
 
 const Users = () => {
-  useTitle(strings.UsersTitle);
-  const classes = usersStyles;
-  const [isLoading, setIsLoading] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
-  const [updateUserDialogHandler, setUpdateUserDialogHandler] = useState(false);
-  const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
-  const [searchCampaigner, setSearchCampaigner] = useState<string>("");
-  const [roles, setRoles] = useState([]);
-  const [count, setCount] = useState(1);
+  useTitle(strings.UsersTitle)
+  const classes = usersStyles
+  const [isLoading, setIsLoading] = useState(false)
+  const [edit, setEdit] = useState(false)
+  const [addUserDialogHandler, setAddUserDialogHandler] = useState(false)
+  const [updateUserDialogHandler, setUpdateUserDialogHandler] = useState(false)
+  const [userDataSource, setUserDataSource] = useState<UserData[]>([])
+  const [searchCampaigner, setSearchCampaigner] = useState<string>("")
+  const [roles, setRoles] = useState([])
+  const [count, setCount] = useState(1)
   const [selectedRowData, setSelectedRowData] = useState<RowData>({
     emailId: "",
     assignBy: "",
     allowedEmailCount: "",
     title: "",
-  });
-  const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
+  })
+  const [selectedUserRowData, setSelectedUserRowData] = useState<any>({})
   const [selectedEmailData, setSelectedEmailData] = useState<any>({
     email: "",
-  });
+  })
 
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [perPageData, setPerPageData] = useState(10);
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
-  const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
-  const [changePasswordModal, setChangePasswordModal] = useState(false);
-  const [imeiListDialogHandler, setImeiListDialogHandler] =
-    useState<any>(false);
-  const [selectedImeiData, setSelectedImeiData] = useState<any>([]);
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [perPageData, setPerPageData] = useState(10)
+  const [searchPageNumber, setSearchPageNumber] = useState<number>(1)
+  const [activeCampaigner, setActiveCampaigner] = useState<any>([])
+  const [changePasswordModal, setChangePasswordModal] = useState(false)
+  const [imeiListDialogHandler, setImeiListDialogHandler] = useState<any>(false)
+  const [selectedImeiData, setSelectedImeiData] = useState<any>([])
   useEffect(() => {
     if (searchCampaigner === "") {
-      setPageNumber(1);
-      setSearchPageNumber(1);
-      setPerPageData(10);
+      setPageNumber(1)
+      setSearchPageNumber(1)
+      setPerPageData(10)
     }
-  }, [searchCampaigner, searchPageNumber]);
+  }, [searchCampaigner, searchPageNumber])
 
   useEffect(() => {
     if (searchCampaigner) {
-      getSearchData();
+      getSearchData()
     } else {
-      getUsersDetailTable();
+      getUsersDetailTable()
     }
-  }, [searchCampaigner, pageNumber, perPageData, searchPageNumber]);
+  }, [searchCampaigner, pageNumber, perPageData, searchPageNumber])
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPageNumber(newPage);
-  };
+    setPageNumber(newPage)
+  }
 
   const handlePerPageData = (event: any) => {
-    setPageNumber(1);
-    setSearchPageNumber(1);
-    setPerPageData(event.target.value);
-  };
+    setPageNumber(1)
+    setSearchPageNumber(1)
+    setPerPageData(event.target.value)
+  }
 
-  const getRedirectionUrl=(_id:any)=>{
+  const getRedirectionUrl = (_id: any) => {
     return history.push(`/device-group/view/${_id}`)
   }
-  
+
   const tableDataShowHandler = (usersData: any) => {
     const source = usersData?.map((usersData: any, index: number) => {
       return {
@@ -134,10 +134,11 @@ const Users = () => {
               placement="top"
               arrow
               onClick={() => {
-                getRedirectionUrl(usersData?.deviceGroup?._id);
+                getRedirectionUrl(usersData?.deviceGroup?._id)
               }}
             >
-              <Typography sx={{
+              <Typography
+                sx={{
                   fontWeight: 600,
                   display: "inline-block",
                   color: "#5F22E2",
@@ -145,8 +146,9 @@ const Users = () => {
                   "&:hover": {
                     borderBottom: "1px solid #5F22E2",
                   },
-                }}>
-              {usersData?.deviceGroup?.deviceGroupName}
+                }}
+              >
+                {usersData?.deviceGroup?.deviceGroupName}
               </Typography>
             </Tooltip>
           </>
@@ -157,6 +159,7 @@ const Users = () => {
             sx={{
               backgroundColor: usersData.status === "Active" ? "green" : "grey",
               color: usersData.status === "Active" ? "white" : "white",
+              borderRadius: "5px",
               border:
                 usersData.status === "Active"
                   ? "1px solid #37b071"
@@ -168,7 +171,7 @@ const Users = () => {
                   opacity: 1,
                 },
                 "50%": {
-                  transform: "scale(1.05)",
+                  transform: "scale(1.1)",
                   opacity: 0.75,
                 },
                 "100%": {
@@ -187,15 +190,15 @@ const Users = () => {
                 htmlColor={"#5F22E2"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 onClick={() => {
-                  setChangePasswordModal(true);
-                  setSelectedEmailData(usersData.email);
+                  setChangePasswordModal(true)
+                  setSelectedEmailData(usersData.email)
                 }}
               />
             </Tooltip>
             <Tooltip
               title="Edit"
               onClick={() => {
-                editUser(usersData);
+                editUser(usersData)
               }}
             >
               <EditIcon
@@ -205,72 +208,72 @@ const Users = () => {
             </Tooltip>
           </>
         ),
-      };
-    });
-    setUserDataSource([...source]);
-  };
+      }
+    })
+    setUserDataSource([...source])
+  }
 
   const editUser = React.useCallback(
     (rowdata: any) => {
-      setAddUserDialogHandler(true);
-      setSelectedUserRowData(rowdata);
-      setEdit(true);
+      setAddUserDialogHandler(true)
+      setSelectedUserRowData(rowdata)
+      setEdit(true)
     },
     [edit]
-  );
+  )
 
   const showImeis = (imeiData: any) => {
-    setImeiListDialogHandler(true);
-    setSelectedImeiData(imeiData.deviceGroup.imeiData);
-  };
+    setImeiListDialogHandler(true)
+    setSelectedImeiData(imeiData.deviceGroup.imeiData)
+  }
   const getUsersDetailTable = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await fetchUserDataHandler({
         input: {
           page: pageNumber,
           limit: perPageData,
         },
-      });
-      tableDataShowHandler(res?.userListAll?.data);
-      setCount(res?.userListAll?.paginatorInfo?.count);
-      setIsLoading(false);
+      })
+      tableDataShowHandler(res?.userListAll?.data)
+      setCount(res?.userListAll?.paginatorInfo?.count)
+      setIsLoading(false)
     } catch (error: any) {
       openErrorNotification(
         isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
-      );
-      setIsLoading(false);
+      )
+      setIsLoading(false)
     }
-  };
+  }
 
   const getSearchData = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await searchUser({
         input: {
           search: searchCampaigner,
           page: pageNumber,
           limit: perPageData,
         },
-      });
-      tableDataShowHandler(res?.searchUsers?.data);
-      setCount(res?.searchUsers?.paginatorInfo?.count);
-      setIsLoading(false);
+      })
+      tableDataShowHandler(res?.searchUsers?.data)
+      setCount(res?.searchUsers?.paginatorInfo?.count)
+      setIsLoading(false)
     } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
+      openErrorNotification(error.message)
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchCampaigner(SearchEvent.target.value.replace(/\s/g, ""));
-      setPageNumber(1);
-      setPerPageData(10);
+      setSearchCampaigner(SearchEvent.target.value.replace(/\s/g, ""))
+      setPageNumber(1)
+      setPerPageData(10)
     } else {
-      setSearchCampaigner("");
+      setSearchCampaigner("")
     }
-  };
+  }
 
   const getSearchBar = () => {
     return (
@@ -289,8 +292,8 @@ const Users = () => {
           ),
         }}
       />
-    );
-  };
+    )
+  }
 
   const addUserButton = () => {
     return (
@@ -302,8 +305,8 @@ const Users = () => {
           width: "150px",
         }}
       />
-    );
-  };
+    )
+  }
 
   const addUserDialogBox = () => {
     return (
@@ -318,16 +321,16 @@ const Users = () => {
         edit={edit}
         setEdit={setEdit}
       />
-    );
-  };
+    )
+  }
 
   const imeiDialogTitle = () => {
     return (
       <Box>
         <Typography sx={classes.boldFonts}>{"IMEI LIST"}</Typography>
       </Box>
-    );
-  };
+    )
+  }
 
   const addUserDialogBody = () => {
     return (
@@ -359,16 +362,16 @@ const Users = () => {
           </TableContainer>
         </Grid>
       </Grid>
-    );
-  };
+    )
+  }
 
   const showImeiHeaderImg = () => {
     return (
       <Box display={"flex"}>
         <img src={uploadUser} alt="Add user not found!" />
       </Box>
-    );
-  };
+    )
+  }
 
   const showImesListDialogBox = () => {
     return (
@@ -386,8 +389,8 @@ const Users = () => {
           fullScreen={false}
         />
       </Grid>
-    );
-  };
+    )
+  }
 
   const changePasswordDialogBox = () => {
     return (
@@ -397,17 +400,17 @@ const Users = () => {
         tableData={selectedEmailData}
         isLoading={isLoading}
       />
-    );
-  };
+    )
+  }
 
   const closeAddUserDialogHandler = () => {
-    setAddUserDialogHandler(false);
-    setSelectedUserRowData(null);
-  };
+    setAddUserDialogHandler(false)
+    setSelectedUserRowData(null)
+  }
 
   const closeImeiListDialogHandler = () => {
-    setImeiListDialogHandler(false);
-  };
+    setImeiListDialogHandler(false)
+  }
 
   const updateUserDialogBox = () => {
     return (
@@ -420,20 +423,20 @@ const Users = () => {
         getSearchData={getSearchData}
         searchCampaigner={searchCampaigner}
       />
-    );
-  };
+    )
+  }
 
   const updateDialogCloseHandler = () => {
-    setUpdateUserDialogHandler(false);
-  };
+    setUpdateUserDialogHandler(false)
+  }
 
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setSearchPageNumber(newPage);
-  };
-  const handleDownload = async () => {};
+    setSearchPageNumber(newPage)
+  }
+  const handleDownload = async () => {}
 
   const campaignerTable = () => {
     return (
@@ -456,8 +459,8 @@ const Users = () => {
           // onClickExportCSV={handleDownload}
         />
       </Box>
-    );
-  };
+    )
+  }
 
   const getUser = () => (
     <Box>
@@ -471,7 +474,7 @@ const Users = () => {
         <Typography
           sx={{
             fontSize: getRelativeFontSize(6),
-            ...boldFont,
+            ...regularFont,
             color: primaryHeadingColor,
           }}
         >
@@ -503,9 +506,9 @@ const Users = () => {
       </Box>
       <CustomLoader isLoading={isLoading} />
     </Box>
-  );
+  )
 
-  return getUser();
-};
+  return getUser()
+}
 
-export default Users;
+export default Users

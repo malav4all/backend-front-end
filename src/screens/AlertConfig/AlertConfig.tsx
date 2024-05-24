@@ -149,7 +149,7 @@ const AlertConfig = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label={"Add Filter"}
+        label={"Add Alerts"}
         onClick={() => setAddFilterDialogHandler(true)}
         customClasses={{
           width: "150px",

@@ -233,9 +233,16 @@ const JourneyReport = () => {
         <Grid
           item
           xs={12}
-          md={5}
-          lg={8}
-          sx={{ display: "flex", justifyContent: "flex-end" }}
+          md={7}
+          lg={6}
+          xl={6}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            flexWrap: "wrap",
+            gap: 2,
+            paddingRight: "17px",
+          }}
         >
           <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}

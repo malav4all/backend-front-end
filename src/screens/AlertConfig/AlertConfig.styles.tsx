@@ -46,15 +46,11 @@ const alertConfigStyles = {
   },
   mainCardHeader: {},
   mainCardHeading: {
-    ...boldFont,
-    margin: "16px 0px 0px 0px",
-    fontFamily: "Geist_Light",
+    fontFamily: "Geist_Medium",
     fontSize: "2rem",
-    width: "100%",
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(5),
-      marginBottom: theme.spacing(1),
+      marginTop: theme.spacing(3),
     },
   },
 
