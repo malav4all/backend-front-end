@@ -2,77 +2,74 @@ import {
   Box,
   Grid,
   InputAdornment,
-  MenuItem,
-  Select,
   Stack,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import moment from "moment";
+} from "@mui/material"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
+import moment from "moment"
 import {
   CustomAppHeader,
-  CustomButton,
   CustomInput,
   CustomPaper,
   CustomTable,
-} from "../../../../global/components";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
+} from "../../../../global/components"
+import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader"
 import {
   debounceEventHandler,
   openErrorNotification,
-} from "../../../../helpers/methods";
-import strings from "../../../../global/constants/StringConstants";
-import SearchIcon from "@mui/icons-material/Search";
+} from "../../../../helpers/methods"
+import strings from "../../../../global/constants/StringConstants"
+import SearchIcon from "@mui/icons-material/Search"
 // import history from "../../utils/history";
 import {
   alertRowData,
   statusDevice,
-} from "../../../Reports/service/Report.service";
-import archivedJourneyStyles from "./ArchivedJourney.styles";
-import { FaRoute } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+} from "../../../Reports/service/Report.service"
+import archivedJourneyStyles from "./ArchivedJourney.styles"
+import { FaRoute } from "react-icons/fa"
+import { NavLink } from "react-router-dom"
 import {
   boldFont,
   disabledBackgroundColor,
   primaryHeadingColor,
-} from "../../../../utils/styles";
-import { archiveJourney } from "./service/ArchivedJourney.service";
-import history from "../../../../utils/history";
+} from "../../../../utils/styles"
+import { archiveJourney } from "./service/ArchivedJourney.service"
+import history from "../../../../utils/history"
 const ArchivedJoruney = () => {
-  const classes = archivedJourneyStyles;
-  const [alertTableData, setAlertTableData] = useState([]);
-  const [page, setPage] = useState(1);
+  const classes = archivedJourneyStyles
+  const [alertTableData, setAlertTableData] = useState([])
+  const [page, setPage] = useState(1)
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
-  });
-  const [filterData, setFilterData] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-  const startIndex = (page - 1) * 10;
-  const endIndex = startIndex + 10;
-  const [statusPage, setStatusPage] = useState(1);
-  const [statData, setStatData] = useState<any>([]);
-  const startDeviceIndex = (statusPage - 1) * 10;
-  const endDeviceIndex = startDeviceIndex + 10;
-  const serachInputValue = useRef<any>("");
-  const [archivedTableData, setArchivedTableData] = useState([]);
+  })
+  const [filterData, setFilterData] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isSearching, setIsSearching] = useState<boolean>(false)
+  const startIndex = (page - 1) * 10
+  const endIndex = startIndex + 10
+  const [statusPage, setStatusPage] = useState(1)
+  const [statData, setStatData] = useState<any>([])
+  const startDeviceIndex = (statusPage - 1) * 10
+  const endDeviceIndex = startDeviceIndex + 10
+  const serachInputValue = useRef<any>("")
+  const [archivedTableData, setArchivedTableData] = useState([])
 
   useEffect(() => {
-    fetchArchivedJourneys();
-  }, []);
+    fetchArchivedJourneys()
+  }, [])
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const handleSearchOnChange = (searchEvent: ChangeEvent<HTMLInputElement>) => {
-    const value = searchEvent?.target?.value.toLowerCase().trim();
+    const value = searchEvent?.target?.value.toLowerCase().trim()
     if (value) {
-      setIsLoading(true);
+      setIsLoading(true)
       const searchedReports = archivedTableData?.filter(
         (data: any) =>
           data?.journeyName?.toLowerCase()?.includes(value) ||
@@ -81,26 +78,26 @@ const ArchivedJoruney = () => {
           data?.endDate?.toLowerCase()?.includes(value) ||
           data!?.totalDistance!?.toLowerCase()?.includes(value) ||
           data?.totalDuration?.toLowerCase()?.includes(value)
-      );
-      setFilterData(searchedReports);
-      setIsSearching(true);
-      setIsLoading(false);
+      )
+      setFilterData(searchedReports)
+      setIsSearching(true)
+      setIsLoading(false)
     } else {
-      setFilterData([...archivedTableData]);
-      setIsSearching(false);
+      setFilterData([...archivedTableData])
+      setIsSearching(false)
     }
-  };
+  }
 
   const fetchArchivedJourneys = async () => {
     try {
-      const response = await archiveJourney();
-      const res = tableRender(response.archiveJourney.data);
-      setArchivedTableData(res);
+      const response = await archiveJourney()
+      const res = tableRender(response.archiveJourney.data)
+      setArchivedTableData(res)
     } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
+      setIsLoading(false)
+      openErrorNotification(error.message)
     }
-  };
+  }
 
   const getSearchBar = () => {
     return (
@@ -120,27 +117,12 @@ const ArchivedJoruney = () => {
           ),
         }}
       />
-    );
-  };
-  const dummyRow = {
-    journeyName: "journey5",
-    createdBy: "Tanishk",
-    startDate: "2024-04-01",
-    endDate: "2024-04-10",
-    totalDistance: "150 km",
-    totalDuration: "5 days",
-    action: (
-      <Box sx={{ fontSize: "1.5rem" }}>
-        <NavLink to={"/trackplay"}>
-          <FaRoute />
-        </NavLink>
-      </Box>
-    ),
-  };
+    )
+  }
 
   const alertData = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const [res1, res2] = await Promise.all([
         alertRowData({
           input: {
@@ -154,7 +136,7 @@ const ArchivedJoruney = () => {
             endDate: dateFilter.endDate,
           },
         }),
-      ]);
+      ])
       const alertTableDataValue = res1.getAlertData.map((item: any) => {
         return {
           imei: item.imei,
@@ -164,24 +146,24 @@ const ArchivedJoruney = () => {
           message: item.message,
           source: item.source,
           time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        };
-      });
-      setAlertTableData(alertTableDataValue);
+        }
+      })
+      setAlertTableData(alertTableDataValue)
       const deviceStatus = res2.getStatusDevice.map((item: any) => {
         return {
           imei: item.imei,
           label: item.label,
           status: item.status,
           time: moment(item.time).format("DD-MM-YYYY HH:mm:ss A"),
-        };
-      });
-      setStatData(deviceStatus);
-      setIsLoading(false);
+        }
+      })
+      setStatData(deviceStatus)
+      setIsLoading(false)
     } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
+      setIsLoading(false)
+      openErrorNotification(error.message)
     }
-  };
+  }
 
   const getDashboardBody = () => {
     return (
@@ -199,35 +181,35 @@ const ArchivedJoruney = () => {
           </Grid>
         </Grid>
       </Grid>
-    );
-  };
+    )
+  }
 
   const getHeader = () => {
     return (
       <Box>
         <Typography sx={classes.mainCardHeading}>Archived Journey</Typography>
       </Box>
-    );
-  };
+    )
+  }
 
   const formatDuration = (durationInHours: number) => {
     if (durationInHours < 1) {
-      const minutes = Math.round(durationInHours * 60);
-      return `${minutes} Minutes`;
+      const minutes = Math.round(durationInHours * 60)
+      return `${minutes} Minutes`
     } else {
-      return `${durationInHours.toFixed(2)} Hours`;
+      return `${durationInHours.toFixed(2)} Hours`
     }
-  };
+  }
 
   const formatDistance = (distanceInKm: number) => {
-    const distance = Number(distanceInKm);
+    const distance = Number(distanceInKm)
     if (distance < 1) {
-      const meters = Math.round(distance * 1000);
-      return `${meters} m`;
+      const meters = Math.round(distance * 1000)
+      return `${meters} m`
     } else {
-      return `${distance.toFixed(2)} Km`;
+      return `${distance.toFixed(2)} Km`
     }
-  };
+  }
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
@@ -262,30 +244,34 @@ const ArchivedJoruney = () => {
               }}
             >
               <FaRoute
+                style={{
+                  color: "#5F22E2",
+                  cursor: "pointer",
+                  fontSize: "1.2rem",
+                }}
                 onClick={() => {
                   history.push({
                     pathname: "/trackplay",
-                  });
+                  })
                 }}
               />
             </Tooltip>
           </Box>
         ),
-      };
-    });
-    return data;
-  };
+      }
+    })
+    return data
+  }
 
   const getAlertsTable = () => {
     return (
       <Box
         id="Alerts_panel"
-        sx={{
-          padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-        }}
+        sx={
+          {
+            // padding: "30px",
+          }
+        }
       >
         <Grid container xs={12} md={12} lg={12} xl={12} width="100%">
           <Grid
@@ -314,7 +300,15 @@ const ArchivedJoruney = () => {
         </Grid>
 
         <Grid container>
-          <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={12}
+            xl={12}
+            lg={12}
+            sx={{ padding: "0px 20px" }}
+          >
             <CustomTable
               headers={[
                 { name: "Journey Name", field: "journeyName" },
@@ -336,8 +330,8 @@ const ArchivedJoruney = () => {
           </Grid>
         </Grid>
       </Box>
-    );
-  };
+    )
+  }
 
   return (
     <Box>
@@ -379,7 +373,7 @@ const ArchivedJoruney = () => {
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>
-  );
-};
+  )
+}
 
-export default ArchivedJoruney;
+export default ArchivedJoruney

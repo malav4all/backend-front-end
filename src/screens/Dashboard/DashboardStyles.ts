@@ -3,6 +3,7 @@ import {
   getRelativeFontSize,
   regularFont,
   theme,
+  offWhiteColor,
   pureWhiteColor,
   primaryHeadingColor,
   mediumFont,
@@ -11,18 +12,19 @@ import {
   pinkThemedMenuItems,
 } from "../../utils/styles";
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
+import { Height } from "@mui/icons-material";
 
 const dashboardStyles = {
-  thoughtsBox: {
-    height: "100%",
-    backgroundImage: "url(" + thoughtsbg + ") ",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-    borderRadius: "8px",
-    textAlign: "center",
-    padding: "0px",
-  },
+  // thoughtsBox: {
+  //   height: "100%",
+  //   backgroundImage: "url(" + thoughtsbg + ") ",
+  //   backgroundRepeat: "no-repeat",
+  //   backgroundSize: "cover",
+  //   boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+  //   borderRadius: "8px",
+  //   textAlign: "center",
+  //   padding: "0px",
+  // },
   campaignDate: {
     color: "#929292",
     ...mediumFont,
@@ -57,19 +59,21 @@ const dashboardStyles = {
     },
   },
   statsTitle: {
-    ...boldFont,
+    ...regularFont,
     color: textLightColor,
   },
   statsValue: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    ...regularFont,
+    fontSize: getRelativeFontSize(42),
+    lineHeight: "1",
+    marginTop: "1rem",
   },
   dropdown: {
     ...regularFont,
     ...purpleThemedSelectComponent,
     height: "40px",
     width: "200px",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: offWhiteColor,
     borderRadius: "8px",
     color: "#22222C",
     border: 0,
@@ -103,15 +107,17 @@ const dashboardStyles = {
   },
   header: {
     display: "flex",
+    marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#D1BBFF",
     padding: "16px",
-    paddingBottom: "64px",
-    paddingTop: "35px",
+    // paddingBottom: "64px",
+    height: "10rem",
+    // paddingTop: "35px",
   },
   container: {
     padding: "8px",
-    backgroundColor: "white",
+    backgroundColor: "red",
     borderRadius: "8px",
     boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
   },
@@ -152,7 +158,7 @@ const dashboardStyles = {
   statusBox: {
     ml: 1,
     ...regularFont,
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#d1bbff",
     padding: 1,
     fontSize: getRelativeFontSize(),
   },
@@ -178,7 +184,7 @@ const dashboardStyles = {
   bgColor: {
     color: "#ffffff",
     backgroundColor: "#1a0224",
-    borderRadius: "12px",
+    borderRadius: "8px",
     padding: "2px 0",
   },
   headingMargins: {
@@ -201,7 +207,7 @@ const dashboardStyles = {
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "12px",
+    borderRadius: "8px",
     fontSize: "14px",
   },
   optionStyle: {

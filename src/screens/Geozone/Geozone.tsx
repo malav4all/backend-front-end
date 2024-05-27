@@ -41,6 +41,7 @@ import { fetchLocationType } from "../Settings/LocationType/service/location-typ
 import { geoZoneInsertField, validateGeoZoneForm } from "./Geozone.helper";
 
 const Geozone = () => {
+  const classes = geozoneStyle;
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [isOpen, setOpenModal] = useState<boolean>(false);
   const [mapCheck, setMapCheck] = useState<any>(null);
@@ -484,7 +485,7 @@ const Geozone = () => {
   };
 
   const toggleGeozonesVisibility = async () => {
-    setGeozonesVisible(prevVisibility => !prevVisibility);
+    setGeozonesVisible((prevVisibility) => !prevVisibility);
     if (!geozonesVisible) {
       await fetchGeozone();
     } else {
@@ -908,13 +909,13 @@ const Geozone = () => {
           top: 25,
           right: "25px",
           zIndex: 0,
-          padding: "0.5rem",
+          padding: "0.7rem",
           backgroundColor: "white",
           boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
           borderRadius: "0.3rem",
         }}
       >
-        <Box sx={{ margin: "5px 5px", width: "300px" }}>
+        <Box sx={classes.searchStyles}>
           <CustomInput
             placeHolder="Search Geozone"
             id="users_search_field"
@@ -940,7 +941,10 @@ const Geozone = () => {
             }}
           >
             <List
-              sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+              sx={{
+                width: "100%",
+                maxWidth: 360,
+              }}
             >
               {geozoneData
                 .filter((item: any) => {
@@ -955,7 +959,13 @@ const Geozone = () => {
                 })
 
                 .map((item: any, index) => (
-                  <ListItem key={item._id}>
+                  <ListItem
+                    key={item._id}
+                    sx={{
+                      backgroundColor: "#F6F9FC",
+                      borderBottom: "1px solid #E8ECF0",
+                    }}
+                  >
                     <ListItemAvatar
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -971,16 +981,19 @@ const Geozone = () => {
                     </ListItemAvatar>
 
                     <ListItemText
-                      sx={{ display: "flex", flexDirection: "row" }}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                      }}
                     >
                       <Box>
                         <ListItemText>
-                          <Typography sx={{ fontSize: "14px" }}>
+                          <Typography sx={classes.locationHeading}>
                             {item.name}
                           </Typography>
                         </ListItemText>
                         <ListItemText>
-                          <Typography sx={{ fontSize: "14px" }}>
+                          <Typography sx={classes.locationDescription}>
                             {item.description}
                           </Typography>
                         </ListItemText>

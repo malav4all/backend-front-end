@@ -4,69 +4,70 @@ import {
   InputAdornment,
   Stack,
   Typography,
-} from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
+} from "@mui/material"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
-} from "../../../utils/styles";
-import SearchIcon from "@mui/icons-material/Search";
+  regularFont,
+} from "../../../utils/styles"
+import SearchIcon from "@mui/icons-material/Search"
 import {
   CustomButton,
   CustomInput,
   CustomTable,
-} from "../../../global/components";
+} from "../../../global/components"
 import {
   debounceEventHandler,
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
-} from "../../../helpers/methods";
-import strings from "../../../global/constants/StringConstants";
+} from "../../../helpers/methods"
+import strings from "../../../global/constants/StringConstants"
 import {
   createLocationType,
   fetchLocationType,
   searchLocations,
-} from "./service/location-type.service";
-import { store } from "../../../utils/store";
-import { validateLocationTypeForm } from "./LocationTypeandValidations";
-import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+} from "./service/location-type.service"
+import { store } from "../../../utils/store"
+import { validateLocationTypeForm } from "./LocationTypeandValidations"
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader"
 
 const tableHeader = [
   {
     name: "Type",
     field: "type",
   },
-];
+]
 
 const LocationType = () => {
-  const [formField, setFormField] = useState<any>({ value: "", error: "" });
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [data, setData] = useState([]);
-  const [count, setCount] = useState(0);
-  const [searchLocation, setSearchLocation] = useState<any>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
+  const [formField, setFormField] = useState<any>({ value: "", error: "" })
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+  const [data, setData] = useState([])
+  const [count, setCount] = useState(0)
+  const [searchLocation, setSearchLocation] = useState<any>("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [searchPageNumber, setSearchPageNumber] = useState<number>(1)
 
   useEffect(() => {
-    fetchLocationTypeHandler();
-  }, []);
+    fetchLocationTypeHandler()
+  }, [])
 
   useEffect(() => {
     if (searchLocation) {
-      getSearchData();
+      getSearchData()
     } else {
-      fetchLocationTypeHandler();
+      fetchLocationTypeHandler()
     }
-  }, [searchLocation, page, limit, searchPageNumber]);
+  }, [searchLocation, page, limit, searchPageNumber])
 
   const handleValidation = () => {
-    const { isValid, errors } = validateLocationTypeForm(formField);
-    setFormField(errors);
-    return isValid;
-  };
+    const { isValid, errors } = validateLocationTypeForm(formField)
+    setFormField(errors)
+    return isValid
+  }
   const addLocationTypeHandler = async () => {
     try {
       if (handleValidation()) {
@@ -75,15 +76,15 @@ const LocationType = () => {
             type: formField.value,
             createdBy: store?.getState()?.auth.userName,
           },
-        });
-        openSuccessNotification(res.addLocationType.message);
-        await fetchLocationTypeHandler();
-        setFormField({ value: "", error: "" });
+        })
+        openSuccessNotification(res.addLocationType.message)
+        await fetchLocationTypeHandler()
+        setFormField({ value: "", error: "" })
       }
     } catch (error: any) {
-      openErrorNotification(error.message);
+      openErrorNotification(error.message)
     }
-  };
+  }
 
   const fetchLocationTypeHandler = async () => {
     try {
@@ -92,42 +93,42 @@ const LocationType = () => {
           page,
           limit,
         },
-      });
-      setData(res.fetchLocationType.data);
-      setCount(res.fetchLocationType.paginatorInfo.count);
+      })
+      setData(res.fetchLocationType.data)
+      setCount(res.fetchLocationType.paginatorInfo.count)
     } catch (error: any) {
-      openErrorNotification(error.message);
+      openErrorNotification(error.message)
     }
-  };
+  }
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchLocation(SearchEvent.target.value.replace(/\s/g, ""));
-      setPage(1);
-      setLimit(10);
+      setSearchLocation(SearchEvent.target.value.replace(/\s/g, ""))
+      setPage(1)
+      setLimit(10)
     } else {
-      setSearchLocation("");
+      setSearchLocation("")
     }
-  };
+  }
 
   const getSearchData = async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const res = await searchLocations({
         input: {
           search: searchLocation,
           page: 1,
           limit: 10,
         },
-      });
-      setData(res?.searchLocations?.data);
-      setCount(res?.searchLocations?.paginatorInfo?.count);
-      setIsLoading(false);
+      })
+      setData(res?.searchLocations?.data)
+      setCount(res?.searchLocations?.paginatorInfo?.count)
+      setIsLoading(false)
     } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
+      openErrorNotification(error.message)
+      setIsLoading(false)
     }
-  };
+  }
 
   const getSearchBar = () => {
     return (
@@ -146,8 +147,8 @@ const LocationType = () => {
           ),
         }}
       />
-    );
-  };
+    )
+  }
   const addLocationTypeButton = () => {
     return (
       <CustomButton
@@ -159,28 +160,28 @@ const LocationType = () => {
           marginTop: "20px",
         }}
       />
-    );
-  };
+    )
+  }
 
   const handlePerPageData = (event: any) => {
-    setPage(1);
-    setSearchPageNumber(1);
-    setLimit(event.target.value);
-  };
+    setPage(1)
+    setSearchPageNumber(1)
+    setLimit(event.target.value)
+  }
 
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setSearchPageNumber(newPage);
-  };
+    setSearchPageNumber(newPage)
+  }
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const locationTypeTable = () => {
     return (
@@ -208,8 +209,8 @@ const LocationType = () => {
           isExportCSV={false}
         />
       </Box>
-    );
-  };
+    )
+  }
   return (
     <>
       <Box>
@@ -223,7 +224,7 @@ const LocationType = () => {
           <Typography
             sx={{
               fontSize: getRelativeFontSize(6),
-              ...boldFont,
+              ...regularFont,
               color: primaryHeadingColor,
             }}
           >
@@ -250,7 +251,7 @@ const LocationType = () => {
             label="Type"
             value={formField.value}
             onChange={(e: any) => {
-              setFormField({ ...formField, value: e.target.value, error: "" });
+              setFormField({ ...formField, value: e.target.value, error: "" })
             }}
             placeHolder="Enter Type"
             error={
@@ -273,7 +274,7 @@ const LocationType = () => {
         <CustomLoader isLoading={isLoading} />
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default LocationType;
+export default LocationType

@@ -31,6 +31,7 @@ import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import LogoutIcon from "../../../assets/icons/Logout.png";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
+import ROUTEYE_LOGO_MINI from "../../../assets/images/ROUTEYE_LOGO_MINI.png";
 interface CustomProps {
   setMenuMobileVisible?: Function;
   isActive?: boolean;
@@ -179,8 +180,8 @@ const AppDrawer = (props: CustomProps) => {
           component={"div"}
           sx={[
             isTruthy(option.subMenu) && index === activeIndex
-              ? { borderRadius: "13px 13px 0 0" }
-              : { borderRadius: "13px" },
+              ? { borderRadius: "8px 8px 0 0" }
+              : { borderRadius: "8px" },
             index === activeIndex || isSubMenuItemActive(option)
               ? classes.selectedMenuOption
               : classes.menuOption,
@@ -221,6 +222,7 @@ const AppDrawer = (props: CustomProps) => {
                 )}
               </Box>
             </Tooltip>
+
             {isDrawerOpen && (
               <ListItemText>
                 <Box sx={classes.listItemTextBox}>
@@ -256,7 +258,7 @@ const AppDrawer = (props: CustomProps) => {
     return (
       <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
-          <img src={ROUTEYE_LOGO} height="13px" />
+          <img src={ROUTEYE_LOGO_MINI} height="45px" />
         ) : (
           <img src={ROUTEYE_LOGO} height="27px" />
         )}
@@ -305,28 +307,32 @@ const AppDrawer = (props: CustomProps) => {
           )}
         </Box>
 
-        <Tooltip
-          title={
-            <CustomPaper
-              className={{ backgroundColor: disabledBackgroundColor }}
-            >
-              <Typography sx={classes.logoutTooltipText}>{"Logout"}</Typography>
-            </CustomPaper>
-          }
-          placement="top"
-          arrow
-          componentsProps={{
-            tooltip: {
-              sx: {
-                background: "none",
+        {isDrawerOpen && (
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography sx={classes.logoutTooltipText}>
+                  {"Logout"}
+                </Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
               },
-            },
-          }}
-        >
-          <Box ml={1} onClick={handleLogout} sx={{ color: "white" }}>
-            <RiLogoutCircleRLine size={25} />
-          </Box>
-        </Tooltip>
+            }}
+          >
+            <Box ml={1} onClick={handleLogout} sx={{ color: "white" }}>
+              <RiLogoutCircleRLine size={25} />
+            </Box>
+          </Tooltip>
+        )}
       </Box>
     );
   };

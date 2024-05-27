@@ -8,7 +8,7 @@ import {
   purpleThemedSelectComponent,
   regularFont,
   pinkThemedMenuItems,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
 const geozoneStyle = {
   mainCardHeading: {
@@ -70,6 +70,8 @@ const geozoneStyle = {
     },
   },
 
+  searchStyles: { margin: "5px 5px", width: "95%" },
+
   inputLabel: {
     display: "flex",
     color: "#212121",
@@ -90,6 +92,11 @@ const geozoneStyle = {
       color: "red",
     },
   },
+
+  locationHeading: { ...boldFont, fontSize: "14px", color: "#3C424D" },
+
+  locationDescription: { ...regularFont, fontSize: "13px", color: "#3C424D" },
+
   star: {
     color: inputLabelRequiredColor,
   },
@@ -177,5 +184,5 @@ const geozoneStyle = {
       },
     },
   },
-} as const;
-export default geozoneStyle;
+} as const
+export default geozoneStyle

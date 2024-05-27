@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-import { FcInfo } from "react-icons/fc";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import moment from "moment-timezone";
 import dashboardStyles from "./DashboardStyles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -16,6 +16,7 @@ import { isTruthy, openErrorNotification } from "../../helpers/methods";
 import { weekValue, weekValueNextMonth } from "./DashboardData";
 import { CustomButton, CustomDialog } from "../../global/components";
 import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
+import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -31,7 +32,6 @@ const Dashboard = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [count, setCount] = useState(0);
-
   const [offlinePage, setOfflinePage] = useState(1);
   const [offlineLimit, setOfflineLimit] = useState(10);
   const [offlineCount, setOfflineCount] = useState<number>(0);
@@ -78,7 +78,7 @@ const Dashboard = () => {
               time: moment(item.time).fromNow(),
               action: (
                 <span style={{ color: "#845ADF" }}>
-                  <FcInfo />
+                  <IoMdInformationCircleOutline />
                 </span>
               ),
             })
@@ -124,7 +124,9 @@ const Dashboard = () => {
                   sx={{
                     backgroundColor: "red",
                     color: "white",
-                    border: "1px solid white",
+                    borderRadius: "5px",
+                    padding: "0.1rem 0.2rem",
+                    fontFamily: "Geist_Regular",
                     animation: "pulse 2s infinite",
                     "@keyframes pulse": {
                       "0%": {
@@ -132,7 +134,7 @@ const Dashboard = () => {
                         opacity: 1,
                       },
                       "50%": {
-                        transform: "scale(1.05)",
+                        transform: "scale(1.1)",
                         opacity: 0.75,
                       },
                       "100%": {
@@ -146,8 +148,16 @@ const Dashboard = () => {
               ),
               time: moment(item.time).fromNow(),
               action: (
-                <span style={{ color: "#845ADF" }}>
-                  <FcInfo
+                <span
+                  style={{
+                    color: "#5f22e1",
+                    fontSize: "1.5rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <IoMdInformationCircleOutline
                     onClick={() => {
                       history.push({
                         pathname: "/view-offline",
@@ -187,11 +197,7 @@ const Dashboard = () => {
         xl={12}
         width="100%"
       >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}>
-          {/* <Typography variant="h5" sx={classes.heading}>
-            Hello, {getUserName()}!
-          </Typography> */}
-        </Grid>
+        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}></Grid>
 
         <Grid
           item
@@ -201,40 +207,37 @@ const Dashboard = () => {
           sx={{
             display: "flex",
             justifyContent: "flex-end",
-            flexWrap: "wrap",
           }}
         >
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Select
-              id="campaigns_interval_dropdown"
-              sx={classes.dropDownStyle}
-              value={selectedRange}
-              onChange={handleChange}
-              displayEmpty
-              inputProps={{ "aria-label": "Without label" }}
-              renderValue={() => selectedRange}
+          <Select
+            id="campaigns_interval_dropdown"
+            sx={classes.dropDownStyle}
+            value={selectedRange}
+            onChange={handleChange}
+            displayEmpty
+            inputProps={{ "aria-label": "Without label" }}
+            renderValue={() => selectedRange}
+          >
+            <MenuItem value="Past 1m" sx={classes.optionStyle}>
+              Past 1m
+            </MenuItem>
+            <MenuItem value="Past 5m" sx={classes.optionStyle}>
+              Past 5m
+            </MenuItem>
+            <MenuItem value="Past 15m" sx={classes.optionStyle}>
+              Past 15m
+            </MenuItem>
+            <MenuItem value="Past 30m" sx={classes.optionStyle}>
+              Past 30m
+            </MenuItem>
+            <MenuItem
+              value="Custom"
+              onClick={CustomChange}
+              sx={classes.optionStyle}
             >
-              <MenuItem value="Past 1m" sx={classes.optionStyle}>
-                Past 1m
-              </MenuItem>
-              <MenuItem value="Past 5m" sx={classes.optionStyle}>
-                Past 5m
-              </MenuItem>
-              <MenuItem value="Past 15m" sx={classes.optionStyle}>
-                Past 15m
-              </MenuItem>
-              <MenuItem value="Past 30m" sx={classes.optionStyle}>
-                Past 30m
-              </MenuItem>
-              <MenuItem
-                value="Custom"
-                onClick={CustomChange}
-                sx={classes.optionStyle}
-              >
-                Custom
-              </MenuItem>
-            </Select>
-          </Box>
+              Custom
+            </MenuItem>
+          </Select>
         </Grid>
       </Grid>
     );
@@ -251,6 +254,7 @@ const Dashboard = () => {
   const handleCloseModel = () => {
     setOpenModal(false);
   };
+
   const datePickerChanged = () => {
     setDateFilter({
       startDate: dateRange.fromDate,
@@ -402,14 +406,11 @@ const Dashboard = () => {
       <Box
         id="Alerts_pannel"
         sx={{
-          padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-          widows: "100%",
+          marginTop: "1rem",
+          backgroundColor: "#ffffff00",
         }}
       >
-        <Typography
+        {/* <Typography
           sx={{
             fontSize: "1.5rem",
             fontWeight: "Bold",
@@ -418,19 +419,19 @@ const Dashboard = () => {
           gutterBottom
         >
           Alerts
-        </Typography>
+        </Typography> */}
 
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
               display="flex"
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="start"
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "#E13D56",
+                padding: "2rem 1.5rem",
+                backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
@@ -438,12 +439,23 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
-                  color: "ivory",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: "#3C424D",
                 }}
               >
-                <Typography>Tamper/Misc</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
+                  Tamper/Misc
+                </Typography>
                 <Typography sx={classes.statsValue}>
                   {
                     alertTableData.filter((item: any) => item.event === "other")
@@ -454,9 +466,11 @@ const Dashboard = () => {
 
               <Box
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: "1rem",
                   color: "white",
-                  marginTop: "-1rem",
+                  padding: "0.7rem",
+                  borderRadius: "5px",
+                  backgroundColor: "#855BDE",
                 }}
               >
                 <FaBell />
@@ -468,12 +482,12 @@ const Dashboard = () => {
             <Box
               display="flex"
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="start"
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "#18A0FB",
+                padding: "2rem 1.5rem",
+                backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
@@ -481,12 +495,24 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
-                  color: "ivory",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: "#3C424D",
                 }}
               >
-                <Typography>Lock/Unlock</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
+                  Lock/Unlock
+                </Typography>
+
                 <Typography sx={classes.statsValue}>
                   {alertTableData.filter((item: any) => item.event === "locked")
                     .length +
@@ -498,9 +524,11 @@ const Dashboard = () => {
 
               <Box
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: "1rem",
                   color: "white",
-                  marginTop: "-1rem",
+                  padding: "0.7rem",
+                  borderRadius: "5px",
+                  backgroundColor: "#855BDE",
                 }}
               >
                 <FaBell />
@@ -512,12 +540,12 @@ const Dashboard = () => {
             <Box
               display="flex"
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="start"
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "#FF9A02",
+                padding: "2rem 1.5rem",
+                backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
@@ -525,12 +553,23 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
-                  color: "ivory",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: "#3C424D",
                 }}
               >
-                <Typography>Geozone In/Out</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
+                  Geozone In/Out
+                </Typography>
                 <Typography sx={classes.statsValue}>
                   {alertTableData.filter(
                     (item: any) => item.event === "geo_exit"
@@ -543,9 +582,11 @@ const Dashboard = () => {
 
               <Box
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: "1rem",
                   color: "white",
-                  marginTop: "-1rem",
+                  padding: "0.7rem",
+                  borderRadius: "5px",
+                  backgroundColor: "#855BDE",
                 }}
               >
                 <FaBell />
@@ -557,12 +598,12 @@ const Dashboard = () => {
             <Box
               display="flex"
               justifyContent="space-between"
-              alignItems="center"
+              alignItems="start"
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "1rem 1.5rem",
-                backgroundColor: "#855BDE",
+                padding: "2rem 1.5rem",
+                backgroundColor: "white",
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
@@ -570,12 +611,23 @@ const Dashboard = () => {
             >
               <Box
                 sx={{
-                  fontFamily: "SourceSans3_Bold",
+                  fontFamily: "Geist_Bold",
                   fontWeight: 700,
-                  color: "ivory",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: "#3C424D",
                 }}
               >
-                <Typography>Total Alerts</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
+                  Total Alerts
+                </Typography>
                 <Typography sx={classes.statsValue}>
                   {alertTableData.length}
                 </Typography>
@@ -583,15 +635,18 @@ const Dashboard = () => {
 
               <Box
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: "1rem",
                   color: "white",
-                  marginTop: "-1rem",
+                  padding: "0.7rem",
+                  borderRadius: "5px",
+                  backgroundColor: "#855BDE",
                 }}
               >
                 <FaBell />
               </Box>
             </Box>
           </Grid>
+          
         </Grid>
       </Box>
     );
@@ -610,6 +665,7 @@ const Dashboard = () => {
   ) => {
     setOfflinePage(newPage);
   };
+
   const handlePerPageData = (event: any) => {
     setPage(1);
     setLimit(event.target.value);
@@ -622,19 +678,30 @@ const Dashboard = () => {
 
   const getAlertsTable = () => {
     return (
-      <Grid container justifyContent="space-between">
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          paddingLeft: "24px",
+          paddingTop: "24px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Grid
           item
           xs={12}
           sm={12}
           md={12}
-          xl={6}
-          lg={12}
+          xl={5.9}
+          lg={5.9}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: "white",
+            border: "1px solid #E8ECF0",
             borderRadius: "8px",
-            boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
             display: "flex",
             flexDirection: "column",
           }}
@@ -642,15 +709,18 @@ const Dashboard = () => {
           <Typography
             variant="h5"
             sx={{
-              fontWeight: "Bold",
-              fontSize: "1.2rem",
-              marginBottom: "1.5rem",
+              fontFamily: "Geist_Light",
+              fontSize: "1.5rem",
+              marginBottom: "0.5rem",
+              padding: "0.2rem 0.8rem",
+              borderRadius: "5px",
+              borderLeft: "7px solid #5F22E1",
             }}
           >
             Alert Logs
           </Typography>
 
-          <CustomTable
+          <CustomTableDashboard
             headers={[
               { name: "Name", field: "label" },
               { name: "IMEI", field: "imei" },
@@ -677,8 +747,8 @@ const Dashboard = () => {
           xs={12}
           sm={12}
           md={12}
-          xl={6}
-          lg={12}
+          xl={5.9}
+          lg={5.9}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: "white",
@@ -691,35 +761,35 @@ const Dashboard = () => {
           <Typography
             variant="h5"
             sx={{
-              fontWeight: "Bold",
-              fontSize: "1.2rem",
-              marginBottom: "1.5rem",
+              fontFamily: "Geist_Light",
+              fontSize: "1.5rem",
+              marginBottom: "0.5rem",
+              padding: "0.2rem 0.8rem",
+              borderRadius: "5px",
+              borderLeft: "7px solid #5F22E1",
             }}
           >
             Offline Devices
           </Typography>
-          {isLoading ? (
-            <CustomLoader />
-          ) : (
-            <CustomTable
-              headers={[
-                { name: "Name", field: "label" },
-                { name: "IMEI", field: "imei" },
-                { name: "Status", field: "status" },
-                { name: "Last Ping", field: "time" },
-                { name: "Action", field: "action" },
-              ]}
-              rows={statData}
-              isRowPerPageEnable={false}
-              rowsPerPage={offlineLimit}
-              perPageData={offlineLimit}
-              paginationCount={offlineCount}
-              pageNumber={offlinePage}
-              setPage={setOfflinePage}
-              handlePageChange={handleStatusChangePage}
-              handlePerPageData={handlePerOfflinePageData}
-            />
-          )}
+
+          <CustomTableDashboard
+            headers={[
+              { name: "Name", field: "label" },
+              { name: "IMEI", field: "imei" },
+              { name: "Status", field: "status" },
+              { name: "Last Ping", field: "time" },
+              { name: "Action", field: "action" },
+            ]}
+            rows={statData}
+            isRowPerPageEnable={false}
+            rowsPerPage={offlineLimit}
+            perPageData={offlineLimit}
+            paginationCount={offlineCount}
+            pageNumber={offlinePage}
+            setPage={setOfflinePage}
+            handlePageChange={handleStatusChangePage}
+            handlePerPageData={handlePerOfflinePageData}
+          />
         </Grid>
       </Grid>
     );
@@ -727,14 +797,17 @@ const Dashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid
-        container
-        spacing={2}
-        sx={{ padding: "0 16px", marginTop: "-48px" }}
-        md={12}
-        xs={12}
-      >
-        <Grid container spacing={3} xs={12} sm={12} xl={12} md={12} lg={12}>
+      <Grid md={12} xs={12} sx={{ margin: "auto" }}>
+        <Grid
+          container
+          spacing={3}
+          xs={12}
+          sm={12}
+          xl={12}
+          md={12}
+          lg={12}
+          sx={{ margin: "-70px auto", width: " 97%" }}
+        >
           <Grid item xs={12} md={12} lg={12} xl={12}>
             {getAlerts()}
           </Grid>
@@ -748,7 +821,14 @@ const Dashboard = () => {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: "#F0F5F9",
+        width: "100%",
+        height: "100%",
+        margin: "auto",
+      }}
+    >
       {getDashboardHeader()}
       {getDashboardBody()}
       {customDialog()}

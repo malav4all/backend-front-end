@@ -1,5 +1,6 @@
-const Report = () => {
-  return <div>Report</div>;
+const Reports = () => {
+  return <div>
+  </div>;
 };
 
-export default Report;
+export default Reports;

@@ -3,22 +3,21 @@ import {
   getRelativeFontSize,
   primaryHeadingColor,
   theme,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
- const SettingStyles = {
+const SettingStyles = {
   headerBackgroundColor: {
     backgroundColor: "#f1edff",
     padding: "35px 31px 31px 32px",
   },
   settingsTitle: {
-    fontSize: getRelativeFontSize(10),
-    ...boldFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(4),
-      marginBottom: theme.spacing(1),
+      marginTop: theme.spacing(3),
     },
   },
-} as const;
+} as const
 
-export default SettingStyles;
+export default SettingStyles

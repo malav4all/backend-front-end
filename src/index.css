@@ -1,58 +1,96 @@
 @font-face {
-  font-family: SourceSans3_Black;
-  src: url("./assets/fonts/SourceSans3-Black.ttf");
+  font-family: "Geist_Thin";
+  src: url("./assets/fonts/Geist-Thin.woff") format("truetype");
+  font-weight: 100;
 }
 @font-face {
-  font-family: SourceSans3_Bold;
-  src: url("./assets/fonts/SourceSans3-Bold.ttf");
+  font-family: "Geist_UltraLight";
+  src: url("./assets/fonts/Geist-UltraLight.woff") format("truetype");
+  font-weight: 200;
 }
 @font-face {
-  font-family: SourceSans3_Medium;
-  src: url("./assets/fonts/SourceSans3-Medium.ttf");
+  font-family: "Geist_Light";
+  src: url("./assets/fonts/Geist-Light.woff") format("truetype");
+  font-weight: 300;
 }
 @font-face {
-  font-family: SourceSans3_Regular;
-  src: url("./assets/fonts/SourceSans3-Regular.ttf");
+  font-family: "Geist_Regular";
+  src: url("./assets/fonts/Geist-Regular.woff") format("truetype");
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Geist_Medium";
+  src: url("./assets/fonts/Geist-Medium.woff") format("truetype");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Geist_SemiBold";
+  src: url("./assets/fonts/Geist-SemiBold.woff") format("truetype");
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Geist_Bold";
+  src: url("./assets/fonts/Geist-Bold.woff") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Geist_Black";
+  src: url("./assets/fonts/Geist-Black.woff") format("truetype");
+  font-weight: 800;
+}
+@font-face {
+  font-family: "Geist_UltraBlack";
+  src: url("./assets/fonts/Geist-UltraBlack.woff") format("truetype");
+  font-weight: 900;
 }
 
 body {
   margin: 0;
-  font-family: SourceSans3_Regular, SourceSans3_Black, SourceSans3_Bold,
-    SourceSans3_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Geist_Regular, Geist_Black, Geist_Bold,
+  Geist_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: "#F0F5F9";
 }
 
-.MuiTableRow-root td:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-left: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+.MuiTableRow-root > td:first-child{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
-.MuiTableRow-root td:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+.MuiTableRow-root > td:last-child{
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
 .MuiTableRow-head th:first-child {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-left: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top: 1px solid #E9ECEF;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #E9ECEF;
 }
 
-.MuiTableRow-head th:last-child {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-top: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
-  border-bottom: 1px solid #f0f0f0;
+.MuiTableRow-head th {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  font-size: 13px;
+  border-top: 1px solid #E9ECEF;
+  border-bottom: 1px solid #E9ECEF;
+} 
+
+.MuiTableRow-root > td{
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-bottom: 1px solid #7c8fac48;
 }
 
 .MuiStepConnector-root {

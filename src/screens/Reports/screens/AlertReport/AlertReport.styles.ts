@@ -12,20 +12,20 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   pureWhiteColor,
-} from "../../../../utils/styles";
+} from "../../../../utils/styles"
 const alertReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#FCF5FF",
-    padding: "16px",
+    backgroundColor: "#d1bbff",
+    padding: "16px 3rem",
     paddingBottom: "64px",
     paddingTop: "35px",
   },
   heading: {
-    ...boldFont,
+    fontFamily: "Geist_Medium",
     color: primaryHeadingColor,
-    fontSize: getRelativeFontSize(7),
+    fontSize: "2rem",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
     },
@@ -44,6 +44,6 @@ const alertReportStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-} as const;
+} as const
 
-export default alertReportStyles;
+export default alertReportStyles

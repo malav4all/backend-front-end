@@ -61,8 +61,11 @@ const dashboardStyles = {
     color: textLightColor,
   },
   statsValue: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    ...regularFont,
+    fontSize: getRelativeFontSize(42),
+    lineHeight: "1",
+    marginTop: "1rem",
+    color: "#3C424D",
   },
   dropdown: {
     ...regularFont,
@@ -103,11 +106,13 @@ const dashboardStyles = {
   },
   header: {
     display: "flex",
+    marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#D1BBFF",
     padding: "16px",
-    paddingBottom: "64px",
-    paddingTop: "35px",
+    // paddingBottom: "64px",
+    height: "10rem",
+    // paddingTop: "35px",
   },
   container: {
     padding: "1rem",
@@ -152,7 +157,7 @@ const dashboardStyles = {
   statusBox: {
     ml: 1,
     ...regularFont,
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#d1bbff",
     padding: 1,
     fontSize: getRelativeFontSize(),
   },

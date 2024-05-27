@@ -59,7 +59,7 @@ const CustomDatePicker: React.FC<Props> = ({
 }) => {
   const classes = customDatePickerStyle;
   const pureWhiteColor = "#ffffff";
-  const primaryBlackColor = "#000000";
+  const primaryBlackColor = "#3C424D";
   const errorStyling: CSSProperties = {
     paddingLeft: "6px",
   };

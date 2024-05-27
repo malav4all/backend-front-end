@@ -12,7 +12,7 @@ const archivedJourneyStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#FCF5FF",
+    backgroundColor: "#d1bbff",
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",
@@ -26,10 +26,11 @@ const archivedJourneyStyles = {
     },
   },
   mainCardHeading: {
-    ...boldFont,
-    margin: "32px 0 20px 0",
+    ...regularFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0px 0",
     width: "100%",
-    fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),

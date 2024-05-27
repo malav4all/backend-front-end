@@ -3,7 +3,7 @@ import {
   theme,
   primaryHeadingColor,
   getRelativeFontSize,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
 const deviceGroupStyles = {
   divderResponsive: {
@@ -16,7 +16,7 @@ const deviceGroupStyles = {
   },
 
   mainSection: {
-    padding: theme.spacing(2),
+    padding: "30px",
     paddingTop: "2px",
     marginTop: "10px",
     [theme.breakpoints.down("md")]: {
@@ -25,15 +25,16 @@ const deviceGroupStyles = {
   },
   mainCardHeading: {
     ...boldFont,
-    margin: "32px 0 20px 0",
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0 0",
     width: "100%",
-    fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),
       marginBottom: theme.spacing(1),
     },
   },
-};
+}
 
-export default deviceGroupStyles;
+export default deviceGroupStyles

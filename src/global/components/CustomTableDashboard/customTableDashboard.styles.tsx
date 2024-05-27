@@ -1,3 +1,4 @@
+import { BorderBottomOutlined } from "@mui/icons-material";
 import {
   boldFont,
   borderColor,
@@ -12,16 +13,15 @@ import {
   theme,
 } from "../../../utils/styles";
 
-const customTableStyles = {
+const customTableDashboardStyles = {
   table: {
     borderCollapse: "separate",
     borderSpacing: "0px",
     borderTopRadius: "5px",
     borderBottomRadius: "5px",
     borderColor: "white",
-    bakgroundColor: "red",
     width: "100%",
-    mt: 2,
+    marginTop: "2rem",
     [theme.breakpoints.down("xl")]: {
       overflow: "auto",
     },
@@ -35,8 +35,9 @@ const customTableStyles = {
   tableHeaderCell: {
     ...mediumFont,
     color: "#3C424D",
-    backgroundColor: "#F5F7F9",
+    backgroundColor: "#F6F9FC",
     borderBottom: "none",
+    padding: "12px 24px",
     borderTop: "none",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
@@ -47,14 +48,16 @@ const customTableStyles = {
   tableCell: {
     ...regularFont,
     fontSize: "14px",
-    padding: "0.5rem 0.4rem",
     textAlign: "left",
     backgroundColor: "white",
-     borderBottom: "none",
+    borderBottom: "none",
+    minWidth: "75px",
+    padding: "7px 3px"
   },
 
   tableRow: {
     backgroundColor: "white",
+    borderBottom: "1px"
   },
 
   checkBoxStyle: {
@@ -92,4 +95,4 @@ const customTableStyles = {
   },
 } as const;
 
-export default customTableStyles;
+export default customTableDashboardStyles;

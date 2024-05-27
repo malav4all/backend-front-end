@@ -10,7 +10,7 @@ import {
   purpleThemedSelectComponent,
   pinkThemedMenuItems,
   inputLabelRequiredColor,
-} from "../../utils/styles";
+} from "../../utils/styles"
 
 const journeyStyles = {
   divderResponsive: {
@@ -24,7 +24,7 @@ const journeyStyles = {
   },
 
   mainSection: {
-    padding: theme.spacing(2),
+    padding: "30px",
     paddingTop: "2px",
     marginTop: "10px",
     [theme.breakpoints.down("md")]: {
@@ -46,10 +46,11 @@ const journeyStyles = {
   },
   mainCardHeader: {},
   mainCardHeading: {
-    ...boldFont,
-    margin: "32px 0 20px 0",
+    ...regularFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0 0",
     width: "100%",
-    fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),
@@ -206,11 +207,11 @@ const journeyStyles = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "10px",
       borderColor: "#E7E7E7",
-      "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline":{
-        borderColor :"#E7E7E7",
-      } 
+      "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline": {
+        borderColor: "#E7E7E7",
+      },
     },
   },
-};
+}
 
-export default journeyStyles;
+export default journeyStyles

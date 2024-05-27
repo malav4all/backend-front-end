@@ -178,7 +178,7 @@ const ListOfMenus = () =>
     {
       icon: alertConfigIcon("#dbdbdb"),
       activeIcon: alertConfigIcon(pinkDarkColor),
-      text: "Alert Config",
+      text: "Alerts",
       link: `${"/alert-config"}`,
       pageName: strings.ALERT_CONFIG,
       visibleInSidebar: true,

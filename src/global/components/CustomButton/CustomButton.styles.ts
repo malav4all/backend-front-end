@@ -5,12 +5,13 @@ import {
   customButtonStyle,
   disabledBackgroundColor,
   mediumFont,
+  regularFont,
 } from "../../../utils/styles";
 
 const customButtonStyles = {
   btnStyle: {
     ...customButtonStyle,
-    ...mediumFont,
+    ...regularFont,
     width: "80%",
     padding: "10px 20px",
     ...centerItemFlex,

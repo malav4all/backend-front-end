@@ -13,6 +13,7 @@ import CustomButton from "../../../global/components/CustomButton/CustomButton";
 import AddUser from "./components/AddAsset/AddAssertAssingment";
 import { AssetAssingmentData, RowData } from "../../../models/interfaces";
 import SearchIcon from "@mui/icons-material/Search";
+import { PiPencilSimpleBold } from "react-icons/pi";
 import {
   debounceEventHandler,
   getFormattedStatsCount,
@@ -104,9 +105,13 @@ const AssetAssingment = () => {
                 editAssetAssingment(assetAssingmentData);
               }}
             >
-              <EditIcon
-                htmlColor={"#0F2167"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              <PiPencilSimpleBold
+                style={{
+                  margin: "0px 8px -7px 0px",
+                  cursor: "pointer",
+                  color: "#5F22E2",
+                  fontSize: "17px",
+                }}
               />
             </Tooltip>
           </>
@@ -243,7 +248,7 @@ const AssetAssingment = () => {
 
   const campaignerTable = () => {
     return (
-      <Box id="assetAssingment_display_table" sx={classes.campaignerTable}>
+      <Box id="assetAssingment_display_table" >
         <CustomTable
           headers={assetAssingmentTableHeader}
           rows={assetAssingmentDataSource}

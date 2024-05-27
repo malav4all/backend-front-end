@@ -16,14 +16,15 @@ const infoTextColor = "#888888";
 const disabledBackgroundColor = "#888888";
 const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
-const drawerWidth = 250;
+const drawerWidth = 240;
 const textLightColor = "#666666";
 const purplePrimaryColor = "#5F22E2";
 const pinkDarkColor = "#ffffff";
 const pureWhiteColor = "#ffffff";
+const offWhiteColor = "#F0F5F9";
 const primaryHeadingColor = "#001529";
 const primaryGreenColor = "#adc804";
-const primaryBlackColor = "#000000";
+const primaryBlackColor = "#3C424D";
 const primaryBlue = "#5F22E2";
 const lightTextColor = "#666";
 const lightPinkColor = "#f1edff";
@@ -46,45 +47,69 @@ const mainFlexContainer: CSSProperties = {
   flexWrap: "wrap",
   justifyContent: "space-between",
 };
-const blackFont: CSSProperties = {
-  fontFamily: "SourceSans3_Black",
-  fontWeight: 900,
-  fontStyle: "normal",
-};
-
-const boldFont: CSSProperties = {
-  fontFamily: "SourceSans3_Bold",
-  fontWeight: 700,
-};
 const leftItemFlex: CSSProperties = {
   display: "flex",
   alignItems: "left",
   justifyContent: "left",
 };
 
-const mediumFont: CSSProperties = {
-  fontFamily: "SourceSans3_Medium",
-  fontWeight: 500,
-};
 const rowItemFlex: CSSProperties = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "center",
 };
-const regularFont: CSSProperties = {
-  fontFamily: "SourceSans3_Regular",
-  fontWeight: 400,
+
+const thinFont: CSSProperties = {
+  fontFamily: "Geist_Thin",
 };
+
+const ultraLightFont: CSSProperties = {
+  fontFamily: "Geist_UltraLight",
+};
+
+const lightFont: CSSProperties = {
+  fontFamily: "Geist_Light",
+};
+
+const regularFont: CSSProperties = {
+  fontFamily: "Geist_Regular",
+};
+
+const mediumFont: CSSProperties = {
+  fontFamily: "Geist_Medium",
+};
+
+const semiBoldFont: CSSProperties = {
+  fontFamily: "Geist_SemiBold",
+};
+
+const boldFont: CSSProperties = {
+  fontFamily: "Geist_Bold",
+};
+
+const blackFont: CSSProperties = {
+  fontFamily: "Geist_Black",
+};
+
+const ultraBlackFont: CSSProperties = {
+  fontFamily: "Geist_UltraBlack",
+};
+
 
 const theme = createTheme({
   typography: {
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",
-      "Poppins_Regular",
-      "Poppins_Medium",
-      "Poppins_Bold",
-      "Poppins_Black",
+      "Geist_Thin",
+      "Geist_UltraLight",
+      "Geist_Light",
+      "Geist_SemiBold",
+      "Geist_UltraBlack",
+      "Geist_Regular",
+      "Geist_Medium",
+      "Geist_Bold",
+      "Geist_Black",
       "sans-serif",
     ].join(","),
   },
@@ -102,7 +127,6 @@ const customButtonStyle: CSSProperties = {
   textAlign: "center",
   backgroundColor: purplePrimaryColor,
   padding: "10px 15px",
-  // boxShadow: " 4px 4px 30px rgba(0, 0, 0, 0.03)",
   boxShadow: "0 2px 0 rgb(0 0 0 / 2%)",
   color: "#FFFFFF",
   cursor: "pointer",
@@ -261,6 +285,11 @@ export {
   CustomSwitch,
   CustomCheckbox,
   CustomRadio,
+  thinFont,
+  ultraLightFont,
+  lightFont,
+  ultraBlackFont,
+  semiBoldFont,
   regularFont,
   blackFont,
   boldFont,
@@ -273,6 +302,7 @@ export {
   purplePrimaryColor,
   pinkDarkColor,
   pureWhiteColor,
+  offWhiteColor,
   primaryHeadingColor,
   primaryGreenColor,
   primaryBlue,

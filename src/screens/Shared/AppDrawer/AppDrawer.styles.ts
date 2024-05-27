@@ -1,6 +1,7 @@
 import { Padding } from "@mui/icons-material";
 import {
   boldFont,
+  ultraBlackFont,
   drawerWidth,
   getRelativeFontSize,
   mediumFont,
@@ -11,14 +12,17 @@ import {
   pinkDarkColor,
   activeMenuBackgroundColor,
   pureWhiteColor,
+  lightFont,
+  blackFont,
 } from "../../../utils/styles";
 
 const appDrawerStyles = {
   drawer: {
     display: "flex",
+    gap: "1rem",
     height: "100vh",
-    width: 70,
-    backgroundColor: "#141414",
+    width: 80,
+    backgroundColor: "#060B25",
     boxShadow: "0px 4px 40px 0px #0000000D",
     [theme.breakpoints.down("sm")]: {
       width: "100vw",
@@ -29,7 +33,7 @@ const appDrawerStyles = {
   },
   drawerContainerBox: {
     position: "relative",
-    transition: "width 0.3s ease-in-out",
+    transition: "width 0.2s ease-in-out",
   },
   drawerIconBox: {
     background: "#5F22E1",
@@ -44,28 +48,29 @@ const appDrawerStyles = {
   },
   openDrawerIconBox: {
     borderRadius: "100px",
-    right: -19,
+    right: -26,
     boxShadow: "-7px 1px 14px 0 rgba(0, 0, 0, 0.08)",
   },
-  closedDrawerIconBox: { borderRadius: "100px ", right: -15 },
+  closedDrawerIconBox: { borderRadius: "100px ", right: -26 },
   drawerHide: {
     display: "flex",
     height: "100vh",
     width: drawerWidth,
     backgroundColor: "#060B25",
-    boxShadow: "0px 4px 40px 0px #0000000D",
+    boxShadow: "0px 0px 100px rgba(0, 0, 0, 0.1)",
     [theme.breakpoints.down("sm")]: {
       width: "100vw",
     },
     padding: 0,
     margin: 0,
-    zIndex: 0,
+    zIndex: 110,
   },
   drawerWidth: {
     width: drawerWidth,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
     height: "100vh",
     overflowY: "hidden",
     overflowX: "hidden",
@@ -84,8 +89,8 @@ const appDrawerStyles = {
     margin: "4px",
   },
   closedDrawerListItemStyles: {
-    paddingLeft: "5px",
-    margin: "4px 0",
+    // paddingLeft: "5px",
+    margin: "8px auto",
   },
   openDrawerListItemIcon: {
     minWidth: "35px",
@@ -100,13 +105,13 @@ const appDrawerStyles = {
   closedDrawerSubMenuItem: { paddingLeft: "5px", margin: "4px 0" },
   menuOptionsHeight: {
     height: "75vh",
-    overflowY: "auto",
+    overflowY: "hidden",
     overflowX: "hidden",
     [theme.breakpoints.down("xs")]: {
       height: "50vh",
     },
     "&::-webkit-scrollbar": {
-      width: "12px",
+      width: "20px",
     },
     "&::-webkit-scrollbar-thumb": {
       borderRadius: "10px",
@@ -123,11 +128,13 @@ const appDrawerStyles = {
     display: "flex",
     borderLeft: "4px solid",
     height: "30px",
+    fontWeigh: "400"
   },
   menuOption: {
     display: "flex",
-    ...boldFont,
     textDecoration: "none",
+    ...ultraBlackFont,
+
     color: "#dbdbdb",
     flexDirection: "column",
     cursor: "pointer",
@@ -135,7 +142,8 @@ const appDrawerStyles = {
   },
   selectedMenuOption: {
     display: "flex",
-    ...mediumFont,
+    ...ultraBlackFont,
+    fontWeight: "900",
     textDecoration: "none",
     color: "white",
     backgroundColor: "#5F22E1",
@@ -145,18 +153,19 @@ const appDrawerStyles = {
   },
   selectedSubMenuOption: {
     display: "flex",
-    ...mediumFont,
+    ...lightFont,
     textDecoration: "none",
     color: purplePrimaryColor,
     flexDirection: "column",
     marginBottom: "15px",
   },
   navBarLabel: {
-    ...mediumFont,
+    ...lightFont,
   },
   listItemIconBox: {
     display: "flex",
-    alignItems: "flex-start",
+    alignItems: "center",
+    justifyItem: "center"
   },
   listItemTextBox: {
     display: "flex",
@@ -168,7 +177,7 @@ const appDrawerStyles = {
     cursor: "pointer",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "32px",
+    marginTop: "27px",
   },
   workText: {
     ...boldFont,
@@ -196,7 +205,7 @@ const appDrawerStyles = {
     marginBottom: "10%",
   },
   btnBox: {
-    ...regularFont,
+    ...ultraBlackFont,
     textTransform: "none",
   },
   imgBox: {
@@ -213,7 +222,6 @@ const appDrawerStyles = {
     height: "8px",
     width: "8px",
     borderRadius: "50%",
-    marginRight: "8px",
   },
   getCampaignWrapper: {
     height: "25vh",
@@ -241,7 +249,7 @@ const appDrawerStyles = {
     lineHeight: "20px",
     textAlign: "center",
     color: "#ffffff",
-    ...regularFont,
+    ...ultraBlackFont,
     margin: "10px 0",
     [theme.breakpoints.down("sm")]: {
       display: "none",
@@ -257,12 +265,13 @@ const appDrawerStyles = {
     [theme.breakpoints.down("xl")]: {},
   },
   logOutWrapper1: {
-    height: "10vh",
+    height: "6vh",
     display: "flex",
-    padding: "0 16px",
+    padding: "16px",
+    flexWrap: "no-wrap",
+    flexDirection: "column",
     alignItems: "center",
-    flexWrap: "wrap",
-    backgroundColor: "#060b25",
+    backgroundColor: "#060B25",
     borderRadius: "15px",
     [theme.breakpoints.down("xl")]: {},
   },
@@ -278,25 +287,28 @@ const appDrawerStyles = {
   },
   logoutImageStyle: { width: "25px", height: "auto", cursor: "pointer" },
   squareBox: {
-    width: "20px",
-    height: "20px",
+    width: "25px",
+    height: "25px",
     borderRadius: "100%",
-    background: "#855BDE",
+    background: "#5F22E1",
     color: "white",
     padding: "0.3rem",
     display: "flex",
+    fontSize: "0.8rem",
     alignItems: "center",
     justifyContent: "center",
     margin: "0px 5px 0px 0px",
   },
   squareBox1: {
-    width: "25px",
-    height: "25px",
-    borderRadius: "5px",
-    background: "#DBDBDB",
+    width: "30px",
+    height: "30px",
+    borderRadius: "100px",
+    background: "#5F22E1",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    fontSize: "14px",
+    color: "white"
   },
   avatarStyle: {
     ...boldFont,

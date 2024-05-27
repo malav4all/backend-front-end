@@ -45,7 +45,7 @@ const customTabsStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontFamily: "SourceSans3_Medium",
+    fontFamily: "Geist_Medium",
     fontWeight: 500,
     margin: theme.spacing(1),
     textTransform: "none",

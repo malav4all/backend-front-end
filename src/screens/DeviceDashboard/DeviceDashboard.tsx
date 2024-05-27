@@ -12,7 +12,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { options } from "./DashboardData";
 import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
-
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import {
   debounceEventHandler,
   isTruthy,
@@ -165,14 +165,13 @@ const DeviceDashboard = () => {
         deviceStatus: item?.status,
         status: (
           <Chip
-            label={item?.status}
+            label={item.status}
             sx={{
-              backgroundColor: item.status === "online" ? "green" : "red",
-              color: item.status === "online" ? "white" : "white",
-              border:
-                item.status === "Active"
-                  ? "1px solid #37b071"
-                  : "1px solid white",
+              backgroundColor: "red",
+              color: "white",
+              borderRadius: "5px",
+              padding: "0.1rem 0.2rem",
+              fontFamily: "Geist_Regular",
               animation: "pulse 2s infinite",
               "@keyframes pulse": {
                 "0%": {
@@ -180,7 +179,7 @@ const DeviceDashboard = () => {
                   opacity: 1,
                 },
                 "50%": {
-                  transform: "scale(1.05)",
+                  transform: "scale(1.1)",
                   opacity: 0.75,
                 },
                 "100%": {
@@ -194,9 +193,17 @@ const DeviceDashboard = () => {
         ),
         time: moment(item.time).fromNow(),
         action: (
-          <span style={{ color: "#845ADF" }}>
+          <span
+            style={{
+              color: "#5f22e1",
+              fontSize: "1.5rem",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
             {item.lat && item.lng && (
-              <FcInfo
+              <IoMdInformationCircleOutline
                 onClick={() => {
                   history.push({
                     pathname: "/view-offline",
@@ -338,10 +345,12 @@ const DeviceDashboard = () => {
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "1rem 1.5rem",
+                padding: "2rem 1.5rem",
                 backgroundColor: "white",
                 borderRadius: "8px",
-                boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+
                 cursor: isTruthy(stat.redirection) ? "pointer" : "auto",
               }}
               onClick={() =>
@@ -351,7 +360,15 @@ const DeviceDashboard = () => {
               }
             >
               <Box>
-                <Typography sx={classes.statsTitle}>{stat.title}</Typography>
+                <Typography
+                  sx={{
+                    fontFamily: "Geist_Medium",
+                    color: "#3C424Dad",
+                    fontSize: "18px",
+                  }}
+                >
+                  {stat.title}
+                </Typography>
                 <Typography sx={classes.statsValue}>{stat.value}</Typography>
               </Box>
             </Box>
@@ -454,10 +471,23 @@ const DeviceDashboard = () => {
       <Grid
         container
         spacing={2}
-        sx={{ padding: "0 16px", marginTop: "-48px" }}
+        sx={{
+          padding: "0 16px",
+          marginTop: "-48px",
+          margin: "auto",
+          backgroundColor: "#F0F5F9",
+        }}
         xs={12}
       >
-        <Grid item xs={12} sm={12} xl={12} md={9} lg={12}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          xl={12}
+          md={12}
+          lg={12}
+          sx={{ marginTop: "-3rem" }}
+        >
           <Grid container spacing={2}>
             <Grid item xs={12} md={12} lg={12} xl={12}>
               {getStatsCard()}
@@ -483,7 +513,8 @@ const DeviceDashboard = () => {
                     justifyContent: "flex-end",
                     flexWrap: "wrap",
                     backgroundColor: "white",
-                    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
                     padding: "1rem",
                     borderRadius: "0.5rem",
                   }}
@@ -500,7 +531,17 @@ const DeviceDashboard = () => {
                       marginBottom: "2rem",
                     }}
                   >
-                    <Typography variant="h5" sx={classes.heading}>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontFamily: "Geist_Light",
+                        fontSize: "1.5rem",
+                        marginBottom: "0.5rem",
+                        padding: "0.2rem 0.8rem",
+                        borderRadius: "5px",
+                        borderLeft: "7px solid #5F22E1",
+                      }}
+                    >
                       All Devices Table
                     </Typography>
 
@@ -521,7 +562,14 @@ const DeviceDashboard = () => {
   }, []);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: "#F0F5F9",
+        width: "100%",
+        height: "100%",
+        margin: "auto",
+      }}
+    >
       {getDashboardHeader()}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
