@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import { fetchTrackplayHandler } from "./service/trackplay.service";
 import {
@@ -32,21 +32,22 @@ const Trackplay = () => {
   const [marker, setMarker] = useState<any>(null);
   const [lineString, setLineString] = useState<any>(null);
   const [speed, setSpeed] = useState(1);
-  const [animation, setAnimation] = useState<any>(null);
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [animationFrameId, setAnimationFrameId] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stop, setStop] = useState(false);
   const [lastStoppedIndex, setLastStoppedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [dataValue, setDataValue] = useState([]);
   const [rawData, setRawData] = useState([]);
-
+  const [timeoutIds, setTimeoutIds] = useState([]);
+  const currentMarkerRef = useRef<any>(null);
   const marks = [
     { value: 1, label: "1X" },
     { value: 2, label: "2X" },
     { value: 3, label: "3X" },
     { value: 4, label: "4X" },
   ];
-  
 
   const getReports = async (dataTest: any) => {
     const finalArr = dataTest.map(
@@ -92,25 +93,66 @@ const Trackplay = () => {
 
     setDataValue(reportData);
   };
-
   function addPolylineToMap(data: any) {
-    const mapLine = new window.H.geo.LineString();
-    data.forEach((item: any) => {
-      mapLine.pushPoint({ lat: Number(item.lat), lng: Number(item.lng) });
-    });
-    const polyline = new window.H.map.Polyline(mapLine, {
-      style: { lineWidth: 5 },
-    });
-    map.addObject(polyline);
-    const svgMarkup =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="40" height="40" style="enable-background:new 0 0 512 512" xml:space="preserve"><path style="fill:#e6e6e6" d="m286.378 211.608-3.972 37.7L256 499.819l-26.417-250.511-3.972-37.7z"/><circle style="fill:#f95428" cx="256.006" cy="114.203" r="102.017"/><path style="fill:#e54728" d="M294.383 177.829c-56.341 0-102.013-45.673-102.013-102.013 0-18.311 4.849-35.479 13.296-50.336-30.854 17.543-51.678 50.688-51.678 88.718 0 56.341 45.673 102.013 102.013 102.013 38.03 0 71.174-20.825 88.718-51.678-14.856 8.449-32.025 13.296-50.336 13.296z"/><path style="fill:#b3b3b3" d="m286.378 211.608-3.972 37.702c-8.42 2.266-17.267 3.461-26.406 3.461s-17.998-1.206-26.418-3.461l-3.972-37.702h60.768z"/><path style="fill:#333" d="M370.199 114.199C370.199 51.229 318.97 0 256 0S141.801 51.229 141.801 114.199c0 48.26 30.091 89.622 72.495 106.314l29.579 280.579a12.186 12.186 0 0 0 24.237 0l29.579-280.575c42.412-16.69 72.508-58.055 72.508-106.318zM255.996 383.587 239.51 227.203a114.708 114.708 0 0 0 16.491 1.195c5.597 0 11.097-.412 16.481-1.193l-16.486 156.382zm.004-179.56c-49.53 0-89.828-40.296-89.828-89.828S206.47 24.371 256 24.371s89.828 40.296 89.828 89.828-40.296 89.828-89.828 89.828z"/><ellipse transform="rotate(-134.999 293.699 78.6)" style="fill:#f47c6c" cx="293.697" cy="78.6" rx="37.113" ry="25.87"/></svg>';
+    const polylines = [];
+    const speedColors = {
+      60: "#FF0000", // Red for 60
+      40: "#FFA500", // Orange for 40
+      30: "#FFFF00", // Yellow for 30
+      20: "#008000", // Green for 20
+      10: "#0000FF", // Blue for 10
+      0: "#800080", // Purple for 0
+    };
+
+    for (let i = 0; i < data.length - 1; i++) {
+      const point1 = data[i];
+      const point2 = data[i + 1];
+      const speed = point1.speed;
+
+      let color;
+      if (speed >= 60) {
+        color = speedColors[60];
+      } else if (speed >= 40) {
+        color = speedColors[40];
+      } else if (speed >= 30) {
+        color = speedColors[30];
+      } else if (speed >= 20) {
+        color = speedColors[20];
+      } else if (speed >= 10) {
+        color = speedColors[10];
+      } else {
+        color = speedColors[0];
+      }
+
+      const segmentLine = new window.H.geo.LineString();
+      segmentLine.pushPoint({
+        lat: Number(point1.lat),
+        lng: Number(point1.lng),
+      });
+      segmentLine.pushPoint({
+        lat: Number(point2.lat),
+        lng: Number(point2.lng),
+      });
+
+      const polyline = new window.H.map.Polyline(segmentLine, {
+        style: { lineWidth: 5, strokeColor: color },
+      });
+      polylines.push(polyline);
+    }
+
+    polylines.forEach(polyline => map.addObject(polyline));
+
+    const svgMarkup = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
+    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
+      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  </svg>`;
     const icon = new window.H.map.Icon(svgMarkup);
-    const marker = new window.H.map.Marker(mapLine.extractPoint(0), {
-      icon: icon,
-    });
-    map.addObject(marker);
-    setLineString(mapLine);
-    setMarker(marker);
+    const initalMarker = new window.H.map.Marker(
+      { lat: Number(data[0].lat), lng: Number(data[0].lng) },
+      { icon: icon }
+    );
+    // map.addObject(initalMarker);
+    // setCurrentMarker(initalMarker);
   }
 
   const trackPlayApiHandler = async () => {
@@ -149,65 +191,112 @@ const Trackplay = () => {
       initialMap.dispose();
     };
   }, []);
+  let testMarker = null;
 
-  useEffect(() => {
-    if (marker && lineString && map && !stop) {
-      marker.getGeometry();
-      const totalPoints = lineString.getPointCount();
-      const interval = setInterval(() => {
-        const currentPoint = lineString.extractPoint(currentIndex);
-        marker.setGeometry(currentPoint);
-        setCurrentIndex(
-          (prevIndex) => (prevIndex + speed + totalPoints) % totalPoints
-        );
-        if (currentIndex === 0 && speed !== 0) {
-          clearInterval(interval);
-          setStop(true);
-          setLastStoppedIndex(currentIndex);
-        }
-      }, 5000 / (speed * 20));
-      setAnimation(interval);
+  const test = () => {
+    let timeouts: any = [];
+    rawData.forEach((item, index) => {
+      const timeoutId = setTimeout(() => {
+        const { lat, lng, direction } = item;
+        animate(lat, lng, direction);
+      }, (index * 1000) / speed); // Adjust the delay as needed based on speed
+      timeouts.push(timeoutId);
+    });
+    setTimeoutIds(timeouts);
+  };
+
+  const animate = (lat: any, lng: any, direction: any) => {
+    const domIconElement = document.createElement("div");
+    domIconElement.style.margin = "-20px 0 0 -20px";
+    const rotation = parseFloat(direction);
+
+    domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40"  transform-origin="center center">
+    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
+      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  </svg>`;
+
+    if (currentMarkerRef.current) {
+      // console.log("Removing current marker:", currentMarkerRef.current);
+      map.removeObject(currentMarkerRef.current);
     }
-    return () => clearInterval(animation);
-  }, [marker, lineString, speed, currentIndex, map, stop, lastStoppedIndex]);
 
+    const newMarker = new window.H.map.DomMarker(
+      { lat, lng },
+      {
+        icon: new window.H.map.DomIcon(domIconElement, {
+          onAttach: function (clonedElement: any) {
+            const svgElement = clonedElement.getElementsByTagName("svg")[0];
+            if (svgElement) {
+              console.log("Before rotation:", svgElement.style.transform);
+              // Ensure direction is a valid number and not a string
+              let rotation = parseFloat(direction) - 40;
+              svgElement.style.transform = "rotate(" + rotation + "deg)";
+              svgElement.style.transformOrigin = "center center";
+              console.log("After rotation:", rotation);
+            } else {
+              console.error("SVG element not found");
+            }
+          },
+        }),
+      }
+    );
+
+    map.addObject(newMarker);
+    currentMarkerRef.current = newMarker;
+    // console.log("New marker added:", newMarker);
+  };
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
   };
 
-  const toggleMovement = () => {
-    setStop((prevStop) => !prevStop);
+  const handleClick = () => {
+    if (timeoutIds.length > 0) {
+      timeoutIds.forEach(id => clearTimeout(id));
+    }
+    test();
   };
 
-  const downloadReport = () => {
-    return (
-      <>
-        <PDFDownloadLink
-          document={<TrackReport reportData={dataValue} rawData={rawData} />}
-          fileName={"Report.pdf"}
-        >
-          {({ blob, url, loading, error }) =>
-            loading ? (
-              "Loading..."
-            ) : (
-              <Button
-                onClick={generateExcelFile}
-                sx={{
-                  backgroundColor: stop ? "#ffffff" : "#FF5733",
-                  color: "white",
-                  display: "flex",
-                  gap: "0.5rem",
-                  textDecoration: "none",
-                }}
-              >
-                <BsFileEarmarkPdfFill />
-              </Button>
-            )
-          }
-        </PDFDownloadLink>
-      </>
-    );
+  useEffect(() => {
+    return () => {
+      if (timeoutIds.length > 0) {
+        timeoutIds.forEach(id => clearTimeout(id));
+      }
+    };
+  }, [timeoutIds]);
+
+  const toggleMovement = () => {
+    setStop(prevStop => !prevStop);
   };
+
+  // const downloadReport = () => {
+  //   return (
+  //     <>
+  //       <PDFDownloadLink
+  //         document={<TrackReport reportData={dataValue} rawData={rawData} />}
+  //         fileName={"Report.pdf"}
+  //       >
+  //         {({ blob, url, loading, error }) =>
+  //           loading ? (
+  //             "Loading..."
+  //           ) : (
+  //             <Button
+  //               onClick={generateExcelFile}
+  //               sx={{
+  //                 backgroundColor: stop ? "#ffffff" : "#FF5733",
+  //                 color: "white",
+  //                 display: "flex",
+  //                 gap: "0.5rem",
+  //                 textDecoration: "none",
+  //               }}
+  //             >
+  //               <BsFileEarmarkPdfFill />
+  //             </Button>
+  //           )
+  //         }
+  //       </PDFDownloadLink>
+  //     </>
+  //   );
+  // };
 
   const generateExcelFile = () => {
     const modifiedData = rawData.map((item: any) => ({
@@ -378,9 +467,9 @@ const Trackplay = () => {
               backgroundColor: stop ? "#ffffff" : "#f0ad4e",
               color: stop ? "#333" : "white",
             }}
-            onClick={toggleMovement}
+            onClick={handleClick}
             icon={
-              stop ? (
+              true ? (
                 <Box
                   sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
                 >
@@ -444,8 +533,6 @@ const Trackplay = () => {
             >
               <RiFileExcel2Fill />
             </Button>
-
-            {downloadReport()}
           </AccordionDetails>
         </Accordion>
       </Box>

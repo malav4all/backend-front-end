@@ -7,6 +7,7 @@ export const FETCH_TRACKPLAY_DATA = gql`
       direction
       lat
       lng
+      speed
       label
       currentTime
     }

@@ -95,9 +95,13 @@ const DistanceReport = (props: CustomProps) => {
         endDate = now.toISOString()
         break
       case "Past 2d":
-        startDate = now.clone().subtract(2, "days").toISOString()
-        endDate = now.toISOString()
-        break
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
+        break;
+      case "Past 7d":
+        startDate = now.clone().subtract(7, "days").toISOString();
+        endDate = now.toISOString();
+        break;
       case "Past 30d":
         startDate = now.clone().subtract(30, "days").toISOString()
         endDate = now.toISOString()
@@ -280,6 +284,9 @@ const DistanceReport = (props: CustomProps) => {
               </MenuItem>
               <MenuItem value="Past 2d" sx={classes.optionStyle}>
                 Past 2d
+              </MenuItem>
+              <MenuItem value="Past 2d" sx={classes.optionStyle}>
+                Past 7d
               </MenuItem>
               <MenuItem value="Past 30d" sx={classes.optionStyle}>
                 Past 30d

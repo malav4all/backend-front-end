@@ -39,6 +39,7 @@ import {
 } from "../Dashboard/service/Dashboard.service";
 import moment from "moment";
 import { FcInfo } from "react-icons/fc";
+import { fetchAssetAssingmentDataHandler } from "../Settings/AssertAssingment/service/AssetAssingment.service";
 
 const DeviceDashboard = () => {
   useTitle(strings.DashboardTitle);
@@ -145,11 +146,16 @@ const DeviceDashboard = () => {
   const alertData = async () => {
     const [res2, res1] = await Promise.all([
       getAllDeviceStatus(),
-      fetchDeviceList(),
+      fetchAssetAssingmentDataHandler({
+        input: {
+          page: -1,
+          limit: 10,
+        },
+      }),
     ]);
     const finalData = updateStatus(
       res2.getAllStatusDevice?.data,
-      res1.getAllDeviceList
+      res1.fetchAssertAssingmentModule?.data
     );
     const deviceStatus = finalData.map((item: any, index: number) => {
       return {
