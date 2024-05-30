@@ -53,6 +53,7 @@ const getBaseUrl = (env: any) => {
       return process.env.REACT_APP_API_HOST_LOCAL;
   }
 };
+
 const authLink = setContext(async (_, { headers }) => {
   return {
     headers: {

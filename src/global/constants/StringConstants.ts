@@ -89,6 +89,7 @@ export class StringConstants {
   LOGINACTIVITY = "LoginActivity";
   INDUSTRY = "Industry";
   MODULE = "Module";
+  ROLE_MANAGEMENT = "Role"
   ACCOUNT = "Account";
   DEVICEMODULE = "DeviceModule";
   DEVICEONBOARDING = "Device Onboarding";
@@ -102,7 +103,7 @@ export class StringConstants {
   SETTINGS = "Settings";
   DEVICEHISTORY = "Device History";
   ASSETASSIGNMENT = "Asset Assignment";
-  LOCATIONTYPE = "Location Type";
+  LOCATIONTYPE = "Location Type ";
   DISTANCE = "Distance";
   JROUNEY = "Journey";
   ALERT = "Alert";

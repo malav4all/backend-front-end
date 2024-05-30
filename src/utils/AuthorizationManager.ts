@@ -200,6 +200,20 @@ export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
   return generatedMenu;
 };
 
+export const hasAccessTo = (resourceName: string, permission: string) => {
+  if (isAdmin()) {
+    console.log("If Condition");
+    return true;
+  }
+
+  const resources = store.getState().auth.resources;
+
+  return (
+    resources.hasOwnProperty(resourceName) &&
+    resources[resourceName].includes(permission)
+  );
+};
+
 export const doesUserHasAccessTo = (componentName: string) => {
   const mainMenu: ListOfMenusType[] = ListOfMenus();
 

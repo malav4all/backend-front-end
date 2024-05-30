@@ -108,10 +108,14 @@ const Login = () => {
         const email = formFields.email.value.toLowerCase();
         const password = formFields.password.value;
         const user: any = await onLogin({ input: { email, password } });
+        console.log(user);
         if (user?.loginUser?.data?.success === 0) {
           openErrorNotification(user?.loginUser?.data?.message);
           setIsLoading(false);
         } else {
+          const formattedResources = convertResourceToObjectFormat(
+            user?.loginUser?.data?.data?.user.roleId.resources
+          );
           dispatch(
             loginAction({
               email,
@@ -119,7 +123,10 @@ const Login = () => {
               accessToken: user?.loginUser?.data?.data?.user.accessToken,
               userName: user?.loginUser?.data?.data?.user.name,
               role: user?.loginUser?.data?.data?.user?.roleId,
+              resources: formattedResources,
               userId: user?.loginUser?.data?.data?.user?._id,
+              account: user?.loginUser?.data?.data?.user.roleId.name,
+              accountId: user?.loginUser?.data?.data?.user?.account?._id,
             })
           );
           setIsLoading(false);
@@ -233,6 +240,7 @@ const Login = () => {
               }}
             />
           </Box>
+
           <Box sx={classes.forgetPasswordWrapper}>
             <Typography
               sx={{
@@ -248,6 +256,7 @@ const Login = () => {
               Forgot Password
             </Typography>
           </Box>
+
           <Box mt={4}>
             <CustomButton
               label="Sign In"

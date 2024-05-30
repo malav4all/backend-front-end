@@ -11,6 +11,9 @@ export interface AuthState {
   email?: string;
   role: string;
   userId: string;
+  account: string;
+  resources: FormattedResources;
+  accountId: string;
 }
 
 const initialState: AuthState = {
@@ -21,7 +24,10 @@ const initialState: AuthState = {
   userName: "",
   email: "",
   role: "",
+  account: "",
+  accountId: "",
   userId: "",
+  resources: {} as FormattedResources,
 };
 
 export const authSlice = createSlice({
@@ -37,6 +43,9 @@ export const authSlice = createSlice({
         email: string;
         role: string;
         userId: string;
+        account: string;
+        accountId: string;
+        resources: FormattedResources;
       }>
     ) => {
       state.authenticated = action.payload.authenticated;
@@ -44,6 +53,9 @@ export const authSlice = createSlice({
       state.userName = action.payload.userName;
       state.email = action.payload.email;
       state.role = action.payload.role;
+      state.resources = action.payload.resources;
+      state.account = action.payload.account;
+      state.accountId = action.payload.accountId;
       state.userId = action.payload.userId;
     },
     addLoading: (state, action: PayloadAction<boolean>) => {
@@ -59,7 +71,9 @@ export const authSlice = createSlice({
       state.accessToken = "";
       state.userName = "";
       state.email = "";
+      state.accountId = "";
       state.role = "";
+      state.resources = {};
     },
     updateTokens: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
@@ -82,4 +96,7 @@ export const selectLoading = (state: RootState) => state.auth.loading;
 export const selectEmail = (state: RootState) => state.auth.email;
 export const selectName = (state: RootState) => state.auth.userName;
 export const selectRole = (state: RootState) => state.auth.role;
+export const selectAccount = (state: RootState) => state.auth.account;
+export const selectResources = (state: RootState) => state.auth.resources;
+
 export default authSlice.reducer;

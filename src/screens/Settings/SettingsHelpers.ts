@@ -6,6 +6,22 @@ export const tabConfig = () => [
     count: 0,
   },
   {
+    label: strings.INDUSTRY,
+    count: 0,
+  },
+  {
+    label: strings.MODULE,
+    count: 0,
+  },
+  {
+    label: strings.ROLE_MANAGEMENT,
+    count: 0,
+  },
+  {
+    label: strings.ACCOUNT,
+    count: 0,
+  },
+  {
     label: strings.LOCATIONTYPE,
     count: 0,
   },
