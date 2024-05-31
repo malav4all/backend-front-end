@@ -83,11 +83,15 @@ const CustomerModule = () => {
       const res = await fetchTableHandler({
         input: { page: pageNumber, limit: perPageData },
       });
-      setTableData(res?.customerModuleListAll?.data);
-      setCount(res?.customerModuleListAll?.paginatorInfo?.count);
-      setIsLoading(false);
+      if (res && res.customerModuleListAll) {
+        setTableData(res.customerModuleListAll.data || []);
+        setCount(res.customerModuleListAll.paginatorInfo?.count || 0);
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -304,7 +308,7 @@ const CustomerModule = () => {
       {getPersonalDetails()}
       {getProfileFooter()}
       {rolesTableRender()}
-      <CustomLoader isLoading={isLoading}/>
+      <CustomLoader isLoading={isLoading} />
     </Container>
   );
 };

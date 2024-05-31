@@ -108,7 +108,6 @@ const Login = () => {
         const email = formFields.email.value.toLowerCase();
         const password = formFields.password.value;
         const user: any = await onLogin({ input: { email, password } });
-        console.log(user);
         if (user?.loginUser?.data?.success === 0) {
           openErrorNotification(user?.loginUser?.data?.message);
           setIsLoading(false);

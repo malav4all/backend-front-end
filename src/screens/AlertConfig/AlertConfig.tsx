@@ -35,7 +35,6 @@ import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { UserData, alertConfigTableHeader } from "./AlertConfig.helpers";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import AddFilter from "./Component/AddFilter";
-import { fetchUserDataHandler } from "../Settings/Users/service/user.service";
 import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
 import history from "../../utils/history";

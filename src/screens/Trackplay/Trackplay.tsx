@@ -228,7 +228,6 @@ const Trackplay = () => {
             const svgElement = clonedElement.getElementsByTagName("svg")[0];
             if (svgElement) {
               console.log("Before rotation:", svgElement.style.transform);
-              // Ensure direction is a valid number and not a string
               let rotation = parseFloat(direction) - 40;
               svgElement.style.transform = "rotate(" + rotation + "deg)";
               svgElement.style.transformOrigin = "center center";
@@ -243,7 +242,6 @@ const Trackplay = () => {
 
     map.addObject(newMarker);
     currentMarkerRef.current = newMarker;
-    // console.log("New marker added:", newMarker);
   };
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
