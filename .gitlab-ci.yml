@@ -16,6 +16,8 @@ build_project:
             - node_modules
         when: on_success
         expire_in: 30 days
+    tags:
+    - shell-builder
 
 
 build_image:
@@ -32,11 +34,12 @@ build_image:
      - docker login docker.imz.world -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
      - docker build -t docker.imz.world/event-console/console:latest .
      - docker push docker.imz.world/event-console/console:latest
+    tags:
+    - docker-builder
 
      
 staging:
     stage: stage_deploy
-    image: node:alpine
     script:
      - echo "Staging build......"
      - docker stop console-stageing > /dev/null 2>&1
@@ -44,11 +47,11 @@ staging:
      - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
      - docker pull docker.imz.world/event-console/console:latest
      - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
-
+    tags:
+    - shell-builder
 
 deploy:
     stage: prod_deploy
-    image: node:alpine
     script:
      - echo "Production deploy stage"
      - docker stop console-stageing > /dev/null 2>&1
@@ -57,6 +60,8 @@ deploy:
      - docker pull docker.imz.world/event-console/console:latest
      - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
     when: manual
+    tags:
+    - shell-builder
 
 
 
