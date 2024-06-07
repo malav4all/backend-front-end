@@ -22,8 +22,9 @@ build_project:
     - docker rmi build-process:latest > /dev/null 2>&1 || true
     - docker build -f CodeBuild -t build-process:latest .
     - mkdir -p code
-    - docker run -itd --rm --name build-process -v "$(pwd)/code/:/code" -p 2001:80 build-process:latest sh -c "cp -r /usr/share/nginx/html /code/"
-    - ls -ltrha
+    - docker run -itd --rm --name build-process -v "$(pwd)/code/:/code" -p 2001:80 build-process:latest 
+    - docker exec -i build-process sh -c "cp -r /usr/share/nginx/html /code/"
+    - ls -ltrha code/
   artifacts:
     paths:
       - /code/html
