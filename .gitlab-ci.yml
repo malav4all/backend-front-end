@@ -57,9 +57,9 @@ staging:
     - git fetch --all
   script:
     - echo "Staging build......"
-    - docker stop console-stageing > /dev/null 2>&1
-    - docker rm console-stageing > /dev/null 2>&1
-    - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
+    - docker ps -a | grep console-stage-frontend && docker stop console-stage-frontend > /dev/null 2>&1 || true
+    - docker rm console-stage-frontend > /dev/null 2>&1 || true
+    - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
   tags:
@@ -71,9 +71,9 @@ deploy:
     - git fetch --all
   script:
     - echo "Production deploy stage"
-    - docker stop console-stageing > /dev/null 2>&1
-    - docker rm console-stageing > /dev/null 2>&1
-    - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
+    - docker ps -a | grep console-prod-frontend && docker stop console-prod-frontend > /dev/null 2>&1 || true
+    - docker rm console-prod-frontend > /dev/null 2>&1 || true
+    - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
   when: manual
