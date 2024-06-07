@@ -22,7 +22,7 @@ build_project:
     - docker rm build-process > /dev/null 2>&1 || true
     - docker rmi build-process:latest > /dev/null 2>&1 || true
     - docker build -t build-process:latest .
-    - docker run -itd --name build-process -v "$(pwd):/usr/share/nginx/" -p 2001:80 build-process:latest
+    - docker run -itd --rm --name build-process -v "$(pwd):/usr/share/nginx/" -p 2001:80 build-process:latest
     - ls -ltrha
   artifacts:
     paths:
@@ -61,7 +61,7 @@ staging:
     - docker rm console-stage-frontend > /dev/null 2>&1 || true
     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
-    - docker run -itd --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
+    - docker run -itd --rm --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
   tags:
     - shell-builder
 
@@ -75,9 +75,7 @@ deploy:
     - docker rm console-prod-frontend > /dev/null 2>&1 || true
     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
-    - docker run -itd --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
+    - docker run -itd --rm --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
   when: manual
   tags:
     - shell-builder
-
-
