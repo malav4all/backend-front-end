@@ -1,24 +1,24 @@
-variables:
-  GIT_DEPTH: 20
-  GIT_STRATEGY: fetch
-  GIT_FETCH_TIMEOUT: 60
+# variables:
+#   GIT_DEPTH: 20
+#   GIT_STRATEGY: fetch
+#   GIT_FETCH_TIMEOUT: 60
 
 stages:
   - build_stage
   - stage_deploy
   - prod_deploy
 
-before_script:
-  - rm -rf .git
-  - git init
-  - git remote add origin $CI_REPOSITORY_URL
-  - git fetch --depth 20 origin $CI_COMMIT_REF_NAME
+# before_script:
+#   - rm -rf .git
+#   - git init
+#   - git remote add origin $CI_REPOSITORY_URL
+#   - git fetch --depth 20 origin $CI_COMMIT_REF_NAME
 
 build_project:
   stage: build_stage
   image: node:alpine
-  services:
-    - docker:24.0.5-dind
+  # services:
+  #   - docker:24.0.5-dind
   script:
     - echo "Creating production build"
     - npm i --force
