@@ -27,7 +27,7 @@ build_project:
   tags:
     - docker-builder
 
-build_image:
+build_container_image:
   stage: build_container_image
   needs:
     - job: build_project
@@ -53,7 +53,7 @@ build_image:
 deploy_staging:
   stage: stage_deploy
   needs:
-    - job: build_image
+    - job: build_container_image
       artifacts: true
   before_script:
     - git reset --hard
@@ -79,7 +79,7 @@ deploy_staging:
 deploy_production:
   stage: prod_deploy
   needs:
-    - job: build_image
+    - job: build_container_image
       artifacts: true
   before_script:
     - git fetch --all
