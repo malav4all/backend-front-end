@@ -21,11 +21,12 @@ build_project:
     - docker rm build-process > /dev/null 2>&1 || true
     - docker rmi build-process:latest > /dev/null 2>&1 || true
     - docker build -f CodeBuild -t build-process:latest .
-    - docker run -itd --rm --name build-process -v "$(pwd):/usr/share/nginx/" -p 2001:80 build-process:latest
+    - mkdir -p code
+    - docker run -itd --rm --name build-process -v "$(pwd)/code/:/usr/share/nginx/" -p 2001:80 build-process:latest
     - ls -ltrha
   artifacts:
     paths:
-      - build
+      - /code/html
     when: on_success
     expire_in: 30 days
   tags:
