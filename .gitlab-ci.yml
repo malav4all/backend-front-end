@@ -29,6 +29,9 @@ build_project:
 
 build_image:
   stage: build_container_image
+  needs:
+    - job: build_project
+      artifacts: true
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
@@ -47,8 +50,11 @@ build_image:
   tags:
     - docker-builder
 
-staging:
+deploy_staging:
   stage: stage_deploy
+  needs:
+    - job: build_image
+      artifacts: true
   before_script:
     - git reset --hard
     - git clean -fdx
@@ -70,8 +76,11 @@ staging:
   tags:
     - shell-builder
 
-deploy:
+deploy_production:
   stage: prod_deploy
+  needs:
+    - job: build_image
+      artifacts: true
   before_script:
     - git fetch --all
   script:
