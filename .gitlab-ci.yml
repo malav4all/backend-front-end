@@ -23,6 +23,7 @@ build_project:
     - docker rmi build-process:latest > /dev/null 2>&1 || true
     - docker build -t build-process:latest .
     - docker run -itd --name build-process -v "$(pwd):/code" -p 2001:80 build-process:latest
+    - ls -ltrha
   artifacts:
     paths:
       - build
