@@ -27,7 +27,7 @@ build_project:
     when: on_success
     expire_in: 30 days
   tags:
-    - shell-builder
+    - docker-builder
 
 build_image:
   stage: build_stage
