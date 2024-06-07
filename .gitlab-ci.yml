@@ -17,6 +17,8 @@ before_script:
 build_project:
   stage: build_stage
   image: node:alpine
+  services:
+    - docker:24.0.5-dind
   script:
     - echo "Creating production build"
     - npm i --force
