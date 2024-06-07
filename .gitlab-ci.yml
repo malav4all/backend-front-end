@@ -19,6 +19,8 @@ build_project:
   image: node:alpine
   # services:
   #   - docker:24.0.5-dind
+  before_script:
+    - apk update && apk add git
   script:
     - echo "Creating production build"
     - npm i --force
