@@ -1,55 +1,131 @@
-stages:
-  - build_image
-  - push_image
-  - deploy_container
 
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_TLS_CERTDIR: ""
+stages:
+    - build_stage
+    - stage_deploy
+    - prod_deploy
+
+build_project:
+    stage: build_stage
+    image: node:alpine
+    script:
+     - echo "Creating production build"
+     - npm i --force
+    artifacts:
+        paths:
+            - package-lock.json
+            - node_modules
+        when: on_success
+        expire_in: 30 days
+
 
 build_image:
-  stage: build_image
-  tags:
-    - server-3-docker-runner
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE/event-console/console .
-    - docker logout $CI_REGISTRY
-  only:
-    - development
+    stage: build_stage
+    image: docker:24.0.5
+    services:
+      - docker:24.0.5-dind
+    variables:
+      DOCKER_HOST: tcp://docker:2375
+      DOCKER_DRIVER: overlay2
+      DOCKER_TLS_CERTDIR: ""
+    script:
+     - echo "Creating production docker image"
+     - docker login docker.imz.world -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+     - docker build -t docker.imz.world/event-console/console:latest .
+     - docker push docker.imz.world/event-console/console:latest
 
-push_image:
-  stage: push_image
-  tags:
-    - server-3-docker-runner
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE/event-console/console
-    - docker logout $CI_REGISTRY
-  only:
-    - development
+     
+staging:
+    stage: stage_deploy
+    image: node:alpine
+    script:
+     - echo "Staging build......"
+     - docker stop console-stageing > /dev/null 2>&1
+     - docker rm console-stageing > /dev/null 2>&1
+     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
+     - docker pull docker.imz.world/event-console/console:latest
+     - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
 
-deploy_container:
-  stage: deploy_container
-  tags:
-    - server-3-docker-runner
-  image: docker:stable
-  services:
-    - docker:dind
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker stop $DOCKER_CONTAINER_NAME || true
-    - docker rm $DOCKER_CONTAINER_NAME || true
-    - docker rmi $CI_REGISTRY_IMAGE/event-console/console || true
-    - docker pull $CI_REGISTRY_IMAGE/event-console/console
-    - docker run -itd --name $DOCKER_CONTAINER_NAME -p 9393:80 $CI_REGISTRY_IMAGE/event-console/console
-    - docker logout $CI_REGISTRY
 
-  only:
-    - development
+deploy:
+    stage: prod_deploy
+    image: node:alpine
+    script:
+     - echo "Production deploy stage"
+     - docker stop console-stageing > /dev/null 2>&1
+     - docker rm console-stageing > /dev/null 2>&1
+     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
+     - docker pull docker.imz.world/event-console/console:latest
+     - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
+    when: manual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#stages:
+#  - build_image
+#  - push_image
+#  - deploy_container
+
+#variables:
+#  DOCKER_HOST: tcp://docker:2375/
+#  DOCKER_TLS_CERTDIR: ""
+
+# build_image:
+#   stage: build_image
+#   tags:
+#     - server-3-docker-runner
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker build -t $CI_REGISTRY_IMAGE/event-console/console .
+#     - docker logout $CI_REGISTRY
+#   only:
+#     - development
+
+# push_image:
+#   stage: push_image
+#   tags:
+#     - server-3-docker-runner
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker push $CI_REGISTRY_IMAGE/event-console/console
+#     - docker logout $CI_REGISTRY
+#   only:
+#     - development
+
+# deploy_container:
+#   stage: deploy_container
+#   tags:
+#     - server-3-docker-runner
+#   image: docker:stable
+#   services:
+#     - docker:dind
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker stop $DOCKER_CONTAINER_NAME || true
+#     - docker rm $DOCKER_CONTAINER_NAME || true
+#     - docker rmi $CI_REGISTRY_IMAGE/event-console/console || true
+#     - docker pull $CI_REGISTRY_IMAGE/event-console/console
+#     - docker run -itd --name $DOCKER_CONTAINER_NAME -p 9393:80 $CI_REGISTRY_IMAGE/event-console/console
+#     - docker logout $CI_REGISTRY
+
+#   only:
+#     - development
