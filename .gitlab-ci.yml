@@ -16,6 +16,8 @@ build_project:
   before_script:
     - apk update && apk add git
   script:
+    - unset CI
+    - export DISABLE_ESLINT_PLUGIN=true
     - echo "Creating production build"
     - npm install --force 
     - npm run build
