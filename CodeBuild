@@ -1,0 +1,8 @@
+# Build Stage
+FROM node:alpine AS build
+COPY package.json /code/
+WORKDIR /code/
+RUN npm install --force 
+COPY ./ /code/
+RUN npm run build
+ENTRYPOINT ['sh']
