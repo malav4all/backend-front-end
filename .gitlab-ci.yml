@@ -3,6 +3,7 @@ variables:
 
 stages:
   - build_stage
+  - build_container_image
   - stage_deploy
   - prod_deploy
 
@@ -27,7 +28,7 @@ build_project:
     - docker-builder
 
 build_image:
-  stage: build_stage
+  stage: build_container_image
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
@@ -40,8 +41,9 @@ build_image:
   script:
     - echo "Creating production docker image"
     - docker login docker.imz.world -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t docker.imz.world/event-console/console:latest .
+    - docker build --file CodeBuild -t docker.imz.world/event-console/console:latest .
     - docker push docker.imz.world/event-console/console:latest
+    - docker logout
   tags:
     - docker-builder
 
