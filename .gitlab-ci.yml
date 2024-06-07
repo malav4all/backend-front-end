@@ -53,6 +53,8 @@ build_image:
 
 staging:
   stage: stage_deploy
+  before_script:
+    - git fetch --all
   script:
     - echo "Staging build......"
     - docker stop console-stageing > /dev/null 2>&1
