@@ -52,7 +52,9 @@ build_image:
 staging:
   stage: stage_deploy
   before_script:
-    - git fetch --all
+    - git reset --hard
+    - git clean -fdx
+    - git fetch --all --unshallow
   script:
     - echo "Staging build......"
     - docker ps -a | grep console-stage-frontend && docker stop console-stage-frontend > /dev/null 2>&1 || true
