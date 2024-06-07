@@ -26,8 +26,7 @@ build_project:
     - npm i --force
   artifacts:
     paths:
-      - package-lock.json
-      - node_modules
+      - /code/build
     when: on_success
     expire_in: 30 days
   tags:
