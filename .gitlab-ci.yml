@@ -6,28 +6,23 @@ stages:
 
 build_project:
   stage: build_stage
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
+  image: node:alpine
+  # services:
+  #   - docker:24.0.5-dind
+  # variables:
+  #   DOCKER_HOST: tcp://docker:2375
+  #   DOCKER_DRIVER: overlay2
+  #   DOCKER_TLS_CERTDIR: ""
   before_script:
     - apk update && apk add git
   script:
     - echo "Creating production build"
-    - docker ps -a | grep build-process && docker stop build-process > /dev/null 2>&1 || true
-    - docker rm build-process > /dev/null 2>&1 || true
-    - docker rmi build-process:latest > /dev/null 2>&1 || true
-    - docker build -f CodeBuild -t build-process:latest .
-    - mkdir -p code
-    - docker run -itd --rm --name build-process -v "$(pwd)/code/:/code" -p 2001:80 build-process:latest 
-    - docker exec -i build-process sh -c "cp -r /usr/share/nginx/html /code/"
-    - ls -ltrha code/
+    - npm install --force 
+    - npm run build
+    - ls -ltrha
   artifacts:
     paths:
-      - /code/html
+      - build
     when: on_success
     expire_in: 30 days
   tags:
