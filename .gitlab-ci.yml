@@ -1,3 +1,6 @@
+variables:
+  GIT_STRATEGY: clone
+
 
 stages:
   - build_stage
@@ -7,12 +10,6 @@ stages:
 build_project:
   stage: build_stage
   image: node:alpine
-  # services:
-  #   - docker:24.0.5-dind
-  # variables:
-  #   DOCKER_HOST: tcp://docker:2375
-  #   DOCKER_DRIVER: overlay2
-  #   DOCKER_TLS_CERTDIR: ""
   before_script:
     - apk update && apk add git
   script:
@@ -62,6 +59,11 @@ staging:
     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --rm --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: always
+    - when: never
   tags:
     - shell-builder
 
@@ -77,5 +79,9 @@ deploy:
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --rm --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
   when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
   tags:
     - shell-builder
