@@ -24,6 +24,7 @@ build_project:
   script:
     - echo "Creating production build"
     - npm i --force
+    - npm run build
     - ls -ltrha
   artifacts:
     paths:
