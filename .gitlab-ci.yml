@@ -1,7 +1,6 @@
 variables:
   GIT_STRATEGY: clone
 
-
 stages:
   - build_stage
   - stage_deploy
@@ -54,11 +53,13 @@ staging:
     - git fetch --all --unshallow
   script:
     - echo "Staging build......"
+    - docker login docker.imz.world -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker ps -a | grep console-stage-frontend && docker stop console-stage-frontend > /dev/null 2>&1 || true
     - docker rm console-stage-frontend > /dev/null 2>&1 || true
     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --rm --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
+    - docker logout
   when: manual
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
@@ -73,11 +74,13 @@ deploy:
     - git fetch --all
   script:
     - echo "Production deploy stage"
+    - docker login docker.imz.world -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker ps -a | grep console-prod-frontend && docker stop console-prod-frontend > /dev/null 2>&1 || true
     - docker rm console-prod-frontend > /dev/null 2>&1 || true
     - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1 || true
     - docker pull docker.imz.world/event-console/console:latest
     - docker run -itd --rm --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
+    - docker logout
   when: manual
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
