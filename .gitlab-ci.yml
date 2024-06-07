@@ -46,7 +46,7 @@ staging:
      - docker rm console-stageing > /dev/null 2>&1
      - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
      - docker pull docker.imz.world/event-console/console:latest
-     - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
+     - docker run -itd --name console-stage-frontend -p 2001:80 docker.imz.world/event-console/console:latest
     tags:
     - shell-builder
 
@@ -58,7 +58,7 @@ deploy:
      - docker rm console-stageing > /dev/null 2>&1
      - docker rmi docker.imz.world/event-console/console:latest > /dev/null 2>&1
      - docker pull docker.imz.world/event-console/console:latest
-     - docker run -itd --name console-stageing -p 2001:80 docker.imz.world/event-console/console:latest
+     - docker run -itd --name console-prod-frontend -p 2002:80 docker.imz.world/event-console/console:latest
     when: manual
     tags:
     - shell-builder
