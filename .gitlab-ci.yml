@@ -67,6 +67,8 @@ staging:
 
 deploy:
   stage: prod_deploy
+  before_script:
+    - git fetch --all
   script:
     - echo "Production deploy stage"
     - docker stop console-stageing > /dev/null 2>&1
