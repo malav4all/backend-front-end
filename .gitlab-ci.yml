@@ -1,18 +1,8 @@
-# variables:
-#   GIT_DEPTH: 20
-#   GIT_STRATEGY: fetch
-#   GIT_FETCH_TIMEOUT: 60
 
 stages:
   - build_stage
   - stage_deploy
   - prod_deploy
-
-# before_script:
-#   - rm -rf .git
-#   - git init
-#   - git remote add origin $CI_REPOSITORY_URL
-#   - git fetch --depth 20 origin $CI_COMMIT_REF_NAME
 
 build_project:
   stage: build_stage
@@ -27,9 +17,10 @@ build_project:
     - apk update && apk add git
   script:
     - echo "Creating production build"
-    - docker stop build-process > /dev/null 2>&1
-    - docker rm build-process > /dev/null 2>&1
-    - docker rmi build-process:latest > /dev/null 2>&1
+    # Check if the container exists before stopping it
+    - docker ps -a | grep build-process && docker stop build-process > /dev/null 2>&1 || true
+    - docker rm build-process > /dev/null 2>&1 || true
+    - docker rmi build-process:latest > /dev/null 2>&1 || true
     - docker build -t build-process:latest .
     - docker run -itd --name build-process -v "$(pwd):/code" -p 2001:80 build-process:latest
   artifacts:
@@ -85,74 +76,3 @@ deploy:
     - shell-builder
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#stages:
-#  - build_image
-#  - push_image
-#  - deploy_container
-
-#variables:
-#  DOCKER_HOST: tcp://docker:2375/
-#  DOCKER_TLS_CERTDIR: ""
-
-# build_image:
-#   stage: build_image
-#   tags:
-#     - server-3-docker-runner
-#   image: docker:stable
-#   services:
-#     - docker:dind
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker build -t $CI_REGISTRY_IMAGE/event-console/console .
-#     - docker logout $CI_REGISTRY
-#   only:
-#     - development
-
-# push_image:
-#   stage: push_image
-#   tags:
-#     - server-3-docker-runner
-#   image: docker:stable
-#   services:
-#     - docker:dind
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker push $CI_REGISTRY_IMAGE/event-console/console
-#     - docker logout $CI_REGISTRY
-#   only:
-#     - development
-
-# deploy_container:
-#   stage: deploy_container
-#   tags:
-#     - server-3-docker-runner
-#   image: docker:stable
-#   services:
-#     - docker:dind
-#   script:
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - docker stop $DOCKER_CONTAINER_NAME || true
-#     - docker rm $DOCKER_CONTAINER_NAME || true
-#     - docker rmi $CI_REGISTRY_IMAGE/event-console/console || true
-#     - docker pull $CI_REGISTRY_IMAGE/event-console/console
-#     - docker run -itd --name $DOCKER_CONTAINER_NAME -p 9393:80 $CI_REGISTRY_IMAGE/event-console/console
-#     - docker logout $CI_REGISTRY
-
-#   only:
-#     - development
