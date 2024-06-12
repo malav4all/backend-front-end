@@ -27,16 +27,18 @@ import { CustomInput } from "../../global/components";
 import { RiFileExcel2Fill } from "react-icons/ri";
 
 const Trackplay = () => {
-  // const classes = trackplayStyle();
+  const classes = trackplayStyle;
   const [map, setMap] = useState<any>(null);
   const [speed, setSpeed] = useState(1);
+  const [currentMarker, setCurrentMarker] = useState(null);
+  const [animationFrameId, setAnimationFrameId] = useState<any>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [stop, setStop] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [dataValue, setDataValue] = useState([]);
   const [rawData, setRawData] = useState([]);
   const [timeoutIds, setTimeoutIds] = useState<number[]>([]);
   const currentMarkerRef = useRef<any>(null);
-  const [isStopped, setIsStopped] = useState(false);
-
   const marks = [
     { value: 1, label: "1X" },
     { value: 2, label: "2X" },
@@ -46,11 +48,13 @@ const Trackplay = () => {
 
   const getReports = async (dataTest: any) => {
     const finalArr = dataTest.map(
-      ({ direction, __typename, label, lat, lng, ...rest }: any) => ({
-        ...rest,
-        lat: Number(lat),
-        lng: Number(lng),
-      })
+      ({ direction, __typename, label, lat, lng, ...rest }: any) => {
+        return {
+          ...rest,
+          lat: Number(lat),
+          lng: Number(lng),
+        };
+      }
     );
 
     const payload = { trace: finalArr };
@@ -70,16 +74,18 @@ const Trackplay = () => {
       (
         { instruction, action, duration, length, offset, currentTime }: any,
         index: number
-      ) => ({
-        sNo: index,
-        imei: dataTest[0].label,
-        instruction,
-        action,
-        duration,
-        length,
-        offset,
-        currentTime,
-      })
+      ) => {
+        return {
+          sNo: index,
+          imei: dataTest[0].label,
+          instruction,
+          action,
+          duration,
+          length,
+          offset,
+          currentTime,
+        };
+      }
     );
 
     setDataValue(reportData);
@@ -133,15 +139,26 @@ const Trackplay = () => {
     }
 
     polylines.forEach((polyline) => map.addObject(polyline));
+
+    const svgMarkup = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
+    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
+      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  </svg>`;
+    const icon = new window.H.map.Icon(svgMarkup);
+    const initalMarker = new window.H.map.Marker(
+      { lat: Number(data[0].lat), lng: Number(data[0].lng) },
+      { icon: icon }
+    );
+    // map.addObject(initalMarker);
+    // setCurrentMarker(initalMarker);
   }
 
   const trackPlayApiHandler = async () => {
-    setIsLoading(true);
     const trackdata = await fetchTrackplayHandler();
+
     addPolylineToMap(trackdata.getRowData);
-    await getReports(trackdata.getRowData);
+    getReports(trackdata.getRowData);
     setRawData(trackdata.getRowData);
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -165,13 +182,12 @@ const Trackplay = () => {
     );
     setMap(initialMap);
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
-
     window.addEventListener("resize", () => initialMap.getViewPort().resize());
 
     return () => {
-      if (initialMap) {
-        initialMap.dispose();
-      }
+      // if (initialMap) {
+      //   initialMap.dispose();
+      // }
       window.removeEventListener("resize", () =>
         initialMap.getViewPort().resize()
       );
@@ -190,6 +206,7 @@ const Trackplay = () => {
     });
     setTimeoutIds(newTimeouts);
   };
+  
 
   const interpolatePoints = (data: string | any[]) => {
     const points = [];
@@ -200,7 +217,7 @@ const Trackplay = () => {
       for (let j = 0; j < numInterpolations; j++) {
         const lat = interpolate(parseFloat(start.lat), parseFloat(end.lat), j / numInterpolations);
         const lng = interpolate(parseFloat(start.lng), parseFloat(end.lng), j / numInterpolations);
-        const direction = calculateAngle(start, end);
+        const direction = interpolateDirection(start.direction, end.direction, j / numInterpolations);
         points.push({ lat, lng, direction });
       }
     }
@@ -211,71 +228,45 @@ const Trackplay = () => {
     return start + (end - start) * factor;
   };
 
-  const calculateAngle = (start: any, end: any) => {
-    const dy = end.lat - start.lat;
-    const dx = end.lng - start.lng;
-    return Math.atan2(dy, dx) * (180 / Math.PI);
+  const interpolateDirection = (start: number, end: number, factor: number) => {
+    let delta = end - start;
+    if (delta > 180) {
+      delta -= 360;
+    } else if (delta < -180) {
+      delta += 360;
+    }
+    return start + delta * factor;
   };
 
   const animate = (lat: any, lng: any, direction: any) => {
-    const rotation = direction - 45; // Adjust angle to match the SVG orientation
-
-    if (currentMarkerRef.current) {
-        const currentMarker = currentMarkerRef.current;
-        const currentPosition = currentMarker.getGeometry();
-        const currentRotation = parseFloat(currentMarker.getData().angle);
-        const positionChanged = Math.abs(currentPosition.lat - lat) > 0.0001 || Math.abs(currentPosition.lng - lng) > 0.0001;
-        const rotationChanged = Math.abs(currentRotation - rotation) > 1;
-
-        if (!positionChanged && !rotationChanged) return;
-
-        // Update marker position and rotation
-        if (positionChanged) {
-            currentMarker.setGeometry({ lat, lng });
-        }
-
-        if (rotationChanged) {
-            const domIcon = currentMarker.getIcon();
-            if (domIcon) {
-                const markerElement = domIcon.getElement();
-                const svgElement = markerElement.getElementsByTagName("svg")[0];
-                if (svgElement) {
-                    svgElement.style.transform = `rotate(${rotation}deg)`;
-                }
-                currentMarker.setData({ angle: rotation });
-            }
-        }
-        return;
-    }
-
-    // Create the marker if it doesn't exist
     const domIconElement = document.createElement("div");
     domIconElement.style.margin = "-20px 0 0 -20px";
-    domIconElement.innerHTML = `
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40" transform-origin="center center">
-        <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-          fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-    </svg>`;
-
+  
+    domIconElement.innerHTML = `<svg width="45" height="45" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="80" fill="#cce6ff" stroke="#007bff" stroke-width="2" />   <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" /> </svg>`;
+  
+    if (currentMarkerRef.current) {
+      map.removeObject(currentMarkerRef.current);
+    }
+  
     const newMarker = new window.H.map.DomMarker(
-        { lat, lng },
-        {
-            icon: new window.H.map.DomIcon(domIconElement, {
-                onAttach: (clonedElement: any) => {
-                    const svgElement = clonedElement.getElementsByTagName("svg")[0];
-                    if (svgElement) {
-                        svgElement.style.transition = "transform 0.1s ease-out";
-                        svgElement.style.transform = `rotate(${rotation}deg)`;
-                    }
-                }
-            }),
-        }
+      { lat, lng },
+      {
+        icon: new window.H.map.DomIcon(domIconElement, {
+          onAttach: (clonedElement: { getElementsByTagName: (arg0: string) => any[]; }) => {
+            const svgElement = clonedElement.getElementsByTagName("svg")[0];
+            if (svgElement) {
+              svgElement.style.transform = `rotate(${direction}deg)`;
+              svgElement.style.transformOrigin = "center center";
+            }
+          },
+        }),
+      }
     );
-    newMarker.setData({ angle: rotation });
-
+  
     map.addObject(newMarker);
     currentMarkerRef.current = newMarker;
-};
+  };
 
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
@@ -286,6 +277,18 @@ const Trackplay = () => {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
     test();
+  };
+
+  // useEffect(() => {
+  //   return () => {
+  //     if (timeoutIds.length > 0) {
+  //       timeoutIds.forEach((id) => clearTimeout(id));
+  //     }
+  //   };
+  // }, []);
+
+  const toggleMovement = () => {
+    setStop((prevStop) => !prevStop);
   };
 
   const generateExcelFile = () => {
@@ -304,53 +307,57 @@ const Trackplay = () => {
     XLSX.writeFile(workbook, "TrackReport.xlsx");
   };
 
-  const inputSection = () => (
-    <Grid container spacing={4}>
-      <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-        <CustomInput
-          label="Journey Name"
-          placeHolder="Enter Journey name"
-          required
-          name="journeyName"
-        />
-      </Grid>
+  const inputSection = () => {
+    return (
+      <>
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="Journey Name"
+              placeHolder="Enter Journey name"
+              required
+              name="journeyName"
+            />
+          </Grid>
 
-      <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-        <CustomInput
-          label="IMEI"
-          placeHolder="Enter IMEI name"
-          required
-          name="imei"
-        />
-      </Grid>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="IMEI"
+              placeHolder="Enter IMEI name"
+              required
+              name="imei"
+            />
+          </Grid>
 
-      <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-        <CustomInput
-          label="Start Date"
-          type="datetime-local"
-          id="scheduleTime"
-          name="startDate"
-          required
-          propsToInputElement={{
-            min: moment().format("YYYY-MM-DDTkk:mm"),
-          }}
-        />
-      </Grid>
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="Start Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="startDate"
+              required
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+            />
+          </Grid>
 
-      <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-        <CustomInput
-          label="End Date"
-          type="datetime-local"
-          id="scheduleTime"
-          name="endDate"
-          required
-          propsToInputElement={{
-            min: moment().format("YYYY-MM-DDTkk:mm"),
-          }}
-        />
-      </Grid>
-    </Grid>
-  );
+          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+            <CustomInput
+              label="End Date"
+              type="datetime-local"
+              id="scheduleTime"
+              name="endDate"
+              required
+              propsToInputElement={{
+                min: moment().format("YYYY-MM-DDTkk:mm"),
+              }}
+            />
+          </Grid>
+        </Grid>
+      </>
+    );
+  };
 
   return (
     <Box
@@ -430,12 +437,12 @@ const Trackplay = () => {
           <CustomButton
             customClasses={{
               marginBottom: "8px",
-              backgroundColor: isStopped ? "#ffffff" : "#f0ad4e",
-              color: isStopped ? "#333" : "white",
+              backgroundColor: stop ? "#ffffff" : "#f0ad4e",
+              color: stop ? "#333" : "white",
             }}
             onClick={handleClick}
             icon={
-              isStopped ? (
+              stop ? (
                 <Box
                   sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
                 >
@@ -480,8 +487,8 @@ const Trackplay = () => {
             <Button
               onClick={generateExcelFile}
               sx={{
-                backgroundColor: isStopped ? "#ffffff" : "#FF5733",
-                color: isStopped ? "#333" : "white",
+                backgroundColor: stop ? "#ffffff" : "#FF5733",
+                color: stop ? "#333" : "white",
                 display: "flex",
                 gap: "0.5rem",
                 marginBottom: "0.5rem",
