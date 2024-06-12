@@ -39,11 +39,13 @@ const Trackplay = () => {
   const [rawData, setRawData] = useState([]);
   const [timeoutIds, setTimeoutIds] = useState<number[]>([]);
   const currentMarkerRef = useRef<any>(null);
+  const currentIndexRef = useRef(currentIndex);
+  const speedRef = useRef(speed);
   const marks = [
     { value: 1, label: "1X" },
-    { value: 2, label: "2X" },
-    { value: 3, label: "3X" },
-    { value: 4, label: "4X" },
+    { value: 2, label: "4X" },
+    { value: 3, label: "6X" },
+    { value: 4, label: "10X" },
   ];
 
   const getReports = async (dataTest: any) => {
@@ -133,17 +135,17 @@ const Trackplay = () => {
       });
 
       const polyline = new window.H.map.Polyline(segmentLine, {
-        style: { lineWidth: 5, strokeColor: color },
+        style: { lineWidth: 10, strokeColor: color },
       });
       polylines.push(polyline);
     }
 
     polylines.forEach((polyline) => map.addObject(polyline));
 
-    const svgMarkup = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
-    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-  </svg>`;
+    const svgMarkup = `<svg width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.6)" stroke="rgba(0, 123, 255, 0.9)" stroke-width="2" />
+    <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
+    </svg>`;
     const icon = new window.H.map.Icon(svgMarkup);
     const initalMarker = new window.H.map.Marker(
       { lat: Number(data[0].lat), lng: Number(data[0].lng) },
@@ -185,9 +187,6 @@ const Trackplay = () => {
     window.addEventListener("resize", () => initialMap.getViewPort().resize());
 
     return () => {
-      // if (initialMap) {
-      //   initialMap.dispose();
-      // }
       window.removeEventListener("resize", () =>
         initialMap.getViewPort().resize()
       );
@@ -201,23 +200,35 @@ const Trackplay = () => {
       const timeoutId = setTimeout(() => {
         const { lat, lng, direction } = item;
         animate(lat, lng, direction);
-      }, (index * 100) / speed); // Adjust the delay as needed for smoothness
+        setCurrentIndex(currentIndex + index + 1);
+      }, (index * 100) / speedRef.current);
       newTimeouts.push(timeoutId);
     });
     setTimeoutIds(newTimeouts);
   };
-  
 
   const interpolatePoints = (data: string | any[]) => {
     const points = [];
     for (let i = 0; i < data.length - 1; i++) {
       const start = data[i];
       const end = data[i + 1];
-      const numInterpolations = 10; // Adjust for smoothness
+      const numInterpolations = 10; 
       for (let j = 0; j < numInterpolations; j++) {
-        const lat = interpolate(parseFloat(start.lat), parseFloat(end.lat), j / numInterpolations);
-        const lng = interpolate(parseFloat(start.lng), parseFloat(end.lng), j / numInterpolations);
-        const direction = interpolateDirection(start.direction, end.direction, j / numInterpolations);
+        const lat = interpolate(
+          parseFloat(start.lat),
+          parseFloat(end.lat),
+          j / numInterpolations
+        );
+        const lng = interpolate(
+          parseFloat(start.lng),
+          parseFloat(end.lng),
+          j / numInterpolations
+        );
+        const direction = interpolateDirection(
+          start.direction,
+          end.direction,
+          j / numInterpolations
+        );
         points.push({ lat, lng, direction });
       }
     }
@@ -240,10 +251,12 @@ const Trackplay = () => {
 
   const animate = (lat: any, lng: any, direction: any) => {
     const domIconElement = document.createElement("div");
-    domIconElement.style.margin = "-20px 0 0 -20px";
+    domIconElement.style.margin = "-30px 0 0 -27px";
   
-    domIconElement.innerHTML = `<svg width="45" height="45" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="80" fill="#cce6ff" stroke="#007bff" stroke-width="2" />   <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" /> </svg>`;
+    domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
+    <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
+    </svg>`;
   
     if (currentMarkerRef.current) {
       map.removeObject(currentMarkerRef.current);
@@ -253,11 +266,13 @@ const Trackplay = () => {
       { lat, lng },
       {
         icon: new window.H.map.DomIcon(domIconElement, {
-          onAttach: (clonedElement: { getElementsByTagName: (arg0: string) => any[]; }) => {
+          onAttach: (clonedElement: {
+            getElementsByTagName: (arg0: string) => any[];
+          }) => {
             const svgElement = clonedElement.getElementsByTagName("svg")[0];
             if (svgElement) {
-              svgElement.style.transform = `rotate(${direction}deg)`;
-              svgElement.style.transformOrigin = "center center";
+              // svgElement.style.transform = `rotate(${direction}deg)`;
+              // svgElement.style.transformOrigin = "center center";
             }
           },
         }),
@@ -267,9 +282,34 @@ const Trackplay = () => {
     map.addObject(newMarker);
     currentMarkerRef.current = newMarker;
   };
+  
 
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
+    speedRef.current = newValue;
+  
+    if (timeoutIds.length > 0) {
+      timeoutIds.forEach((id) => clearTimeout(id));
+    }
+
+    currentIndexRef.current = currentIndex;
+
+    animateFromCurrentPosition();
+  };
+
+  const animateFromCurrentPosition = () => {
+    const interpolatedPoints = interpolatePoints(rawData);
+    let newTimeouts: any[] = [];
+    interpolatedPoints.slice(currentIndexRef.current).forEach((item, index) => {
+      const timeoutId = setTimeout(() => {
+        const { lat, lng, direction } = item;
+        animate(lat, lng, direction);
+        setCurrentIndex(currentIndexRef.current + index + 1); 
+        currentIndexRef.current += 1; 
+      }, (index * 100) / speedRef.current); 
+      newTimeouts.push(timeoutId);
+    });
+    setTimeoutIds(newTimeouts);
   };
 
   const handleClick = () => {
