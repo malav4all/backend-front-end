@@ -96,12 +96,9 @@ const Trackplay = () => {
   function addPolylineToMap(data: any) {
     const polylines = [];
     const speedColors = {
-      60: "#FF0000", // Red for 60
-      40: "#FFA500", // Orange for 40
-      30: "#FFFF00", // Yellow for 30
-      20: "#008000", // Green for 20
-      10: "#0000FF", // Blue for 10
-      0: "#800080", // Purple for 0
+      40: "#007bff", // Blue for 40
+      20: "#FFAC34", // Yellow for 20
+      0: "#FF7D90", // red for 0
     };
 
     for (let i = 0; i < data.length - 1; i++) {
@@ -110,16 +107,10 @@ const Trackplay = () => {
       const speed = point1.speed;
 
       let color;
-      if (speed >= 60) {
-        color = speedColors[60];
-      } else if (speed >= 40) {
+      if (speed >= 40) {
         color = speedColors[40];
-      } else if (speed >= 30) {
-        color = speedColors[30];
       } else if (speed >= 20) {
         color = speedColors[20];
-      } else if (speed >= 10) {
-        color = speedColors[10];
       } else {
         color = speedColors[0];
       }
@@ -137,6 +128,7 @@ const Trackplay = () => {
       const polyline = new window.H.map.Polyline(segmentLine, {
         style: { lineWidth: 10, strokeColor: color },
       });
+
       polylines.push(polyline);
     }
 
@@ -167,6 +159,7 @@ const Trackplay = () => {
     const platform = new window.H.service.Platform({
       apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
+
     const defaultLayers = platform.createDefaultLayers();
 
     const initialMap = new window.H.Map(
@@ -212,7 +205,7 @@ const Trackplay = () => {
     for (let i = 0; i < data.length - 1; i++) {
       const start = data[i];
       const end = data[i + 1];
-      const numInterpolations = 10; 
+      const numInterpolations = 10;
       for (let j = 0; j < numInterpolations; j++) {
         const lat = interpolate(
           parseFloat(start.lat),
@@ -252,16 +245,16 @@ const Trackplay = () => {
   const animate = (lat: any, lng: any, direction: any) => {
     const domIconElement = document.createElement("div");
     domIconElement.style.margin = "-30px 0 0 -27px";
-  
+
     domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
     <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
     <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
     </svg>`;
-  
+
     if (currentMarkerRef.current) {
       map.removeObject(currentMarkerRef.current);
     }
-  
+
     const newMarker = new window.H.map.DomMarker(
       { lat, lng },
       {
@@ -278,16 +271,15 @@ const Trackplay = () => {
         }),
       }
     );
-  
+
     map.addObject(newMarker);
     currentMarkerRef.current = newMarker;
   };
-  
 
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
     speedRef.current = newValue;
-  
+
     if (timeoutIds.length > 0) {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
@@ -304,9 +296,9 @@ const Trackplay = () => {
       const timeoutId = setTimeout(() => {
         const { lat, lng, direction } = item;
         animate(lat, lng, direction);
-        setCurrentIndex(currentIndexRef.current + index + 1); 
-        currentIndexRef.current += 1; 
-      }, (index * 100) / speedRef.current); 
+        setCurrentIndex(currentIndexRef.current + index + 1);
+        currentIndexRef.current += 1;
+      }, (index * 100) / speedRef.current);
       newTimeouts.push(timeoutId);
     });
     setTimeoutIds(newTimeouts);
@@ -347,57 +339,57 @@ const Trackplay = () => {
     XLSX.writeFile(workbook, "TrackReport.xlsx");
   };
 
-  const inputSection = () => {
-    return (
-      <>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Journey Name"
-              placeHolder="Enter Journey name"
-              required
-              name="journeyName"
-            />
-          </Grid>
+  // const inputSection = () => {
+  //   return (
+  //     <>
+  //       <Grid container spacing={4}>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="Journey Name"
+  //             placeHolder="Enter Journey name"
+  //             required
+  //             name="journeyName"
+  //           />
+  //         </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="IMEI"
-              placeHolder="Enter IMEI name"
-              required
-              name="imei"
-            />
-          </Grid>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="IMEI"
+  //             placeHolder="Enter IMEI name"
+  //             required
+  //             name="imei"
+  //           />
+  //         </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Start Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="startDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-            />
-          </Grid>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="Start Date"
+  //             type="datetime-local"
+  //             id="scheduleTime"
+  //             name="startDate"
+  //             required
+  //             propsToInputElement={{
+  //               min: moment().format("YYYY-MM-DDTkk:mm"),
+  //             }}
+  //           />
+  //         </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="End Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="endDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-            />
-          </Grid>
-        </Grid>
-      </>
-    );
-  };
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="End Date"
+  //             type="datetime-local"
+  //             id="scheduleTime"
+  //             name="endDate"
+  //             required
+  //             propsToInputElement={{
+  //               min: moment().format("YYYY-MM-DDTkk:mm"),
+  //             }}
+  //           />
+  //         </Grid>
+  //       </Grid>
+  //     </>
+  //   );
+  // };
 
   return (
     <Box
@@ -412,7 +404,7 @@ const Trackplay = () => {
     >
       <CustomLoader isLoading={isLoading} />
 
-      <Box
+      {/* <Box
         sx={{
           position: "absolute",
           top: "1rem",
@@ -443,22 +435,14 @@ const Trackplay = () => {
             lg={2}
             xl={2}
           >
-            <CustomButton
-              id="users_add_button"
-              label={"Submit"}
-              onClick={trackPlayApiHandler}
-              customClasses={{
-                width: "150px",
-              }}
-            />
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
           position: "absolute",
-          top: "9rem",
+          top: "2rem",
           right: "2rem",
           zIndex: "2",
           backgroundColor: "white",
@@ -469,14 +453,23 @@ const Trackplay = () => {
       >
         <Box
           sx={{
-            width: "200px",
+            display: "flex",
             gap: "0.5rem",
             justifyContent: "space-between",
+            marginBottom: "0.5rem"
           }}
         >
           <CustomButton
+            id="users_add_button"
+            label={"Plot"}
+            onClick={trackPlayApiHandler}
             customClasses={{
-              marginBottom: "8px",
+              width: "150px",
+            }}
+          />
+
+          <CustomButton
+            customClasses={{
               backgroundColor: stop ? "#ffffff" : "#f0ad4e",
               color: stop ? "#333" : "white",
             }}
