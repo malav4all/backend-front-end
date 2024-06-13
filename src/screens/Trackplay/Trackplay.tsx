@@ -47,6 +47,9 @@ const Trackplay = () => {
     { value: 3, label: "6X" },
     { value: 4, label: "10X" },
   ];
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
   const getReports = async (dataTest: any) => {
     const finalArr = dataTest.map(
@@ -242,49 +245,59 @@ const Trackplay = () => {
     return start + delta * factor;
   };
 
-  const animate = (lat: any, lng: any, direction: any) => {
-    const domIconElement = document.createElement("div");
-    domIconElement.style.margin = "-30px 0 0 -27px";
-
-    domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
-    <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
-    </svg>`;
-
+  const animate = (lat: number, lng: number, direction: number) => {
     if (currentMarkerRef.current) {
-      map.removeObject(currentMarkerRef.current);
-    }
-
-    const newMarker = new window.H.map.DomMarker(
-      { lat, lng },
-      {
-        icon: new window.H.map.DomIcon(domIconElement, {
-          onAttach: (clonedElement: {
-            getElementsByTagName: (arg0: string) => any[];
-          }) => {
-            const svgElement = clonedElement.getElementsByTagName("svg")[0];
-            if (svgElement) {
-              // svgElement.style.transform = `rotate(${direction}deg)`;
-              // svgElement.style.transformOrigin = "center center";
-            }
-          },
-        }),
+      // Update marker position
+      currentMarkerRef.current.setGeometry({ lat, lng });
+  
+      // Update rotation of the marker
+      const svgElement = currentMarkerRef.current.getData();
+      if (svgElement) {
+        svgElement.style.transform = `rotate(${direction}deg)`;
+        svgElement.style.transition = `transform 1s ease-in-out`;
+        svgElement.style.transformOrigin = "center center";
       }
-    );
-
-    map.addObject(newMarker);
-    currentMarkerRef.current = newMarker;
+    } else {
+      const domIconElement = document.createElement("div");
+      domIconElement.style.margin = "-30px 0 0 -27px";
+      domIconElement.classList.add('move-animation');
+  
+      domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
+        <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
+      </svg>`;
+  
+      const newMarker = new window.H.map.DomMarker(
+        { lat, lng },
+        {
+          icon: new window.H.map.DomIcon(domIconElement, {
+            onAttach: (clonedElement: any) => {
+              const svgElement = clonedElement.querySelector("svg");
+              if (svgElement) {
+                svgElement.classList.add('rotate-animation');
+                svgElement.style.transform = `rotate(${direction}deg)`;
+                svgElement.style.transition = `transform 1s ease-in-out`;
+                svgElement.style.transformOrigin = "center center";
+              }
+            },
+          }),
+        }
+      );
+  
+      // Store the SVG element in the marker data for later use
+      newMarker.setData(domIconElement.querySelector("svg"));
+  
+      map.addObject(newMarker);
+      currentMarkerRef.current = newMarker;
+    }
   };
 
   const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
     speedRef.current = newValue;
-
     if (timeoutIds.length > 0) {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
-
-    currentIndexRef.current = currentIndex;
 
     animateFromCurrentPosition();
   };
@@ -296,13 +309,17 @@ const Trackplay = () => {
       const timeoutId = setTimeout(() => {
         const { lat, lng, direction } = item;
         animate(lat, lng, direction);
-        setCurrentIndex(currentIndexRef.current + index + 1);
-        currentIndexRef.current += 1;
+        setCurrentIndex((prevIndex) => {
+          const newIndex = prevIndex + 1;
+          currentIndexRef.current = newIndex;
+          return newIndex;
+        });
       }, (index * 100) / speedRef.current);
       newTimeouts.push(timeoutId);
     });
     setTimeoutIds(newTimeouts);
   };
+  
 
   const handleClick = () => {
     if (timeoutIds.length > 0) {
@@ -456,7 +473,7 @@ const Trackplay = () => {
             display: "flex",
             gap: "0.5rem",
             justifyContent: "space-between",
-            marginBottom: "0.5rem"
+            marginBottom: "0.5rem",
           }}
         >
           <CustomButton
