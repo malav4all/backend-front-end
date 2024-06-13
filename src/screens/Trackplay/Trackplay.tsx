@@ -47,7 +47,15 @@ const Trackplay = () => {
     { value: 3, label: "3X" },
     { value: 4, label: "4X" },
   ];
-  
+
+  const startSvgMarkup = `<svg width="40px" height="40px" viewBox="-5.07 0 43.012 43.012" xmlns="http://www.w3.org/2000/svg">
+  <path id="location" d="M406.185,260.012c-18.028-13.493-16.233-28.572-16.233-28.572h11.184a4.7,4.7,0,0,0-.142,1.1,5.378,5.378,0,0,0,.466,2.1,7.353,7.353,0,0,0,2.622,2.615,5,5,0,0,0,4.218,0,7.316,7.316,0,0,0,2.619-2.615,5.4,5.4,0,0,0,.465-2.105,4.728,4.728,0,0,0-.141-1.1h11.5S424.217,246.277,406.185,260.012Zm4.731-29.576a7.353,7.353,0,0,0-2.619-2.618,4.977,4.977,0,0,0-4.211,0,7.389,7.389,0,0,0-2.622,2.618,6.468,6.468,0,0,0-.326,1H389.966c0-7.972,7.335-14.435,16.383-14.435s16.383,6.463,16.383,14.435H411.242A6.523,6.523,0,0,0,410.915,230.436Z" transform="translate(-389.902 -217)" fill="#219C90"/>
+</svg>`;
+
+  const endSvgMarkup = `<svg width="40px" height="40px" viewBox="-5.07 0 43.012 43.012" xmlns="http://www.w3.org/2000/svg">
+  <path id="location" d="M406.185,260.012c-18.028-13.493-16.233-28.572-16.233-28.572h11.184a4.7,4.7,0,0,0-.142,1.1,5.378,5.378,0,0,0,.466,2.1,7.353,7.353,0,0,0,2.622,2.615,5,5,0,0,0,4.218,0,7.316,7.316,0,0,0,2.619-2.615,5.4,5.4,0,0,0,.465-2.105,4.728,4.728,0,0,0-.141-1.1h11.5S424.217,246.277,406.185,260.012Zm4.731-29.576a7.353,7.353,0,0,0-2.619-2.618,4.977,4.977,0,0,0-4.211,0,7.389,7.389,0,0,0-2.622,2.618,6.468,6.468,0,0,0-.326,1H389.966c0-7.972,7.335-14.435,16.383-14.435s16.383,6.463,16.383,14.435H411.242A6.523,6.523,0,0,0,410.915,230.436Z" transform="translate(-389.902 -217)" fill="#EE4E4E"/>
+</svg>`;
+
   useEffect(() => {
     currentIndexRef.current = currentIndex;
   }, [currentIndex]);
@@ -164,17 +172,29 @@ const Trackplay = () => {
     // Set a specific zoom level to zoom in as desired
     map.setZoom(12);
 
-    const svgMarkup = `<svg width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.6)" stroke="rgba(0, 123, 255, 0.9)" stroke-width="2" />
-      <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
-    </svg>`;
-    const icon = new window.H.map.Icon(svgMarkup);
-    const initalMarker = new window.H.map.Marker(
+    const startIcon = new window.H.map.Icon(startSvgMarkup, {
+      anchor: { x: 20, y: 24 }  // Adjust the anchor to move the icon left by 20px
+    });
+
+    const endIcon = new window.H.map.Icon(endSvgMarkup, {
+      anchor: { x: 20, y: 24 } // Adjust the anchor to move the icon left by 20px
+    });
+    // Add start marker
+    const startMarker = new window.H.map.Marker(
       { lat: Number(data[0].lat), lng: Number(data[0].lng) },
-      { icon: icon }
+      { icon: startIcon }
     );
-    // map.addObject(initalMarker);
-    // setCurrentMarker(initalMarker);
+    map.addObject(startMarker);
+
+    // Add end marker
+    const endMarker = new window.H.map.Marker(
+      {
+        lat: Number(data[data.length - 1].lat),
+        lng: Number(data[data.length - 1].lng),
+      },
+      { icon: endIcon }
+    );
+    map.addObject(endMarker);
   }
 
   const trackPlayApiHandler = async () => {
@@ -336,19 +356,18 @@ const Trackplay = () => {
       default:
         speedMultiplier = 2;
     }
-  
+
     setSpeed(newValue);
     speedRef.current = speedMultiplier;
-  
+
     // Clear existing timeouts
     if (timeoutIds.length > 0) {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
-  
+
     // Continue animation from the current position
     animateFromCurrentPosition();
   };
-  
 
   const animateFromCurrentPosition = () => {
     const interpolatedPoints = interpolatePoints(rawData);
