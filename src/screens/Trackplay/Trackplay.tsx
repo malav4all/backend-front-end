@@ -43,10 +43,11 @@ const Trackplay = () => {
   const speedRef = useRef(speed);
   const marks = [
     { value: 1, label: "1X" },
-    { value: 2, label: "4X" },
-    { value: 3, label: "6X" },
-    { value: 4, label: "10X" },
+    { value: 2, label: "2X" },
+    { value: 3, label: "3X" },
+    { value: 4, label: "4X" },
   ];
+  
   useEffect(() => {
     currentIndexRef.current = currentIndex;
   }, [currentIndex]);
@@ -101,8 +102,16 @@ const Trackplay = () => {
     const speedColors = {
       40: "#007bff", // Blue for 40
       20: "#FFAC34", // Yellow for 20
-      0: "#FF7D90", // red for 0
+      0: "#FF7D90", // Red for 0
     };
+
+    // Initialize the bounding box with the first point
+    let boundingBox = new window.H.geo.Rect(
+      Number(data[0].lat),
+      Number(data[0].lng),
+      Number(data[0].lat),
+      Number(data[0].lng)
+    );
 
     for (let i = 0; i < data.length - 1; i++) {
       const point1 = data[i];
@@ -128,6 +137,16 @@ const Trackplay = () => {
         lng: Number(point2.lng),
       });
 
+      // Update the bounding box with the new points
+      boundingBox = boundingBox.mergePoint({
+        lat: Number(point1.lat),
+        lng: Number(point1.lng),
+      });
+      boundingBox = boundingBox.mergePoint({
+        lat: Number(point2.lat),
+        lng: Number(point2.lng),
+      });
+
       const polyline = new window.H.map.Polyline(segmentLine, {
         style: { lineWidth: 10, strokeColor: color },
       });
@@ -137,9 +156,17 @@ const Trackplay = () => {
 
     polylines.forEach((polyline) => map.addObject(polyline));
 
+    // Zoom to fit the bounding box
+    map.getViewModel().setLookAtData({
+      bounds: boundingBox,
+    });
+
+    // Set a specific zoom level to zoom in as desired
+    map.setZoom(12);
+
     const svgMarkup = `<svg width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.6)" stroke="rgba(0, 123, 255, 0.9)" stroke-width="2" />
-    <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
+      <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.6)" stroke="rgba(0, 123, 255, 0.9)" stroke-width="2" />
+      <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
     </svg>`;
     const icon = new window.H.map.Icon(svgMarkup);
     const initalMarker = new window.H.map.Marker(
@@ -249,7 +276,7 @@ const Trackplay = () => {
     if (currentMarkerRef.current) {
       // Update marker position
       currentMarkerRef.current.setGeometry({ lat, lng });
-  
+
       // Update rotation of the marker
       const svgElement = currentMarkerRef.current.getData();
       if (svgElement) {
@@ -260,13 +287,13 @@ const Trackplay = () => {
     } else {
       const domIconElement = document.createElement("div");
       domIconElement.style.margin = "-30px 0 0 -27px";
-      domIconElement.classList.add('move-animation');
-  
+      domIconElement.classList.add("move-animation");
+
       domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
         <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
       </svg>`;
-  
+
       const newMarker = new window.H.map.DomMarker(
         { lat, lng },
         {
@@ -274,7 +301,7 @@ const Trackplay = () => {
             onAttach: (clonedElement: any) => {
               const svgElement = clonedElement.querySelector("svg");
               if (svgElement) {
-                svgElement.classList.add('rotate-animation');
+                svgElement.classList.add("rotate-animation");
                 svgElement.style.transform = `rotate(${direction}deg)`;
                 svgElement.style.transition = `transform 1s ease-in-out`;
                 svgElement.style.transformOrigin = "center center";
@@ -285,21 +312,43 @@ const Trackplay = () => {
       );
 
       newMarker.setData(domIconElement.querySelector("svg"));
-  
+
       map.addObject(newMarker);
       currentMarkerRef.current = newMarker;
     }
   };
 
   const handleSpeedChange = (event: any, newValue: any) => {
+    let speedMultiplier;
+    switch (newValue) {
+      case 1:
+        speedMultiplier = 2;
+        break;
+      case 2:
+        speedMultiplier = 4;
+        break;
+      case 3:
+        speedMultiplier = 8;
+        break;
+      case 4:
+        speedMultiplier = 10;
+        break;
+      default:
+        speedMultiplier = 2;
+    }
+  
     setSpeed(newValue);
-    speedRef.current = newValue;
+    speedRef.current = speedMultiplier;
+  
+    // Clear existing timeouts
     if (timeoutIds.length > 0) {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
-
+  
+    // Continue animation from the current position
     animateFromCurrentPosition();
   };
+  
 
   const animateFromCurrentPosition = () => {
     const interpolatedPoints = interpolatePoints(rawData);
@@ -318,7 +367,6 @@ const Trackplay = () => {
     });
     setTimeoutIds(newTimeouts);
   };
-  
 
   const handleClick = () => {
     if (timeoutIds.length > 0) {
