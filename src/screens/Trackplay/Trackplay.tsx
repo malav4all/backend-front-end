@@ -283,8 +283,7 @@ const Trackplay = () => {
           }),
         }
       );
-  
-      // Store the SVG element in the marker data for later use
+
       newMarker.setData(domIconElement.querySelector("svg"));
   
       map.addObject(newMarker);
