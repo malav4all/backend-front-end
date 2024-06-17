@@ -1,4 +1,3 @@
-import { Padding } from "@mui/icons-material";
 import {
   boldFont,
   ultraBlackFont,
@@ -16,6 +15,8 @@ import {
   blackFont,
 } from "../../../utils/styles";
 
+const textColor = "#fffff0";  // Define the fixed text color
+
 const appDrawerStyles = {
   drawer: {
     display: "flex",
@@ -30,21 +31,24 @@ const appDrawerStyles = {
     padding: 0,
     margin: 0,
     zIndex: 0,
+    color: textColor,
+    borderRight: "1px solid #F1F3F4",
   },
   drawerContainerBox: {
     position: "relative",
     transition: "width 0.2s ease-in-out",
+    color: textColor,
   },
   drawerIconBox: {
     background: "#5F22E1",
     padding: "0.5rem",
-    color: "white",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
     position: "absolute",
     top: "26px",
+    color: textColor,
   },
   openDrawerIconBox: {
     borderRadius: "100px",
@@ -64,6 +68,8 @@ const appDrawerStyles = {
     padding: 0,
     margin: 0,
     zIndex: 110,
+    color: textColor,
+    borderRight: "0.5px solid #F1F3F4",
   },
   drawerWidth: {
     width: drawerWidth,
@@ -74,7 +80,7 @@ const appDrawerStyles = {
     height: "100vh",
     overflowY: "hidden",
     overflowX: "hidden",
-
+    color: textColor,
     [theme.breakpoints.down("xl")]: {
       width: drawerWidth,
     },
@@ -98,6 +104,7 @@ const appDrawerStyles = {
   closedDrawerListItemArrowIcon: { maxHeight: "20px" },
   closedDrawerListItemIcon: {
     minWidth: "22px",
+    color: textColor,
   },
   subMenuItems: {
     borderLeft: "4px solid",
@@ -122,55 +129,58 @@ const appDrawerStyles = {
     ...mediumFont,
     cursor: "pointer",
     borderLeft: "4px solid transparent",
+    color: textColor,
   },
   selectedMenuOptionListItem: {
-    color: purplePrimaryColor,
     display: "flex",
     borderLeft: "4px solid",
     height: "30px",
-    fontWeigh: "400"
+    fontWeigh: "400",
+    color: textColor,
   },
   menuOption: {
     display: "flex",
     textDecoration: "none",
     ...ultraBlackFont,
-
-    color: "#dbdbdb",
     flexDirection: "column",
     cursor: "pointer",
     margin: "0 10px",
+    color: textColor,
   },
   selectedMenuOption: {
     display: "flex",
     ...ultraBlackFont,
     fontWeight: "900",
     textDecoration: "none",
-    color: "white",
     backgroundColor: "#5F22E1",
     flexDirection: "column",
     cursor: "pointer",
     margin: "0 10px",
+    color: textColor,
   },
   selectedSubMenuOption: {
     display: "flex",
     ...lightFont,
     textDecoration: "none",
-    color: purplePrimaryColor,
     flexDirection: "column",
     marginBottom: "15px",
+    color: textColor,
   },
   navBarLabel: {
     ...lightFont,
+    color: textColor,
   },
   listItemIconBox: {
     display: "flex",
     alignItems: "center",
-    justifyItem: "center"
+    justifyItem: "center",
+    color: textColor,
   },
   listItemTextBox: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    color: textColor,
   },
   logoBox: {
     display: "flex",
@@ -178,6 +188,7 @@ const appDrawerStyles = {
     alignItems: "center",
     justifyContent: "center",
     marginTop: "27px",
+    color: textColor,
   },
   workText: {
     ...boldFont,
@@ -186,14 +197,15 @@ const appDrawerStyles = {
     [theme.breakpoints.down("xl")]: {
       fontSize: getRelativeFontSize(17),
     },
+    color: textColor,
   },
   sageText: {
     ...boldFont,
-    color: "#828282",
     fontSize: getRelativeFontSize(21),
     [theme.breakpoints.down("xl")]: {
       fontSize: getRelativeFontSize(17),
     },
+    color: textColor,
   },
   supportTicketBox: {
     borderRadius: "15px",
@@ -203,10 +215,12 @@ const appDrawerStyles = {
     justifyContent: "space-between",
     [theme.breakpoints.down("xl")]: {},
     marginBottom: "10%",
+    color: textColor,
   },
   btnBox: {
     ...ultraBlackFont,
     textTransform: "none",
+    color: textColor,
   },
   imgBox: {
     background: "#22BAB6",
@@ -230,6 +244,7 @@ const appDrawerStyles = {
     justifyContent: "center",
     flexDirection: "column",
     padding: "16px",
+    color: textColor,
     "& img": {
       width: "125px",
       height: "auto",
@@ -239,6 +254,7 @@ const appDrawerStyles = {
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
+    color: textColor,
   },
   getCampaignImg: {
     width: "137px",
@@ -248,12 +264,12 @@ const appDrawerStyles = {
     fontSize: "14px",
     lineHeight: "20px",
     textAlign: "center",
-    color: "#ffffff",
     ...ultraBlackFont,
     margin: "10px 0",
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
+    color: textColor,
   },
   logOutWrapper: {
     height: "10vh",
@@ -263,6 +279,7 @@ const appDrawerStyles = {
     justifyContent: "space-between",
     borderRadius: "15px",
     [theme.breakpoints.down("xl")]: {},
+    color: textColor,
   },
   logOutWrapper1: {
     height: "6vh",
@@ -274,16 +291,18 @@ const appDrawerStyles = {
     backgroundColor: "#060B25",
     borderRadius: "15px",
     [theme.breakpoints.down("xl")]: {},
+    color: textColor,
   },
   logOutLeft: {
     display: "flex",
     alignItems: "center",
+    color: textColor,
   },
   logoutTooltipText: {
     padding: "10px",
-    color: "white",
     fontSize: "14px",
     ...regularFont,
+    color: textColor,
   },
   logoutImageStyle: { width: "25px", height: "auto", cursor: "pointer" },
   squareBox: {
@@ -291,13 +310,13 @@ const appDrawerStyles = {
     height: "25px",
     borderRadius: "100%",
     background: "#5F22E1",
-    color: "white",
     padding: "0.3rem",
     display: "flex",
     fontSize: "0.8rem",
     alignItems: "center",
     justifyContent: "center",
     margin: "0px 5px 0px 0px",
+    color: textColor,
   },
   squareBox1: {
     width: "30px",
@@ -308,18 +327,19 @@ const appDrawerStyles = {
     alignItems: "center",
     justifyContent: "center",
     fontSize: "14px",
-    color: "white"
+    color: textColor,
   },
   avatarStyle: {
     ...boldFont,
     fontSize: getRelativeFontSize(8),
+    color: textColor,
   },
   avatarFirstName: {
-    color: "#ffffff",
     ...boldFont,
     fontSize: getRelativeFontSize(4),
     marginLeft: "8px",
     wordBreak: "break-all",
+    color: textColor,
   },
 } as const;
 

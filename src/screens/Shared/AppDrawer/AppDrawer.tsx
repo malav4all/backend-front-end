@@ -31,10 +31,9 @@ import { store } from "../../../utils/store";
 import { logOutAction, selectName } from "../../../redux/authSlice";
 import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
-import LogoutIcon from "../../../assets/icons/Logout.png";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
 import ROUTEYE_LOGO_MINI from "../../../assets/images/ROUTEYE_LOGO_MINI.png";
-import { useTheme } from '../../../utils/ThemeContext';
+import { useThemeContext } from "../../../redux/ThemeContext";
 
 interface CustomProps {
   setMenuMobileVisible?: Function;
@@ -97,7 +96,7 @@ const AppDrawer = (props: CustomProps) => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
-  const { darkMode, toggleTheme } = useTheme();
+  const { toggleTheme, darkMode } = useThemeContext(); // Use the context
 
   useEffect(() => {
     generateAppDrawer();
@@ -183,7 +182,12 @@ const AppDrawer = (props: CustomProps) => {
             >
               {isDrawerOpen ? (
                 <ListItemText>
-                  <Box sx={classes.listItemTextBox}>
+                  <Box
+                    sx={{
+                      ...classes.listItemTextBox,
+                      color: "#fffff0", 
+                    }}
+                  >
                     <Typography
                       sx={{
                         ...classes.navBarLabel,
@@ -277,7 +281,12 @@ const AppDrawer = (props: CustomProps) => {
 
             {isDrawerOpen && (
               <ListItemText>
-                <Box sx={classes.listItemTextBox}>
+                <Box
+                  sx={{
+                    ...classes.listItemTextBox,
+                    color: "#fffff0", 
+                  }}
+                >
                   <Typography sx={classes.navBarLabel}>
                     <span>{option.text}</span>
                   </Typography>
@@ -380,7 +389,7 @@ const AppDrawer = (props: CustomProps) => {
               },
             }}
           >
-            <Box ml={1} onClick={handleLogout} sx={{ color: "white" }}>
+            <Box ml={1} onClick={handleLogout} sx={{ color: "#fffff0" }}>
               <RiLogoutCircleRLine size={25} />
             </Box>
           </Tooltip>
@@ -400,8 +409,8 @@ const AppDrawer = (props: CustomProps) => {
         p={2}
         borderRadius="10px"
       >
-        <Box sx={{color: "white"}}>
-          Mode:      
+        <Box sx={{ color: "#fffff0" }}>
+          Mode:
         </Box>
         <FormControlLabel
           control={

@@ -5,6 +5,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  useTheme
 } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import moment from "moment";
@@ -31,6 +32,7 @@ interface CustomDateRange {
 }
 
 const AlertReport = () => {
+  const theme = useTheme()
   const initialState: any = {
     fromDate: moment().clone().subtract(1, "hour").toISOString(),
     toDate: moment().toISOString(),
@@ -451,7 +453,12 @@ const AlertReport = () => {
   };
 
   return (
-    <Box>
+    <Box 
+    sx={{
+      backgroundColor: theme.palette.background.paper,
+      height: "100%"
+    }}
+    >
       {getReportHeader()}
       {getReportBody()}
       {customDialog()}

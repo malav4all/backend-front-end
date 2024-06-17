@@ -5,6 +5,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  useTheme
 } from "@mui/material"
 import DistanceReport from "../DistanceReport/DistanceReport"
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader"
@@ -20,6 +21,7 @@ import moment from "moment"
 import journeyReportStyles from "./JourneyReport.styles"
 import { archiveJourney } from "./service/JourneyReport.service"
 const JourneyReport = () => {
+  const theme = useTheme()
   const classes = journeyReportStyles
   const [isLoading, setIsLoading] = useState<any>(false)
   const [count, setCount] = useState<number>(0)
@@ -333,7 +335,12 @@ const JourneyReport = () => {
   }
 
   return (
-    <Box>
+    <Box 
+    sx={{
+      backgroundColor: theme.palette.background.paper,
+      height: "100%"
+
+    }}>
       {getDashboardHeader()}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />

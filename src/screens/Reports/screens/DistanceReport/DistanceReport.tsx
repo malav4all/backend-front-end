@@ -6,8 +6,9 @@ import {
   InputAdornment,
   MenuItem,
   Select,
-  Tooltip,
+
   Typography,
+  useTheme,
 } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 import { CustomInput, CustomTable } from "../../../../global/components"
@@ -30,6 +31,7 @@ interface CustomProps {
 
 const DistanceReport = (props: CustomProps) => {
   const classes = distanceReportStyles
+  const theme = useTheme();
   const [isLoading, setIsLoading] = useState<any>(false)
   const [count, setCount] = useState<number>(0)
   const [tableData, setTableData] = useState([])
@@ -444,7 +446,12 @@ const DistanceReport = (props: CustomProps) => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%"
+      }}
+    >
       {getDashboardHeader()}
       {/* {getDistanceHeader()} */}
       {getDashboardBody()}

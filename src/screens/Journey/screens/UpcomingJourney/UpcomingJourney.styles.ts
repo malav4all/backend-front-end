@@ -7,12 +7,13 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   pureWhiteColor,
+  headerColor,
 } from "../../../../utils/styles";
 const upcomingJourneyStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#d1bbff",
+    backgroundColor: headerColor,
     padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",

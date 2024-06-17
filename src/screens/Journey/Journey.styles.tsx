@@ -30,6 +30,7 @@ const journeyStyles = {
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(0),
     },
+    backgroundColor: theme.palette.background.paper,
   },
   mainCard: {
     marginTop: theme.spacing(10),

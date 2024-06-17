@@ -7,6 +7,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import moment from "moment";
@@ -29,9 +30,14 @@ import {
   statusDevice,
 } from "../../../Reports/service/Report.service";
 import { upComingJourney } from "./service/UpcomingJourney.service";
-import { boldFont, primaryHeadingColor } from "../../../../utils/styles";
+import {
+  boldFont,
+  headerColor,
+  primaryHeadingColor,
+} from "../../../../utils/styles";
 const UpcomingJourney = () => {
   const classes = upcomingJourneyStyles;
+  const theme = useTheme();
   const [alertTableData, setAlertTableData] = useState([]);
   const [page, setPage] = useState(1);
   const [dateFilter, setDateFilter] = useState({
@@ -307,10 +313,15 @@ const UpcomingJourney = () => {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       <CustomAppHeader
         className={{
-          backgroundColor: "#f1edff",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
           marginBottom: "5rem",
         }}

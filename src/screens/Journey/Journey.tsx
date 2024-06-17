@@ -17,13 +17,13 @@ import {
   Box,
   FormHelperText,
   Grid,
-  IconButton,
   InputAdornment,
   InputLabel,
   Stack,
   TextField,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import journeyStyles from "./Journey.styles";
 import {
@@ -32,6 +32,7 @@ import {
   boldFont,
   disabledBackgroundColor,
   chipBackgroundColor,
+  headerColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
@@ -62,6 +63,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 const Journey = () => {
   const classes = journeyStyles;
+  const theme = useTheme();
   const [page, setPage] = useState<number>(1);
   const [formField, setFormField] = useState<any>({
     journeyName: {
@@ -331,7 +333,7 @@ const Journey = () => {
               }}
             >
               <SensorsRoundedIcon
-                style={{ color: "#5F22E2", cursor: "pointer" }}
+                style={{ color: theme.palette.primary.main, cursor: "pointer" }}
                 onClick={() => {
                   history.push({
                     pathname: "/live-tracking",
@@ -362,7 +364,7 @@ const Journey = () => {
             >
               <VisibilityIcon
                 key={item._id}
-                style={{ color: "#5F22E2", cursor: "pointer" }}
+                style={{ color: theme.palette.primary.main, cursor: "pointer" }}
                 onClick={() => {
                   history.push({
                     pathname: "/view-journey",
@@ -842,10 +844,14 @@ const Journey = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <CustomAppHeader
         className={{
-          backgroundColor: "#f1edff",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
         }}
       >
@@ -860,7 +866,7 @@ const Journey = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...boldFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             {getHeader()}
@@ -877,7 +883,7 @@ const Journey = () => {
       </CustomAppHeader>
 
       <Box
-        sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
+        sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", backgroundColor: theme.palette.background.paper, }}
         mt={2}
         mr={2}
       >
@@ -915,7 +921,7 @@ const Journey = () => {
             width: "90%",
             margin: "auto",
             padding: "2rem",
-            backgroundColor: "white",
+            backgroundColor: theme.palette.background.paper,
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
             marginBottom: "2rem",
           }}
@@ -926,6 +932,7 @@ const Journey = () => {
               justifyContent: "flex-end",
               flexWrap: "wrap",
               padding: "1rem 1rem",
+              backgroundColor: theme.palette.background.paper,
             }}
             mt={2}
             mr={2}
@@ -966,12 +973,20 @@ const Journey = () => {
         md={12}
         lg={12}
         xl={12}
-        sx={classes.mainSection}
+        sx={{
+          padding: "30px",
+          paddingTop: "2px",
+          marginTop: "10px",
+          [theme.breakpoints.down("md")]: {
+            marginTop: theme.spacing(0),
+          },
+          backgroundColor: theme.palette.background.paper,
+        }}
       >
         {getCustomTable()}
         <CustomLoader isLoading={isLoading} />
       </Grid>
-    </>
+    </Box>
   );
 };
 

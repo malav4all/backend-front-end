@@ -13,6 +13,7 @@ import {
   purpleThemedSelectComponent,
   buttonWhiteBg,
   purplePrimaryColor,
+  offWhiteColor,
 } from "../../../utils/styles"
 
 const AssetAssingmentStyles = {
@@ -316,7 +317,7 @@ const AssetAssingmentStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: offWhiteColor,
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

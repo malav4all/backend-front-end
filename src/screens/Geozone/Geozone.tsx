@@ -10,6 +10,7 @@ import {
   ListItemText,
   Tooltip,
   Typography,
+  useTheme
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
@@ -42,6 +43,7 @@ import { geoZoneInsertField, validateGeoZoneForm } from "./Geozone.helper";
 
 const Geozone = () => {
   const classes = geozoneStyle;
+  const theme = useTheme()
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [isOpen, setOpenModal] = useState<boolean>(false);
   const [mapCheck, setMapCheck] = useState<any>(null);

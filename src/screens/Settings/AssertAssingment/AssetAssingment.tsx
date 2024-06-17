@@ -7,21 +7,18 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import AssetAssingmentStyles from "./AssetAssingment.styles";
 import CustomButton from "../../../global/components/CustomButton/CustomButton";
-import AddUser from "./components/AddAsset/AddAssertAssingment";
 import { AssetAssingmentData, RowData } from "../../../models/interfaces";
 import SearchIcon from "@mui/icons-material/Search";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import {
   debounceEventHandler,
-  getFormattedStatsCount,
   isTruthy,
   openErrorNotification,
 } from "../../../helpers/methods";
-import EditIcon from "@mui/icons-material/Edit";
-import LockResetIcon from "@mui/icons-material/LockReset";
 import {
   CustomAppHeader,
   CustomInput,
@@ -37,8 +34,8 @@ import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
+  headerColor,
 } from "../../../utils/styles";
-
 import AddAssetAssingment from "./components/AddAsset/AddAssertAssingment";
 import {
   fetchAssetAssingmentDataHandler,
@@ -48,6 +45,7 @@ import ExportCSV from "../../../global/components/ExportCSV";
 
 const AssetAssingment = () => {
   useTitle(strings.AssetAssingmentTitle);
+  const theme = useTheme();
   const classes = AssetAssingmentStyles;
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -109,7 +107,7 @@ const AssetAssingment = () => {
                 style={{
                   margin: "0px 8px -7px 0px",
                   cursor: "pointer",
-                  color: "#5F22E2",
+                  color: theme.palette.primary.main,
                   fontSize: "17px",
                 }}
               />
@@ -248,12 +246,11 @@ const AssetAssingment = () => {
 
   const campaignerTable = () => {
     return (
-      <Box id="assetAssingment_display_table" >
+      <Box id="assetAssingment_display_table">
         <CustomTable
           headers={assetAssingmentTableHeader}
           rows={assetAssingmentDataSource}
           paginationCount={count}
-          // handleRowClick={updateAssetAssingmentDetails}
           handlePageChange={
             searchCampaigner ? handleSearchChangePage : handleChangePage
           }
@@ -291,7 +288,7 @@ const AssetAssingment = () => {
     <Box>
       <CustomAppHeader
         className={{
-          backgroundColor: "#f1edff",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
         }}
       >
@@ -306,19 +303,23 @@ const AssetAssingment = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...boldFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             {getHeader()}
           </Typography>
         </Stack>
       </CustomAppHeader>
+
       <Stack
         px={4}
         pt={2}
         direction={{ lg: "row", xs: "column" }}
         justifyContent="flex-end"
         alignItems={{ lg: "" }}
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+        }}
       >
         <Stack
           direction={{ sm: "row", xs: "column" }}
@@ -352,6 +353,9 @@ const AssetAssingment = () => {
           minWidth: "300px",
           overflow: "auto",
           padding: "30px",
+          backgroundColor: theme.palette.background.paper,
+          boxShadow:
+            "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
         }}
       >
         {campaignerTable()}

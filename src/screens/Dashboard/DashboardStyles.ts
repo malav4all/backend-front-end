@@ -10,6 +10,7 @@ import {
   textLightColor,
   purpleThemedSelectComponent,
   pinkThemedMenuItems,
+  headerColor,
 } from "../../utils/styles";
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
 import { Height } from "@mui/icons-material";
@@ -109,7 +110,7 @@ const dashboardStyles = {
     display: "flex",
     marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: "#D1BBFF",
+    backgroundColor: headerColor,
     padding: "16px",
     // paddingBottom: "64px",
     height: "10rem",
@@ -158,7 +159,7 @@ const dashboardStyles = {
   statusBox: {
     ml: 1,
     ...regularFont,
-    backgroundColor: "#d1bbff",
+    backgroundColor: headerColor,
     padding: 1,
     fontSize: getRelativeFontSize(),
   },

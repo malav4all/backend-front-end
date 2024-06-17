@@ -9,6 +9,7 @@ import {
   Switch,
   Tooltip,
   Typography,
+  useTheme
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -42,6 +43,7 @@ import history from "../../utils/history";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
+  const theme = useTheme()
   const [isLoading, setIsLoading] = useState(false);
   const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
@@ -325,7 +327,10 @@ const AlertConfig = () => {
   };
 
   return (
-    <>
+    <Box sx={{
+      backgroundColor: theme.palette.background.paper,
+      height: "auto"
+    }}>
       <Grid container spacing={2} direction="column">
         <Grid item>
           <CustomAppHeader
@@ -380,7 +385,7 @@ const AlertConfig = () => {
         </Grid>
       </Grid>
       <CustomLoader isLoading={isLoading} />
-    </>
+    </Box>
   );
 };
 

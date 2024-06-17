@@ -12,11 +12,13 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
+  headerColor,
 } from "../../utils/styles";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,7 +26,6 @@ import {
   debounceEventHandler,
   isTruthy,
   openErrorNotification,
-  openSuccessNotification,
 } from "../../helpers/methods";
 
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -42,6 +43,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import history from "../../utils/history";
 
 const DeviceGroup = () => {
+  const theme = useTheme();
   const classes = deviceGroupStyles;
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -95,10 +97,10 @@ const DeviceGroup = () => {
                 sx={{
                   fontWeight: 600,
                   display: "inline-block",
-                  color: "#5F22E2",
+                  color: theme.palette.primary.main,
                   fontSize: "13px",
                   "&:hover": {
-                    borderBottom: "1px solid #5F22E2",
+                    borderBottom: `1px solid ${theme.palette.primary.main}`,
                   },
                 }}
               >
@@ -120,9 +122,10 @@ const DeviceGroup = () => {
                 style={{
                   margin: "0px 8px -7px 0px",
                   cursor: "pointer",
-                  color: "#5F22E2",
+                  color: theme.palette.primary.main,
                   fontSize: "17px",
-                }}/>
+                }}
+              />
             </Tooltip>
           </>
         ),
@@ -247,7 +250,6 @@ const DeviceGroup = () => {
           }
           handleRowsPerPage={handlePerPageData}
           paginationCount={count}
-          // rowsPerPage={rowsPerPage}
           pageNumber={page}
           setPage={setPage}
           handlePerPageData={handlePerPageData}
@@ -292,10 +294,15 @@ const DeviceGroup = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       <CustomAppHeader
         className={{
-          backgroundColor: "#f1edff",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
         }}
       >
@@ -346,7 +353,7 @@ const DeviceGroup = () => {
         {getCustomTable()}
         <CustomLoader isLoading={isLoading} />
       </Grid>
-    </>
+    </Box>
   );
 };
 

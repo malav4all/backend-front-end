@@ -8,6 +8,7 @@ import { CSSProperties, withStyles } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 
 const borderRadius = "5px";
+const headerColor = "#D1BBFF";
 const primaryColor = "#0d3057";
 const primaryBackgroundColor = "#ffffff";
 const borderColor = "rgba(0, 0, 0, 0.12)";
@@ -19,7 +20,7 @@ const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
 const drawerWidth = 240;
 const textLightColor = "#666666";
 const purplePrimaryColor = "#5F22E2";
-const pinkDarkColor = "#ffffff";
+const pinkDarkColor = "#fffff0";
 const pureWhiteColor = "#ffffff";
 const offWhiteColor = "#F0F5F9";
 const primaryHeadingColor = "#001529";
@@ -266,6 +267,7 @@ export {
   borderRadius,
   primaryColor,
   disabledBackgroundColor,
+  headerColor,
   primaryBackgroundColor,
   borderColor,
   borderStyle,
