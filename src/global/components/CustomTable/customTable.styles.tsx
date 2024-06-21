@@ -18,8 +18,6 @@ const customTableStyles = {
     borderSpacing: "0px",
     borderTopRadius: "5px",
     borderBottomRadius: "5px",
-    borderColor: "white",
-    bakgroundColor: "red",
     width: "100%",
     mt: 2,
     [theme.breakpoints.down("xl")]: {
@@ -33,8 +31,10 @@ const customTableStyles = {
   },
 
   tableHeaderCell: {
-    ...mediumFont,
-    color: "#3C424D",
+    ...regularFont,
+    fontSize: '14px',
+    border: "none",
+    padding: "12px 18px",
     backgroundColor: "#F5F7F9",
     borderLeft: "none !important",
     borderRight: "none !important",
@@ -53,12 +53,14 @@ const customTableStyles = {
     borderTop: "none !important",
     borderLeft: "none !important",
     borderRight: "none !important",
-    borderBottom: "none !important",
+    borderBottom: "none",
   },
 
   tableRow: {
-    backgroundColor: "white",
-    borderBottom: "1px solid red !important",
+    borderLeft: "none",
+    borderRight: "none",
+    borderBottom: "1px solid !important",
+    borderBottomColor: theme.palette.divider + "!important",
   },
 
   checkBoxStyle: {
@@ -81,13 +83,14 @@ const customTableStyles = {
   },
   regularFonts: {
     ...regularFont,
-    fontSize: getRelativeFontSize(1),
+    fontSize: '13px',
   },
   perPageDropdown: {
-    height: "30px",
-    borderRadius: "6px",
+    height: "25px",
+    borderRadius: "5px",
     cursor: "pointer",
     marginLeft: "5px",
+    fontSize: "13px",
     ...purpleThemedSelectComponent,
   },
   optionStyle: {

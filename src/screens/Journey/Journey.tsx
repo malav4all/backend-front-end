@@ -420,7 +420,9 @@ const Journey = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Active Journey</Typography>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          Active Journey
+        </Typography>
       </Box>
     );
   };

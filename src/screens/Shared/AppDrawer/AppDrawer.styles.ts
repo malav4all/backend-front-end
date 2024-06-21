@@ -32,7 +32,7 @@ const appDrawerStyles = {
     margin: 0,
     zIndex: 0,
     color: textColor,
-    borderRight: "1px solid #F1F3F4",
+    borderRight: "1px solid #21284D",
   },
   drawerContainerBox: {
     position: "relative",
@@ -69,7 +69,7 @@ const appDrawerStyles = {
     margin: 0,
     zIndex: 110,
     color: textColor,
-    borderRight: "0.5px solid #F1F3F4",
+    borderRight: "1px solid #374278",
   },
   drawerWidth: {
     width: drawerWidth,

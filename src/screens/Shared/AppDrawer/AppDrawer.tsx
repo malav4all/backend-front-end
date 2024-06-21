@@ -21,6 +21,7 @@ import { styled } from "@mui/material/styles";
 import history from "../../../utils/history";
 import { isTruthy } from "../../../helpers/methods";
 import { GenerateMenu } from "../../../utils/AuthorizationManager";
+import { IoIosLogOut } from "react-icons/io";
 import {
   activeMenuBackgroundColor,
   disabledBackgroundColor,
@@ -390,7 +391,7 @@ const AppDrawer = (props: CustomProps) => {
             }}
           >
             <Box ml={1} onClick={handleLogout} sx={{ color: "#fffff0" }}>
-              <RiLogoutCircleRLine size={25} />
+              <IoIosLogOut  size={27} />
             </Box>
           </Tooltip>
         )}
@@ -413,6 +414,9 @@ const AppDrawer = (props: CustomProps) => {
           Mode:
         </Box>
         <FormControlLabel
+        sx={{
+          marginRight: "2rem"
+        }}
           control={
             <MaterialUISwitch
               checked={darkMode}

@@ -153,7 +153,7 @@ const AlertReport = () => {
     return (
       <Grid container sx={classes.header}>
         <Grid item xs={12} md={5} lg={6} xl={6}>
-          <Typography variant="h5" sx={classes.heading}>
+          <Typography variant="h5" sx={{ ...classes.heading, color: "white" }}>
             Alerts Reports
           </Typography>
         </Grid>

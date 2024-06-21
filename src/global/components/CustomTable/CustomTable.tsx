@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import customTableStyles from "./customTable.styles";
 import {
   Box,
   Checkbox,
@@ -17,9 +16,11 @@ import {
 } from "@mui/material";
 import NoData from "../../../assets/images/tableNoData.svg";
 import Pagination from "@mui/material/Pagination";
-import usePagination from "./Pagination";
-import paginationStyles from "./Pagination.styles";
 import CustomButton from "../CustomButton/CustomButton";
+import customTableStyles from "./customTable.styles";
+import paginationStyles from "./Pagination.styles";
+import usePagination from "./Pagination";
+import { Height } from "@mui/icons-material";
 
 interface CustomProps {
   headers: any[];
@@ -54,10 +55,12 @@ const CustomTable = (props: CustomProps) => {
   const classes = customTableStyles;
   const pagination = paginationStyles;
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
-
   const [rowData, setRowData] = useState(props.rows);
   const [selected, setSelected] = useState<any>();
   const rowPerPageData = [10, 15, 20, 25];
+  const PER_PAGE = props.rowsPerPage ?? 10;
+  const dataCount = Math.ceil(props.paginationCount! / PER_PAGE);
+  const finalTableData = usePagination(rowData, PER_PAGE);
 
   useEffect(() => {
     setSelected(props?.rows?.map((item: any) => item?.id));
@@ -73,15 +76,12 @@ const CustomTable = (props: CustomProps) => {
     return handleRowClick;
   };
 
-  const PER_PAGE = props.rowsPerPage ?? 10;
-  const dataCount = Math.ceil(props.paginationCount! / PER_PAGE);
-  const finalTableData = usePagination(rowData, PER_PAGE);
-
   const getRowData = (row: any) => {
     return props?.headers?.map((column, index) => (
       <TableCell
         sx={{
           ...classes.tableCell,
+          borderColor: theme.palette.divider,
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
         }}
@@ -102,35 +102,15 @@ const CustomTable = (props: CustomProps) => {
     return (
       <TableHead>
         <TableRow>
-          {props.checkboxSelection && (
-            <TableCell
-              padding="checkbox"
-              sx={{
-                ...classes.tableHeaderCell,
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-                position: "sticky",
-                left: 0,
-                zIndex: 1,
-              }}
-            >
-              <Checkbox
-                sx={{
-                  ...classes.selectAllCheckbox,
-                  color: theme.palette.text.primary,
-                }}
-                checked={checkValue ?? false}
-                onChange={props.onSelectAllClick}
-                inputProps={{
-                  "aria-label": "select all desserts",
-                }}
-              />
-            </TableCell>
-          )}
           {props.headers.slice(0, 2).map((column, index) => (
             <TableCell
               sx={{
                 ...classes.tableHeaderCell,
+                borderTop: "none !important",
+                borderLeft: "none !important",
+                borderRight: "none !important",
+                // borderBottom: "1px solid !important",
+                borderBottomColor: theme.palette.divider + "!important",
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
                 position: "sticky",
@@ -147,7 +127,11 @@ const CustomTable = (props: CustomProps) => {
             <TableCell
               sx={{
                 ...classes.tableHeaderCell,
-                backgroundColor: theme.palette.background.default,
+                borderTop: "none !important",
+                borderLeft: "none !important",
+                borderRight: "none !important",
+                borderBottomColor: theme.palette.divider + "!important",
+                backgroundColor: theme.palette.tableHeader,
                 color: theme.palette.text.primary,
               }}
               align={column["align"]}
@@ -176,6 +160,8 @@ const CustomTable = (props: CustomProps) => {
               ...classes.tableRow,
               backgroundColor: theme.palette.background.paper,
               color: theme.palette.text.primary,
+              // borderBottom: "1px solid",
+              // borderBottomColor: theme.palette.divider,
             }}
             key={index}
             {...getRowOnClickHandler(row)}
@@ -209,6 +195,8 @@ const CustomTable = (props: CustomProps) => {
                     position: "sticky",
                     left: 0,
                     zIndex: 1,
+                    // border: "1px solid",
+                    // borderColor: theme.palette.divider,
                   }}
                 >
                   {data}
@@ -223,6 +211,8 @@ const CustomTable = (props: CustomProps) => {
                     ...classes.tableCell,
                     backgroundColor: theme.palette.background.paper,
                     color: theme.palette.text.primary,
+                    // border: "1px solid",
+                    // borderColor: theme.palette.divider,
                   }}
                 >
                   {data}
@@ -259,7 +249,12 @@ const CustomTable = (props: CustomProps) => {
         {!props.isRowPerPageEnable && (
           <>
             <Box style={{ display: "flex", alignItems: "center" }}>
-              <InputLabel sx={classes.regularFonts}>
+              <InputLabel
+                sx={{
+                  ...classes.regularFonts,
+                  color: theme.palette.text.secondary,
+                }}
+              >
                 Results per page:
               </InputLabel>
               <Select
@@ -288,8 +283,18 @@ const CustomTable = (props: CustomProps) => {
               </Select>
             </Box>
             <Box style={{ display: "flex", alignItems: "center" }}>
-              <InputLabel sx={classes.regularFonts}>Total Records:</InputLabel>
-              <Typography>{props?.paginationCount}</Typography>
+              <InputLabel
+                sx={{
+                  ...classes.regularFonts,
+                  color: theme.palette.text.secondary,
+                }}
+              >
+                Total Records:
+              </InputLabel>
+              <Typography sx={{
+                marginLeft: "5px",
+                fontSize: "13px",
+              }}>{props?.paginationCount}</Typography>
             </Box>
           </>
         )}
@@ -300,12 +305,13 @@ const CustomTable = (props: CustomProps) => {
                 display: "flex",
                 justifyContent: "end",
                 marginBottom: "10px",
+                height: "15px",
               }}
             >
               <CustomButton
                 label={"Export CSV"}
                 onClick={() => props.onClickExportCSV?.()}
-                customClasses={{ width: "120px", marginTop: "8px" }}
+                customClasses={{ width: "120px", marginTop: "8px", height: "10px", }}
               />
             </Box>
           )}
@@ -335,6 +341,10 @@ const CustomTable = (props: CustomProps) => {
             ...classes.table,
             backgroundColor: theme.palette.background.paper,
             color: theme.palette.text.primary,
+            borderRadius: "5px !important",
+            border: "1px solid !important",
+            borderColor: theme.palette.divider + "!important",
+            overflow: "hidden !important",
           }}
         >
           {getHeaders()}
@@ -347,14 +357,13 @@ const CustomTable = (props: CustomProps) => {
               }}
             >
               <Box textAlign="center">
-                <Box
-                  component="img"
-                  src={NoData}
-                  overflow="auto"
-                  height="100px"
-                  width="100%"
-                />
-                <Typography sx={classes.mediumFonts}>
+                <Typography
+                  sx={{
+                    ...classes.mediumFonts,
+                    color: theme.palette.text.secondary,
+                    padding: "5rem",
+                  }}
+                >
                   We've got nothing for you!
                 </Typography>
               </Box>

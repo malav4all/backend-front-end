@@ -65,6 +65,7 @@ const AddAssetAssingment = (props: CustomProps) => {
         props.edit
       )
     );
+    
   const [journeyData, setJourneyData] = useState<any>([]);
 
   useEffect(() => {
@@ -376,7 +377,6 @@ const AddAssetAssingment = (props: CustomProps) => {
           />
           <CustomButton
             id="add_user_submit_button"
-            // label="Add"
             label={props.edit ? "Update" : "Add"}
             onClick={insertAssetAssingmentDetails}
           />

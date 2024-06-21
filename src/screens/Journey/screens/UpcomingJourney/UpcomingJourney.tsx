@@ -184,7 +184,9 @@ const UpcomingJourney = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Upcoming Journey</Typography>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          Upcoming Journey
+        </Typography>
       </Box>
     );
   };

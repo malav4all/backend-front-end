@@ -3,7 +3,6 @@ import { makeStyles } from "@mui/styles";
 
 const customDialogStyles = makeStyles((theme: Theme) => ({
   headerStyle: {
-    background: "#f1edff",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -21,7 +20,7 @@ const customDialogStyles = makeStyles((theme: Theme) => ({
     position: "absolute",
     top: "15px",
     right: "15px",
-    color: theme.palette.grey[500],
+    // color: theme.palette.grey[500],
   },
   closeButton: {
     padding: 0,

@@ -202,9 +202,6 @@ const AssetAssingment = () => {
         id="assetAssingment_add_button"
         label={"Add Asset"}
         onClick={() => setAddAssetAssingmentDialogHandler(true)}
-        customClasses={{
-          width: "150px",
-        }}
       />
     );
   };
@@ -280,7 +277,9 @@ const AssetAssingment = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Asset Assignment</Typography>
+        <Typography sx={{...classes.mainCardHeading,
+          color: "white",
+        }}>Asset Assignment</Typography>
       </Box>
     );
   };
@@ -289,6 +288,7 @@ const AssetAssingment = () => {
       <CustomAppHeader
         className={{
           backgroundColor: headerColor,
+          color: theme.palette.text.primary,
           padding: "10px 20px 15px 18px",
         }}
       >
@@ -341,9 +341,6 @@ const AssetAssingment = () => {
             label="Upload Asset"
             onClick={() => {
               setUploadAsset(true);
-            }}
-            customClasses={{
-              width: "170px",
             }}
           />
         </Stack>

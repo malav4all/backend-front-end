@@ -19,7 +19,7 @@ import {
 
 const AssetAssingmentStyles = {
   mainHeader: {
-    marginBottom: 1,
+    marginBottom: 3,
     display: "flex",
     justifyContent: "center",
     ...boldFont,
@@ -37,8 +37,8 @@ const AssetAssingmentStyles = {
   input: {
     fontSize: getRelativeFontSize(7),
     fontColor: theme.palette.common.black,
-    ...boldFont,
-    marginTop: "10px",
+    // ...boldFont,
+    // marginTop: "10px",
     display: "flex",
     "& .star": {
       color: inputLabelRequiredColor,

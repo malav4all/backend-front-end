@@ -9,7 +9,7 @@ import {
   Switch,
   Tooltip,
   Typography,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -44,7 +44,7 @@ import history from "../../utils/history";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
-  const theme = useTheme()
+  const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [userDataSource, setUserDataSource] = useState<UserData[]>([]);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
@@ -72,7 +72,9 @@ const AlertConfig = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{...classes.mainCardHeading}}>Alerts</Typography>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          Alerts
+        </Typography>
       </Box>
     );
   };
@@ -154,9 +156,6 @@ const AlertConfig = () => {
         id="users_add_button"
         label={"Add Alerts"}
         onClick={() => setAddFilterDialogHandler(true)}
-        customClasses={{
-          width: "150px",
-        }}
       />
     );
   };
@@ -237,20 +236,19 @@ const AlertConfig = () => {
           <Switch
             checked={usersData?.isAlertDisable}
             sx={{
-              '& .MuiSwitch-switchBase': {
-                color: '#B0B0B0', // Grey color when off
+              "& .MuiSwitch-switchBase": {
+                color: "#B0B0B0", // Grey color when off
               },
-              '& .MuiSwitch-switchBase.Mui-checked': {
-                color: '#42A876', // Green color when on
+              "& .MuiSwitch-switchBase.Mui-checked": {
+                color: "#42A876", // Green color when on
               },
-              '& .MuiSwitch-switchBase + .MuiSwitch-track': {
-                backgroundColor: '#B0B0B0', // Grey track color when off
+              "& .MuiSwitch-switchBase + .MuiSwitch-track": {
+                backgroundColor: "#B0B0B0", // Grey track color when off
               },
-              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                backgroundColor: '#42A876', // Green track color when on
+              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                backgroundColor: "#42A876", // Green track color when on
               },
             }}
-            
             disabled
           />
         ),
@@ -343,10 +341,12 @@ const AlertConfig = () => {
   };
 
   return (
-    <Box sx={{
-      backgroundColor: theme.palette.background.paper,
-      height: "auto"
-    }}>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "auto",
+      }}
+    >
       <Grid container spacing={2} direction="column">
         <Grid item>
           <CustomAppHeader

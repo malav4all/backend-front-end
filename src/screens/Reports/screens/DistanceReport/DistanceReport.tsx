@@ -243,7 +243,7 @@ const DistanceReport = (props: CustomProps) => {
     return (
       <Grid container sx={classes.header}>
         <Grid item xs={12} md={5} lg={6} xl={6}>
-          <Typography variant="h5" sx={classes.heading}>
+          <Typography variant="h5" sx={{ ...classes.heading, color: "white" }}>
             Distance Reports
           </Typography>
         </Grid>
@@ -267,7 +267,8 @@ const DistanceReport = (props: CustomProps) => {
           </Typography>
           <Select
             id="campaigns_interval_dropdown"
-            sx={{...classes.dropDownStyle,
+            sx={{
+              ...classes.dropDownStyle,
               backgroundColor: theme.palette.background.paper,
             }}
             value={selectedRange}

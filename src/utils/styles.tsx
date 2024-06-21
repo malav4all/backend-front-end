@@ -8,7 +8,7 @@ import { CSSProperties, withStyles } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 
 const borderRadius = "5px";
-const headerColor = "#D1BBFF";
+const headerColor = "#9063F2";
 const primaryHeaderColor = "#855BDE";
 const secondaryBackgroundColor = "#3e4047";
 const primaryColor = "#0d3057";
@@ -21,7 +21,7 @@ const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
 const drawerWidth = 240;
 const textLightColor = "#666666";
-const purplePrimaryColor = "#5F22E2";
+const purplePrimaryColor = "#7C41FA";
 const pinkDarkColor = "#fffff0";
 const pureWhiteColor = "#ffffff";
 const offWhiteColor = "#F0F5F9";
@@ -129,12 +129,11 @@ const customButtonStyle: CSSProperties = {
   fontSize: getRelativeFontSize(),
   textAlign: "center",
   backgroundColor: purplePrimaryColor,
-  padding: "10px 15px",
+  padding: "8px 12px",
   boxShadow: "0 2px 0 rgb(0 0 0 / 2%)",
   color: "#FFFFFF",
   cursor: "pointer",
   textTransform: "none",
-  height: "47px",
   transition: "all .3s ease",
   "&:hover": {
     background: "#9063f2",
@@ -172,7 +171,7 @@ const centerItemAbsolute: CSSProperties = {
 
 const purpleThemedSelectComponent: CSSProperties = {
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderColor: darkPurpledColor,
+    // borderColor: darkPurpledColor,
   },
 };
 
@@ -181,7 +180,7 @@ const pinkThemedMenuItems: CSSProperties = {
     "&:hover,&:focus": { backgroundColor: headerColor },
   },
   "&:hover": { backgroundColor: headerColor },
-  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
+  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)",  },
 };
 
 const CustomInput = withStyles((theme: Theme) =>

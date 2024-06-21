@@ -38,6 +38,9 @@ const CustomDialog = (props: CustomProps) => {
       width: width,
       maxWidth: "none",
       borderRadius: radius,
+      background: theme.palette.dialogColor.body,
+      border: "3px solid",
+      borderColor: theme.palette.dialogColor.border,
     },
   }));
   const customClasses = customStyles();

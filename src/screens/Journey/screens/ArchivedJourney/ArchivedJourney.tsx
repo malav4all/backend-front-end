@@ -190,7 +190,9 @@ const ArchivedJoruney = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Archived Journey</Typography>
+        <Typography sx={{...classes.mainCardHeading,
+          color: "white",
+        }}>Archived Journey</Typography>
       </Box>
     )
   }

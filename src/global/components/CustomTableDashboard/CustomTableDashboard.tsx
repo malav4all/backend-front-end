@@ -80,7 +80,7 @@ const CustomTableDashboard = (props: CustomProps) => {
       <TableCell
         sx={{
           ...classes.tableCell,
-          border: 'none',
+          borderColor: theme.palette.divider,
           backgroundColor: theme.palette.background.paper,
           color: theme.palette.text.primary,
           height: "100%",
@@ -106,9 +106,12 @@ const CustomTableDashboard = (props: CustomProps) => {
             <TableCell
               sx={{
                 ...classes.tableHeaderCell,
-                backgroundColor: theme.palette.tableHeader,
+                borderTop: "none !important",
+                borderLeft: "none !important",
+                borderRight: "none !important",
+                borderBottomColor: theme.palette.divider + "!important",
+                backgroundColor: theme.palette.background.default,
                 color: theme.palette.text.primary,
-                border: 'none',
                 position: "sticky",
                 left: 0,
                 zIndex: 1,
@@ -123,9 +126,12 @@ const CustomTableDashboard = (props: CustomProps) => {
             <TableCell
               sx={{
                 ...classes.tableHeaderCell,
+                borderTop: "none !important",
+                borderLeft: "none !important",
+                borderRight: "none !important",
+                borderBottomColor: theme.palette.divider + "!important",
                 backgroundColor: theme.palette.tableHeader,
                 color: theme.palette.text.primary,
-                border: 'none',
               }}
               align={column["align"]}
               key={index + 2}
@@ -183,7 +189,7 @@ const CustomTableDashboard = (props: CustomProps) => {
                   sx={{
                     ...classes.tableCell,
                     backgroundColor: theme.palette.background.paper,
-                    border: 'none',
+                    border: "none",
                   }}
                 >
                   {data}
@@ -289,7 +295,10 @@ const CustomTableDashboard = (props: CustomProps) => {
             ...classes.table,
             backgroundColor: theme.palette.tableHeader,
             color: theme.palette.text.primary,
-            border: "none"
+            borderRadius: "5px !important",
+            border: "1px solid !important",
+            borderColor: theme.palette.divider + "!important",
+            overflow: "hidden !important",
           }}
         >
           {getHeaders()}
@@ -299,7 +308,7 @@ const CustomTableDashboard = (props: CustomProps) => {
               style={{
                 backgroundColor: theme.palette.tableHeader,
                 color: theme.palette.text.primary,
-                border: 'none',
+                border: "none",
               }}
             >
               <Box textAlign="center">
@@ -310,7 +319,13 @@ const CustomTableDashboard = (props: CustomProps) => {
                   height="100px"
                   width="100%"
                 /> */}
-                <Typography sx={{ ...classes.mediumFonts, margin: "100px 0px" }}>
+                <Typography
+                  sx={{
+                    ...classes.mediumFonts,
+                    color: theme.palette.text.secondary,
+                    padding: "5rem",
+                  }}
+                >
                   We've got nothing for you!
                 </Typography>
               </Box>

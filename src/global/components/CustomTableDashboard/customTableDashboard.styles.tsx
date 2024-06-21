@@ -4,6 +4,7 @@ import {
   borderColor,
   darkPurpledColor,
   getRelativeFontSize,
+  lightFont,
   lightPinkColor,
   mediumFont,
   pinkDarkColor,
@@ -35,9 +36,10 @@ const customTableDashboardStyles = {
   },
 
   tableHeaderCell: {
-    ...mediumFont,
+    ...regularFont,
+    fontSize: '14px',
     border: "none",
-    padding: "12px 24px",
+    padding: "12px 18px",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",

@@ -7,13 +7,14 @@ import {
   mediumFont,
   regularFont,
 } from "../../../utils/styles";
+import { RiFontSize } from "react-icons/ri";
 
 const customButtonStyles = {
   btnStyle: {
     ...customButtonStyle,
+    fontSize: "14px",
     ...regularFont,
-    width: "80%",
-    padding: "10px 20px",
+    padding: "8px 18px",
     ...centerItemFlex,
     "&:disabled": {
       color: "rgb(255 255 255 / 50%)",
