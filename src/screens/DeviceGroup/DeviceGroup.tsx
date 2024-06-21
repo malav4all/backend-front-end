@@ -92,15 +92,19 @@ const DeviceGroup = () => {
               onClick={() => {
                 getRedirectionUrl(item?._id);
               }}
+              sx={{
+                color: theme.palette.text.primary,
+              }}
             >
               <Typography
                 sx={{
                   fontWeight: 600,
                   display: "inline-block",
-                  color: theme.palette.primary.main,
+                  color: theme.palette.text.primary,
                   fontSize: "13px",
                   "&:hover": {
                     borderBottom: `1px solid ${theme.palette.primary.main}`,
+                    color: theme.palette.primary.main,
                   },
                 }}
               >
@@ -109,13 +113,24 @@ const DeviceGroup = () => {
             </Tooltip>
           </>
         ),
-        createdBy: item?.createdBy,
+        createdBy: (
+          <Typography
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+          >
+            {item?.createdBy}
+          </Typography>
+        ),
         action: (
           <>
             <Tooltip
               title="Edit"
               onClick={() => {
                 editDeviceGroup(item);
+              }}
+              sx={{
+                color: theme.palette.text.primary,
               }}
             >
               <PiPencilSimpleBold

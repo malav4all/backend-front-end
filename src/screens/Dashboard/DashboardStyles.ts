@@ -12,6 +12,7 @@ import {
   pinkThemedMenuItems,
   headerColor,
 } from "../../utils/styles";
+
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
 import { Height } from "@mui/icons-material";
 
@@ -110,10 +111,10 @@ const dashboardStyles = {
     display: "flex",
     marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: headerColor,
-    padding: "16px",
+    // backgroundColor: headerColor,
+    padding: "0px 25px",
     // paddingBottom: "64px",
-    height: "10rem",
+    height: "5rem",
     // paddingTop: "35px",
   },
   container: {
@@ -204,12 +205,13 @@ const dashboardStyles = {
   dropDownStyle: {
     ...regularFont,
     ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "8px",
+    borderRadius: "5px",
     fontSize: "14px",
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
   },
   optionStyle: {
     ...regularFont,

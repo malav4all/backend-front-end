@@ -70,6 +70,7 @@ const LocationType = () => {
     setFormField(errors);
     return isValid;
   };
+
   const addLocationTypeHandler = async () => {
     try {
       if (handleValidation()) {
@@ -151,6 +152,7 @@ const LocationType = () => {
       />
     );
   };
+
   const addLocationTypeButton = () => {
     return (
       <CustomButton
@@ -213,11 +215,12 @@ const LocationType = () => {
       </Box>
     );
   };
+
   return (
     <>
       <Box
         sx={{
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: theme.palette.background.default,
           height: "100%"
         }}
       >
@@ -232,7 +235,7 @@ const LocationType = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...regularFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             Location Type

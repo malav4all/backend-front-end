@@ -33,6 +33,7 @@ import {
   disabledBackgroundColor,
   chipBackgroundColor,
   headerColor,
+  primaryHeaderColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchGeozoneHandler } from "../Geozone/service/geozone.service";
@@ -333,7 +334,7 @@ const Journey = () => {
               }}
             >
               <SensorsRoundedIcon
-                style={{ color: theme.palette.primary.main, cursor: "pointer" }}
+                style={{ color: primaryHeaderColor, cursor: "pointer" }}
                 onClick={() => {
                   history.push({
                     pathname: "/live-tracking",
@@ -364,7 +365,7 @@ const Journey = () => {
             >
               <VisibilityIcon
                 key={item._id}
-                style={{ color: theme.palette.primary.main, cursor: "pointer" }}
+                style={{ color: primaryHeaderColor, cursor: "pointer" }}
                 onClick={() => {
                   history.push({
                     pathname: "/view-journey",
@@ -500,16 +501,17 @@ const Journey = () => {
   const addMoreLocation = () => {
     const name = `Location${String.fromCharCode(counter)}`;
     const field = `location${String.fromCharCode(counter)}`;
-    const arr = [];
-
-    arr.push(...locationData, {
-      name,
-      field,
-      type: "",
-      fieldMapping: "",
-      required: true,
-      error: "",
-    });
+    const arr = [
+      ...locationData,
+      {
+        name,
+        field,
+        type: "",
+        fieldMapping: "",
+        required: true,
+        error: "",
+      },
+    ];
 
     setLocationData(arr);
     setCounter(counter + 1);
@@ -570,12 +572,21 @@ const Journey = () => {
                 name="journeyName"
                 onChange={handleOnChange}
                 error={formField?.journeyName?.error}
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                }}
               />
             </Grid>
 
             <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
               <Stack direction="column">
-                <InputLabel sx={classes.inputLabel} shrink>
+                <InputLabel
+                  sx={{
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
+                  }}
+                  shrink
+                >
                   Start Date
                   <Box ml={0.4} sx={classes.star}>
                     *
@@ -608,7 +619,13 @@ const Journey = () => {
 
             <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
               <Stack direction="column">
-                <InputLabel sx={classes.inputLabel} shrink>
+                <InputLabel
+                  sx={{
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
+                  }}
+                  shrink
+                >
                   End Date
                   <Box ml={0.4} sx={classes.star}>
                     *
@@ -651,7 +668,13 @@ const Journey = () => {
           >
             <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4}>
               <Box>
-                <InputLabel sx={classes.inputLabel} shrink>
+                <InputLabel
+                  sx={{
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
+                  }}
+                  shrink
+                >
                   Start Location
                   <Box ml={0.4} sx={classes.star}>
                     *
@@ -719,7 +742,13 @@ const Journey = () => {
                   key={index}
                 >
                   <Box>
-                    <InputLabel sx={classes.inputLabel} shrink>
+                    <InputLabel
+                      sx={{
+                        ...classes.inputLabel,
+                        color: theme.palette.text.primary,
+                      }}
+                      shrink
+                    >
                       {item.name.slice(0, -1) + " " + (index + 1)}
                     </InputLabel>
                     <Box>
@@ -772,7 +801,11 @@ const Journey = () => {
                   key={index}
                 >
                   <DeleteIcon
-                    style={{ marginTop: "50px" }}
+                    style={{
+                      marginTop: "50px",
+                      marginLeft: "15px",
+                      color: theme.palette.text.primary,
+                    }}
                     onClick={() =>
                       setLocationData(
                         locationData.filter((_: any, i: any) => i !== index)
@@ -785,7 +818,13 @@ const Journey = () => {
 
             <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4} mt={2}>
               <Box>
-                <InputLabel sx={classes.inputLabel} shrink>
+                <InputLabel
+                  sx={{
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
+                  }}
+                  shrink
+                >
                   End Location
                   <Box ml={0.4} sx={classes.star}>
                     *
@@ -883,7 +922,12 @@ const Journey = () => {
       </CustomAppHeader>
 
       <Box
-        sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap", backgroundColor: theme.palette.background.paper, }}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          flexWrap: "wrap",
+          backgroundColor: theme.palette.background.paper,
+        }}
         mt={2}
         mr={2}
       >
@@ -905,6 +949,7 @@ const Journey = () => {
               fontSize: "2rem",
               cursor: "pointer",
               borderRadius: "100%",
+              color: theme.palette.text.primary,
             }}
             onClick={() => {
               setIsHideForm(!isHideForm);
@@ -921,8 +966,10 @@ const Journey = () => {
             width: "90%",
             margin: "auto",
             padding: "2rem",
-            backgroundColor: theme.palette.background.paper,
+            backgroundColor: theme.palette.secondaryBackgroundColor,
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+            border: "1px",
+            borderColor: theme.palette.divider,
             marginBottom: "2rem",
           }}
         >
@@ -932,7 +979,7 @@ const Journey = () => {
               justifyContent: "flex-end",
               flexWrap: "wrap",
               padding: "1rem 1rem",
-              backgroundColor: theme.palette.background.paper,
+              backgroundColor: theme.palette.secondaryBackgroundColor,
             }}
             mt={2}
             mr={2}
@@ -943,6 +990,7 @@ const Journey = () => {
               onClick={addMoreLocation}
               customClasses={{
                 width: "150px",
+                color: "#ffffff",
               }}
             />
           </Box>

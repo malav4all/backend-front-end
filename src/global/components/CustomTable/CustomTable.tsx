@@ -13,13 +13,14 @@ import {
   TableRow,
   Typography,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import NoData from "../../../assets/images/tableNoData.svg";
 import Pagination from "@mui/material/Pagination";
 import usePagination from "./Pagination";
 import paginationStyles from "./Pagination.styles";
-import { theme } from "../../../utils/styles";
 import CustomButton from "../CustomButton/CustomButton";
+
 interface CustomProps {
   headers: any[];
   rows: any[];
@@ -49,11 +50,11 @@ interface CustomProps {
 }
 
 const CustomTable = (props: CustomProps) => {
+  const theme = useTheme();
   const classes = customTableStyles;
   const pagination = paginationStyles;
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
 
-  // const [page, setPage] = useState<number>(1);
   const [rowData, setRowData] = useState(props.rows);
   const [selected, setSelected] = useState<any>();
   const rowPerPageData = [10, 15, 20, 25];
@@ -78,11 +79,17 @@ const CustomTable = (props: CustomProps) => {
 
   const getRowData = (row: any) => {
     return props?.headers?.map((column, index) => (
-      <>
-        <TableCell sx={classes.tableCell} align={column["align"]} key={index}>
-          {row[column["field"]]}
-        </TableCell>
-      </>
+      <TableCell
+        sx={{
+          ...classes.tableCell,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+        }}
+        align={column["align"]}
+        key={index}
+      >
+        {row[column["field"]]}
+      </TableCell>
     ));
   };
 
@@ -100,13 +107,18 @@ const CustomTable = (props: CustomProps) => {
               padding="checkbox"
               sx={{
                 ...classes.tableHeaderCell,
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
                 position: "sticky",
                 left: 0,
                 zIndex: 1,
               }}
             >
               <Checkbox
-                sx={classes.selectAllCheckbox}
+                sx={{
+                  ...classes.selectAllCheckbox,
+                  color: theme.palette.text.primary,
+                }}
                 checked={checkValue ?? false}
                 onChange={props.onSelectAllClick}
                 inputProps={{
@@ -119,6 +131,8 @@ const CustomTable = (props: CustomProps) => {
             <TableCell
               sx={{
                 ...classes.tableHeaderCell,
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
                 position: "sticky",
                 left: 0,
                 zIndex: 1,
@@ -131,7 +145,11 @@ const CustomTable = (props: CustomProps) => {
           ))}
           {props.headers.slice(2).map((column, index) => (
             <TableCell
-              sx={classes.tableHeaderCell}
+              sx={{
+                ...classes.tableHeaderCell,
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+              }}
               align={column["align"]}
               key={index + 2}
             >
@@ -145,67 +163,73 @@ const CustomTable = (props: CustomProps) => {
 
   const getRows = () => {
     return (
-      <TableBody sx={classes.tableBody}>
-        {finalTableData.currentData()?.map((row: any, index: any) => {
-          return (
-            <>
-              <TableRow
-                sx={classes.tableRow}
-                key={index}
-                {...getRowOnClickHandler(row)}
-              >
-                {props.checkboxSelection && (
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      sx={classes.checkbox}
-                      onClick={(event) =>
-                        props.handleClick ? props.handleClick(event, row) : null
-                      }
-                      checked={
-                        props.isSelected ? props.isSelected(row.id) : null
-                      }
-                      inputProps={{
-                        "aria-labelledby": `enhanced-table-checkbox-${index}`,
-                      }}
-                    />
-                  </TableCell>
-                )}
-                {getRowData(row)
-                  .slice(0, 2)
-                  .map(
-                    (
-                      data: any,
-                      dataIndex: number
-                    ) => (
-                      <TableCell
-                        key={dataIndex}
-                        sx={{
-                          ...classes.tableCell,
-                          position: "sticky",
-                          left: 0,
-                          zIndex: 1,
-                        }}
-                      >
-                        {data}
-                      </TableCell>
-                    )
-                  )}
-                {getRowData(row)
-                  .slice(2)
-                  .map(
-                    (
-                      data: any,
-                      dataIndex: number 
-                    ) => (
-                      <TableCell key={dataIndex + 2} sx={classes.tableCell}>
-                        {data}
-                      </TableCell>
-                    )
-                  )}
-              </TableRow>
-            </>
-          );
-        })}
+      <TableBody
+        sx={{
+          ...classes.tableBody,
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+        }}
+      >
+        {finalTableData.currentData()?.map((row: any, index: any) => (
+          <TableRow
+            sx={{
+              ...classes.tableRow,
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
+            key={index}
+            {...getRowOnClickHandler(row)}
+          >
+            {props.checkboxSelection && (
+              <TableCell padding="checkbox">
+                <Checkbox
+                  sx={{
+                    ...classes.checkbox,
+                    color: theme.palette.text.primary,
+                  }}
+                  onClick={(event) =>
+                    props.handleClick ? props.handleClick(event, row) : null
+                  }
+                  checked={props.isSelected ? props.isSelected(row.id) : null}
+                  inputProps={{
+                    "aria-labelledby": `enhanced-table-checkbox-${index}`,
+                  }}
+                />
+              </TableCell>
+            )}
+            {getRowData(row)
+              .slice(0, 2)
+              .map((data: any, dataIndex: number) => (
+                <TableCell
+                  key={dataIndex}
+                  sx={{
+                    ...classes.tableCell,
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                    position: "sticky",
+                    left: 0,
+                    zIndex: 1,
+                  }}
+                >
+                  {data}
+                </TableCell>
+              ))}
+            {getRowData(row)
+              .slice(2)
+              .map((data: any, dataIndex: number) => (
+                <TableCell
+                  key={dataIndex + 2}
+                  sx={{
+                    ...classes.tableCell,
+                    backgroundColor: theme.palette.background.paper,
+                    color: theme.palette.text.primary,
+                  }}
+                >
+                  {data}
+                </TableCell>
+              ))}
+          </TableRow>
+        ))}
       </TableBody>
     );
   };
@@ -224,91 +248,102 @@ const CustomTable = (props: CustomProps) => {
 
   const getTablePagination = () => {
     return (
-      <>
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: props.isRowPerPageEnable ? "end" : "space-between",
-            flexWrap: "wrap",
-            marginTop: "8px",
-          }}
-        >
-          {!props.isRowPerPageEnable && (
-            <>
-              <Box style={{ display: "flex", alignItems: "center" }}>
-                <InputLabel sx={classes.regularFonts}>
-                  Results per page:
-                </InputLabel>
-                <Select
-                  value={props.perPageData}
-                  onChange={handleChangePerPageData}
-                  id="rowPerPage"
-                  name="rowPerPage"
-                  sx={classes.perPageDropdown}
-                >
-                  {rowPerPageData.map((items) => (
-                    <MenuItem sx={classes.optionStyle} value={items}>
-                      {items}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-              <Box style={{ display: "flex", alignItems: "center" }}>
-                <InputLabel sx={classes.regularFonts}>
-                  Total Records:
-                </InputLabel>
-                <Typography>{props?.paginationCount}</Typography>
-              </Box>
-            </>
-          )}
-          <Box display={"flex"} alignContent={"center"} alignItems={"center"}>
-            {props.isExportCSV && (
-              <>
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "end",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <CustomButton
-                    label={"Export CSV"}
-                    onClick={() => props.onClickExportCSV?.()}
-                    customClasses={{ width: "120px", marginTop: "8px" }}
-                  />
-                </Box>
-              </>
-            )}
-            <Pagination
-              page={props.pageNumber!}
-              count={dataCount}
-              shape="rounded"
-              size={isDesktop ? "medium" : "small"}
-              sx={pagination.pageBtn}
-              onChange={(event: any, page: any) => {
-                handleChangePage(event, page);
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: props.isRowPerPageEnable ? "end" : "space-between",
+          flexWrap: "wrap",
+          marginTop: "8px",
+        }}
+      >
+        {!props.isRowPerPageEnable && (
+          <>
+            <Box style={{ display: "flex", alignItems: "center" }}>
+              <InputLabel sx={classes.regularFonts}>
+                Results per page:
+              </InputLabel>
+              <Select
+                value={props.perPageData}
+                onChange={handleChangePerPageData}
+                id="rowPerPage"
+                name="rowPerPage"
+                sx={{
+                  ...classes.perPageDropdown,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                }}
+              >
+                {rowPerPageData.map((items) => (
+                  <MenuItem
+                    sx={{
+                      ...classes.optionStyle,
+                      backgroundColor: theme.palette.background.paper,
+                      color: theme.palette.text.primary,
+                    }}
+                    value={items}
+                  >
+                    {items}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+            <Box style={{ display: "flex", alignItems: "center" }}>
+              <InputLabel sx={classes.regularFonts}>Total Records:</InputLabel>
+              <Typography>{props?.paginationCount}</Typography>
+            </Box>
+          </>
+        )}
+        <Box display={"flex"} alignContent={"center"} alignItems={"center"}>
+          {props.isExportCSV && (
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                marginBottom: "10px",
               }}
-              showLastButton
-              showFirstButton
-            />
-          </Box>
+            >
+              <CustomButton
+                label={"Export CSV"}
+                onClick={() => props.onClickExportCSV?.()}
+                customClasses={{ width: "120px", marginTop: "8px" }}
+              />
+            </Box>
+          )}
+          <Pagination
+            page={props.pageNumber!}
+            count={dataCount}
+            shape="rounded"
+            size={isDesktop ? "medium" : "small"}
+            sx={pagination.pageBtn}
+            onChange={(event: any, page: any) => {
+              handleChangePage(event, page);
+            }}
+            showLastButton
+            showFirstButton
+          />
         </Box>
-      </>
+      </Box>
     );
   };
 
   const getTable = () => {
     return (
-      <Box sx={{overflowX: "scroll"}}>
+      <Box sx={{ overflowX: "scroll" }}>
         {rowData?.length ? getTablePagination() : null}
-        <Table sx={classes.table}>
+        <Table
+          sx={{
+            ...classes.table,
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+          }}
+        >
           {getHeaders()}
           {!props.isLoading && rowData?.length <= 0 ? (
             <TableCell
               colSpan={8}
               style={{
-                // border: "1px solid #F0F0F0",
-                backgroundColor: "#FFFFFF",
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
               }}
             >
               <Box textAlign="center">
@@ -331,6 +366,7 @@ const CustomTable = (props: CustomProps) => {
       </Box>
     );
   };
+
   return getTable();
 };
 

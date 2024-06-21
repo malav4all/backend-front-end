@@ -177,7 +177,9 @@ const AlertReport = () => {
           </Typography>
           <Select
             id="campaigns_interval_dropdown"
-            sx={classes.dropDownStyle}
+            sx={{...classes.dropDownStyle, 
+              backgroundColor: theme.palette.background.paper,
+            }}
             value={selectedRange}
             onChange={handleChange}
             displayEmpty
@@ -406,9 +408,12 @@ const AlertReport = () => {
         id="Alerts_panel"
         sx={{
           padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.paper,
+          boxShadow:
+            "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+          border: "1px solid",
+          borderColor: theme.palette.divider,
           borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
         <Box
@@ -455,7 +460,7 @@ const AlertReport = () => {
   return (
     <Box 
     sx={{
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: theme.palette.background.default,
       height: "100%"
     }}
     >

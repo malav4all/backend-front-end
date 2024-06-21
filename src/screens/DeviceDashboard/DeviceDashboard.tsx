@@ -41,7 +41,7 @@ import { FcInfo } from "react-icons/fc";
 import { fetchAssetAssingmentDataHandler } from "../Settings/AssertAssingment/service/AssetAssingment.service";
 
 const DeviceDashboard = () => {
-  const theme = useTheme(); 
+  const theme = useTheme();
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const userName = useAppSelector(selectName);
@@ -164,7 +164,10 @@ const DeviceDashboard = () => {
           <Chip
             label={item.status}
             sx={{
-              backgroundColor: item.status === 'online' ? theme.palette.success.main : theme.palette.error.main,
+              backgroundColor:
+                item.status === "online"
+                  ? theme.palette.success.main
+                  : theme.palette.error.main,
               color: theme.palette.common.white,
               borderRadius: "5px",
               padding: "0.1rem 0.2rem",
@@ -348,7 +351,16 @@ const DeviceDashboard = () => {
                   : null
               }
             >
-              <Box>
+              <Box
+                sx={{
+                  fontFamily: "Geist_Bold",
+                  fontWeight: 700,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: theme.palette.text.primary,
+                }}
+              >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
@@ -427,20 +439,30 @@ const DeviceDashboard = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Device"
-        id="assetAssingment_search_field"
-        onChange={debounceEventHandler(
-          handleSearchOnChange,
-          strings.SEARCH_TIME_OUT
-        )}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
+      placeHolder="Search Device"
+      id="assetAssingment_search_field"
+      onChange={debounceEventHandler(
+        handleSearchOnChange,
+        strings.SEARCH_TIME_OUT
+      )}
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        '& .MuiInputBase-root': {
+          color: theme.palette.text.primary,
+        },
+        '& .MuiInputAdornment-root': {
+          color: theme.palette.text.primary,
+        },
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
     );
   };
 

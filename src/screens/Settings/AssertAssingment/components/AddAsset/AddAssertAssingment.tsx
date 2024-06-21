@@ -11,6 +11,7 @@ import {
   SelectChangeEvent,
   InputAdornment,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -55,6 +56,7 @@ interface CustomProps {
 }
 
 const AddAssetAssingment = (props: CustomProps) => {
+  const theme = useTheme();
   const classes = usersStyles;
   const [assetAssingmentFormFields, setAssetAssingmentFormFields] =
     useState<any>(
@@ -177,8 +179,6 @@ const AddAssetAssingment = (props: CustomProps) => {
     }
   };
 
-
-  
   const addAssetAssingmentDialogBody = () => {
     return (
       <Grid container spacing={2}>
@@ -193,6 +193,12 @@ const AddAssetAssingment = (props: CustomProps) => {
             value={assetAssingmentFormFields.imei?.value}
             error={assetAssingmentFormFields.imei?.error}
             propsToInputElement={{ maxLength: strings.USER_FIRST_NAME_LIMIT }}
+            sx={{
+              input: {
+                color: theme.palette.text.primary,
+                backgroundColor: theme.palette.background.default,
+              },
+            }}
           />
         </Grid>
 
@@ -207,20 +213,50 @@ const AddAssetAssingment = (props: CustomProps) => {
             value={assetAssingmentFormFields.labelName?.value}
             error={assetAssingmentFormFields.labelName?.error}
             propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
+            sx={{
+              input: {
+                color: theme.palette.text.primary,
+                backgroundColor: theme.palette.background.default,
+              },
+            }}
           />
         </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Box Set
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
               </InputLabel>
               <Select
-                sx={classes.dropDownStyle}
+                sx={{
+                  ...classes.dropDownStyle,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                  "& .MuiSelect-select": {
+                    color: theme.palette.text.primary,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: theme.palette.divider,
+                    },
+                    "&:hover fieldset": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  },
+                }}
                 id="add_user_status_dropdown"
                 name="boxSet"
                 value={assetAssingmentFormFields?.boxSet?.value}
@@ -239,7 +275,10 @@ const AddAssetAssingment = (props: CustomProps) => {
                   <MenuItem
                     key={index}
                     value={item}
-                    sx={classes.dropDownOptionsStyle}
+                    sx={{
+                      ...classes.dropDownOptionsStyle,
+                      color: theme.palette.text.primary,
+                    }}
                   >
                     {item}
                   </MenuItem>
@@ -257,11 +296,35 @@ const AddAssetAssingment = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Journey
               </InputLabel>
               <Select
-                sx={classes.dropDownStyle}
+                sx={{
+                  ...classes.dropDownStyle,
+                  backgroundColor: theme.palette.background.paper,
+                  color: theme.palette.text.primary,
+                  "& .MuiSelect-select": {
+                    color: theme.palette.text.primary,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: theme.palette.divider,
+                    },
+                    "&:hover fieldset": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  },
+                }}
                 id="add_user_status_dropdown"
                 name="journey"
                 value={assetAssingmentFormFields?.journey?.value}
@@ -281,7 +344,10 @@ const AddAssetAssingment = (props: CustomProps) => {
                   <MenuItem
                     key={index}
                     value={item._id}
-                    sx={classes.dropDownOptionsStyle}
+                    sx={{
+                      ...classes.dropDownOptionsStyle,
+                      color: theme.palette.text.primary,
+                    }}
                   >
                     {item.journeyName}
                   </MenuItem>
@@ -302,7 +368,11 @@ const AddAssetAssingment = (props: CustomProps) => {
             id="add_user_cancel_button"
             label="Cancel"
             onClick={() => props?.handleCloseAddAssetAssingmentDialog()}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
+              color: theme.palette.text.primary,
+            }}
           />
           <CustomButton
             id="add_user_submit_button"

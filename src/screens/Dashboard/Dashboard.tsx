@@ -31,7 +31,7 @@ const Dashboard = () => {
   };
 
   useTitle(strings.DashboardTitle);
-  const theme = useTheme(); 
+  const theme = useTheme();
   const classes = dashboardStyles;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -215,7 +215,11 @@ const Dashboard = () => {
         >
           <Select
             id="campaigns_interval_dropdown"
-            sx={classes.dropDownStyle}
+            sx={{
+              ...classes.dropDownStyle,
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
             value={selectedRange}
             onChange={handleChange}
             displayEmpty
@@ -280,7 +284,7 @@ const Dashboard = () => {
               label="Cancel"
               onClick={() => handleCloseModel()}
               customClasses={{ width: "110px" }}
-              // variant={"outlined"}
+              // variant={"outlined"}`
             />
             <CustomButton
               label={"Submit"}
@@ -426,7 +430,8 @@ const Dashboard = () => {
                 padding: "2rem 1.5rem",
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "8px",
-                boxShadow:"rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
                 border: "1px solid",
                 borderColor: theme.palette.divider,
               }}
@@ -485,7 +490,7 @@ const Dashboard = () => {
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                  border: "1px solid",
+                border: "1px solid",
                 borderColor: theme.palette.divider,
               }}
             >
@@ -545,7 +550,7 @@ const Dashboard = () => {
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                  border: "1px solid",
+                border: "1px solid",
                 borderColor: theme.palette.divider,
               }}
             >
@@ -605,7 +610,7 @@ const Dashboard = () => {
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                  border: "1px solid",
+                border: "1px solid",
                 borderColor: theme.palette.divider,
               }}
             >
@@ -685,6 +690,7 @@ const Dashboard = () => {
           paddingTop: "24px",
           display: "flex",
           justifyContent: "space-between",
+          height: "100%",
         }}
       >
         <Grid
@@ -810,7 +816,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "-70px auto", width: " 97%" }}
+          sx={{ margin: "-30px auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12}>
             {getAlerts()}

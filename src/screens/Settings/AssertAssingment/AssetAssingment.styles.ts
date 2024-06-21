@@ -14,6 +14,7 @@ import {
   buttonWhiteBg,
   purplePrimaryColor,
   offWhiteColor,
+  semiBoldFont,
 } from "../../../utils/styles"
 
 const AssetAssingmentStyles = {
@@ -139,10 +140,10 @@ const AssetAssingmentStyles = {
   inputLabel: {
     display: "flex",
     color: "#212121",
-    fontSize: getRelativeFontSize(7),
+    fontSize: getRelativeFontSize(6),
     fontColor: theme.palette.common.black + " !important",
     variant: "standard",
-    ...boldFont,
+    ...semiBoldFont,
     "& .MuiTextField-root": {
       color: "red",
     },
@@ -171,7 +172,7 @@ const AssetAssingmentStyles = {
   },
   dropDownStyle: {
     height: "47px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     ...purpleThemedSelectComponent,
 
     "& .MuiInputBase-input": {

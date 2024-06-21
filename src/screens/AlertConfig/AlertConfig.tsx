@@ -24,6 +24,7 @@ import {
   getRelativeFontSize,
   primaryHeadingColor,
   boldFont,
+  headerColor,
 } from "../../utils/styles";
 import {
   debounceEventHandler,
@@ -71,7 +72,7 @@ const AlertConfig = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Alerts</Typography>
+        <Typography sx={{...classes.mainCardHeading}}>Alerts</Typography>
       </Box>
     );
   };
@@ -222,7 +223,8 @@ const AlertConfig = () => {
                     marginTop: "8px",
                     borderRadius: "5px",
                     fontSize: "15px",
-                    backgroundColor: "#ECF9FF",
+                    color: theme.palette.text.primary,
+                    backgroundColor: headerColor,
                   }}
                   variant="filled"
                 />
@@ -234,7 +236,21 @@ const AlertConfig = () => {
         isAlertDisable: (
           <Switch
             checked={usersData?.isAlertDisable}
-            color="warning"
+            sx={{
+              '& .MuiSwitch-switchBase': {
+                color: '#B0B0B0', // Grey color when off
+              },
+              '& .MuiSwitch-switchBase.Mui-checked': {
+                color: '#42A876', // Green color when on
+              },
+              '& .MuiSwitch-switchBase + .MuiSwitch-track': {
+                backgroundColor: '#B0B0B0', // Grey track color when off
+              },
+              '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                backgroundColor: '#42A876', // Green track color when on
+              },
+            }}
+            
             disabled
           />
         ),
@@ -335,7 +351,7 @@ const AlertConfig = () => {
         <Grid item>
           <CustomAppHeader
             className={{
-              backgroundColor: "#f1edff",
+              backgroundColor: headerColor,
               padding: "10px 20px 15px 18px",
             }}
           >

@@ -66,7 +66,6 @@ const dashboardStyles = {
     fontSize: getRelativeFontSize(42),
     lineHeight: "1",
     marginTop: "1rem",
-    color: theme.palette.text.secondary,
   },
   dropdown: {
     ...regularFont,
@@ -205,12 +204,13 @@ const dashboardStyles = {
   dropDownStyle: {
     ...regularFont,
     ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
     height: "47px",
     padding: "2px",
-    width: "180px",
-    borderRadius: "12px",
+    width: " 180px",
+    borderRadius: "5px",
     fontSize: "14px",
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
   },
 } as const;
 

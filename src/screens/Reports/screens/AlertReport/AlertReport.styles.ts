@@ -38,7 +38,7 @@ const alertReportStyles = {
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "14px",
   },
   optionStyle: {

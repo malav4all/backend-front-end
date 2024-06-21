@@ -8,6 +8,7 @@ import {
   purpleThemedSelectComponent,
   regularFont,
   pinkThemedMenuItems,
+  semiBoldFont,
 } from "../../utils/styles"
 
 const geozoneStyle = {
@@ -21,7 +22,7 @@ const geozoneStyle = {
   },
   dropDownStyle: {
     height: "47px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     ...purpleThemedSelectComponent,
 
     "& .MuiInputBase-input": {
@@ -75,10 +76,10 @@ const geozoneStyle = {
   inputLabel: {
     display: "flex",
     color: "#212121",
-    fontSize: getRelativeFontSize(7),
+    fontSize: getRelativeFontSize(6),
     fontColor: theme.palette.common.black + " !important",
     variant: "standard",
-    ...boldFont,
+    ...semiBoldFont,
     "& .MuiTextField-root": {
       color: "red",
     },
@@ -105,7 +106,7 @@ const geozoneStyle = {
     "& .MuiOutlinedInput-root": {
       padding: "0, 9px",
       height: "47px",
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
       "&.Mui-focused fieldset": {
         borderColor: "#4B0150",
       },
@@ -139,7 +140,7 @@ const geozoneStyle = {
     },
   },
   label: {
-    ...boldFont,
+    ...semiBoldFont,
     marginBottom: "8px",
   },
   formInput: {
@@ -154,7 +155,7 @@ const geozoneStyle = {
     width: "100%",
     background: "none",
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
     },
   },
   errorStyle: {
@@ -163,9 +164,9 @@ const geozoneStyle = {
   mobileNumber: {
     width: "100%",
     "& .MuiInputBase-input": {
-      borderRadius: "10px",
-      position: "relative",
-      background: "#ffffff",
+      borderRadius: "5px",
+      // position: "relative",
+      // background: "#ffffff",
       padding: "12px 12px",
       [`@media screen and (max-width: ${1370}px)`]: {
         padding: "10px 12px",
@@ -175,7 +176,7 @@ const geozoneStyle = {
       },
     },
     "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
+      borderRadius: "5px",
       "&.Mui-focused fieldset": {
         borderColor: "#0675f9",
       },

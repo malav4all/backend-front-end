@@ -13,7 +13,7 @@ const customInputStyles = {
     "& .MuiInputBase-input": {
       position: "relative",
       padding: "12px 12px",
-      backgroundColor: "#fff",
+      // backgroundColor: "#ffffff",
       "&::placeholder": {
         ...mediumFont,
       },

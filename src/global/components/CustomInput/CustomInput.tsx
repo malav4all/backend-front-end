@@ -1,4 +1,4 @@
-import { Box, InputLabel, SxProps, TextField } from "@mui/material";
+import { Box, InputLabel, SxProps, TextField, useTheme } from "@mui/material";
 import customInputStyles from "./CustomInput.styles";
 
 interface CustomProps {
@@ -25,16 +25,42 @@ interface CustomProps {
 const CustomInput = (props: CustomProps) => {
   const classes = customInputStyles;
   const { error = null } = props;
+  const theme = useTheme();
 
   return (
     <Box>
       <Box mb={props.label ? 1 : 0}>
-        <InputLabel required={props.required} sx={classes.nameField}>
+        <InputLabel 
+          required={props.required} 
+          sx={{
+            ...classes.nameField,
+            color: theme.palette.text.primary, 
+          }}
+        >
           {props.label}
         </InputLabel>
       </Box>
       <TextField
-        sx={classes.textField}
+        sx={{
+          ...classes.textField,
+          backgroundColor: theme.palette.background.paper, 
+          color: theme.palette.text.primary, 
+          '& .MuiInputBase-root': {
+            color: theme.palette.text.primary, 
+            '& fieldset': {
+              borderColor: theme.palette.divider, 
+            },
+            '&:hover fieldset': {
+              borderColor: theme.palette.primary.main, 
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: theme.palette.primary.main, 
+            },
+          },
+          '& .MuiFormHelperText-root': {
+            color: theme.palette.error.main, 
+          },
+        }}
         variant="outlined"
         id={props.id}
         placeholder={props.placeHolder}

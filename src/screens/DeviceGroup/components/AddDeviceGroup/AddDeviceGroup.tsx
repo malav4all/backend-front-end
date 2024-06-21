@@ -11,6 +11,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
@@ -54,6 +55,7 @@ interface CustomProps {
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const AddDeviceGroup = (props: CustomProps) => {
+  const theme = useTheme();
   const classes = addDeviceGroupStyles;
   const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>(
     insertDeviceGroupField(props?.selectedDeviceGroupRowData)
@@ -221,6 +223,11 @@ const AddDeviceGroup = (props: CustomProps) => {
               value={selectedImeis?.map((imei: any) =>
                 imeiData?.find((option: any) => option?.imei === imei)
               )}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
               renderOption={(props, option, { selected }) => {
@@ -250,7 +257,7 @@ const AddDeviceGroup = (props: CustomProps) => {
                   </li>
                 );
               }}
-              renderInput={params => (
+              renderInput={(params) => (
                 <TextField
                   {...params}
                   placeholder={selectedImeis.length === 0 ? "Select Imei" : ""}
@@ -281,7 +288,11 @@ const AddDeviceGroup = (props: CustomProps) => {
             id="device_group_cancel_button"
             label="Cancel"
             onClick={() => props?.handleCloseAddDeviceGroupDialog()}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              color: theme.palette.text.primary,
+              backgroundColor: "#00000000",
+            }}
           />
           <CustomButton
             id="add_device_group_submit_button"

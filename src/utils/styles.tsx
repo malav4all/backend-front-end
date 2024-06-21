@@ -9,6 +9,8 @@ import { createTheme } from "@mui/material/styles";
 
 const borderRadius = "5px";
 const headerColor = "#D1BBFF";
+const primaryHeaderColor = "#855BDE";
+const secondaryBackgroundColor = "#3e4047";
 const primaryColor = "#0d3057";
 const primaryBackgroundColor = "#ffffff";
 const borderColor = "rgba(0, 0, 0, 0.12)";
@@ -28,7 +30,7 @@ const primaryGreenColor = "#adc804";
 const primaryBlackColor = "#3C424D";
 const primaryBlue = "#5F22E2";
 const lightTextColor = "#666";
-const lightPinkColor = "#f1edff";
+const lightPinkColor = "#855bde";
 const activeMenuColor = "#5F22E2";
 const darkPurpledColor = "#0675f9";
 const inputLabelRequiredColor = "red";
@@ -176,9 +178,9 @@ const purpleThemedSelectComponent: CSSProperties = {
 
 const pinkThemedMenuItems: CSSProperties = {
   "&.Mui-selected": {
-    "&:hover,&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
+    "&:hover,&:focus": { backgroundColor: headerColor },
   },
-  "&:hover": { backgroundColor: lightPinkColor },
+  "&:hover": { backgroundColor: headerColor },
   "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
 };
 
@@ -267,6 +269,8 @@ export {
   borderRadius,
   primaryColor,
   disabledBackgroundColor,
+  primaryHeaderColor,
+  secondaryBackgroundColor,
   headerColor,
   primaryBackgroundColor,
   borderColor,

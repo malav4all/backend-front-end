@@ -36,8 +36,8 @@ const customTableStyles = {
     ...mediumFont,
     color: "#3C424D",
     backgroundColor: "#F5F7F9",
-    borderBottom: "none",
-    borderTop: "none",
+    borderLeft: "none !important",
+    borderRight: "none !important",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -50,11 +50,15 @@ const customTableStyles = {
     padding: "0.5rem 0.4rem",
     textAlign: "left",
     backgroundColor: "white",
-     borderBottom: "none",
+    borderTop: "none !important",
+    borderLeft: "none !important",
+    borderRight: "none !important",
+    borderBottom: "none !important",
   },
 
   tableRow: {
     backgroundColor: "white",
+    borderBottom: "1px solid red !important",
   },
 
   checkBoxStyle: {

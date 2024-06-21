@@ -63,6 +63,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 
 const AddFilter = (props: CustomProps) => {
   const classes = usersStyles;
+  const theme = useState();
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>({
     imeiList: [],
@@ -84,6 +85,7 @@ const AddFilter = (props: CustomProps) => {
   const [deviceGroupInput, setDeviceGroupInput] = useState<string>(
     props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
   );
+  const [isAlertActivated, setIsAlertActivated] = useState(true);
   const [alertDataInput, setAlertDataInput] = useState<any>({
     event: "",
     location: "",
@@ -93,7 +95,6 @@ const AddFilter = (props: CustomProps) => {
     endAlertTime: "",
   });
 
-  const [isAlertActivated, setIsAlertActivated] = useState(true);
   const isGeoEvent =
     alertDataInput.event === "geo_in" ||
     alertDataInput.event === "" ||
@@ -811,7 +812,10 @@ const AddFilter = (props: CustomProps) => {
             onClick={() => {
               props?.handleCloseAddUserDialog();
             }}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
+            }}
           />
           <CustomButton
             id="add_user_submit_button"

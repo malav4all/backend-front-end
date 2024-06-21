@@ -257,7 +257,7 @@ const UpcomingJourney = () => {
         id="Alerts_panel"
         sx={{
           padding: "0rem 1.5rem",
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.paper,
           borderRadius: "8px",
         }}
       >

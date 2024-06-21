@@ -1,6 +1,4 @@
-import { createTheme, ThemeOptions } from "@mui/material/styles";
-
-// Extend the MUI Theme interface to include custom properties
+import { createTheme, ThemeOptions } from '@mui/material/styles';
 declare module '@mui/material/styles' {
   interface Palette {
     customAppHeader?: {
@@ -10,6 +8,8 @@ declare module '@mui/material/styles' {
     icon?: {
       main: string;
     };
+    tableHeader?: string;
+    secondaryBackgroundColor?: string;
   }
   interface PaletteOptions {
     customAppHeader?: {
@@ -19,6 +19,8 @@ declare module '@mui/material/styles' {
     icon?: {
       main: string;
     };
+    tableHeader?: string;
+    secondaryBackgroundColor?: string; 
   }
 }
 
@@ -27,7 +29,9 @@ const lightColors = {
   headerColor: '#D1BBFF',
   primaryColor: '#0d3057',
   primaryBackgroundColor: '#F0F5F9',
-  borderColor: '#F1F3F4',
+  secondaryBackgroundColor: "#ffffff", 
+  tableHeader: "#F6F9FC",
+  borderColor: '#E9ECEF',
   infoTextColor: '#888888',
   disabledBackgroundColor: '#888888',
   textLightColor: '#666666',
@@ -60,6 +64,8 @@ const darkColors = {
   headerColor: '#D1BBFF',
   primaryColor: '#90caf9',
   primaryBackgroundColor: '#060B25',
+  secondaryBackgroundColor: "#3e4047", 
+  tableHeader: "#000000",
   borderColor: 'rgba(255, 255, 255, 0.12)',
   infoTextColor: '#BBBBBB',
   disabledBackgroundColor: '#555555',
@@ -108,7 +114,9 @@ export const lightTheme = createTheme({
     divider: lightColors.borderColor,
     icon: {
       main: lightColors.primaryPurple,
-    }
+    },
+    tableHeader: lightColors.primaryBackgroundColor,
+    secondaryBackgroundColor: lightColors.secondaryBackgroundColor, 
   },
   typography: {
     allVariants: {
@@ -137,7 +145,9 @@ export const darkTheme = createTheme({
     divider: darkColors.borderColor,
     icon: {
       main: darkColors.primaryPurple,
-    }
+    },
+    tableHeader: darkColors.primaryBackgroundColor,
+    secondaryBackgroundColor: darkColors.secondaryBackgroundColor,
   },
   typography: {
     allVariants: {
