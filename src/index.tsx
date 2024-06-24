@@ -27,18 +27,16 @@ i18next
     supportedLngs: ["en", "fr", "hi"],
     fallbackLng: "en",
     debug: false,
-    // Options for language detector
+
     detection: {
       order: ["path", "cookie", "htmlTag"],
       caches: ["cookie"],
     },
-    // react: { useSuspense: false },
     backend: {
       loadPath: "/locales/{{lng}}/translation.json",
     },
   });
 
-// steps to override default smooth scrolling behaviour in browsers
 declare global {
   interface Window {
     __forceSmoothScrollPolyfill__: boolean;

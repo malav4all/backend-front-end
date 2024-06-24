@@ -13,9 +13,10 @@ import {
   pureWhiteColor,
   lightFont,
   blackFont,
+  borderColor,
 } from "../../../utils/styles";
 
-const textColor = "#fffff0";  // Define the fixed text color
+const textColor = "#fffff0"; // Define the fixed text color
 
 const appDrawerStyles = {
   drawer: {
@@ -40,7 +41,6 @@ const appDrawerStyles = {
     color: textColor,
   },
   drawerIconBox: {
-    background: "#5F22E1",
     padding: "0.5rem",
     display: "flex",
     alignItems: "center",
@@ -51,11 +51,18 @@ const appDrawerStyles = {
     color: textColor,
   },
   openDrawerIconBox: {
-    borderRadius: "100px",
-    right: -26,
+    borderRadius: "5px",
+    // backgroundColor: "#221261",
+    right: 0,
+    marginTop: "-3px",
+    marginRight: "10px",
     boxShadow: "-7px 1px 14px 0 rgba(0, 0, 0, 0.08)",
   },
-  closedDrawerIconBox: { borderRadius: "100px ", right: -26 },
+  closedDrawerIconBox: {
+    borderRadius: "5px",
+    right: 16,
+    opacity: 0.8
+  },
   drawerHide: {
     display: "flex",
     height: "100vh",
@@ -184,9 +191,10 @@ const appDrawerStyles = {
   },
   logoBox: {
     display: "flex",
+    padding: "0rem 1rem",
     cursor: "pointer",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     marginTop: "27px",
     color: textColor,
   },

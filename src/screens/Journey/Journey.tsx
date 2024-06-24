@@ -888,6 +888,7 @@ const Journey = () => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.paper,
+        height: "100%",
       }}
     >
       <CustomAppHeader
@@ -968,10 +969,11 @@ const Journey = () => {
             width: "90%",
             margin: "auto",
             padding: "2rem",
-            backgroundColor: theme.palette.secondaryBackgroundColor,
+            borderRadius: "5px",
+            backgroundColor: theme.palette.dialogColor.body,
+            borderColor: theme.palette.dialogColor.border,
             boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
             border: "1px",
-            borderColor: theme.palette.divider,
             marginBottom: "2rem",
           }}
         >
@@ -981,7 +983,7 @@ const Journey = () => {
               justifyContent: "flex-end",
               flexWrap: "wrap",
               padding: "1rem 1rem",
-              backgroundColor: theme.palette.secondaryBackgroundColor,
+              backgroundColor: theme.palette.dialogColor.body,
             }}
             mt={2}
             mr={2}

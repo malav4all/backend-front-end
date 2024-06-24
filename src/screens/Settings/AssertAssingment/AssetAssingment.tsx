@@ -277,14 +277,20 @@ const AssetAssingment = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{...classes.mainCardHeading,
-          color: "white",
-        }}>Asset Assignment</Typography>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          Asset Assignment
+        </Typography>
       </Box>
     );
   };
+
   const getAssetAssingment = () => (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       <CustomAppHeader
         className={{
           backgroundColor: headerColor,

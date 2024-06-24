@@ -222,7 +222,7 @@ const AlertConfig = () => {
                     marginTop: "8px",
                     borderRadius: "5px",
                     fontSize: "15px",
-                    color: theme.palette.text.primary,
+                    color: "#ffffff",
                     backgroundColor: headerColor,
                   }}
                   variant="filled"
@@ -344,7 +344,7 @@ const AlertConfig = () => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.paper,
-        height: "auto",
+        height: "100%",
       }}
     >
       <Grid container spacing={2} direction="column">

@@ -1,4 +1,4 @@
-import { useMediaQuery, Box, Grid } from "@mui/material";
+import { useMediaQuery, Box, Grid, useTheme } from "@mui/material";
 import { theme } from "../../utils/styles";
 import landingPageStyles from "./LandingPage.styles";
 import { useAppSelector } from "../../utils/hooks";
@@ -16,11 +16,14 @@ import ActivateUser from "./components/ActivateUser";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef } from "react";
 import ROUTEYE_LOGO from "../../assets/images/ROUTEYE_LOGO.png";
+import login_background from '../../assets/images/login_background.png'
+import { url } from "inspector";
 interface CustomProps {
   location?: Location;
 }
 
 const LandingPage = (props: CustomProps) => {
+  const theme = useTheme();
   const classes = landingPageStyles;
   const siteKeyReCaptch = strings.siteKey;
   const reRef = useRef<ReCAPTCHA | null>(null);
@@ -33,7 +36,7 @@ const LandingPage = (props: CustomProps) => {
       case strings.LOGIN: {
         return <Login />;
       }
-      
+
       case strings.FORGOT_PASSWORD: {
         return <ForgotPassword />;
       }
@@ -57,8 +60,9 @@ const LandingPage = (props: CustomProps) => {
           sx={{
             alignItems: "center",
             height: "100vh",
-            backgroundImage:
-              "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
+            backgroundImage: `url(${login_background})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         >
           <Grid
@@ -69,12 +73,11 @@ const LandingPage = (props: CustomProps) => {
             lg={4}
             xl={3}
             style={{
-              backgroundImage:
-                "linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%)",
+              background: theme.palette.dialogColor.body,
+              borderColor: theme.palette.dialogColor.border,
               overflowY: "auto",
               padding: "2rem",
               width: "40px",
-              border: "1px solid rgb(236 239 241)",
               boxShadow:
                 "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
               borderRadius: "0.5rem",
@@ -89,7 +92,12 @@ const LandingPage = (props: CustomProps) => {
                 marginBottom: "1.5rem",
               }}
             >
-              <Box component="img" src={ROUTEYE_LOGO} height={"30px"} sx={{marginBottom: "1rem"}}/>
+              <Box
+                component="img"
+                src={ROUTEYE_LOGO}
+                height={"30px"}
+                sx={{ marginBottom: "1rem" }}
+              />
             </Box>
 
             <Box>{getComponentBasedOnURL()}</Box>

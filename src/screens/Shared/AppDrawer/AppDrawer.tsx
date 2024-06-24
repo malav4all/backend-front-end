@@ -35,6 +35,8 @@ import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
 import ROUTEYE_LOGO_MINI from "../../../assets/images/ROUTEYE_LOGO_MINI.png";
 import { useThemeContext } from "../../../redux/ThemeContext";
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
 
 interface CustomProps {
   setMenuMobileVisible?: Function;
@@ -94,6 +96,7 @@ const AppDrawer = (props: CustomProps) => {
   const [optionItems, setOptionItems] = useState<any[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
@@ -106,6 +109,14 @@ const AppDrawer = (props: CustomProps) => {
   useEffect(() => {
     setActiveIndexFromUrl();
   }, [optionItems, pathname]);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   const setActiveIndexFromUrl = () => {
     let activeIndexFromUrl = optionItems.findIndex(
@@ -186,7 +197,7 @@ const AppDrawer = (props: CustomProps) => {
                   <Box
                     sx={{
                       ...classes.listItemTextBox,
-                      color: "#fffff0", 
+                      color: "#fffff0",
                     }}
                   >
                     <Typography
@@ -285,7 +296,7 @@ const AppDrawer = (props: CustomProps) => {
                 <Box
                   sx={{
                     ...classes.listItemTextBox,
-                    color: "#fffff0", 
+                    color: "#fffff0",
                   }}
                 >
                   <Typography sx={classes.navBarLabel}>
@@ -318,11 +329,27 @@ const AppDrawer = (props: CustomProps) => {
 
   const getAppLogo = () => {
     return (
-      <Box sx={classes.logoBox}>
+      <Box
+        sx={classes.logoBox}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {!isDrawerOpen && isDesktop ? (
-          <img src={ROUTEYE_LOGO_MINI} height="45px" />
+          <Box
+            sx={{
+              marginBottom: "2rem",
+            }}
+          ></Box>
         ) : (
-          <img src={ROUTEYE_LOGO} height="27px" />
+          <Box
+            component="img"
+            src={ROUTEYE_LOGO}
+            sx={{
+              width: "10rem",
+              marginTop: "1px",
+              marginLeft: "-5px",
+            }}
+          ></Box>
         )}
       </Box>
     );
@@ -391,7 +418,7 @@ const AppDrawer = (props: CustomProps) => {
             }}
           >
             <Box ml={1} onClick={handleLogout} sx={{ color: "#fffff0" }}>
-              <IoIosLogOut  size={27} />
+              <IoIosLogOut size={27} />
             </Box>
           </Tooltip>
         )}
@@ -404,19 +431,18 @@ const AppDrawer = (props: CustomProps) => {
       <Box
         sx={{
           display: "flex",
+          flexWrap: "no-wrap",
           justifyContent: "space-between",
           alignItems: "center",
         }}
         p={2}
         borderRadius="10px"
       >
-        <Box sx={{ color: "#fffff0" }}>
-          Mode:
-        </Box>
+        <Box sx={{ color: "#fffff0" }}>Mode:</Box>
         <FormControlLabel
-        sx={{
-          marginRight: "2rem"
-        }}
+          sx={{
+            marginRight: "2rem",
+          }}
           control={
             <MaterialUISwitch
               checked={darkMode}
@@ -457,9 +483,9 @@ const AppDrawer = (props: CustomProps) => {
                   ]}
                 >
                   {isDrawerOpen ? (
-                    <ArrowBackIcon fontSize="small" />
+                    <MdOutlineKeyboardDoubleArrowLeft fontSize="22px" />
                   ) : (
-                    <ArrowForwardIcon fontSize="small" />
+                    <MdOutlineKeyboardDoubleArrowRight fontSize="30px" />
                   )}
                 </Box>
               )}
