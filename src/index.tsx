@@ -17,6 +17,7 @@ import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import HttpApi from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
+import CustomThemeProvider from "./redux/ThemeContext";
 
 i18next
   .use(HttpApi)
@@ -26,18 +27,16 @@ i18next
     supportedLngs: ["en", "fr", "hi"],
     fallbackLng: "en",
     debug: false,
-    // Options for language detector
+
     detection: {
       order: ["path", "cookie", "htmlTag"],
       caches: ["cookie"],
     },
-    // react: { useSuspense: false },
     backend: {
       loadPath: "/locales/{{lng}}/translation.json",
     },
   });
 
-// steps to override default smooth scrolling behaviour in browsers
 declare global {
   interface Window {
     __forceSmoothScrollPolyfill__: boolean;
@@ -62,7 +61,9 @@ ReactDOM.render(
           <Provider store={store}>
             <React.StrictMode>
               <ErrorBoundary>
-                <App />
+                <CustomThemeProvider>
+                  <App />
+                </CustomThemeProvider>
               </ErrorBoundary>
             </React.StrictMode>
           </Provider>

@@ -1,9 +1,10 @@
-import { BorderBottomOutlined } from "@mui/icons-material";
+import { BorderBottomOutlined, BorderTop } from "@mui/icons-material";
 import {
   boldFont,
   borderColor,
   darkPurpledColor,
   getRelativeFontSize,
+  lightFont,
   lightPinkColor,
   mediumFont,
   pinkDarkColor,
@@ -19,7 +20,7 @@ const customTableDashboardStyles = {
     borderSpacing: "0px",
     borderTopRadius: "5px",
     borderBottomRadius: "5px",
-    borderColor: "white",
+    borderTop: "none",
     width: "100%",
     marginTop: "2rem",
     [theme.breakpoints.down("xl")]: {
@@ -29,16 +30,16 @@ const customTableDashboardStyles = {
 
   tableBody: {
     maxHeight: "500px",
+    overflowY: "scroll",
     maxwidth: "100%",
+    borderTop: "none",
   },
 
   tableHeaderCell: {
-    ...mediumFont,
-    color: "#3C424D",
-    backgroundColor: "#F6F9FC",
-    borderBottom: "none",
-    padding: "12px 24px",
-    borderTop: "none",
+    ...regularFont,
+    fontSize: '14px',
+    border: "none",
+    padding: "12px 18px",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -47,41 +48,46 @@ const customTableDashboardStyles = {
 
   tableCell: {
     ...regularFont,
+    border: "none",
     fontSize: "14px",
     textAlign: "left",
     backgroundColor: "white",
-    borderBottom: "none",
-    minWidth: "75px",
-    padding: "7px 3px"
+    minWidth: "110px",
+    padding: "7px 3px",
   },
 
   tableRow: {
-    backgroundColor: "white",
-    borderBottom: "1px"
+    borderLeft: "none",
+    borderRight: "none",
   },
 
   checkBoxStyle: {
     paddingRight: "50px",
   },
+
   selectAllCheckbox: {
     color: "white",
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
+
   checkbox: {
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
+
   mediumFonts: {
     ...regularFont,
     fontSize: getRelativeFontSize(5),
   },
+
   regularFonts: {
     ...regularFont,
     fontSize: getRelativeFontSize(1),
   },
+
   perPageDropdown: {
     height: "30px",
     borderRadius: "6px",
@@ -89,6 +95,7 @@ const customTableDashboardStyles = {
     marginLeft: "5px",
     ...purpleThemedSelectComponent,
   },
+
   optionStyle: {
     ...regularFont,
     ...pinkThemedMenuItems,

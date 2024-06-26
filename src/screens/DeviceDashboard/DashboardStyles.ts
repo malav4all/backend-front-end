@@ -9,6 +9,7 @@ import {
   textLightColor,
   purpleThemedSelectComponent,
   pinkThemedMenuItems,
+  headerColor,
 } from "../../utils/styles";
 import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
 
@@ -18,7 +19,7 @@ const dashboardStyles = {
     backgroundImage: "url(" + thoughtsbg + ") ",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+    boxShadow: "0 15px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.22)",
     borderRadius: "8px",
     textAlign: "center",
     padding: "0px",
@@ -65,7 +66,6 @@ const dashboardStyles = {
     fontSize: getRelativeFontSize(42),
     lineHeight: "1",
     marginTop: "1rem",
-    color: "#3C424D",
   },
   dropdown: {
     ...regularFont,
@@ -108,17 +108,15 @@ const dashboardStyles = {
     display: "flex",
     marginTop: "0rem",
     alignItems: "center",
-    backgroundColor: "#D1BBFF",
+    backgroundColor: headerColor,
     padding: "16px",
-    // paddingBottom: "64px",
     height: "10rem",
-    // paddingTop: "35px",
   },
   container: {
     padding: "1rem",
-    backgroundColor: "white",
+    backgroundColor: theme.palette.background.paper,
     borderRadius: "8px",
-    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
+    boxShadow: "0 15px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.22)",
   },
   containerTitle: {
     ...boldFont,
@@ -157,7 +155,7 @@ const dashboardStyles = {
   statusBox: {
     ml: 1,
     ...regularFont,
-    backgroundColor: "#d1bbff",
+    backgroundColor: headerColor,
     padding: 1,
     fontSize: getRelativeFontSize(),
   },
@@ -206,12 +204,13 @@ const dashboardStyles = {
   dropDownStyle: {
     ...regularFont,
     ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "14px",
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
   },
 } as const;
 

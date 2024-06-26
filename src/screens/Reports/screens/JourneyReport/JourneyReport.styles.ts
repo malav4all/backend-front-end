@@ -7,13 +7,14 @@ import {
   purpleThemedSelectComponent,
   pureWhiteColor,
   pinkThemedMenuItems,
+  headerColor,
 } from "../../../../utils/styles"
 
 const journeyReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#d1bbff",
+    backgroundColor: headerColor,
     padding: "16px 3rem",
     paddingBottom: "64px",
     paddingTop: "35px",

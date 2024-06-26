@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   CustomButton,
@@ -41,6 +42,7 @@ const CreateGeoZone = ({
   locationType,
 }: GeoZoneProps) => {
   const classes = geozoneStyle;
+  const theme = useTheme();
   const [zipCodeDate, setZipCodeData] = useState([]);
 
   const fetchZipCodeHandler = async (value: any) => {
@@ -113,7 +115,11 @@ const CreateGeoZone = ({
             id="update_user_cancel_button"
             label="Cancel"
             onClick={handleCancelUpdateModal}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
+              color: theme.palette.text.primary,
+            }}
           />
           <CustomButton
             id="update_user_submit_button"
@@ -154,14 +160,23 @@ const CreateGeoZone = ({
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Location Type
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
               </InputLabel>
               <Select
-                sx={classes.dropDownStyle}
+                sx={{
+                  ...classes.dropDownStyle,
+                  backgroundColor: theme.palette.background.paper,
+                }}
                 id="add_user_status_dropdown"
                 name="locationType"
                 value={formField.locationType?.value}
@@ -211,7 +226,10 @@ const CreateGeoZone = ({
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Stack direction="column">
-            <InputLabel sx={classes.inputLabel} shrink>
+            <InputLabel
+              sx={{ ...classes.inputLabel, color: theme.palette.text.primary }}
+              shrink
+            >
               Mobile Number
               <Box ml={0.4} sx={classes.star}>
                 *
@@ -229,7 +247,12 @@ const CreateGeoZone = ({
                   <TextField
                     required
                     id="mobile-number"
-                    sx={classes.mobileNumber}
+                    sx={{
+                      ...classes.mobileNumber,
+                      backgroundColor: theme.palette.background.paper,
+                      color: theme.palette.text.primary,
+                      borderRadius: "5px",
+                    }}
                     placeholder="(999) 999-9999"
                     value={formField?.mobileNumber?.value}
                     onChange={handleMaskInputChange}
@@ -250,14 +273,22 @@ const CreateGeoZone = ({
 
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Box>
-            <InputLabel sx={classes.inputLabel} shrink>
+            <InputLabel
+              sx={{ ...classes.inputLabel, color: theme.palette.text.primary }}
+              shrink
+            >
               Zip Code
               <Box ml={0.4} sx={classes.star}>
                 *
               </Box>
             </InputLabel>
             <Autocomplete
-              sx={classes.emailDropDownStyle}
+              sx={{
+                ...classes.emailDropDownStyle,
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
               id="zipCode"
               options={
                 zipCodeDate?.map((item: any) => ({
@@ -368,6 +399,7 @@ const CreateGeoZone = ({
             disabled={true}
           />
         </Grid>
+
         {formField.district.value && (
           <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
             <CustomInput
@@ -391,7 +423,12 @@ const CreateGeoZone = ({
             multiline
             minRows={2}
             inputProps={{ maxLength: 300 }}
-            sx={classes.testAreaStyle}
+            sx={{
+              ...classes.testAreaStyle,
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+              borderRadius: "5px",
+            }}
             name="address"
             id="address"
             placeholder="Enter your Address"
@@ -417,7 +454,12 @@ const CreateGeoZone = ({
               multiline
               minRows={2}
               inputProps={{ maxLength: 300 }}
-              sx={classes.testAreaStyle}
+              sx={{
+                ...classes.testAreaStyle,
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
               name="description"
               id="comment"
               placeholder="Enter Description"

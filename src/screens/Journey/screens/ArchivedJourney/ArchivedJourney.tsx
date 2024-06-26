@@ -5,6 +5,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme
 } from "@mui/material"
 import { ChangeEvent, useEffect, useRef, useState } from "react"
 import moment from "moment"
@@ -32,12 +33,14 @@ import { NavLink } from "react-router-dom"
 import {
   boldFont,
   disabledBackgroundColor,
+  headerColor,
   primaryHeadingColor,
 } from "../../../../utils/styles"
 import { archiveJourney } from "./service/ArchivedJourney.service"
 import history from "../../../../utils/history"
 const ArchivedJoruney = () => {
   const classes = archivedJourneyStyles
+  const theme = useTheme();
   const [alertTableData, setAlertTableData] = useState([])
   const [page, setPage] = useState(1)
   const [dateFilter, setDateFilter] = useState({
@@ -187,7 +190,9 @@ const ArchivedJoruney = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Archived Journey</Typography>
+        <Typography sx={{...classes.mainCardHeading,
+          color: "white",
+        }}>Archived Journey</Typography>
       </Box>
     )
   }
@@ -334,10 +339,14 @@ const ArchivedJoruney = () => {
   }
 
   return (
-    <Box>
+    <Box 
+    sx={{
+      backgroundColor: theme.palette.background.paper,
+      height: "100%"
+    }}>
       <CustomAppHeader
         className={{
-          backgroundColor: "#f1edff",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
           marginBottom: "5rem",
         }}

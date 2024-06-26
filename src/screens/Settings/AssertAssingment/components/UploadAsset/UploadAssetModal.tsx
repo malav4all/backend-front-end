@@ -53,7 +53,7 @@ const UploadAssetGroup = (props: CustomProps) => {
   const getDialogBody = () => {
     return (
       <Grid xs={12} sm={12} md={12} lg={12}>
-        <Grid style={{ height: "100px" }}>
+        <Grid style={{ height: "270px" }}>
           <InputLabel sx={classes.input} shrink>
             Upload File{" "}
             <Box ml={0.4} sx={classes.star}>

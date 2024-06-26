@@ -5,6 +5,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  useTheme
 } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import moment from "moment";
@@ -31,6 +32,7 @@ interface CustomDateRange {
 }
 
 const AlertReport = () => {
+  const theme = useTheme()
   const initialState: any = {
     fromDate: moment().clone().subtract(1, "hour").toISOString(),
     toDate: moment().toISOString(),
@@ -151,7 +153,7 @@ const AlertReport = () => {
     return (
       <Grid container sx={classes.header}>
         <Grid item xs={12} md={5} lg={6} xl={6}>
-          <Typography variant="h5" sx={classes.heading}>
+          <Typography variant="h5" sx={{ ...classes.heading, color: "white" }}>
             Alerts Reports
           </Typography>
         </Grid>
@@ -175,7 +177,9 @@ const AlertReport = () => {
           </Typography>
           <Select
             id="campaigns_interval_dropdown"
-            sx={classes.dropDownStyle}
+            sx={{...classes.dropDownStyle, 
+              backgroundColor: theme.palette.background.paper,
+            }}
             value={selectedRange}
             onChange={handleChange}
             displayEmpty
@@ -404,9 +408,12 @@ const AlertReport = () => {
         id="Alerts_panel"
         sx={{
           padding: "1.5rem 1.5rem",
-          backgroundColor: "white",
+          backgroundColor: theme.palette.background.paper,
+          boxShadow:
+            "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+          border: "1px solid",
+          borderColor: theme.palette.divider,
           borderRadius: "8px",
-          boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
         }}
       >
         <Box
@@ -451,7 +458,12 @@ const AlertReport = () => {
   };
 
   return (
-    <Box>
+    <Box 
+    sx={{
+      backgroundColor: theme.palette.background.default,
+      height: "100%"
+    }}
+    >
       {getReportHeader()}
       {getReportBody()}
       {customDialog()}

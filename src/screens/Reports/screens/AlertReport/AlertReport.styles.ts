@@ -12,12 +12,13 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   pureWhiteColor,
+  headerColor,
 } from "../../../../utils/styles"
 const alertReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "#d1bbff",
+    backgroundColor: headerColor,
     padding: "16px 3rem",
     paddingBottom: "64px",
     paddingTop: "35px",
@@ -37,7 +38,7 @@ const alertReportStyles = {
     height: "47px",
     padding: "2px",
     width: " 180px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "14px",
   },
   optionStyle: {

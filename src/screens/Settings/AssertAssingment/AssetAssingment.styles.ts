@@ -13,11 +13,13 @@ import {
   purpleThemedSelectComponent,
   buttonWhiteBg,
   purplePrimaryColor,
+  offWhiteColor,
+  semiBoldFont,
 } from "../../../utils/styles"
 
 const AssetAssingmentStyles = {
   mainHeader: {
-    marginBottom: 1,
+    marginBottom: 3,
     display: "flex",
     justifyContent: "center",
     ...boldFont,
@@ -35,8 +37,8 @@ const AssetAssingmentStyles = {
   input: {
     fontSize: getRelativeFontSize(7),
     fontColor: theme.palette.common.black,
-    ...boldFont,
-    marginTop: "10px",
+    // ...boldFont,
+    // marginTop: "10px",
     display: "flex",
     "& .star": {
       color: inputLabelRequiredColor,
@@ -138,10 +140,10 @@ const AssetAssingmentStyles = {
   inputLabel: {
     display: "flex",
     color: "#212121",
-    fontSize: getRelativeFontSize(7),
+    fontSize: getRelativeFontSize(6),
     fontColor: theme.palette.common.black + " !important",
     variant: "standard",
-    ...boldFont,
+    ...semiBoldFont,
     "& .MuiTextField-root": {
       color: "red",
     },
@@ -170,7 +172,7 @@ const AssetAssingmentStyles = {
   },
   dropDownStyle: {
     height: "47px",
-    borderRadius: "12px",
+    borderRadius: "5px",
     ...purpleThemedSelectComponent,
 
     "& .MuiInputBase-input": {
@@ -316,7 +318,7 @@ const AssetAssingmentStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: offWhiteColor,
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

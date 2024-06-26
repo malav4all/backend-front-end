@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   Typography,
+  useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { options } from "./DashboardData";
@@ -18,9 +19,7 @@ import {
   isTruthy,
   openErrorNotification,
 } from "../../helpers/methods";
-
 import dashboardStyles from "./DashboardStyles";
-
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
@@ -42,6 +41,7 @@ import { FcInfo } from "react-icons/fc";
 import { fetchAssetAssingmentDataHandler } from "../Settings/AssertAssingment/service/AssetAssingment.service";
 
 const DeviceDashboard = () => {
+  const theme = useTheme();
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const userName = useAppSelector(selectName);
@@ -82,7 +82,6 @@ const DeviceDashboard = () => {
       value: statDataTable?.filter(
         (item: any) => item?.deviceStatus === "online"
       )?.length,
-      //   icon: campaigns,
       resource: strings.campaign,
       redirection: {
         pathname: "",
@@ -93,14 +92,12 @@ const DeviceDashboard = () => {
       value: statDataTable?.filter(
         (item: any) => item?.deviceStatus === "offline"
       )?.length,
-      //   icon: campaigns,
       resource: strings.campaign,
       redirection: {},
     },
     audience: {
       title: "Total Devices",
       value: statDataTable?.length,
-      //   icon: campaigns,
       resource: strings.contact,
       redirection: {},
     },
@@ -167,8 +164,11 @@ const DeviceDashboard = () => {
           <Chip
             label={item.status}
             sx={{
-              backgroundColor: "red",
-              color: "white",
+              backgroundColor:
+                item.status === "online"
+                  ? theme.palette.success.main
+                  : theme.palette.error.main,
+              color: theme.palette.common.white,
               borderRadius: "5px",
               padding: "0.1rem 0.2rem",
               fontFamily: "Geist_Regular",
@@ -195,7 +195,7 @@ const DeviceDashboard = () => {
         action: (
           <span
             style={{
-              color: "#5f22e1",
+              color: theme.palette.primary.main,
               fontSize: "1.5rem",
               cursor: "pointer",
               display: "flex",
@@ -225,16 +225,7 @@ const DeviceDashboard = () => {
   const fetchDeviceDashboardHandler = async () => {
     try {
       setIsLoading(true);
-      //   const res = await fetchJourney({
-      //     input: {
-      //       page,
-      //       limit: 10,
-      //     },
-      //   });
-
-      //   const data = tableRender(res.fetchJourney.data);
       setDeviceDashboardData(dummyData);
-      //   setCount(res.fetchJourney.paginatorInfo.count);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -337,7 +328,7 @@ const DeviceDashboard = () => {
     return (
       <Grid container spacing={2}>
         {Object.values(stats).map((stat: any) => (
-          <Grid item xs={12} sm={12} md={4} xl={4} lg={4}>
+          <Grid item xs={12} sm={12} md={4} xl={4} lg={4} key={stat.title}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -346,11 +337,12 @@ const DeviceDashboard = () => {
               id="dashboard_stats"
               sx={{
                 padding: "2rem 1.5rem",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
+                border: "1px solid",
+                borderColor: theme.palette.divider,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-
                 cursor: isTruthy(stat.redirection) ? "pointer" : "auto",
               }}
               onClick={() =>
@@ -359,11 +351,20 @@ const DeviceDashboard = () => {
                   : null
               }
             >
-              <Box>
+              <Box
+                sx={{
+                  fontFamily: "Geist_Bold",
+                  fontWeight: 700,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                  color: theme.palette.text.primary,
+                }}
+              >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
-                    color: "#3C424Dad",
+                    color: theme.palette.text.primary,
                     fontSize: "18px",
                   }}
                 >
@@ -438,20 +439,30 @@ const DeviceDashboard = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Device"
-        id="assetAssingment_search_field"
-        onChange={debounceEventHandler(
-          handleSearchOnChange,
-          strings.SEARCH_TIME_OUT
-        )}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
+      placeHolder="Search Device"
+      id="assetAssingment_search_field"
+      onChange={debounceEventHandler(
+        handleSearchOnChange,
+        strings.SEARCH_TIME_OUT
+      )}
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        '& .MuiInputBase-root': {
+          color: theme.palette.text.primary,
+        },
+        '& .MuiInputAdornment-root': {
+          color: theme.palette.text.primary,
+        },
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
     );
   };
 
@@ -459,8 +470,6 @@ const DeviceDashboard = () => {
     if (SearchEvent.target.value) {
       setSearchData(SearchEvent.target.value.trim().toLowerCase());
       searchWithIMEI();
-      // setPage(1);
-      // setRowsPerPage(10);
     } else {
       setSearchData("");
     }
@@ -475,7 +484,7 @@ const DeviceDashboard = () => {
           padding: "0 16px",
           marginTop: "-48px",
           margin: "auto",
-          backgroundColor: "#F0F5F9",
+          backgroundColor: theme.palette.background.default,
         }}
         xs={12}
       >
@@ -512,11 +521,13 @@ const DeviceDashboard = () => {
                     display: "flex",
                     justifyContent: "flex-end",
                     flexWrap: "wrap",
-                    backgroundColor: "white",
+                    backgroundColor: theme.palette.background.paper,
                     boxShadow:
                       "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
                     padding: "1rem",
                     borderRadius: "0.5rem",
+                    border: "1px solid",
+                    borderColor: theme.palette.divider,
                   }}
                 >
                   <Grid
@@ -564,7 +575,7 @@ const DeviceDashboard = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F0F5F9",
+        backgroundColor: theme.palette.background.default,
         width: "100%",
         height: "100%",
         margin: "auto",

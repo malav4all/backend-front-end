@@ -10,6 +10,7 @@ import {
   purpleThemedSelectComponent,
   pinkThemedMenuItems,
   inputLabelRequiredColor,
+  semiBoldFont,
 } from "../../utils/styles"
 
 const journeyStyles = {
@@ -30,6 +31,7 @@ const journeyStyles = {
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(0),
     },
+    backgroundColor: theme.palette.background.paper,
   },
   mainCard: {
     marginTop: theme.spacing(10),
@@ -142,10 +144,10 @@ const journeyStyles = {
   inputLabel: {
     display: "flex",
     color: "#212121",
-    fontSize: getRelativeFontSize(7),
+    fontSize: getRelativeFontSize(6),
     fontColor: theme.palette.common.black + " !important",
     variant: "standard",
-    ...boldFont,
+    ...semiBoldFont,
     "& .MuiTextField-root": {
       color: "red",
     },
@@ -167,7 +169,7 @@ const journeyStyles = {
       padding: "0, 9px",
       height: "47px",
       borderRadius: "5px",
-      backgroundColor: "white",
+      // backgroundColor: "white",
       "&.Mui-focused fieldset": {
         borderColor: "#4B0150",
       },
@@ -202,10 +204,13 @@ const journeyStyles = {
       borderRadius: "10px",
       position: "relative",
       padding: "12px 12px",
-      backgroundColor: "#FFFFFF",
+      "&::placeholder": {
+        color: "#9CA3AF", 
+        opacity: 1, 
+      },
     },
     "& .MuiOutlinedInput-root": {
-      borderRadius: "10px",
+      borderRadius: "5px",
       borderColor: "#E7E7E7",
       "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline": {
         borderColor: "#E7E7E7",

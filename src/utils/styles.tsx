@@ -8,6 +8,9 @@ import { CSSProperties, withStyles } from "@mui/styles";
 import { createTheme } from "@mui/material/styles";
 
 const borderRadius = "5px";
+const headerColor = "#9063F2";
+const primaryHeaderColor = "#855BDE";
+const secondaryBackgroundColor = "#3e4047";
 const primaryColor = "#0d3057";
 const primaryBackgroundColor = "#ffffff";
 const borderColor = "rgba(0, 0, 0, 0.12)";
@@ -18,8 +21,8 @@ const defaultFontSize = 14;
 const defaultBoxShadow = "0 0 0 0.2rem rgb(0 123 255 / 25%)";
 const drawerWidth = 240;
 const textLightColor = "#666666";
-const purplePrimaryColor = "#5F22E2";
-const pinkDarkColor = "#ffffff";
+const purplePrimaryColor = "#7C41FA";
+const pinkDarkColor = "#fffff0";
 const pureWhiteColor = "#ffffff";
 const offWhiteColor = "#F0F5F9";
 const primaryHeadingColor = "#001529";
@@ -27,7 +30,7 @@ const primaryGreenColor = "#adc804";
 const primaryBlackColor = "#3C424D";
 const primaryBlue = "#5F22E2";
 const lightTextColor = "#666";
-const lightPinkColor = "#f1edff";
+const lightPinkColor = "#855bde";
 const activeMenuColor = "#5F22E2";
 const darkPurpledColor = "#0675f9";
 const inputLabelRequiredColor = "red";
@@ -126,12 +129,11 @@ const customButtonStyle: CSSProperties = {
   fontSize: getRelativeFontSize(),
   textAlign: "center",
   backgroundColor: purplePrimaryColor,
-  padding: "10px 15px",
+  padding: "8px 12px",
   boxShadow: "0 2px 0 rgb(0 0 0 / 2%)",
   color: "#FFFFFF",
   cursor: "pointer",
   textTransform: "none",
-  height: "47px",
   transition: "all .3s ease",
   "&:hover": {
     background: "#9063f2",
@@ -169,16 +171,16 @@ const centerItemAbsolute: CSSProperties = {
 
 const purpleThemedSelectComponent: CSSProperties = {
   "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderColor: darkPurpledColor,
+    // borderColor: darkPurpledColor,
   },
 };
 
 const pinkThemedMenuItems: CSSProperties = {
   "&.Mui-selected": {
-    "&:hover,&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
+    "&:hover,&:focus": { backgroundColor: headerColor },
   },
-  "&:hover": { backgroundColor: lightPinkColor },
-  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
+  "&:hover": { backgroundColor: headerColor },
+  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)",  },
 };
 
 const CustomInput = withStyles((theme: Theme) =>
@@ -266,6 +268,9 @@ export {
   borderRadius,
   primaryColor,
   disabledBackgroundColor,
+  primaryHeaderColor,
+  secondaryBackgroundColor,
+  headerColor,
   primaryBackgroundColor,
   borderColor,
   borderStyle,

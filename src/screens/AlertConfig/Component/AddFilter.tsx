@@ -14,6 +14,7 @@ import {
   FormControlLabel,
   Switch,
   Chip,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
@@ -62,7 +63,9 @@ interface CustomProps {
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 
 const AddFilter = (props: CustomProps) => {
+  const theme = useTheme();
   const classes = usersStyles;
+  // const theme = useState();
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const [deviceGroupFromFields, setDeviceGroupFromFields] = useState<any>({
     imeiList: [],
@@ -84,6 +87,7 @@ const AddFilter = (props: CustomProps) => {
   const [deviceGroupInput, setDeviceGroupInput] = useState<string>(
     props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
   );
+  const [isAlertActivated, setIsAlertActivated] = useState(true);
   const [alertDataInput, setAlertDataInput] = useState<any>({
     event: "",
     location: "",
@@ -93,7 +97,6 @@ const AddFilter = (props: CustomProps) => {
     endAlertTime: "",
   });
 
-  const [isAlertActivated, setIsAlertActivated] = useState(true);
   const isGeoEvent =
     alertDataInput.event === "geo_in" ||
     alertDataInput.event === "" ||
@@ -463,7 +466,10 @@ const AddFilter = (props: CustomProps) => {
 
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
-            <InputLabel sx={classes.inputLabel} shrink>
+            <InputLabel
+              sx={{ ...classes.inputLabel, color: theme.palette.text.primary }}
+              shrink
+            >
               Device Name
               <Box ml={0.4} sx={classes.star}>
                 *
@@ -529,7 +535,13 @@ const AddFilter = (props: CustomProps) => {
         <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Device Group
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -577,7 +589,13 @@ const AddFilter = (props: CustomProps) => {
         >
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Event
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -811,7 +829,11 @@ const AddFilter = (props: CustomProps) => {
             onClick={() => {
               props?.handleCloseAddUserDialog();
             }}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
+              color: theme.palette.text.primary,
+            }}
           />
           <CustomButton
             id="add_user_submit_button"

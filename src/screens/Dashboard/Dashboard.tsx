@@ -4,7 +4,7 @@ import { useAppSelector } from "../../utils/hooks";
 import { selectName } from "../../redux/authSlice";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import moment from "moment-timezone";
-import dashboardStyles from "./DashboardStyles";
+import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
@@ -16,7 +16,9 @@ import { isTruthy, openErrorNotification } from "../../helpers/methods";
 import { weekValue, weekValueNextMonth } from "./DashboardData";
 import { CustomButton, CustomDialog } from "../../global/components";
 import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
+import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
+
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -27,7 +29,9 @@ const Dashboard = () => {
     fromDate: moment().clone().subtract(1, "month").toISOString(),
     toDate: moment().toISOString(),
   };
+
   useTitle(strings.DashboardTitle);
+  const theme = useTheme();
   const classes = dashboardStyles;
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -211,7 +215,11 @@ const Dashboard = () => {
         >
           <Select
             id="campaigns_interval_dropdown"
-            sx={classes.dropDownStyle}
+            sx={{
+              ...classes.dropDownStyle,
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
             value={selectedRange}
             onChange={handleChange}
             displayEmpty
@@ -276,7 +284,7 @@ const Dashboard = () => {
               label="Cancel"
               onClick={() => handleCloseModel()}
               customClasses={{ width: "110px" }}
-              // variant={"outlined"}
+              // variant={"outlined"}`
             />
             <CustomButton
               label={"Submit"}
@@ -407,20 +415,9 @@ const Dashboard = () => {
         id="Alerts_pannel"
         sx={{
           marginTop: "1rem",
-          backgroundColor: "#ffffff00",
+          backgroundColor: "transparent",
         }}
       >
-        {/* <Typography
-          sx={{
-            fontSize: "1.5rem",
-            fontWeight: "Bold",
-            marginTop: "-0.5rem",
-          }}
-          gutterBottom
-        >
-          Alerts
-        </Typography> */}
-
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
             <Box
@@ -431,10 +428,12 @@ const Dashboard = () => {
               id="dashboard_stats"
               sx={{
                 padding: "2rem 1.5rem",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                border: "1px solid",
+                borderColor: theme.palette.divider,
               }}
             >
               <Box
@@ -444,13 +443,13 @@ const Dashboard = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.5rem",
-                  color: "#3C424D",
+                  color: theme.palette.text.primary,
                 }}
               >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
-                    color: "#3C424Dad",
+                    color: theme.palette.text.secondary,
                     fontSize: "18px",
                   }}
                 >
@@ -487,10 +486,12 @@ const Dashboard = () => {
               id="dashboard_stats"
               sx={{
                 padding: "2rem 1.5rem",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                border: "1px solid",
+                borderColor: theme.palette.divider,
               }}
             >
               <Box
@@ -500,13 +501,13 @@ const Dashboard = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.5rem",
-                  color: "#3C424D",
+                  color: theme.palette.text.primary,
                 }}
               >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
-                    color: "#3C424Dad",
+                    color: theme.palette.text.secondary,
                     fontSize: "18px",
                   }}
                 >
@@ -545,10 +546,12 @@ const Dashboard = () => {
               id="dashboard_stats"
               sx={{
                 padding: "2rem 1.5rem",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                border: "1px solid",
+                borderColor: theme.palette.divider,
               }}
             >
               <Box
@@ -558,13 +561,13 @@ const Dashboard = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.5rem",
-                  color: "#3C424D",
+                  color: theme.palette.text.primary,
                 }}
               >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
-                    color: "#3C424Dad",
+                    color: theme.palette.text.secondary,
                     fontSize: "18px",
                   }}
                 >
@@ -603,10 +606,12 @@ const Dashboard = () => {
               id="dashboard_stats"
               sx={{
                 padding: "2rem 1.5rem",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                border: "1px solid",
+                borderColor: theme.palette.divider,
               }}
             >
               <Box
@@ -616,13 +621,13 @@ const Dashboard = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.5rem",
-                  color: "#3C424D",
+                  color: theme.palette.text.primary,
                 }}
               >
                 <Typography
                   sx={{
                     fontFamily: "Geist_Medium",
-                    color: "#3C424Dad",
+                    color: theme.palette.text.secondary,
                     fontSize: "18px",
                   }}
                 >
@@ -646,7 +651,6 @@ const Dashboard = () => {
               </Box>
             </Box>
           </Grid>
-          
         </Grid>
       </Box>
     );
@@ -686,6 +690,7 @@ const Dashboard = () => {
           paddingTop: "24px",
           display: "flex",
           justifyContent: "space-between",
+          height: "100%",
         }}
       >
         <Grid
@@ -697,8 +702,9 @@ const Dashboard = () => {
           lg={5.9}
           sx={{
             padding: "1.5rem 1.5rem",
-            backgroundColor: "white",
-            border: "1px solid #E8ECF0",
+            backgroundColor: theme.palette.background.paper,
+            border: "1px solid",
+            borderColor: theme.palette.divider,
             borderRadius: "8px",
             boxShadow:
               "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
@@ -714,7 +720,8 @@ const Dashboard = () => {
               marginBottom: "0.5rem",
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
-              borderLeft: "7px solid #5F22E1",
+              borderLeft: "7px solid",
+              borderLeftColor: "#855BDE",
             }}
           >
             Alert Logs
@@ -751,8 +758,10 @@ const Dashboard = () => {
           lg={5.9}
           sx={{
             padding: "1.5rem 1.5rem",
-            backgroundColor: "white",
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "8px",
+            border: "1px solid",
+            borderColor: theme.palette.divider,
             boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
             display: "flex",
             flexDirection: "column",
@@ -766,7 +775,8 @@ const Dashboard = () => {
               marginBottom: "0.5rem",
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
-              borderLeft: "7px solid #5F22E1",
+              borderLeft: "7px solid",
+              borderLeftColor: "#855BDE",
             }}
           >
             Offline Devices
@@ -806,7 +816,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "-70px auto", width: " 97%" }}
+          sx={{ margin: "-30px auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12}>
             {getAlerts()}
@@ -823,7 +833,7 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F0F5F9",
+        backgroundColor: theme.palette.background.default,
         width: "100%",
         height: "100%",
         margin: "auto",
