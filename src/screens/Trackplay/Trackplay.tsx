@@ -29,25 +29,36 @@ import { RiFileExcel2Fill } from "react-icons/ri";
 const Trackplay = () => {
   const classes = trackplayStyle;
   const [map, setMap] = useState<any>(null);
-  const [marker, setMarker] = useState<any>(null);
-  const [lineString, setLineString] = useState<any>(null);
   const [speed, setSpeed] = useState(1);
   const [currentMarker, setCurrentMarker] = useState(null);
   const [animationFrameId, setAnimationFrameId] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [stop, setStop] = useState(false);
-  const [lastStoppedIndex, setLastStoppedIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [dataValue, setDataValue] = useState([]);
   const [rawData, setRawData] = useState([]);
-  const [timeoutIds, setTimeoutIds] = useState([]);
+  const [timeoutIds, setTimeoutIds] = useState<number[]>([]);
   const currentMarkerRef = useRef<any>(null);
+  const currentIndexRef = useRef(currentIndex);
+  const speedRef = useRef(speed);
   const marks = [
     { value: 1, label: "1X" },
     { value: 2, label: "2X" },
     { value: 3, label: "3X" },
     { value: 4, label: "4X" },
   ];
+
+  const startSvgMarkup = `<svg width="40px" height="40px" viewBox="-5.07 0 43.012 43.012" xmlns="http://www.w3.org/2000/svg">
+  <path id="location" d="M406.185,260.012c-18.028-13.493-16.233-28.572-16.233-28.572h11.184a4.7,4.7,0,0,0-.142,1.1,5.378,5.378,0,0,0,.466,2.1,7.353,7.353,0,0,0,2.622,2.615,5,5,0,0,0,4.218,0,7.316,7.316,0,0,0,2.619-2.615,5.4,5.4,0,0,0,.465-2.105,4.728,4.728,0,0,0-.141-1.1h11.5S424.217,246.277,406.185,260.012Zm4.731-29.576a7.353,7.353,0,0,0-2.619-2.618,4.977,4.977,0,0,0-4.211,0,7.389,7.389,0,0,0-2.622,2.618,6.468,6.468,0,0,0-.326,1H389.966c0-7.972,7.335-14.435,16.383-14.435s16.383,6.463,16.383,14.435H411.242A6.523,6.523,0,0,0,410.915,230.436Z" transform="translate(-389.902 -217)" fill="#219C90"/>
+</svg>`;
+
+  const endSvgMarkup = `<svg width="40px" height="40px" viewBox="-5.07 0 43.012 43.012" xmlns="http://www.w3.org/2000/svg">
+  <path id="location" d="M406.185,260.012c-18.028-13.493-16.233-28.572-16.233-28.572h11.184a4.7,4.7,0,0,0-.142,1.1,5.378,5.378,0,0,0,.466,2.1,7.353,7.353,0,0,0,2.622,2.615,5,5,0,0,0,4.218,0,7.316,7.316,0,0,0,2.619-2.615,5.4,5.4,0,0,0,.465-2.105,4.728,4.728,0,0,0-.141-1.1h11.5S424.217,246.277,406.185,260.012Zm4.731-29.576a7.353,7.353,0,0,0-2.619-2.618,4.977,4.977,0,0,0-4.211,0,7.389,7.389,0,0,0-2.622,2.618,6.468,6.468,0,0,0-.326,1H389.966c0-7.972,7.335-14.435,16.383-14.435s16.383,6.463,16.383,14.435H411.242A6.523,6.523,0,0,0,410.915,230.436Z" transform="translate(-389.902 -217)" fill="#EE4E4E"/>
+</svg>`;
+
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
   const getReports = async (dataTest: any) => {
     const finalArr = dataTest.map(
@@ -93,16 +104,22 @@ const Trackplay = () => {
 
     setDataValue(reportData);
   };
+
   function addPolylineToMap(data: any) {
     const polylines = [];
     const speedColors = {
-      60: "#FF0000", // Red for 60
-      40: "#FFA500", // Orange for 40
-      30: "#FFFF00", // Yellow for 30
-      20: "#008000", // Green for 20
-      10: "#0000FF", // Blue for 10
-      0: "#800080", // Purple for 0
+      40: "#007bff", // Blue for 40
+      20: "#FFAC34", // Yellow for 20
+      0: "#FF7D90", // Red for 0
     };
+
+    // Initialize the bounding box with the first point
+    let boundingBox = new window.H.geo.Rect(
+      Number(data[0].lat),
+      Number(data[0].lng),
+      Number(data[0].lat),
+      Number(data[0].lng)
+    );
 
     for (let i = 0; i < data.length - 1; i++) {
       const point1 = data[i];
@@ -110,16 +127,10 @@ const Trackplay = () => {
       const speed = point1.speed;
 
       let color;
-      if (speed >= 60) {
-        color = speedColors[60];
-      } else if (speed >= 40) {
+      if (speed >= 40) {
         color = speedColors[40];
-      } else if (speed >= 30) {
-        color = speedColors[30];
       } else if (speed >= 20) {
         color = speedColors[20];
-      } else if (speed >= 10) {
-        color = speedColors[10];
       } else {
         color = speedColors[0];
       }
@@ -134,25 +145,56 @@ const Trackplay = () => {
         lng: Number(point2.lng),
       });
 
-      const polyline = new window.H.map.Polyline(segmentLine, {
-        style: { lineWidth: 5, strokeColor: color },
+      // Update the bounding box with the new points
+      boundingBox = boundingBox.mergePoint({
+        lat: Number(point1.lat),
+        lng: Number(point1.lng),
       });
+      boundingBox = boundingBox.mergePoint({
+        lat: Number(point2.lat),
+        lng: Number(point2.lng),
+      });
+
+      const polyline = new window.H.map.Polyline(segmentLine, {
+        style: { lineWidth: 10, strokeColor: color },
+      });
+
       polylines.push(polyline);
     }
 
-    polylines.forEach(polyline => map.addObject(polyline));
+    polylines.forEach((polyline) => map.addObject(polyline));
 
-    const svgMarkup = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
-    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-  </svg>`;
-    const icon = new window.H.map.Icon(svgMarkup);
-    const initalMarker = new window.H.map.Marker(
+    // Zoom to fit the bounding box
+    map.getViewModel().setLookAtData({
+      bounds: boundingBox,
+    });
+
+    // Set a specific zoom level to zoom in as desired
+    map.setZoom(12);
+
+    const startIcon = new window.H.map.Icon(startSvgMarkup, {
+      anchor: { x: 20, y: 24 }  // Adjust the anchor to move the icon left by 20px
+    });
+
+    const endIcon = new window.H.map.Icon(endSvgMarkup, {
+      anchor: { x: 20, y: 24 } // Adjust the anchor to move the icon left by 20px
+    });
+    // Add start marker
+    const startMarker = new window.H.map.Marker(
       { lat: Number(data[0].lat), lng: Number(data[0].lng) },
-      { icon: icon }
+      { icon: startIcon }
     );
-    // map.addObject(initalMarker);
-    // setCurrentMarker(initalMarker);
+    map.addObject(startMarker);
+
+    // Add end marker
+    const endMarker = new window.H.map.Marker(
+      {
+        lat: Number(data[data.length - 1].lat),
+        lng: Number(data[data.length - 1].lng),
+      },
+      { icon: endIcon }
+    );
+    map.addObject(endMarker);
   }
 
   const trackPlayApiHandler = async () => {
@@ -167,6 +209,7 @@ const Trackplay = () => {
     const platform = new window.H.service.Platform({
       apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
+
     const defaultLayers = platform.createDefaultLayers();
 
     const initialMap = new window.H.Map(
@@ -184,119 +227,184 @@ const Trackplay = () => {
     );
     setMap(initialMap);
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
+    window.addEventListener("resize", () => initialMap.getViewPort().resize());
+
     return () => {
       window.removeEventListener("resize", () =>
         initialMap.getViewPort().resize()
       );
-      initialMap.dispose();
     };
   }, []);
-  let testMarker = null;
 
   const test = () => {
-    let timeouts: any = [];
-    rawData.forEach((item, index) => {
+    const interpolatedPoints = interpolatePoints(rawData);
+    let newTimeouts: any[] = [];
+    interpolatedPoints.forEach((item, index) => {
       const timeoutId = setTimeout(() => {
         const { lat, lng, direction } = item;
         animate(lat, lng, direction);
-      }, (index * 1000) / speed); // Adjust the delay as needed based on speed
-      timeouts.push(timeoutId);
+        setCurrentIndex(currentIndex + index + 1);
+      }, (index * 100) / speedRef.current);
+      newTimeouts.push(timeoutId);
     });
-    setTimeoutIds(timeouts);
+    setTimeoutIds(newTimeouts);
   };
 
-  const animate = (lat: any, lng: any, direction: any) => {
-    const domIconElement = document.createElement("div");
-    domIconElement.style.margin = "-20px 0 0 -20px";
-    const rotation = parseFloat(direction);
+  const interpolatePoints = (data: string | any[]) => {
+    const points = [];
+    for (let i = 0; i < data.length - 1; i++) {
+      const start = data[i];
+      const end = data[i + 1];
+      const numInterpolations = 10;
+      for (let j = 0; j < numInterpolations; j++) {
+        const lat = interpolate(
+          parseFloat(start.lat),
+          parseFloat(end.lat),
+          j / numInterpolations
+        );
+        const lng = interpolate(
+          parseFloat(start.lng),
+          parseFloat(end.lng),
+          j / numInterpolations
+        );
+        const direction = interpolateDirection(
+          start.direction,
+          end.direction,
+          j / numInterpolations
+        );
+        points.push({ lat, lng, direction });
+      }
+    }
+    return points;
+  };
 
-    domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40"  transform-origin="center center">
-    <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-      fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-  </svg>`;
+  const interpolate = (start: number, end: number, factor: number) => {
+    return start + (end - start) * factor;
+  };
 
+  const interpolateDirection = (start: number, end: number, factor: number) => {
+    let delta = end - start;
+    if (delta > 180) {
+      delta -= 360;
+    } else if (delta < -180) {
+      delta += 360;
+    }
+    return start + delta * factor;
+  };
+
+  const animate = (lat: number, lng: number, direction: number) => {
     if (currentMarkerRef.current) {
-      // console.log("Removing current marker:", currentMarkerRef.current);
-      map.removeObject(currentMarkerRef.current);
+      // Update marker position
+      currentMarkerRef.current.setGeometry({ lat, lng });
+
+      // Update rotation of the marker
+      const svgElement = currentMarkerRef.current.getData();
+      if (svgElement) {
+        svgElement.style.transform = `rotate(${direction}deg)`;
+        svgElement.style.transition = `transform 1s ease-in-out`;
+        svgElement.style.transformOrigin = "center center";
+      }
+    } else {
+      const domIconElement = document.createElement("div");
+      domIconElement.style.margin = "-30px 0 0 -27px";
+      domIconElement.classList.add("move-animation");
+
+      domIconElement.innerHTML = `<svg width="60" height="60" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="80" fill="rgba(204, 230, 255, 0.4)" stroke="rgba(0, 123, 255, 0.4)" stroke-width="2" />
+        <circle cx="100" cy="100" r="30" fill="#007bff" stroke="#ffffff" stroke-width="5" />
+      </svg>`;
+
+      const newMarker = new window.H.map.DomMarker(
+        { lat, lng },
+        {
+          icon: new window.H.map.DomIcon(domIconElement, {
+            onAttach: (clonedElement: any) => {
+              const svgElement = clonedElement.querySelector("svg");
+              if (svgElement) {
+                svgElement.classList.add("rotate-animation");
+                svgElement.style.transform = `rotate(${direction}deg)`;
+                svgElement.style.transition = `transform 1s ease-in-out`;
+                svgElement.style.transformOrigin = "center center";
+              }
+            },
+          }),
+        }
+      );
+
+      newMarker.setData(domIconElement.querySelector("svg"));
+
+      map.addObject(newMarker);
+      currentMarkerRef.current = newMarker;
+    }
+  };
+
+  const handleSpeedChange = (event: any, newValue: any) => {
+    let speedMultiplier;
+    switch (newValue) {
+      case 1:
+        speedMultiplier = 2;
+        break;
+      case 2:
+        speedMultiplier = 4;
+        break;
+      case 3:
+        speedMultiplier = 8;
+        break;
+      case 4:
+        speedMultiplier = 10;
+        break;
+      default:
+        speedMultiplier = 2;
     }
 
-    const newMarker = new window.H.map.DomMarker(
-      { lat, lng },
-      {
-        icon: new window.H.map.DomIcon(domIconElement, {
-          onAttach: function (clonedElement: any) {
-            const svgElement = clonedElement.getElementsByTagName("svg")[0];
-            if (svgElement) {
-              console.log("Before rotation:", svgElement.style.transform);
-              // Ensure direction is a valid number and not a string
-              let rotation = parseFloat(direction) - 40;
-              svgElement.style.transform = "rotate(" + rotation + "deg)";
-              svgElement.style.transformOrigin = "center center";
-              console.log("After rotation:", rotation);
-            } else {
-              console.error("SVG element not found");
-            }
-          },
-        }),
-      }
-    );
-
-    map.addObject(newMarker);
-    currentMarkerRef.current = newMarker;
-    // console.log("New marker added:", newMarker);
-  };
-  const handleSpeedChange = (event: any, newValue: any) => {
     setSpeed(newValue);
+    speedRef.current = speedMultiplier;
+
+    // Clear existing timeouts
+    if (timeoutIds.length > 0) {
+      timeoutIds.forEach((id) => clearTimeout(id));
+    }
+
+    // Continue animation from the current position
+    animateFromCurrentPosition();
+  };
+
+  const animateFromCurrentPosition = () => {
+    const interpolatedPoints = interpolatePoints(rawData);
+    let newTimeouts: any[] = [];
+    interpolatedPoints.slice(currentIndexRef.current).forEach((item, index) => {
+      const timeoutId = setTimeout(() => {
+        const { lat, lng, direction } = item;
+        animate(lat, lng, direction);
+        setCurrentIndex((prevIndex) => {
+          const newIndex = prevIndex + 1;
+          currentIndexRef.current = newIndex;
+          return newIndex;
+        });
+      }, (index * 100) / speedRef.current);
+      newTimeouts.push(timeoutId);
+    });
+    setTimeoutIds(newTimeouts);
   };
 
   const handleClick = () => {
     if (timeoutIds.length > 0) {
-      timeoutIds.forEach(id => clearTimeout(id));
+      timeoutIds.forEach((id) => clearTimeout(id));
     }
     test();
   };
 
-  useEffect(() => {
-    return () => {
-      if (timeoutIds.length > 0) {
-        timeoutIds.forEach(id => clearTimeout(id));
-      }
-    };
-  }, [timeoutIds]);
+  // useEffect(() => {
+  //   return () => {
+  //     if (timeoutIds.length > 0) {
+  //       timeoutIds.forEach((id) => clearTimeout(id));
+  //     }
+  //   };
+  // }, []);
 
   const toggleMovement = () => {
-    setStop(prevStop => !prevStop);
+    setStop((prevStop) => !prevStop);
   };
-
-  // const downloadReport = () => {
-  //   return (
-  //     <>
-  //       <PDFDownloadLink
-  //         document={<TrackReport reportData={dataValue} rawData={rawData} />}
-  //         fileName={"Report.pdf"}
-  //       >
-  //         {({ blob, url, loading, error }) =>
-  //           loading ? (
-  //             "Loading..."
-  //           ) : (
-  //             <Button
-  //               onClick={generateExcelFile}
-  //               sx={{
-  //                 backgroundColor: stop ? "#ffffff" : "#FF5733",
-  //                 color: "white",
-  //                 display: "flex",
-  //                 gap: "0.5rem",
-  //                 textDecoration: "none",
-  //               }}
-  //             >
-  //               <BsFileEarmarkPdfFill />
-  //             </Button>
-  //           )
-  //         }
-  //       </PDFDownloadLink>
-  //     </>
-  //   );
-  // };
 
   const generateExcelFile = () => {
     const modifiedData = rawData.map((item: any) => ({
@@ -314,77 +422,57 @@ const Trackplay = () => {
     XLSX.writeFile(workbook, "TrackReport.xlsx");
   };
 
-  const inputSection = () => {
-    return (
-      <>
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Journey Name"
-              placeHolder="Enter Journey name"
-              // value={formField?.journeyName?.value}
-              required
-              name="journeyName"
-              // onChange={handleOnChange}
-              // error={formField?.journeyName?.error}
-            />
-          </Grid>
+  // const inputSection = () => {
+  //   return (
+  //     <>
+  //       <Grid container spacing={4}>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="Journey Name"
+  //             placeHolder="Enter Journey name"
+  //             required
+  //             name="journeyName"
+  //           />
+  //         </Grid>
 
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="IMEI"
-              placeHolder="Enter IMEI name"
-              // value={formField?.journeyName?.value}
-              required
-              name="imei"
-              // onChange={handleOnChange}
-              // error={formField?.journeyName?.error}
-            />
-          </Grid>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="IMEI"
+  //             placeHolder="Enter IMEI name"
+  //             required
+  //             name="imei"
+  //           />
+  //         </Grid>
 
-          {/* start data */}
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="Start Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="startDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-              // value={formField?.startDate?.value}
-              // onChange={handleOnChange}
-              // error={
-              //   !isTruthy(formField?.startDate?.value) &&
-              //   formField?.startDate?.error
-              // }
-            />
-          </Grid>
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="Start Date"
+  //             type="datetime-local"
+  //             id="scheduleTime"
+  //             name="startDate"
+  //             required
+  //             propsToInputElement={{
+  //               min: moment().format("YYYY-MM-DDTkk:mm"),
+  //             }}
+  //           />
+  //         </Grid>
 
-          {/* end date */}
-          <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
-            <CustomInput
-              label="End Date"
-              type="datetime-local"
-              id="scheduleTime"
-              name="endDate"
-              required
-              propsToInputElement={{
-                min: moment().format("YYYY-MM-DDTkk:mm"),
-              }}
-              // value={formField?.endDate?.value}
-              // onChange={handleOnChange}
-              // error={
-              //   !isTruthy(formField?.endDate?.value) &&
-              //   formField?.endDate?.error
-              // }
-            />
-          </Grid>
-        </Grid>
-      </>
-    );
-  };
+  //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
+  //           <CustomInput
+  //             label="End Date"
+  //             type="datetime-local"
+  //             id="scheduleTime"
+  //             name="endDate"
+  //             required
+  //             propsToInputElement={{
+  //               min: moment().format("YYYY-MM-DDTkk:mm"),
+  //             }}
+  //           />
+  //         </Grid>
+  //       </Grid>
+  //     </>
+  //   );
+  // };
 
   return (
     <Box
@@ -399,7 +487,7 @@ const Trackplay = () => {
     >
       <CustomLoader isLoading={isLoading} />
 
-      <Box
+      {/* <Box
         sx={{
           position: "absolute",
           top: "1rem",
@@ -430,22 +518,14 @@ const Trackplay = () => {
             lg={2}
             xl={2}
           >
-            <CustomButton
-              id="users_add_button"
-              label={"Submit"}
-              onClick={trackPlayApiHandler}
-              customClasses={{
-                width: "150px",
-              }}
-            />
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
           position: "absolute",
-          top: "9rem",
+          top: "2rem",
           right: "2rem",
           zIndex: "2",
           backgroundColor: "white",
@@ -456,20 +536,29 @@ const Trackplay = () => {
       >
         <Box
           sx={{
-            width: "200px",
+            display: "flex",
             gap: "0.5rem",
             justifyContent: "space-between",
+            marginBottom: "0.5rem",
           }}
         >
           <CustomButton
+            id="users_add_button"
+            label={"Plot"}
+            onClick={trackPlayApiHandler}
             customClasses={{
-              marginBottom: "8px",
+              width: "150px",
+            }}
+          />
+
+          <CustomButton
+            customClasses={{
               backgroundColor: stop ? "#ffffff" : "#f0ad4e",
               color: stop ? "#333" : "white",
             }}
             onClick={handleClick}
             icon={
-              true ? (
+              stop ? (
                 <Box
                   sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
                 >
@@ -485,11 +574,7 @@ const Trackplay = () => {
         </Box>
 
         <Accordion>
-          <AccordionSummary
-            // expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1-content"
-            id="speed-scale"
-          >
+          <AccordionSummary aria-controls="panel1-content" id="speed-scale">
             <Typography>Speed</Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -504,20 +589,14 @@ const Trackplay = () => {
                 marks={marks}
                 min={1}
                 max={4}
-                sx={{
-                  height: 8,
-                }}
+                sx={{ height: 8 }}
               />
             </div>
           </AccordionDetails>
         </Accordion>
 
         <Accordion>
-          <AccordionSummary
-            // expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel2-content"
-            id="panel2-header"
-          >
+          <AccordionSummary aria-controls="panel2-content" id="panel2-header">
             <Typography>Reports</Typography>
           </AccordionSummary>
           <AccordionDetails>
