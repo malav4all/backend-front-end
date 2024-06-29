@@ -13,6 +13,10 @@ import { useLocation } from "react-router-dom";
 import { validateTabValue } from "../../helpers/methods";
 import AssetAssingment from "./AssertAssingment/AssetAssingment";
 import LocationType from "./LocationType/LocationType";
+import Account from "./Account/Account";
+import Industry from "./Industry/Industry";
+import CustomerModule from "./CustomerModule/CustomerModule";
+import { RoleManagement } from "./RoleManagement/RoleManagement";
 
 const Settings = () => {
   const classes = SettingStyles;
@@ -57,8 +61,21 @@ const Settings = () => {
         ) : (
           <UnauthorizedPage pageName={strings.USERS} />
         );
+      case strings.INDUSTRY:
+        return <Industry />;
+
+      case strings.MODULE:
+        return <CustomerModule />;
+
+      case strings.ROLE_MANAGEMENT:
+        return <RoleManagement />;
+
+      case strings.ACCOUNT:
+        return <Account />;
+
       case strings.LOCATIONTYPE:
         return <LocationType />;
+
       default:
         return <Users />;
     }

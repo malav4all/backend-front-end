@@ -1,19 +1,19 @@
 import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/graphql/service-response";
 import {
-  ADD_USER,
-  CHANGE_PASSWORD,
-  FETCH_ACCOUNT,
+  ADD_ROLE,
+  CHECK_EXITS_ROLE,
+  FETCH_INDUSTRY_TYPE,
+  FETCH_INDUSTRY_TYPE_WITH_CODE,
   FETCH_ROLE,
-  FETCH_USER,
-  SEARCH_USER,
-  UPDATE_USER,
-} from "./user.mutation";
+  SEARCH_ROLE,
+  UPDATE_ROLE,
+} from "./RoleManagement.mutation";
 
-export const fetchAccountHandler = async (variables: any): Promise<any> => {
+export const fetchIndustryType = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_ACCOUNT,
+      mutation: FETCH_INDUSTRY_TYPE,
       variables,
     });
 
@@ -23,23 +23,12 @@ export const fetchAccountHandler = async (variables: any): Promise<any> => {
   }
 };
 
-export const fetchUserDataHandler = async (variables: any): Promise<any> => {
+export const fetchIndustryTypeWithCode = async (
+  variables: any
+): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_USER,
-      variables,
-    });
-    console.log(response);
-    return response.data;
-  } catch (error: any) {
-    throw new ServiceResponse<any>(0, error.message, undefined);
-  }
-};
-
-export const createUser = async (variables: any): Promise<any> => {
-  try {
-    const response = await client.mutate({
-      mutation: ADD_USER,
+      mutation: FETCH_INDUSTRY_TYPE_WITH_CODE,
       variables,
     });
 
@@ -49,10 +38,10 @@ export const createUser = async (variables: any): Promise<any> => {
   }
 };
 
-export const updateUser = async (variables: any): Promise<any> => {
+export const addRole = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: UPDATE_USER,
+      mutation: ADD_ROLE,
       variables,
     });
 
@@ -75,24 +64,39 @@ export const fetchRole = async (variables: any): Promise<any> => {
   }
 };
 
-export const changePassword = async (variables: any): Promise<any> => {
+export const updateRole = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: CHANGE_PASSWORD,
+      mutation: UPDATE_ROLE,
       variables,
     });
+
     return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }
 };
 
-export const searchUser = async (variables: any): Promise<any> => {
+export const searchRole = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: SEARCH_USER,
+      mutation: SEARCH_ROLE,
       variables,
     });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const checkExitsRole = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: CHECK_EXITS_ROLE,
+      variables,
+    });
+
     return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);

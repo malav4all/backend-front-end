@@ -173,11 +173,11 @@ const Trackplay = () => {
     map.setZoom(12);
 
     const startIcon = new window.H.map.Icon(startSvgMarkup, {
-      anchor: { x: 20, y: 24 }  // Adjust the anchor to move the icon left by 20px
+      anchor: { x: 20, y: 24 }, // Adjust the anchor to move the icon left by 20px
     });
 
     const endIcon = new window.H.map.Icon(endSvgMarkup, {
-      anchor: { x: 20, y: 24 } // Adjust the anchor to move the icon left by 20px
+      anchor: { x: 20, y: 24 }, // Adjust the anchor to move the icon left by 20px
     });
     // Add start marker
     const startMarker = new window.H.map.Marker(
