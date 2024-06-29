@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const ADD_ACCOUNT = gql`
-  mutation ($input: CreateAccountModuleInput!) {
-    createAccountModule(input: $input) {
+  mutation ($input: CreateAccountInput!) {
+    createAccount(input: $input) {
       success
       message
     }
@@ -10,7 +10,7 @@ export const ADD_ACCOUNT = gql`
 `;
 
 export const FETCH_ACCOUNT = gql`
-  mutation ($input: AccountModuleInput!) {
+  mutation ($input: AccountInput!) {
     fetchAccountModuleList(input: $input) {
       paginatorInfo {
         count
@@ -39,7 +39,7 @@ export const FETCH_ACCOUNT = gql`
 `;
 
 export const SEARCH_ACCOUNT_MODULE = gql`
-  mutation ($input: SearchAccountModuleInput!) {
+  mutation ($input: SearchAccountInput!) {
     searchAccount(input: $input) {
       paginatorInfo {
         count
@@ -70,7 +70,7 @@ export const FETCH_INDUSTRY_TYPE = gql`
 `;
 
 export const UPDATE_ACCOUNT = gql`
-  mutation ($input: UpdateAccountModuleInput!) {
+  mutation ($input: UpdateAccountInput!) {
     updateAccount(input: $input) {
       success
       message

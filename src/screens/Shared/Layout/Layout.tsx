@@ -32,7 +32,10 @@ import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
-import { openErrorNotification } from "../../../helpers/methods";
+import {
+  openErrorAlertNotification,
+  openErrorNotification,
+} from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
@@ -42,6 +45,7 @@ import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
 import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
+import Trip from "../../Trip/Trip";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -75,7 +79,7 @@ const Layout = () => {
 
   useEffect(() => {
     if (data?.alertUpdated?.message) {
-      openErrorNotification(data?.alertUpdated?.message);
+      openErrorAlertNotification(data?.alertUpdated?.message);
     }
   }, [data]);
 
@@ -219,19 +223,27 @@ const Layout = () => {
             path={"/device-group"}
             component={DeviceGroup}
             componentName={strings.DEVICE_GROUP}
-          />    
+          />
           <PrivateRoute
-          exact
-          isLoggedIn={isAuthenticated}
-          path={`/device-group/view/:id`}
-          component={ViewDeviceGroupList}
-          componentName={strings.DEVICE_GROUP}
-        />
+            exact
+            isLoggedIn={isAuthenticated}
+            path={`/device-group/view/:id`}
+            component={ViewDeviceGroupList}
+            componentName={strings.DEVICE_GROUP}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/alert-config"}
             component={AlertConfig}
+            componentName={strings.ALERT_CONFIG}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trip"}
+            component={Trip}
             componentName={strings.ALERT_CONFIG}
           />
 

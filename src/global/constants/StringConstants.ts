@@ -89,7 +89,7 @@ export class StringConstants {
   LOGINACTIVITY = "LoginActivity";
   INDUSTRY = "Industry";
   MODULE = "Module";
-  ROLE_MANAGEMENT = "Role"
+  ROLE_MANAGEMENT = "Role";
   ACCOUNT = "Account";
   DEVICEMODULE = "DeviceModule";
   DEVICEONBOARDING = "Device Onboarding";
@@ -259,6 +259,7 @@ export class StringConstants {
   ASSET_ASSIGNMENT = "ASSET ASSIGNMENT";
   ALERT_CONFIG = "ALERTS";
   DEVICE_GROUP = "DEVICE GROUP";
+  TRIP = "Trip";
 }
 
 let strings = new StringConstants();

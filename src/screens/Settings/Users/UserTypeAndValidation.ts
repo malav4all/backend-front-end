@@ -65,6 +65,14 @@ export const insertUserField = (data?: any) => {
       value: data?.userName ?? "",
       error: "",
     },
+    avatar: {
+      value: "",
+      error: "",
+    },
+    password: {
+      value: "",
+      error: "",
+    },
     createdBy: {
       value: store?.getState()?.auth?.userName,
       error: "",
@@ -73,12 +81,16 @@ export const insertUserField = (data?: any) => {
       value: data?.roleId ?? "",
       error: "",
     },
-    status: {
-      value: data?.status ?? "Active",
+    accountId: {
+      value: data?.accountId?._id ?? (data?.accountId?.accountName || ""),
       error: "",
     },
-    password: {
-      value: data?.password ?? "",
+    industryType: {
+      value: "",
+      error: "",
+    },
+    status: {
+      value: data?.status ?? "Active",
       error: "",
     },
     deviceGroupName: {

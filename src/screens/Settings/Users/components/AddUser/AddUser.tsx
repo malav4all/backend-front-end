@@ -65,6 +65,8 @@ const AddUser = (props: CustomProps) => {
   const [isLoading, setIsLoading] = useState<any>(false);
   const [showPassword, setShowPassword] = useState(false);
   const [deviceGroup, setDeviceGroup] = useState<any>([]);
+  const [accountData, setAccountData] = useState<any>([]);
+  const [roleData, setRoleData] = useState([]);
   useEffect(() => {
     props.setEdit?.(false);
     setUserFormFields(insertUserField());
@@ -79,6 +81,8 @@ const AddUser = (props: CustomProps) => {
 
   useEffect(() => {
     fetchDeviceGroupData();
+    fetchAccountData();
+    fetchRoleData();
   }, []);
   const fetchDeviceGroupData = async () => {
     try {
@@ -106,6 +110,47 @@ const AddUser = (props: CustomProps) => {
     );
     setUserFormFields({ ...errors });
     return isValid;
+  };
+
+  const handleSelectAccount = (formFillEvent: SelectChangeEvent<any>) => {
+    const selectedValue = formFillEvent.target.value;
+
+    const selectedAccount = accountData.find(
+      (item: any) => item._id === selectedValue
+    );
+
+    if (!selectedAccount) {
+      console.error("Selected account not found in accountData");
+      return;
+    }
+
+    if (!selectedAccount.industryType) {
+      console.error("Selected account does not have an industryType");
+      setUserFormFields((prevState: any) => ({
+        ...prevState,
+        accountId: {
+          value: selectedValue,
+          error: "",
+        },
+        industryType: {
+          value: "",
+          error: "Industry type not found for selected account",
+        },
+      }));
+      return;
+    }
+
+    setUserFormFields((prevState: any) => ({
+      ...prevState,
+      accountId: {
+        value: selectedValue,
+        error: "",
+      },
+      industryType: {
+        value: selectedAccount.industryType._id || "",
+        error: "",
+      },
+    }));
   };
 
   const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
@@ -166,6 +211,28 @@ const AddUser = (props: CustomProps) => {
         </Typography>
       </Box>
     );
+  };
+
+  const fetchAccountData = async () => {
+    try {
+      const res = await fetchAccountHandler({
+        input: { page: -1, limit: 0 },
+      });
+      setAccountData(res?.fetchAccountModuleList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchRoleData = async () => {
+    try {
+      const res = await fetchRole({
+        input: { page: -1, limit: 0 },
+      });
+      setRoleData(res?.roleListAll?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const insertUserDetails = async () => {
@@ -346,37 +413,54 @@ const AddUser = (props: CustomProps) => {
                 sx={classes.dropDownStyle}
                 id="add_user_roles_dropdown"
                 name="accountId"
-                value={userFormFields?.roleId?.value}
+                value={userFormFields.roleId.value}
                 onChange={handleSelectRole}
                 disabled={props.edit}
                 renderValue={
-                  userFormFields?.roleId?.value !== ""
+                  userFormFields.roleId.value !== ""
                     ? undefined
                     : () => "Select a Role"
                 }
                 MenuProps={classes.menuProps}
                 displayEmpty
                 error={
-                  userFormFields?.roleId?.value?.length < 4 &&
-                  userFormFields?.roleId?.error?.length !== 0
+                  userFormFields.roleId.value.length < 4 &&
+                  userFormFields.roleId.error.length !== 0
                 }
               >
-                {["Admin", "User", "Editor"].map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {/* {roleData
+                  .filter((item: any) => {
+                    const loggedInRoleName = store.getState().auth.roleName;
+                    if (
+                      loggedInRoleName === "Master Admin" &&
+                      item.name === "Master Admin"
+                    ) {
+                      return false;
+                    } else if (
+                      loggedInRoleName === "Super Admin" &&
+                      item.name === "Super Admin"
+                    ) {
+                      return false;
+                    } else if (loggedInRoleName === "Admin") {
+                      return (
+                        item.name !== "Admin" &&
+                        item.name !== "Super Admin" &&
+                        item.name !== "Admin Assistant"
+                      );
+                    }
+                    return true;
+                  })
+                  .map((item: any, index: any) => (
+                    <MenuItem
+                      key={index}
+                      value={item._id}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item.name}
+                    </MenuItem>
+                  ))} */}
               </Select>
             </Stack>
-            {!isTruthy(userFormFields?.roleId?.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {userFormFields.roleId?.error}
-              </FormHelperText>
-            )}
           </Box>
         </Grid>
 
@@ -423,6 +507,55 @@ const AddUser = (props: CustomProps) => {
             </Stack>
           </Box>
         </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Account
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_roles_dropdown"
+                name="accountId"
+                disabled={props.edit}
+                value={userFormFields.accountId.value}
+                onChange={handleSelectAccount}
+                renderValue={
+                  userFormFields.accountId.value !== ""
+                    ? undefined
+                    : () => "Select an Account"
+                }
+                MenuProps={classes.menuProps}
+                displayEmpty
+                error={
+                  userFormFields.accountId.value.length < 4 &&
+                  userFormFields.accountId.error.length !== 0
+                }
+              >
+                {accountData?.map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item._id}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.accountName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+
+            {!isTruthy(userFormFields.accountId.value) && (
+              <FormHelperText error sx={classes.errorStyle}>
+                {userFormFields.accountId.error}
+              </FormHelperText>
+            )}
+          </Box>
+        </Grid>
+
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">

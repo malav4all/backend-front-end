@@ -8,6 +8,7 @@ import {
   geoZoneSvg,
   getHomeIcon,
   getSettingsIcon,
+  getTripIcon,
   journeyIcon,
   liveSvg,
   reportIcon,
@@ -15,6 +16,7 @@ import {
   trackPlaySvg,
 } from "./SidebarSvgConstant";
 import { pinkDarkColor } from "./styles";
+
 export interface ListOfMenusType {
   icon?: string;
   activeIcon?: string;
@@ -186,6 +188,17 @@ const ListOfMenus = () =>
       accessToResource: [],
       subMenu: [],
     },
+    {
+      icon: getTripIcon("#dbdbdb"),
+      activeIcon: getTripIcon(pinkDarkColor),
+      text: "Trips",
+      link: `${"/trip"}`,
+      pageName: strings.TRIP,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
@@ -249,5 +262,5 @@ export const doesUserHasAccessTo = (componentName: string) => {
 export const isAdmin = () => {
   const roleId = store.getState().auth.role;
 
-  return roleId === "Admin";
+  return roleId === "Master Admin" || "Admin";
 };

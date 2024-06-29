@@ -129,6 +129,7 @@ const Users = () => {
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
         roleId: usersData?.roleId,
+        // roleId: usersData?.roleId?.name,
         deviceGroupName: (
           <>
             <Tooltip

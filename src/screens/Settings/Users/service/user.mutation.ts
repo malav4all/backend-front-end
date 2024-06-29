@@ -1,20 +1,23 @@
 import { gql } from "@apollo/client";
 
 export const FETCH_ACCOUNT = gql`
-  mutation ($input: AccountModuleInput!) {
+  mutation ($input: AccountInput!) {
     fetchAccountModuleList(input: $input) {
+      paginatorInfo {
+        count
+        currentPage
+      }
       success
       message
       data {
         _id
         accountName
-        industryType {
-          _id
-        }
+        
       }
     }
   }
 `;
+
 
 export const FETCH_USER = gql`
   mutation ($input: UserInput!) {
@@ -30,20 +33,34 @@ export const FETCH_USER = gql`
         lastName
         userName
         email
-        mobileNumber
-        createdBy
-        roleId
         status
-        deviceGroup {
-          deviceGroupName
-          _id
-          imeiData {
-            imei
-            labelName
-            _id
-            boxSet
-          }
-        }
+        mobileNumber
+        # createdBy
+        # accountId{
+        #   _id
+        # }
+        # accountId {
+        #   _id
+        #   accountName
+        #   industryType {
+        #     _id
+        #     name
+        #   }
+        # }
+        # roleId {
+        #   _id
+        #   name
+        # }
+        # deviceGroup {
+        #   deviceGroupName
+        #   _id
+        #   imeiData {
+        #     imei
+        #     labelName
+        #     _id
+        #     boxSet
+        #   }
+        # }
       }
     }
   }
