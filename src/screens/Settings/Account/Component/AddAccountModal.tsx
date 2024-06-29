@@ -248,7 +248,6 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountName"
               placeHolder="Enter Account Name"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 25 }}
               value={accountFields.accountName.value}
               //   error={profileFormData.name.error}
             />
@@ -262,7 +261,6 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountContactName"
               placeHolder="Enter Account Contact Name"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 25 }}
               value={accountFields.accountContactName.value}
               //   error={profileFormData.name.error}
             />
@@ -316,7 +314,6 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountContactEmail"
               placeHolder="Enter Account Contact Email"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 35 }}
               value={accountFields.accountContactEmail.value}
               //   error={profileFormData.name.error}
             />
@@ -329,7 +326,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountAddress"
               placeHolder="Enter Address"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountAddress.value}
               //   error={profileFormData.name.error}
             />
@@ -344,7 +341,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountContactMobile"
               placeHolder="Enter contact mobile number"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountContactMobile.value}
               //   error={profileFormData.name.error}
             />
@@ -358,7 +355,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountPanNo"
               placeHolder="Enter Account Pan No"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountPanNo.value}
               //   error={profileFormData.name.error}
             />
@@ -371,7 +368,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountGstNo"
               placeHolder="Enter Account GST No"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountGstNo.value}
               //   error={profileFormData.name.error}
             />
@@ -384,7 +381,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountAadharNo"
               placeHolder="Enter Account Aadhar Card Number"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountAadharNo.value}
               //   error={profileFormData.name.error}
             />
@@ -397,7 +394,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountState"
               placeHolder="Enter Account State"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountState.value}
               //   error={profileFormData.name.error}
             />
@@ -410,7 +407,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountCity"
               placeHolder="Enter Account City"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountCity.value}
               //   error={profileFormData.name.error}
             />
@@ -423,7 +420,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="remarks"
               placeHolder="Enter Remarks"
               onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 100 }}
+              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.remarks.value}
               //   error={profileFormData.name.error}
             />
@@ -593,7 +590,7 @@ const AddAccountModal = (props: CustomProps) => {
         const res = await addAccount({
           input: { ...accountpayload },
         });
-        openSuccessNotification(res.createAccountModule.message);
+        openSuccessNotification(res?.createAccountModule?.message);
       }
       await props.tableData?.();
       props.handleCloseAddUserDialog?.(false);
