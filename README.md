@@ -1,0 +1,1 @@
+[![Quality Gate Status](https://code-analyze.imztech.io/api/project_badges/measure?project=event-console_console_AZBjP-u-vWuHdw-_M-7_&metric=alert_status&token=sqb_2d8a4ae05646658741560f55129ee2dd5be9d8f0)](https://code-analyze.imztech.io/dashboard?id=event-console_console_AZBjP-u-vWuHdw-_M-7_)
