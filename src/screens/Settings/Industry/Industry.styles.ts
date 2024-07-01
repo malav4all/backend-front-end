@@ -9,6 +9,7 @@ import {
   primaryHeadingColor,
   pureWhiteColor,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -67,8 +68,6 @@ const IndustryStyles = {
     paddingBottom: "20px",
   },
   profileFooter: {
-    margin: "0 10px",
-    marginTop: "16px",
     display: "flex",
     justifyContent: "center",
   },
@@ -89,19 +88,38 @@ const IndustryStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",
     },
   },
+  boldFonts: {
+    ...boldFont,
+    fontSize: getRelativeFontSize(13),
+    textAlign: "center",
+  },
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",
+    // padding: "12px 12px",
+    width: "100%",
     background: "none",
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
     },
   },
+  dialogFooter: {
+    display: "flex",
+    gap: "10px",
+    ...centerItemFlex,
+    width: "100%",
+    margin: "20px",
+    justifyContent: "center",
+    "& button": {
+      width: "120px",
+    },
+  },
+
   formInput: {
     width: "100%",
     "& .MuiDropzoneArea-root": {
@@ -110,8 +128,10 @@ const IndustryStyles = {
     },
   },
   label: {
-    ...boldFont,
+    ...semiBoldFont,
+    fontSize: "14px",
     marginBottom: "8px",
+    // padding: "0px 12px",
   },
   star: {
     color: inputLabelRequiredColor,
@@ -119,12 +139,10 @@ const IndustryStyles = {
   },
   dropDownStyle: {
     ...regularFont,
-    // ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
-    height: "47px",
+    height: "42px",
     padding: "2px",
     width: "100%",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "16px",
   },
   placeholderText: {

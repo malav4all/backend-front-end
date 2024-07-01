@@ -11,6 +11,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
@@ -39,6 +40,12 @@ import {
   industryValidation,
 } from "./IndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import {
+  primaryHeadingColor,
+  regularFont,
+  getRelativeFontSize,
+} from "../../../utils/styles";
+import AddIndustry from "./component/AddIndustry";
 
 const Industry = () => {
   const ITEM_HEIGHT = 48;
@@ -47,11 +54,11 @@ const Industry = () => {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
       },
     },
   };
   const classes = IndustryStyles;
+  const theme = useTheme();
   const [industryFormData, setIndustryFormData] = useState(
     industryInsertField()
   );
@@ -63,6 +70,8 @@ const Industry = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<any>();
+  const [addIndustryDialogHandler, setAddIndustryDialogHandler] =
+    useState(false);
 
   useEffect(() => {
     setPageNumber(1);
@@ -106,8 +115,8 @@ const Industry = () => {
               <img
                 src={`http://localhost:5000/${item.file}`}
                 alt=""
-                width="50"
-                height="60"
+                width="30"
+                height="30"
               />
             </>
           ),
@@ -216,16 +225,19 @@ const Industry = () => {
     });
   };
 
+  const handleFileChange = (e: any) => {
+    const fileList = e.target.files[0];
+    setFile(fileList);
+  };
+
   const getProfileFooter = () => {
     return (
-      <Box sx={classes.profileFooter}>
-        <CustomButton
-          id="profile_submit_button"
-          customClasses={classes.saveBtnStyle}
-          onClick={addIndustryHandler}
-          label="Save"
-        />
-      </Box>
+      <CustomButton
+        id="profile_submit_button"
+        label="Add Industry"
+        customClasses={{ width: "150px" }}
+        onClick={() => setAddIndustryDialogHandler(true)}
+      />
     );
   };
 
@@ -240,32 +252,19 @@ const Industry = () => {
 
   const searchBarRole = () => {
     return (
-      <Stack
-        px={4}
-        pt={2}
-        direction={{ lg: "row", xs: "column" }}
-        justifyContent="flex-end"
-        alignItems={{ lg: "center" }}
-      >
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-        >
-          <CustomInput
-            id="role_mgmt_search_field"
-            placeHolder="Search Industry Name"
-            name="Role"
-            onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-      </Stack>
+      <CustomInput
+        id="role_mgmt_search_field"
+        placeHolder="Search Industry Name"
+        name="Role"
+        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
     );
   };
 
@@ -277,11 +276,22 @@ const Industry = () => {
   const rolesTableRender = () => {
     return (
       <>
-        {searchBarRole()}
+        <Stack
+          direction="row"
+          justifyContent="end"
+          alignItems="center"
+          spacing={1}
+          pt={2}
+          px={3}
+        >
+          {searchBarRole()}
+          {getProfileFooter()}
+        </Stack>
         <Box
           sx={{
             minWidth: "300px",
             overflow: "auto",
+            padding: "30px",
           }}
         >
           <CustomTable
@@ -300,133 +310,32 @@ const Industry = () => {
     );
   };
 
-  const getPersonalDetails = () => {
-    return (
-      <Grid container mt={2}>
-        <Grid item xs={12} mb={2} ml={1.5}>
-          <Typography sx={classes.pageSubtitle}>Add Industry</Typography>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box m={1.5}>
-            <CustomInput
-              required
-              label="Industry Name"
-              id="profile_name_field"
-              type="text"
-              name="name"
-              placeHolder="Enter Industry Name"
-              onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 25 }}
-              value={industryFormData.name.value}
-              onBlur={checkExitsRoleHandler}
-              error={industryFormData.name.error}
-            />
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box m={1.5}>
-            <CustomInput
-              required
-              label="Industry Name"
-              id="profile_name_field"
-              type="file"
-              name="name"
-              placeHolder="Enter Industry Name"
-              onChange={(e: any) => {
-                const fileList = e.target.files[0];
-                setFile(fileList);
-              }}
-            />
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
-            <Box m={1.5}>
-              <Box display={"flex"}>
-                <Typography sx={classes.label}>Industry Module</Typography>
-                <Typography sx={classes.star}>*</Typography>
-              </Box>
-
-              <Select
-                id="role_management_select_permission_dropdown"
-                name="permissions"
-                sx={classes.dropDownStyle}
-                displayEmpty
-                value={industryFormData.code.value}
-                onChange={handleModuleChange}
-                multiple
-                MenuProps={MenuProps}
-                renderValue={(selected) => (
-                  <Typography>
-                    {selected.length === 0
-                      ? "Select Modules"
-                      : selected.join(", ")}
-                  </Typography>
-                )}
-                error={
-                  !isTruthy(industryFormData.code?.value) &&
-                  industryFormData.code?.error
-                }
-              >
-                {modulesData.map((item: any) => (
-                  <MenuItem
-                    key={item._id}
-                    value={item.name}
-                    sx={classes.optionStyle}
-                  >
-                    <Checkbox
-                      checked={industryFormData.code?.value?.includes(
-                        item.name
-                      )}
-                      sx={classes.checkbox}
-                    />
-                    <ListItemText primary={item.name} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </Box>
-            {!isTruthy(industryFormData.code?.value) && (
-              <FormHelperText error sx={{ paddingLeft: "20px" }}>
-                {industryFormData.code?.error}
-              </FormHelperText>
-            )}
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
-            <Box display={"flex"}>
-              <Typography sx={classes.label}>Description </Typography>
-              <Typography sx={classes.star}>*</Typography>
-            </Box>
-            <TextField
-              multiline
-              minRows={3}
-              inputProps={{ maxLength: 500 }}
-              sx={classes.testAreaStyle}
-              name="description"
-              id="comment"
-              //   error={ticketForm.comment.error}
-              placeholder="Enter your description"
-              value={industryFormData.description.value}
-              onChange={onChangeHandler}
-            />
-          </Box>
-        </Grid>
-      </Grid>
-    );
-  };
-
   return (
-    <Container>
-      {getPersonalDetails()}
-      {getProfileFooter()}
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       {rolesTableRender()}
+      <AddIndustry
+        open={addIndustryDialogHandler}
+        handleClose={() => setAddIndustryDialogHandler(false)}
+        industryFormData={industryFormData}
+        modulesData={modulesData}
+        file={file}
+        onChangeHandler={onChangeHandler}
+        handleModuleChange={handleModuleChange}
+        checkExitsRoleHandler={checkExitsRoleHandler}
+        handleFileChange={handleFileChange}
+        handleSave={addIndustryHandler}
+        isLoading={isLoading}
+        MenuProps={MenuProps}
+        isTruthy={isTruthy}
+        classes={classes}
+      />
       <CustomLoader isLoading={isLoading} />
-    </Container>
+    </Box>
   );
 };
 

@@ -21,14 +21,14 @@ import CustomButton from "../../../global/components/CustomButton/CustomButton";
 import AddUser from "./components/AddUser/AddUser";
 import { RowData, UserData } from "../../../models/interfaces";
 import SearchIcon from "@mui/icons-material/Search";
+import { PiPencilSimpleBold } from "react-icons/pi";
 import {
   debounceEventHandler,
   getFormattedStatsCount,
   isTruthy,
   openErrorNotification,
 } from "../../../helpers/methods";
-import EditIcon from "@mui/icons-material/Edit";
-import LockResetIcon from "@mui/icons-material/LockReset";
+import { MdPassword } from "react-icons/md";
 import {
   CustomDialog,
   CustomInput,
@@ -46,6 +46,7 @@ import {
   primaryHeadingColor,
   boldFont,
   regularFont,
+  headerColor,
 } from "../../../utils/styles";
 import { fetchUserDataHandler, searchUser } from "./service/user.service";
 import { store } from "../../../utils/store";
@@ -189,9 +190,13 @@ const Users = () => {
         action: (
           <>
             <Tooltip title="Change Password">
-              <LockResetIcon
-                htmlColor={"#5F22E2"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              <MdPassword
+                color={headerColor}
+                style={{
+                  margin: "0px 20px -7px 0px",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                }}
                 onClick={() => {
                   setChangePasswordModal(true);
                   setSelectedEmailData(usersData.email);
@@ -204,9 +209,13 @@ const Users = () => {
                 editUser(usersData);
               }}
             >
-              <EditIcon
-                htmlColor={"#5F22E2"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              <PiPencilSimpleBold
+                style={{
+                  margin: "0px 8px -7px 0px",
+                  cursor: "pointer",
+                  color: headerColor,
+                  fontSize: "20px",
+                }}
               />
             </Tooltip>
           </>
@@ -302,7 +311,7 @@ const Users = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label={"Add User"}
+        label="Add User"
         onClick={() => setAddUserDialogHandler(true)}
         customClasses={{
           width: "150px",
@@ -469,7 +478,7 @@ const Users = () => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.paper,
-        height: "100%"
+        height: "100%",
       }}
     >
       <Stack
@@ -486,7 +495,7 @@ const Users = () => {
             color: primaryHeadingColor,
           }}
         >
-          Users
+          
         </Typography>
 
         <Stack
