@@ -1,5 +1,6 @@
-import { client } from "../../../core-services/graphql/apollo-client";
-import { ServiceResponse } from "../../../core-services/graphql/service-response";
+
+import { client } from "../../../../core-services/graphql/apollo-client";
+import { ServiceResponse } from "../../../../core-services/rest-api";
 import { ADD_DEVICE_GROUP, FETCH_DEVICE_GROUP, GET_ALL_DEVICE, SEARCH_DEVICE_GROUP, UPDATE_DEVICE_GROUP } from "./Trip.mutation";
 
 export const addTrip = async (variables: any): Promise<any> => {

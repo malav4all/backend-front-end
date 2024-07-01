@@ -1,11 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
-  CustomAppHeader,
-  CustomButton,
-  CustomInput,
-  CustomTable,
-} from "../../global/components";
-import {
   Box,
   Grid,
   InputAdornment,
@@ -14,32 +8,38 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  headerColor,
-} from "../../utils/styles";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  debounceEventHandler,
-  isTruthy,
-  openErrorNotification,
-} from "../../helpers/methods";
-
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
-import strings from "../../global/constants/StringConstants";
-import notifiers from "../../global/constants/NotificationConstants";
-import history from "../../utils/history";
 import tripStyles from "./Trip.styles";
 import AddTrip from "./components/AddTrip/AddTrip";
 import { tripTableHeader } from "./TripTypeAndValidation";
 import { fetchTrip, searchTrip } from "./service/Trip.service";
+import {
+  debounceEventHandler,
+  isTruthy,
+  openErrorNotification,
+} from "../../../helpers/methods";
+import notifiers from "../../../global/constants/NotificationConstants";
+import {
+  CustomAppHeader,
+  CustomButton,
+  CustomInput,
+  CustomTable,
+} from "../../../global/components";
+import {
+  boldFont,
+  headerColor,
+  primaryHeadingColor,
+  getRelativeFontSize,
+} from "../../../utils/styles";
+import strings from "../../../global/constants/StringConstants";
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import { useHistory } from "react-router-dom"; 
 
 const Trip = () => {
   const theme = useTheme();
   const classes = tripStyles;
+  const history = useHistory(); 
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
@@ -49,9 +49,150 @@ const Trip = () => {
   const [addTripDialogHandler, setAddTripDialogHandler] = useState(false);
   const [tripData, setTripData] = useState<any>([]);
   const [selectedTripRowData, setSelectedTripRowData] = useState<any>({});
-
   const [roles, setRoles] = useState([]);
   const [edit, setEdit] = useState(false);
+
+  const dummyData = [
+    {
+      key: "66448109b3b0d0254254e215",
+      imeiNumber: "123456789012345",
+      totalDistance: "460.26 Km",
+      totalDuration: "7.40 Hours",
+      startDate: "15-May-2024 02:15 AM",
+      endDate: "16-May-2024 04:25 AM",
+      createdBy: "Rajesh",
+    },
+    {
+      key: "66448109b3b0d0254254e216",
+      imeiNumber: "123456789012346",
+      totalDistance: "500.00 Km",
+      totalDuration: "8.00 Hours",
+      startDate: "16-May-2024 03:15 AM",
+      endDate: "17-May-2024 05:25 AM",
+      createdBy: "Priya",
+    },
+    {
+      key: "66448109b3b0d0254254e217",
+      imeiNumber: "123456789012347",
+      totalDistance: "550.00 Km",
+      totalDuration: "9.00 Hours",
+      startDate: "17-May-2024 04:15 AM",
+      endDate: "18-May-2024 06:25 AM",
+      createdBy: "Amit",
+    },
+    {
+      key: "66448109b3b0d0254254e218",
+      imeiNumber: "123456789012348",
+      totalDistance: "600.00 Km",
+      totalDuration: "10.00 Hours",
+      startDate: "18-May-2024 05:15 AM",
+      endDate: "19-May-2024 07:25 AM",
+      createdBy: "Neha",
+    },
+    {
+      key: "66448109b3b0d0254254e219",
+      imeiNumber: "123456789012349",
+      totalDistance: "650.00 Km",
+      totalDuration: "11.00 Hours",
+      startDate: "19-May-2024 06:15 AM",
+      endDate: "20-May-2024 08:25 AM",
+      createdBy: "Suresh",
+    },
+    {
+      key: "66448109b3b0d0254254e220",
+      imeiNumber: "123456789012350",
+      totalDistance: "700.00 Km",
+      totalDuration: "12.00 Hours",
+      startDate: "20-May-2024 07:15 AM",
+      endDate: "21-May-2024 09:25 AM",
+      createdBy: "Meera",
+    },
+    {
+      key: "66448109b3b0d0254254e221",
+      imeiNumber: "123456789012351",
+      totalDistance: "750.00 Km",
+      totalDuration: "13.00 Hours",
+      startDate: "21-May-2024 08:15 AM",
+      endDate: "22-May-2024 10:25 AM",
+      createdBy: "Vikram",
+    },
+    {
+      key: "66448109b3b0d0254254e222",
+      imeiNumber: "123456789012352",
+      totalDistance: "800.00 Km",
+      totalDuration: "14.00 Hours",
+      startDate: "22-May-2024 09:15 AM",
+      endDate: "23-May-2024 11:25 AM",
+      createdBy: "Anjali",
+    },
+    {
+      key: "66448109b3b0d0254254e223",
+      imeiNumber: "123456789012353",
+      totalDistance: "850.00 Km",
+      totalDuration: "15.00 Hours",
+      startDate: "23-May-2024 10:15 AM",
+      endDate: "24-May-2024 12:25 PM",
+      createdBy: "Ravi",
+    },
+    {
+      key: "66448109b3b0d0254254e224",
+      imeiNumber: "123456789012354",
+      totalDistance: "900.00 Km",
+      totalDuration: "16.00 Hours",
+      startDate: "24-May-2024 11:15 AM",
+      endDate: "25-May-2024 01:25 PM",
+      createdBy: "Sunita",
+    },
+    {
+      key: "66448109b3b0d0254254e225",
+      imeiNumber: "123456789012355",
+      totalDistance: "950.00 Km",
+      totalDuration: "17.00 Hours",
+      startDate: "25-May-2024 12:15 PM",
+      endDate: "26-May-2024 02:25 PM",
+      createdBy: "Karan",
+    },
+    {
+      key: "66448109b3b0d0254254e226",
+      imeiNumber: "123456789012356",
+      totalDistance: "1000.00 Km",
+      totalDuration: "18.00 Hours",
+      startDate: "26-May-2024 01:15 PM",
+      endDate: "27-May-2024 03:25 PM",
+      createdBy: "Asha",
+    },
+    {
+      key: "66448109b3b0d0254254e227",
+      imeiNumber: "123456789012357",
+      totalDistance: "1050.00 Km",
+      totalDuration: "19.00 Hours",
+      startDate: "27-May-2024 02:15 PM",
+      endDate: "28-May-2024 04:25 PM",
+      createdBy: "Manoj",
+    },
+    {
+      key: "66448109b3b0d0254254e228",
+      imeiNumber: "123456789012358",
+      totalDistance: "1100.00 Km",
+      totalDuration: "20.00 Hours",
+      startDate: "28-May-2024 03:15 PM",
+      endDate: "29-May-2024 05:25 PM",
+      createdBy: "Pooja",
+    },
+    {
+      key: "66448109b3b0d0254254e229",
+      imeiNumber: "123456789012359",
+      totalDistance: "1150.00 Km",
+      totalDuration: "21.00 Hours",
+      startDate: "29-May-2024 04:15 PM",
+      endDate: "30-May-2024 06:25 PM",
+      createdBy: "Ramesh",
+    },
+  ];
+
+  useEffect(() => {
+    tableRender(dummyData); 
+  }, []);
 
   useEffect(() => {
     if (searchTrips) {
@@ -75,67 +216,32 @@ const Trip = () => {
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
       return {
-        key: item._id,
-        tripName: (
-          <>
-            <Tooltip
-              title="Show Imei List"
-              placement="top"
-              arrow
-              onClick={() => {
-                getRedirectionUrl(item?._id);
-              }}
-              sx={{
-                color: theme.palette.text.primary,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                  display: "inline-block",
-                  color: theme.palette.text.primary,
-                  fontSize: "13px",
-                  "&:hover": {
-                    borderBottom: `1px solid ${theme.palette.primary.main}`,
-                    color: theme.palette.primary.main,
-                  },
-                }}
-              >
-                {item?.tripName}
-              </Typography>
-            </Tooltip>
-          </>
-        ),
-        createdBy: (
-          <Typography
+        key: item.key,
+        imeiNumber: item.imeiNumber,
+        totalDistance: item.totalDistance,
+        totalDuration: item.totalDuration,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        createdBy: item.createdBy,
+        action: (
+          <Tooltip
+            title="Edit"
+            onClick={() => {
+              editTrip(item);
+            }}
             sx={{
               color: theme.palette.text.primary,
             }}
           >
-            {item?.createdBy}
-          </Typography>
-        ),
-        action: (
-          <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editTrip(item);
+            <PiPencilSimpleBold
+              style={{
+                margin: "0px 8px -7px 0px",
+                cursor: "pointer",
+                color: theme.palette.primary.main,
+                fontSize: "17px",
               }}
-              sx={{
-                color: theme.palette.text.primary,
-              }}
-            >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: theme.palette.primary.main,
-                  fontSize: "17px",
-                }}
-              />
-            </Tooltip>
-          </>
+            />
+          </Tooltip>
         ),
       };
     });
@@ -146,7 +252,7 @@ const Trip = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Trip
+          Active Trips
         </Typography>
       </Box>
     );
@@ -195,7 +301,7 @@ const Trip = () => {
           limit: 10,
         },
       });
-      tableRender(res?.searchTrip?.data);
+      tableRender(dummyData); 
       setCount(res?.searchTrip?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -213,6 +319,7 @@ const Trip = () => {
       setSearchTrips("");
     }
   };
+
   const editTrip = React.useCallback(
     (rowdata: any) => {
       setAddTripDialogHandler(true);
@@ -221,6 +328,7 @@ const Trip = () => {
     },
     [edit]
   );
+
   const closeAddTripDialogHandler = () => {
     setAddTripDialogHandler(false);
     setSelectedTripRowData(null);

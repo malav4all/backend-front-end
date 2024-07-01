@@ -14,20 +14,20 @@ import {
   CustomInput,
   CustomPaper,
   CustomTable,
-} from "../../../../global/components"
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader"
+} from "../../../global/components"
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader"
 import {
   debounceEventHandler,
   openErrorNotification,
-} from "../../../../helpers/methods"
-import strings from "../../../../global/constants/StringConstants"
+} from "../../../helpers/methods"
+import strings from "../../../global/constants/StringConstants"
 import SearchIcon from "@mui/icons-material/Search"
 // import history from "../../utils/history";
 import {
   alertRowData,
   statusDevice,
-} from "../../../Reports/service/Report.service"
-import archivedJourneyStyles from "./ArchivedJourney.styles"
+} from "../../Reports/service/Report.service"
+import archivedJourneyStyles from "./ArchivedTrips.styles"
 import { FaRoute } from "react-icons/fa"
 import { NavLink } from "react-router-dom"
 import {
@@ -35,9 +35,9 @@ import {
   disabledBackgroundColor,
   headerColor,
   primaryHeadingColor,
-} from "../../../../utils/styles"
-import { archiveJourney } from "./service/ArchivedJourney.service"
-import history from "../../../../utils/history"
+} from "../../../utils/styles"
+import { archiveJourney } from "./service/ArchivedTrips.service"
+import history from "../../../utils/history"
 const ArchivedJoruney = () => {
   const classes = archivedJourneyStyles
   const theme = useTheme();
@@ -105,7 +105,7 @@ const ArchivedJoruney = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Archived Journey"
+        placeHolder="Search Archived Trips"
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(
@@ -192,7 +192,7 @@ const ArchivedJoruney = () => {
       <Box>
         <Typography sx={{...classes.mainCardHeading,
           color: "white",
-        }}>Archived Journey</Typography>
+        }}>Archived Trips</Typography>
       </Box>
     )
   }
@@ -250,7 +250,7 @@ const ArchivedJoruney = () => {
             >
               <FaRoute
                 style={{
-                  color: headerColor,
+                  color: "#5F22E2",
                   cursor: "pointer",
                   fontSize: "1.2rem",
                 }}

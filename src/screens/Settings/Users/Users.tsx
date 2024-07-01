@@ -458,7 +458,7 @@ const Users = () => {
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
           rowsPerPage={perPageData}
-          isExportCSV={true}
+          isExportCSV={false}
           // onClickExportCSV={handleDownload}
         />
       </Box>
