@@ -254,7 +254,7 @@ const Industry = () => {
     return (
       <CustomInput
         id="role_mgmt_search_field"
-        placeHolder="Search Industry ..."
+        placeHolder="Search Industry Name"
         name="Role"
         onChange={debounceEventHandler(handleSearchOnChange, 2000)}
         InputProps={{

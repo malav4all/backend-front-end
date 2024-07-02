@@ -162,12 +162,13 @@ const AddIndustry = ({
             onClick={handleClose}
             customClasses={{
               ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
               color: theme.palette.text.primary,
             }}
           />
           <CustomButton
             id="add_industry_submit_button"
-            label="Save"
+            label="Add"
             onClick={handleSave}
             loading={isLoading}
           />

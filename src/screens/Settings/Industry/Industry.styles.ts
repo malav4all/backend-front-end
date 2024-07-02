@@ -7,7 +7,6 @@ import {
   mediumFont,
   pinkDarkColor,
   primaryHeadingColor,
-  pureWhiteColor,
   regularFont,
   semiBoldFont,
   theme,
@@ -19,14 +18,17 @@ const IndustryStyles = {
     ...boldFont,
     color: primaryHeadingColor,
   },
+
   profileHeaderEmail: {
     color: lightTextColor,
   },
+
   pageSubtitle: {
     fontSize: getRelativeFontSize(6),
     ...boldFont,
     color: primaryHeadingColor,
   },
+
   radioButtonlabel: {
     ...regularFont,
     fontSize: "16px",
@@ -34,6 +36,7 @@ const IndustryStyles = {
     fontStyle: "normal",
     color: lightTextColor,
   },
+
   textField: {
     width: "100%",
     borderRadius: "12px",
@@ -51,6 +54,7 @@ const IndustryStyles = {
       },
     },
   },
+
   nameField: {
     ...boldFont,
     color: "#212121",
@@ -58,19 +62,23 @@ const IndustryStyles = {
       color: inputLabelRequiredColor,
     },
   },
+
   radioChecked: {
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
+
   centerItemFlex: {
     ...centerItemFlex,
     paddingBottom: "20px",
   },
+
   profileFooter: {
     display: "flex",
     justifyContent: "center",
   },
+
   saveBtnStyle: {
     width: "200px",
     whiteSpace: "nowrap",
@@ -78,6 +86,7 @@ const IndustryStyles = {
       width: "100%",
     },
   },
+
   editBtnStyle: {
     width: "100%",
     whiteSpace: "nowrap",
@@ -86,6 +95,7 @@ const IndustryStyles = {
       marginBottom: theme.spacing(1),
     },
   },
+
   cancelButtonStyle: {
     color: "#212121 !important",
     backgroundColor: "#00000000",
@@ -94,20 +104,22 @@ const IndustryStyles = {
       background: "none",
     },
   },
+
   boldFonts: {
     ...boldFont,
     fontSize: getRelativeFontSize(13),
     textAlign: "center",
   },
+
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",
-    // padding: "12px 12px",
     width: "100%",
     background: "none",
     "& .MuiOutlinedInput-root": {
       borderRadius: "5px !important",
     },
   },
+
   dialogFooter: {
     display: "flex",
     gap: "10px",
@@ -127,16 +139,19 @@ const IndustryStyles = {
       minHeight: "10px",
     },
   },
+
   label: {
     ...semiBoldFont,
     fontSize: "14px",
     marginBottom: "8px",
     // padding: "0px 12px",
   },
+
   star: {
     color: inputLabelRequiredColor,
     ...boldFont,
   },
+
   dropDownStyle: {
     ...regularFont,
     height: "42px",
@@ -145,13 +160,16 @@ const IndustryStyles = {
     borderRadius: "5px",
     fontSize: "16px",
   },
+
   placeholderText: {
     ...regularFont,
     color: "#999999",
   },
+
   optionStyle: {
     ...regularFont,
   },
+  
   checkbox: {
     "&.MuiCheckbox-colorPrimary": { color: pinkDarkColor },
   },

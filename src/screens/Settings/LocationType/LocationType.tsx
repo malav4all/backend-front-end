@@ -1,18 +1,11 @@
 import {
   Box,
-  FormHelperText,
   InputAdornment,
   Stack,
   Typography,
   useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  regularFont,
-} from "../../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   CustomButton,
@@ -33,6 +26,8 @@ import {
 } from "./service/location-type.service";
 import { store } from "../../../utils/store";
 import { validateLocationTypeForm } from "./LocationTypeandValidations";
+import { regularFont } from "../../../utils/styles";
+import AddLocationTypeModal from "./component/AddLocationType";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 
 const tableHeader = [
@@ -52,6 +47,7 @@ const LocationType = () => {
   const [searchLocation, setSearchLocation] = useState<any>("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchLocationTypeHandler();
@@ -83,6 +79,7 @@ const LocationType = () => {
         openSuccessNotification(res.addLocationType.message);
         await fetchLocationTypeHandler();
         setFormField({ value: "", error: "" });
+        setDialogOpen(false); // Close the dialog after successful addition
       }
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -153,16 +150,12 @@ const LocationType = () => {
     );
   };
 
-  const addLocationTypeButton = () => {
+  const AddLocationType = () => {
     return (
       <CustomButton
-        id="assetAssingment_add_button"
-        label={"Add"}
-        onClick={addLocationTypeHandler}
-        customClasses={{
-          width: "150px",
-          marginTop: "20px",
-        }}
+        id="add_location_type_button"
+        label="Add Location Type"
+        onClick={() => setDialogOpen(true)}
       />
     );
   };
@@ -201,7 +194,6 @@ const LocationType = () => {
           headers={tableHeader}
           rows={data}
           paginationCount={count}
-          // handleRowClick={updateAssetAssingmentDetails}
           handlePageChange={
             searchLocation ? handleSearchChangePage : handleChangePage
           }
@@ -220,8 +212,8 @@ const LocationType = () => {
     <>
       <Box
         sx={{
-          backgroundColor: theme.palette.background.default,
-          height: "100%"
+          backgroundColor: theme.palette.background.paper,
+          height: "100%",
         }}
       >
         <Stack
@@ -233,13 +225,10 @@ const LocationType = () => {
         >
           <Typography
             sx={{
-              fontSize: getRelativeFontSize(6),
               ...regularFont,
               color: theme.palette.text.primary,
             }}
-          >
-            Location Type
-          </Typography>
+          ></Typography>
 
           <Stack
             direction={{ sm: "row", xs: "column" }}
@@ -247,31 +236,10 @@ const LocationType = () => {
             spacing={1}
           >
             {getSearchBar()}
+            {AddLocationType()}
           </Stack>
         </Stack>
 
-        <Stack
-          px={4}
-          pt={2}
-          direction={{ lg: "row", xs: "column" }}
-          alignItems={{ lg: "center" }}
-          gap={2}
-        >
-          <CustomInput
-            label="Type"
-            value={formField.value}
-            onChange={(e: any) => {
-              setFormField({ ...formField, value: e.target.value, error: "" });
-            }}
-            placeHolder="Enter Type"
-            error={
-              !isTruthy(formField?.value) &&
-              isTruthy(formField?.error) &&
-              formField?.error
-            }
-          />
-          {addLocationTypeButton()}
-        </Stack>
         <Box
           sx={{
             minWidth: "300px",
@@ -283,6 +251,18 @@ const LocationType = () => {
         </Box>
         <CustomLoader isLoading={isLoading} />
       </Box>
+
+      <AddLocationTypeModal
+        open={dialogOpen}
+        handleClose={() => setDialogOpen(false)}
+        formField={formField}
+        onChangeHandler={(e: any) => {
+          setFormField({ ...formField, value: e.target.value, error: "" });
+        }}
+        handleSave={addLocationTypeHandler}
+        isLoading={isLoading}
+        classes={{}}
+      />
     </>
   );
 };

@@ -311,7 +311,7 @@ const Users = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label="Add User"
+        label="Create User"
         onClick={() => setAddUserDialogHandler(true)}
         customClasses={{
           width: "150px",

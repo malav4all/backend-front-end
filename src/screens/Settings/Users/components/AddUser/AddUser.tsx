@@ -645,6 +645,7 @@ const AddUser = (props: CustomProps) => {
             customClasses={{
               ...classes.cancelButtonStyle,
               color: theme.palette.text.primary,
+              backgroundColor: "#00000000",
             }}
           />
           <CustomButton

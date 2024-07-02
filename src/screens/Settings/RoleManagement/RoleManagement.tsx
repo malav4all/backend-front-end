@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
   InputAdornment,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -36,10 +37,12 @@ import {
 } from "./service/RoleManagement.service";
 
 import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import { headerColor } from "../../../utils/styles";
 
 export const RoleManagement = () => {
   useTitle(strings.RoleManagementTitle);
   const classes = RoleManagementStyles;
+  const theme = useTheme();
   const [buttonClick, setButtonClick] = useState<string>(strings.rolesTable);
   const [loading, setLoading] = useState<boolean>(false);
   const [tableData, setTableData] = useState([]);
@@ -165,7 +168,7 @@ export const RoleManagement = () => {
                 <Chip
                   key={role.id + i}
                   label={i}
-                  sx={classes.addTagChip}
+                  sx={{ ...classes.addTagChip, color: "white" }}
                   variant="filled"
                 />
               ))}
@@ -177,7 +180,7 @@ export const RoleManagement = () => {
             <>
               <Tooltip title="Add / Edit Role" placement="top" arrow>
                 <EditIcon
-                  htmlColor={"#0F2167"}
+                  htmlColor={headerColor}
                   style={{ margin: "0px 8px -7px 17px" }}
                   onClick={() => handleEdit(role)}
                 />
@@ -198,9 +201,7 @@ export const RoleManagement = () => {
         justifyContent="space-between"
         alignItems={{ lg: "center" }}
       >
-        <Typography mt={1} sx={classes.pageSubtitle}>
-          List of Roles
-        </Typography>
+        <Typography mt={1} sx={classes.pageSubtitle}></Typography>
         <Stack
           direction={{ sm: "row", xs: "column" }}
           alignItems={{ sm: "center" }}
@@ -306,10 +307,17 @@ export const RoleManagement = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        width: "100%",
+        margin: "auto",
+        backgroundColor: theme.palette.background.paper,
+        height: "130%",
+      }}
+    >
       <Grid>{editModeRolePage()}</Grid>
       <CustomLoader isLoading={loading} />
       {customDialog()}
-    </>
+    </Box>
   );
 };

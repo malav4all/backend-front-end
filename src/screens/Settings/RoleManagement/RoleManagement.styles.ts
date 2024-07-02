@@ -4,6 +4,7 @@ import {
   centerItemFlex,
   darkPurpledColor,
   getRelativeFontSize,
+  headerColor,
   inputLabelRequiredColor,
   mediumFont,
   pinkDarkColor,
@@ -34,7 +35,8 @@ const RoleManagementStyles = {
     borderRadius: "5px",
     ...mediumFont,
     fontSize: "15px",
-    backgroundColor: "#ECF9FF",
+    fontColor: "white !important",
+    backgroundColor: headerColor,
   },
   resourceRowHeader: {
     ...boldFont,
@@ -146,7 +148,7 @@ const RoleManagementStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

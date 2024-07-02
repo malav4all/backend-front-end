@@ -1,20 +1,17 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
-  Container,
   Grid,
   InputAdornment,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   CustomButton,
   CustomInput,
   CustomTable,
-  CustomDialog,
 } from "../../../global/components";
 import IndustryStyles from "./CustomerModule.styles";
 import {
@@ -34,7 +31,7 @@ import {
   customerModuleValidation,
 } from "./CustomerIndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import AddCustomDialog from "./component/AddCustomerModule";
+import AddCustomerModule from "./component/AddCustomerModule";
 
 const CustomerModule = () => {
   const classes = IndustryStyles;
@@ -155,19 +152,6 @@ const CustomerModule = () => {
     return isValid;
   };
 
-  const getProfileFooter = () => {
-    return (
-      <Box sx={classes.profileFooter}>
-        <CustomButton
-          id="profile_submit_button"
-          customClasses={classes.saveBtnStyle}
-          onClick={createCustomerModule}
-          label="Save"
-        />
-      </Box>
-    );
-  };
-
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -202,11 +186,11 @@ const CustomerModule = () => {
     );
   };
 
-  const getAddModuleBtn = () => {
+  const getAddCustomerModuleBtn = () => {
     return (
       <CustomButton
         id="add_module_button"
-        label="Add Module"
+        label="Create Module"
         onClick={() => setDialogOpen(true)}
       />
     );
@@ -224,7 +208,7 @@ const CustomerModule = () => {
           px={3}
         >
           {searchBarRole()}
-          {getAddModuleBtn()}
+          {getAddCustomerModuleBtn()}
         </Stack>
         <Box
           sx={{
@@ -249,78 +233,6 @@ const CustomerModule = () => {
     );
   };
 
-  const getPersonalDetails = () => {
-    return (
-      <Grid container>
-        <Grid item xs={12} mb={2} ml={1.5}>
-          <Typography sx={classes.pageSubtitle}>Add Industry</Typography>
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box m={1.5}>
-            <CustomInput
-              required
-              label="Name"
-              id="profile_name_field"
-              type="text"
-              name="name"
-              placeHolder="Enter Module Name"
-              onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 25 }}
-              value={customerModuleFormData.name.value}
-              onBlur={() => {
-                if (customerModuleFormData.name.value) {
-                  checkExitsCustomerModuleHandler();
-                }
-              }}
-              error={customerModuleFormData.name.error}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box m={1.5}>
-            <CustomInput
-              required
-              label="Code"
-              id="profile_name_field"
-              type="text"
-              name="code"
-              placeHolder="Enter Module Code"
-              onChange={onChangeHandler}
-              propsToInputElement={{ maxlength: 25 }}
-              value={customerModuleFormData.code.value}
-              onBlur={() => {
-                if (customerModuleFormData.code.value) {
-                  checkExitsCustomerModuleHandler();
-                }
-              }}
-              error={customerModuleFormData.code.error}
-            />
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} lg={4}>
-          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
-            <Box display={"flex"}>
-              <Typography sx={classes.label}>Description </Typography>
-              <Typography sx={classes.star}>*</Typography>
-            </Box>
-            <TextField
-              multiline
-              minRows={3}
-              inputProps={{ maxLength: 500 }}
-              sx={classes.testAreaStyle}
-              name="description"
-              id="comment"
-              //   error={ticketForm.comment.error}
-              placeholder="Enter your description"
-              value={customerModuleFormData.description.value}
-              onChange={onChangeHandler}
-            />
-          </Box>
-        </Grid>
-      </Grid>
-    );
-  };
-
   return (
     <Box
       sx={{
@@ -328,14 +240,20 @@ const CustomerModule = () => {
         height: "100%",
       }}
     >
-      <AddCustomDialog
+      <AddCustomerModule
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
-        title="Add Customer Module"
-        actions={getProfileFooter()}
-      >
-        {getPersonalDetails()}
-      </AddCustomDialog>
+        customerModuleFormData={customerModuleFormData}
+        modulesData={[]}
+        onChangeHandler={onChangeHandler}
+        handleModuleChange={() => {}}
+        checkExitsRoleHandler={checkExitsCustomerModuleHandler}
+        handleFileChange={() => {}}
+        handleSave={createCustomerModule}
+        isLoading={isLoading}
+        MenuProps={{}}
+        classes={classes}
+      />
       {rolesTableRender()}
       <CustomLoader isLoading={isLoading} />
     </Box>
