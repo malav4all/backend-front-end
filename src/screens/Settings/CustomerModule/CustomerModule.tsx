@@ -6,6 +6,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
@@ -13,6 +14,7 @@ import {
   CustomButton,
   CustomInput,
   CustomTable,
+  CustomDialog,
 } from "../../../global/components";
 import IndustryStyles from "./CustomerModule.styles";
 import {
@@ -32,9 +34,11 @@ import {
   customerModuleValidation,
 } from "./CustomerIndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import AddCustomDialog from "./component/AddCustomerModule";
 
 const CustomerModule = () => {
   const classes = IndustryStyles;
+  const theme = useTheme();
   const [customerModuleFormData, setCustomerModuleFormData] = useState<any>(
     customerModuleInsertField()
   );
@@ -44,6 +48,8 @@ const CustomerModule = () => {
   const [tableData, setTableData] = useState([]);
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   useEffect(() => {
     setPageNumber(1);
   }, [searchText, perPageData]);
@@ -61,7 +67,7 @@ const CustomerModule = () => {
     setPerPageData(event.target.value);
   };
 
-  const createCustomerMOdule = async () => {
+  const createCustomerModule = async () => {
     try {
       if (handleValidation()) {
         const name = customerModuleFormData.name.value;
@@ -71,6 +77,7 @@ const CustomerModule = () => {
         setCustomerModuleFormData(customerModuleInsertField());
         openSuccessNotification(res?.createCustomerModule?.message);
         await fetchTableDataHandler();
+        setDialogOpen(false);
       }
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -154,12 +161,13 @@ const CustomerModule = () => {
         <CustomButton
           id="profile_submit_button"
           customClasses={classes.saveBtnStyle}
-          onClick={createCustomerMOdule}
+          onClick={createCustomerModule}
           label="Save"
         />
       </Box>
     );
   };
+
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -178,43 +186,51 @@ const CustomerModule = () => {
 
   const searchBarRole = () => {
     return (
-      <Stack
-        px={4}
-        pt={2}
-        direction={{ lg: "row", xs: "column" }}
-        justifyContent="flex-end"
-        alignItems={{ lg: "center" }}
-      >
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-        >
-          <CustomInput
-            id="role_mgmt_search_field"
-            placeHolder="Search Module Name"
-            name="Role"
-            onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-      </Stack>
+      <CustomInput
+        id="role_mgmt_search_field"
+        placeHolder="Search Module Name"
+        name="Role"
+        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    );
+  };
+
+  const getAddModuleBtn = () => {
+    return (
+      <CustomButton
+        id="add_module_button"
+        label="Add Module"
+        onClick={() => setDialogOpen(true)}
+      />
     );
   };
 
   const rolesTableRender = () => {
     return (
       <>
-        {searchBarRole()}
+        <Stack
+          direction="row"
+          justifyContent="end"
+          alignItems="center"
+          spacing={1}
+          pt={2}
+          px={3}
+        >
+          {searchBarRole()}
+          {getAddModuleBtn()}
+        </Stack>
         <Box
           sx={{
             minWidth: "300px",
             overflow: "auto",
+            padding: "30px",
           }}
         >
           <CustomTable
@@ -232,9 +248,10 @@ const CustomerModule = () => {
       </>
     );
   };
+
   const getPersonalDetails = () => {
     return (
-      <Grid container mt={2}>
+      <Grid container>
         <Grid item xs={12} mb={2} ml={1.5}>
           <Typography sx={classes.pageSubtitle}>Add Industry</Typography>
         </Grid>
@@ -303,13 +320,25 @@ const CustomerModule = () => {
       </Grid>
     );
   };
+
   return (
-    <Container>
-      {getPersonalDetails()}
-      {getProfileFooter()}
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
+      <AddCustomDialog
+        open={dialogOpen}
+        handleClose={() => setDialogOpen(false)}
+        title="Add Customer Module"
+        actions={getProfileFooter()}
+      >
+        {getPersonalDetails()}
+      </AddCustomDialog>
       {rolesTableRender()}
       <CustomLoader isLoading={isLoading} />
-    </Container>
+    </Box>
   );
 };
 

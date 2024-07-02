@@ -230,7 +230,7 @@ const Industry = () => {
     setFile(fileList);
   };
 
-  const getProfileFooter = () => {
+  const getAddIndustryBtn = () => {
     return (
       <CustomButton
         id="profile_submit_button"
@@ -254,7 +254,7 @@ const Industry = () => {
     return (
       <CustomInput
         id="role_mgmt_search_field"
-        placeHolder="Search Industry Name"
+        placeHolder="Search Industry ..."
         name="Role"
         onChange={debounceEventHandler(handleSearchOnChange, 2000)}
         InputProps={{
@@ -285,7 +285,7 @@ const Industry = () => {
           px={3}
         >
           {searchBarRole()}
-          {getProfileFooter()}
+          {getAddIndustryBtn()}
         </Stack>
         <Box
           sx={{
