@@ -34,7 +34,7 @@ const customTabsStyles = {
     width: "100%",
   },
   active: {
-    backgroundColor: "#9063f2",
+    backgroundColor: "#5F22E2",
     textDecoration: "none",
     color:"#ffffff"
   },

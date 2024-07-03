@@ -59,7 +59,7 @@ const RoleManagementStyles = {
   dropDownStyle: {
     ...regularFont,
     ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
+    // backgroundColor: pureWhiteColor,
     height: "47px",
     padding: "2px",
     width: "100%",
@@ -212,9 +212,8 @@ const RoleManagementStyles = {
   },
   inputLabel: {
     display: "flex",
-    color: "#212121",
-    fontSize: getRelativeFontSize(7),
-    fontColor: theme.palette.common.black + " !important",
+    color: theme.palette.text.primary,
+    fontSize: getRelativeFontSize(6),
     variant: "standard",
     ...boldFont,
     "& .MuiTextField-root": {
@@ -249,7 +248,7 @@ const RoleManagementStyles = {
     borderColor: "rgba(0,0,0,0.2)",
     background: "none",
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
     },
   },
 } as const;

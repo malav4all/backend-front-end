@@ -1,139 +1,69 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
-  Checkbox,
+  FormHelperText,
   Grid,
-  List,
-  ListItem,
+  IconButton,
+  InputLabel,
   ListItemText,
   MenuItem,
   Select,
-  Typography,
-  Divider,
-  FormHelperText,
-  IconButton,
-  Container,
-  Collapse,
   Stack,
-  InputLabel,
   TextField,
+  Typography,
+  useTheme,
+  Checkbox,
 } from "@mui/material";
-import Tooltip from "@mui/material/Tooltip";
 import {
   CustomButton,
   CustomInput,
-  CustomPaper,
+  CustomDialog,
 } from "../../../../global/components";
-import RoleManagementStyles from "../RoleManagement.styles";
-import DelIcon from "../../../../assets/images/Delete.svg";
-// import { addRole, updateRole } from "../RoleManagementServices";
-import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 import {
-  isTruthy,
-  openErrorNotification,
-  openSuccessNotification,
-} from "../../../../helpers/methods";
-import notifiers from "../../../../global/constants/NotificationConstants";
-import strings from "../../../../global/constants/StringConstants";
-import {
-  campaignerPreDefinedRoleData,
   createRoleFormData,
-  getResourceObj,
-  mapFormDataToValues,
   roleFormValidation,
-  staticPredefinedRoles,
+  getResourceObj,
 } from "../RoleManagementHelpers";
-import { ReactComponent as ArrowDownIcon } from "../../../../assets/icons/Arrow-Down.svg";
+import RoleManagementStyles from "../RoleManagement.styles";
 import {
   addRole,
-  checkExitsRole,
-  fetchIndustryType,
-  fetchIndustryTypeWithCode,
   updateRole,
+  checkExitsRole,
 } from "../service/RoleManagement.service";
+import {
+  openErrorNotification,
+  openSuccessNotification,
+  isTruthy,
+} from "../../../../helpers/methods";
 
 interface AddUpdateRolesProps {
+  open: boolean;
+  handleClose: () => void;
   name: string;
-  setButtonClick: any;
   rowData: any;
   fetchRolesHandler: any;
+  setButtonClick: any;
   resources: any;
   industryType: any;
 }
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
-  const edit = props.name === strings.editRole;
+const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
+  open,
+  handleClose,
+  name,
+  rowData,
+  fetchRolesHandler,
+  setButtonClick,
+  resources,
+  industryType,
+}) => {
+  const theme = useTheme();
   const classes = RoleManagementStyles;
-  const [roleFormData, setRoleFormData] = useState(
-    createRoleFormData(props.rowData, edit)
+  const edit = name === "Edit Role";
+  const [roleFormData, setRoleFormData] = React.useState(
+    createRoleFormData(rowData, edit)
   );
-  const [expandedRole, setExpandedRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleAdd = () => {
-    handleValidation(true) &&
-      setRoleFormData({
-        ...roleFormData,
-        resources: [...roleFormData.resources, getResourceObj()],
-      });
-  };
-
-  const handlePredefinedCampaignClick = (predefinedResources: any[]) => {
-    setRoleFormData((roleData: any) => {
-      let tempRoleData = { ...roleData };
-      let newResources: any[] = [];
-      tempRoleData.resources = tempRoleData.resources.filter(
-        (resource: any) =>
-          resource.path.value !== "" && resource.permissions.value.length > 0
-      );
-      predefinedResources.forEach((predefinedResource: any) => {
-        const resourceAlreadyExists = tempRoleData.resources.some(
-          (item: any) => item.path.value === predefinedResource.path
-        );
-        if (!resourceAlreadyExists) {
-          newResources.push(getResourceObj(predefinedResource));
-        }
-      });
-      tempRoleData.resources = [...tempRoleData.resources, ...newResources];
-      return tempRoleData;
-    });
-  };
-
-  const deleteRoleHandler = (index: number) => {
-    let tempRoleForm = { ...roleFormData };
-    if (roleFormData.resources.length > 1) {
-      tempRoleForm.resources.splice(index, 1);
-    } else {
-      tempRoleForm.resources = [
-        {
-          name: {
-            value: "",
-            error: "",
-          },
-          permissions: {
-            value: [],
-            error: "",
-          },
-          path: {
-            value: "",
-            error: "",
-          },
-        },
-      ];
-    }
-    setRoleFormData(tempRoleForm);
-  };
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const handleValidation = (isAddResourceValidation: boolean = false) => {
     const { isValid, errors } = roleFormValidation(
@@ -144,8 +74,41 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
     return isValid;
   };
 
+  const addRoleHandler = async () => {
+    try {
+      if (handleValidation()) {
+        setLoading(true);
+        const body = {
+          name: roleFormData.name.value,
+          industryType: roleFormData.industryType.value,
+          description: roleFormData.description.value,
+          resources: roleFormData.resources.map((resource: any) => ({
+            name: resource.name.value,
+            permissions: resource.permissions.value,
+          })),
+        };
+        if (edit) {
+          await updateRole({ input: { ...body, _id: rowData._id } });
+          openSuccessNotification(`${body.name} role has been updated`);
+        } else {
+          await addRole({ input: body });
+          openSuccessNotification("New Role has been added successfully");
+        }
+        setButtonClick("Roles Table");
+        await fetchRolesHandler();
+        handleClose();
+        setLoading(false);
+      }
+    } catch (error: any) {
+      setLoading(false);
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : "An error occurred"
+      );
+    }
+  };
+
   const handleRoleNameChange = (e: any) => {
-    if (!strings.characterRegex.test(e.target.value)) {
+    if (!/^[a-zA-Z ]*$/.test(e.target.value)) {
       setRoleFormData({
         ...roleFormData,
         name: {
@@ -189,7 +152,6 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
     tempRoleForm.resources[resourceIndex].name.value = e.target.value;
     tempRoleForm.resources[resourceIndex].permissions.value = [];
     tempRoleForm.resources[resourceIndex].name.error = "";
-    e.target.value.toLowerCase();
     setRoleFormData(tempRoleForm);
   };
 
@@ -200,57 +162,37 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
     setRoleFormData(tempRoleForm);
   };
 
-  const addRoleHandler = async () => {
-    try {
-      if (handleValidation()) {
-        setLoading(true);
-        const body = mapFormDataToValues(roleFormData);
-        if (props.name === strings.editRole) {
-          await updateRole({
-            input: {
-              _id: props?.rowData?._id,
-              name: body.name,
-              industryType: body.industryType,
-              description: body.description,
-              resources: body.resources,
-              isDelete: false,
-            },
-          });
-          openSuccessNotification(`${body.name} role has been updated`);
-        } else {
-          await addRole({
-            input: {
-              name: body.name,
-              industryType: body.industryType,
-              description: body.description,
-              resources: body.resources,
-            },
-          });
-          openSuccessNotification("New Role has been added successfully");
-        }
-        props.setButtonClick(strings.rolesTable);
-        await props.fetchRolesHandler();
-        setLoading(false);
-      }
-    } catch (error: any) {
-      setLoading(false);
-      openErrorNotification(
-        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
-      );
+  const deleteRoleHandler = (index: number) => {
+    let tempRoleForm = { ...roleFormData };
+    if (roleFormData.resources.length > 1) {
+      tempRoleForm.resources.splice(index, 1);
+    } else {
+      tempRoleForm.resources = [
+        {
+          name: {
+            value: "",
+            error: "",
+          },
+          permissions: {
+            value: [],
+            error: "",
+          },
+          path: {
+            value: "",
+            error: "",
+          },
+        },
+      ];
     }
+    setRoleFormData(tempRoleForm);
   };
 
-  const checkExitsRoleHandler = async () => {
-    try {
-      const res = await checkExitsRole({
-        input: { name: roleFormData?.name.value },
+  const handleAdd = () => {
+    handleValidation(true) &&
+      setRoleFormData({
+        ...roleFormData,
+        resources: [...roleFormData.resources, getResourceObj()],
       });
-      if (res?.checkExistsRole?.success === 1) {
-        openErrorNotification(res.checkExistsRole.message);
-      }
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
   };
 
   const getRoleForm = () => {
@@ -265,12 +207,18 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
           required
           value={roleFormData?.name.value}
           onChange={handleRoleNameChange}
-          onBlur={checkExitsRoleHandler}
+          onBlur={checkExitsRole}
           error={roleFormData?.name.error}
         />
         <Box mt={2}>
           <Stack direction="column">
-            <InputLabel sx={classes.inputLabel} shrink>
+            <InputLabel
+              sx={{
+                ...classes.inputLabel,
+                color: theme.palette.text.primary,
+              }}
+              shrink
+            >
               Industry Type
               <Box ml={0.4} sx={classes.star}>
                 *
@@ -287,14 +235,13 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
                   ? undefined
                   : () => "Select a Industry Type"
               }
-              MenuProps={classes.menuProps}
               displayEmpty
               error={
                 roleFormData.industryType.value?.length < 4 &&
                 roleFormData.industryType.error?.length !== 0
               }
             >
-              {props.industryType?.map((item: any, index: number) => (
+              {industryType?.map((item: any, index: number) => (
                 <MenuItem
                   key={index}
                   value={item._id}
@@ -313,7 +260,15 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
           mt={2}
         >
           <Box display={"flex"}>
-            <Typography sx={classes.inputLabel}>Description </Typography>
+            <Typography
+              sx={{
+                ...classes.inputLabel,
+                fontSize: "14px",
+                color: theme.palette.text.primary,
+              }}
+            >
+              Description{" "}
+            </Typography>
             <Typography sx={classes.star}>*</Typography>
           </Box>
           <TextField
@@ -323,7 +278,6 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
             sx={classes.testAreaStyle}
             name="description"
             id="comment"
-            //   error={ticketForm.comment.error}
             placeholder="Enter your comment"
             value={roleFormData.description.value}
             onChange={handleDescriptionChange}
@@ -350,11 +304,11 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
 
   const getResourcesXPermission = () => {
     const allResourcesSelected =
-      props.resources.length === roleFormData?.resources.length;
+      resources.length === roleFormData?.resources.length;
     return (
       <>
         {roleFormData?.resources?.map((item: any, resourceIndex: any) => {
-          const availableResources = props?.industryType?.find(
+          const availableResources = industryType?.find(
             (res: any) => res._id === roleFormData.industryType.value
           )?.code;
 
@@ -379,7 +333,6 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
                   onChange={(e: any) =>
                     handleResourceTypeChange(e, resourceIndex)
                   }
-                  MenuProps={classes.menuProps}
                   displayEmpty
                   renderValue={
                     item?.name.value
@@ -424,7 +377,6 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
                       </Typography>
                     )
                   }
-                  MenuProps={MenuProps}
                 >
                   {["Add", "Update", "delete", "fetch", "upload"].map(
                     (permission: any) => (
@@ -449,15 +401,6 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
                   {item.permissions.error}
                 </FormHelperText>
               </Grid>
-              <Grid item xs={12} sm={1}>
-                <IconButton
-                  onClick={() => deleteRoleHandler(resourceIndex)}
-                  sx={classes.resourceActionButton}
-                  id="role_management_delete_role"
-                >
-                  <Box component={"img"} src={DelIcon} />
-                </IconButton>
-              </Grid>
             </>
           );
         })}
@@ -475,129 +418,50 @@ export const AddUpdateRoles = (props: AddUpdateRolesProps) => {
     );
   };
 
-  const handleCampaignPredefinedRole = (item: any) => {
-    setExpandedRole((prevRole) => (prevRole === item.name ? null : item.name));
-  };
-
-  const campaignPreDefinedRole = () => {
-    return (
-      <Tooltip
-        title={
-          <CustomPaper className={{ backgroundColor: "#888888" }}>
-            <Typography sx={classes.predefinedTooltipContent}>
-              {"Use this predefined role for Create Campaign"}
-            </Typography>
-          </CustomPaper>
-        }
-        placement="top"
-        arrow
-        componentsProps={{
-          tooltip: {
-            sx: {
-              background: "none",
-            },
-          },
-        }}
-      >
-        <Box
-          sx={classes.campaignPerDefined}
-          onClick={() =>
-            handlePredefinedCampaignClick(campaignerPreDefinedRoleData)
-          }
-          component={"div"}
-          id="role_management_predefined_role"
-        >
-          <Box sx={classes.predefinedGridItem} mt={4} ml={2}>
-            {campaignerPreDefinedRoleData?.map((item: any) => {
-              const isRoleExpanded = item.name === expandedRole;
-
-              return (
-                <>
-                  <Box sx={{ padding: "10px" }} component={"div"}>
-                    <Box component={"span"} style={classes.predefinedRoleName}>
-                      {item.name}
-                    </Box>
-                    <Box component={"span"} sx={{ ml: 1 }}>
-                      <ArrowDownIcon
-                        onClick={(e: any) => {
-                          // This one added Because Main Box Click Call in this Click
-                          e.stopPropagation();
-                          handleCampaignPredefinedRole(item);
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Collapse in={isRoleExpanded}>
-                    <Box
-                      sx={{
-                        maxHeight: "100px",
-                        overflowY: "auto",
-                        "::-webkit-scrollbar": {
-                          display: "none",
-                        },
-                      }}
-                    >
-                      <List sx={classes.predefinedListStyle}>
-                        {item?.permissions?.map(
-                          (listData: any, index: number) => {
-                            return (
-                              <ListItem
-                                key={index}
-                                sx={classes.predefinedListItem}
-                              >
-                                {listData}
-                              </ListItem>
-                            );
-                          }
-                        )}
-                      </List>
-                    </Box>
-                  </Collapse>
-                </>
-              );
-            })}
-          </Box>
-        </Box>
-      </Tooltip>
-    );
-  };
-
-  const submitHandler = () => {
-    return (
-      <Grid container sx={classes.centerItemFlex}>
-        <Box sx={classes.pageFooter}>
-          <CustomButton
-            label={props.name === strings.editRole ? "Update" : "Submit"}
-            onClick={() => {
-              addRoleHandler();
-            }}
-            id="role_management_submit_button"
-          />
-          <CustomButton
-            label={"Cancel"}
-            onClick={() => {
-              props.setButtonClick(strings.rolesTable);
-            }}
-            customClasses={classes.cancelButtonStyle}
-            id="role_management_cancel_button"
-          />
-        </Box>
-      </Grid>
-    );
-  };
-
   return (
-    <>
-      <Container maxWidth="md">
-        <Typography my={2} sx={classes.predefinedHeader}>
-          {props.name}
-        </Typography>
-        <Divider sx={{ my: 2 }} />
-        {getRoleForm()}
-        {/* {preDefinedRole()} */}
-        {submitHandler()}
-      </Container>
-      <CustomLoader isLoading={loading} />
-    </>
+    <CustomDialog
+      isDialogOpen={open}
+      closable
+      handleDialogClose={handleClose}
+      dialogTitleContent={
+        <Box>
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontSize: "27px",
+              fontWeight: "bold",
+            }}
+          >
+            {name === "Edit Role" ? "Edit Role" : "Create Role"}
+          </Typography>
+        </Box>
+      }
+      dialogBodyContent={getRoleForm()}
+      dialogFooterContent={
+        <Grid container sx={classes.centerItemFlex}>
+          <Box sx={classes.pageFooter}>
+            <CustomButton
+              label={name === "Edit Role" ? "Update" : "Submit"}
+              onClick={addRoleHandler}
+              id="role_management_submit_button"
+              loading={loading}
+            />
+            <CustomButton
+              label={"Cancel"}
+              onClick={handleClose}
+              customClasses={{
+                ...classes.cancelButtonStyle,
+                color: theme.palette.text.primary,
+              }}
+              id="role_management_cancel_button"
+            />
+          </Box>
+        </Grid>
+      }
+      width={"700px"}
+      fullScreen={false}
+    />
   );
 };
+
+export default AddUpdateRoles;

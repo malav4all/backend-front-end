@@ -42,7 +42,7 @@ const Account = () => {
   const [count, setCount] = useState(0);
   const [tableData, setTableData] = useState([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
+  const [addAccountDialogHandler, setAddAccountDialogHandler] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [edit, setEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +77,7 @@ const Account = () => {
               <Tooltip
                 title="Edit"
                 onClick={() => {
-                  setAddUserDialogHandler(true);
+                  setAddAccountDialogHandler(true);
                   setSelectedRowData(item);
                   setEdit(true);
                 }}
@@ -134,16 +134,16 @@ const Account = () => {
     }
   };
 
-  const closeAddUserDialogHandler = () => {
-    setAddUserDialogHandler(false);
+  const closeAddAccountDialogHandler = () => {
+    setAddAccountDialogHandler(false);
     setEdit(false);
   };
 
   const addAccountDialogBox = () => {
     return (
       <AddAccountModal
-        openAddUserDialog={addUserDialogHandler}
-        handleCloseAddUserDialog={closeAddUserDialogHandler}
+        openAddAccountDialog={addAccountDialogHandler}
+        handleCloseAddAccountDialog={closeAddAccountDialogHandler}
         tableData={fetchTableAccount}
         selectedRowData={selectedRowData}
         edit={edit}
@@ -151,12 +151,12 @@ const Account = () => {
     );
   };
 
-  const addUserButton = () => {
+  const addAccountButton = () => {
     return (
       <CustomButton
         id="users_add_button"
         label={"Add Account"}
-        onClick={() => setAddUserDialogHandler(true)}
+        onClick={() => setAddAccountDialogHandler(true)}
         customClasses={{
           width: "150px",
         }}
@@ -211,7 +211,7 @@ const Account = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {addUserButton()}
+            {addAccountButton()}
           </Stack>
         </Stack>
         <Box

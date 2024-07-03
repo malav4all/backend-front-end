@@ -26,9 +26,9 @@ const customTableStyles = {
   },
 
   tableBody: {
-    maxHeight: "500px !important",
-    maxwidth: "100%",
-    overflow: "scroll",
+    maxHeight: "700px",
+    maxWidth: "100%",
+    overflowY: "auto",
   },
 
   tableHeaderCell: {
