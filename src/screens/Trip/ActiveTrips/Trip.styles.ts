@@ -1,9 +1,4 @@
-import {
-  boldFont,
-  theme,
-  primaryHeadingColor,
-  getRelativeFontSize,
-} from "../../utils/styles"
+import { boldFont, primaryHeadingColor, theme } from "../../../utils/styles"
 
 const tripStyles = {
   divderResponsive: {

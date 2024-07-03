@@ -1,11 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
-  CustomAppHeader,
-  CustomButton,
-  CustomInput,
-  CustomTable,
-} from "../../global/components";
-import {
   Box,
   Grid,
   InputAdornment,
@@ -14,32 +8,38 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  headerColor,
-} from "../../utils/styles";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  debounceEventHandler,
-  isTruthy,
-  openErrorNotification,
-} from "../../helpers/methods";
-
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
-import strings from "../../global/constants/StringConstants";
-import notifiers from "../../global/constants/NotificationConstants";
-import history from "../../utils/history";
 import tripStyles from "./Trip.styles";
 import AddTrip from "./components/AddTrip/AddTrip";
 import { tripTableHeader } from "./TripTypeAndValidation";
 import { fetchTrip, searchTrip } from "./service/Trip.service";
+import {
+  debounceEventHandler,
+  isTruthy,
+  openErrorNotification,
+} from "../../../helpers/methods";
+import notifiers from "../../../global/constants/NotificationConstants";
+import {
+  CustomAppHeader,
+  CustomButton,
+  CustomInput,
+  CustomTable,
+} from "../../../global/components";
+import {
+  boldFont,
+  headerColor,
+  primaryHeadingColor,
+  getRelativeFontSize,
+} from "../../../utils/styles";
+import strings from "../../../global/constants/StringConstants";
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import { useHistory } from "react-router-dom";
 
 const Trip = () => {
   const theme = useTheme();
   const classes = tripStyles;
+  const history = useHistory();
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
@@ -49,9 +49,24 @@ const Trip = () => {
   const [addTripDialogHandler, setAddTripDialogHandler] = useState(false);
   const [tripData, setTripData] = useState<any>([]);
   const [selectedTripRowData, setSelectedTripRowData] = useState<any>({});
-
   const [roles, setRoles] = useState([]);
   const [edit, setEdit] = useState(false);
+
+  const dummyData = [
+    {
+      key: "66448109b3b0d0254254e229",
+      imeiNumber: "123456789012359",
+      totalDistance: "1150.00 Km",
+      totalDuration: "21.00 Hours",
+      startDate: "29-May-2024 04:15 PM",
+      endDate: "30-May-2024 06:25 PM",
+      createdBy: "Ramesh",
+    },
+  ];
+
+  useEffect(() => {
+    tableRender(dummyData);
+  }, []);
 
   useEffect(() => {
     if (searchTrips) {
@@ -75,67 +90,32 @@ const Trip = () => {
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
       return {
-        key: item._id,
-        tripName: (
-          <>
-            <Tooltip
-              title="Show Imei List"
-              placement="top"
-              arrow
-              onClick={() => {
-                getRedirectionUrl(item?._id);
-              }}
-              sx={{
-                color: theme.palette.text.primary,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                  display: "inline-block",
-                  color: theme.palette.text.primary,
-                  fontSize: "13px",
-                  "&:hover": {
-                    borderBottom: `1px solid ${theme.palette.primary.main}`,
-                    color: theme.palette.primary.main,
-                  },
-                }}
-              >
-                {item?.tripName}
-              </Typography>
-            </Tooltip>
-          </>
-        ),
-        createdBy: (
-          <Typography
+        key: item.key,
+        imeiNumber: item.imeiNumber,
+        totalDistance: item.totalDistance,
+        totalDuration: item.totalDuration,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        createdBy: item.createdBy,
+        action: (
+          <Tooltip
+            title="Edit"
+            onClick={() => {
+              editTrip(item);
+            }}
             sx={{
               color: theme.palette.text.primary,
             }}
           >
-            {item?.createdBy}
-          </Typography>
-        ),
-        action: (
-          <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editTrip(item);
+            <PiPencilSimpleBold
+              style={{
+                margin: "0px 8px -7px 0px",
+                cursor: "pointer",
+                color: headerColor,
+                fontSize: "17px",
               }}
-              sx={{
-                color: theme.palette.text.primary,
-              }}
-            >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: theme.palette.primary.main,
-                  fontSize: "17px",
-                }}
-              />
-            </Tooltip>
-          </>
+            />
+          </Tooltip>
         ),
       };
     });
@@ -146,7 +126,7 @@ const Trip = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Trip
+          Active Trips
         </Typography>
       </Box>
     );
@@ -195,7 +175,7 @@ const Trip = () => {
           limit: 10,
         },
       });
-      tableRender(res?.searchTrip?.data);
+      tableRender(dummyData);
       setCount(res?.searchTrip?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -213,6 +193,7 @@ const Trip = () => {
       setSearchTrips("");
     }
   };
+
   const editTrip = React.useCallback(
     (rowdata: any) => {
       setAddTripDialogHandler(true);
@@ -221,6 +202,7 @@ const Trip = () => {
     },
     [edit]
   );
+
   const closeAddTripDialogHandler = () => {
     setAddTripDialogHandler(false);
     setSelectedTripRowData(null);

@@ -7,8 +7,8 @@ import {
   mediumFont,
   pinkDarkColor,
   primaryHeadingColor,
-  pureWhiteColor,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -18,14 +18,17 @@ const IndustryStyles = {
     ...boldFont,
     color: primaryHeadingColor,
   },
+
   profileHeaderEmail: {
     color: lightTextColor,
   },
+
   pageSubtitle: {
     fontSize: getRelativeFontSize(6),
     ...boldFont,
     color: primaryHeadingColor,
   },
+
   radioButtonlabel: {
     ...regularFont,
     fontSize: "16px",
@@ -33,6 +36,7 @@ const IndustryStyles = {
     fontStyle: "normal",
     color: lightTextColor,
   },
+
   textField: {
     width: "100%",
     borderRadius: "12px",
@@ -50,6 +54,7 @@ const IndustryStyles = {
       },
     },
   },
+
   nameField: {
     ...boldFont,
     color: "#212121",
@@ -57,21 +62,23 @@ const IndustryStyles = {
       color: inputLabelRequiredColor,
     },
   },
+
   radioChecked: {
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
+
   centerItemFlex: {
     ...centerItemFlex,
     paddingBottom: "20px",
   },
+
   profileFooter: {
-    margin: "0 10px",
-    marginTop: "16px",
     display: "flex",
     justifyContent: "center",
   },
+
   saveBtnStyle: {
     width: "200px",
     whiteSpace: "nowrap",
@@ -79,6 +86,7 @@ const IndustryStyles = {
       width: "100%",
     },
   },
+
   editBtnStyle: {
     width: "100%",
     whiteSpace: "nowrap",
@@ -87,21 +95,43 @@ const IndustryStyles = {
       marginBottom: theme.spacing(1),
     },
   },
+
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",
     },
   },
+
+  boldFonts: {
+    ...boldFont,
+    fontSize: getRelativeFontSize(13),
+    textAlign: "center",
+  },
+
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",
+    width: "100%",
     background: "none",
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
     },
   },
+
+  dialogFooter: {
+    display: "flex",
+    gap: "10px",
+    ...centerItemFlex,
+    width: "100%",
+    margin: "20px",
+    justifyContent: "center",
+    "& button": {
+      width: "120px",
+    },
+  },
+
   formInput: {
     width: "100%",
     "& .MuiDropzoneArea-root": {
@@ -109,31 +139,37 @@ const IndustryStyles = {
       minHeight: "10px",
     },
   },
+
   label: {
-    ...boldFont,
+    ...semiBoldFont,
+    fontSize: "14px",
     marginBottom: "8px",
+    // padding: "0px 12px",
   },
+
   star: {
     color: inputLabelRequiredColor,
     ...boldFont,
   },
+
   dropDownStyle: {
     ...regularFont,
-    // ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
-    height: "47px",
+    height: "42px",
     padding: "2px",
     width: "100%",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "16px",
   },
+
   placeholderText: {
     ...regularFont,
     color: "#999999",
   },
+
   optionStyle: {
     ...regularFont,
   },
+  
   checkbox: {
     "&.MuiCheckbox-colorPrimary": { color: pinkDarkColor },
   },

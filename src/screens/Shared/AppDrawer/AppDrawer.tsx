@@ -441,7 +441,7 @@ const AppDrawer = (props: CustomProps) => {
         <Box sx={{ color: "#fffff0" }}>Mode:</Box>
         <FormControlLabel
           sx={{
-            marginRight: "2rem",
+            margin: "-0.5rem",
           }}
           control={
             <MaterialUISwitch

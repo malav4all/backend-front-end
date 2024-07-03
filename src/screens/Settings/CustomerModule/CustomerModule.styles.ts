@@ -9,6 +9,7 @@ import {
   primaryHeadingColor,
   pureWhiteColor,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -89,7 +90,7 @@ const IndustryStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",
@@ -97,9 +98,10 @@ const IndustryStyles = {
   },
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",
+    width: "100%",
     background: "none",
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px !important",
+      borderRadius: "5px !important",
     },
   },
   formInput: {
@@ -110,12 +112,29 @@ const IndustryStyles = {
     },
   },
   label: {
-    ...boldFont,
+    ...semiBoldFont,
     marginBottom: "8px",
+    fontSize: "14px"
   },
   star: {
     color: inputLabelRequiredColor,
     ...boldFont,
+  },
+  boldFonts: {
+    ...boldFont,
+    fontSize: getRelativeFontSize(13),
+    textAlign: "center",
+  },
+  dialogFooter: {
+    display: "flex",
+    gap: "10px",
+    ...centerItemFlex,
+    width: "100%",
+    margin: "20px",
+    justifyContent: "center",
+    "& button": {
+      width: "120px",
+    },
   },
   dropDownStyle: {
     ...regularFont,

@@ -5,6 +5,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -26,6 +27,7 @@ import {
 import AddAccountModal from "./Component/AddAccountModal";
 import {
   getRelativeFontSize,
+  headerColor,
   primaryHeadingColor,
   theme,
 } from "../../../utils/styles";
@@ -34,12 +36,13 @@ import { accountTableHeader } from "./Account.helper";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 
 const Account = () => {
+  const theme = useTheme();
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
   const [count, setCount] = useState(0);
   const [tableData, setTableData] = useState([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
+  const [addAccountDialogHandler, setAddAccountDialogHandler] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [edit, setEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,12 +77,15 @@ const Account = () => {
               <Tooltip
                 title="Edit"
                 onClick={() => {
-                  setAddUserDialogHandler(true);
+                  setAddAccountDialogHandler(true);
                   setSelectedRowData(item);
                   setEdit(true);
                 }}
               >
-                <EditIcon />
+                <EditIcon
+                  htmlColor={headerColor}
+                  style={{ margin: "0px 8px -7px 17px" }}
+                />
               </Tooltip>
             </>
           ),
@@ -128,28 +134,29 @@ const Account = () => {
     }
   };
 
-  const closeAddUserDialogHandler = () => {
-    setAddUserDialogHandler(false);
+  const closeAddAccountDialogHandler = () => {
+    setAddAccountDialogHandler(false);
     setEdit(false);
   };
 
   const addAccountDialogBox = () => {
     return (
       <AddAccountModal
-        openAddUserDialog={addUserDialogHandler}
-        handleCloseAddUserDialog={closeAddUserDialogHandler}
+        openAddAccountDialog={addAccountDialogHandler}
+        handleCloseAddAccountDialog={closeAddAccountDialogHandler}
         tableData={fetchTableAccount}
         selectedRowData={selectedRowData}
         edit={edit}
       />
     );
   };
-  const addUserButton = () => {
+
+  const addAccountButton = () => {
     return (
       <CustomButton
         id="users_add_button"
         label={"Add Account"}
-        onClick={() => setAddUserDialogHandler(true)}
+        onClick={() => setAddAccountDialogHandler(true)}
         customClasses={{
           width: "150px",
         }}
@@ -159,32 +166,19 @@ const Account = () => {
 
   const searchBarRole = () => {
     return (
-      <Stack
-        px={4}
-        pt={2}
-        direction={{ lg: "row", xs: "column" }}
-        justifyContent="flex-end"
-        alignItems={{ lg: "center" }}
-      >
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-        >
-          <CustomInput
-            id="role_mgmt_search_field"
-            placeHolder="Search Account Name"
-            name="Role"
-            onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-      </Stack>
+      <CustomInput
+        id="role_mgmt_search_field"
+        placeHolder="Search Account Name"
+        name="Role"
+        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
     );
   };
 
@@ -209,9 +203,7 @@ const Account = () => {
               color: primaryHeadingColor,
               fontWeight: "bold",
             }}
-          >
-            Account
-          </Typography>
+          ></Typography>
 
           <Stack
             direction={{ sm: "row", xs: "column" }}
@@ -219,13 +211,14 @@ const Account = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {addUserButton()}
+            {addAccountButton()}
           </Stack>
         </Stack>
         <Box
           sx={{
             minWidth: "300px",
             overflow: "auto",
+            padding: "30px",
           }}
         >
           <CustomTable
@@ -256,9 +249,10 @@ const Account = () => {
         padding: theme.spacing(2),
         paddingTop: "2px",
         marginTop: "2px",
-        [theme.breakpoints.down("md")]: {
-          marginTop: theme.spacing(0),
-        },
+        width: "100%",
+        margin: "auto",
+        backgroundColor: theme.palette.background.paper,
+        height: "130%",
       }}
     >
       {rolesTableRender()}

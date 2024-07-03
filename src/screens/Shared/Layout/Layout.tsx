@@ -45,7 +45,8 @@ import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
 import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
-import Trip from "../../Trip/Trip";
+import Trip from "../../Trip/ActiveTrips/Trip";
+import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -242,9 +243,25 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/trip"}
-            component={Trip}
+            path={"/alert-config"}
+            component={AlertConfig}
             componentName={strings.ALERT_CONFIG}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/active-trips"}
+            component={Trip}
+            componentName={strings.ACTIVE_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/archived-trips"}
+            component={ArchivedTrips}
+            componentName={strings.ARCHIVED_TRIPS}
           />
 
           <PrivateRoute

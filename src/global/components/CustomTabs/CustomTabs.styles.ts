@@ -18,6 +18,10 @@ const customTabsStyles = {
   tab: {
     "& .MuiButtonBase-root-MuiTab-root": {
       padding: "12px 2px",
+      color: "#FFFFFF !important", 
+    },
+    "& .Mui-selected": {
+      color: "#FFFFFF !important", 
     },
   },
   tabBox: {
@@ -30,16 +34,13 @@ const customTabsStyles = {
     width: "100%",
   },
   active: {
-    // backgroundColor: primaryActiveTabBgColor,
-    // color: primaryColorPurple,
-    backgroundColor: "#9063f2",
-    color: "#F9F9F9",
+    backgroundColor: "#5F22E2",
     textDecoration: "none",
+    color:"#ffffff"
   },
   inActive: {
-    backgroundColor: "#ffffff",
-    color: "#828282",
-    border: "1px solid #ccc",
+    opacity: 0.6,
+    color: "#ffffff",
   },
   tabText: {
     display: "flex",
@@ -49,6 +50,7 @@ const customTabsStyles = {
     fontWeight: 500,
     margin: theme.spacing(1),
     textTransform: "none",
+    color: "#FFFFFF",
   },
   counts: {
     marginLeft: theme.spacing(1),

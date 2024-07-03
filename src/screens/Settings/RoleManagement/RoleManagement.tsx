@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
   InputAdornment,
+  useTheme,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -15,7 +16,7 @@ import {
   CustomTable,
 } from "../../../global/components";
 import SearchIcon from "@mui/icons-material/Search";
-import { AddUpdateRoles } from "./components/AddUpdateRoles";
+import AddUpdateRoles from "./components/AddUpdateRoles";
 import RoleManagementStyles from "./RoleManagement.styles";
 import EditIcon from "@mui/icons-material/Edit";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
@@ -36,10 +37,12 @@ import {
 } from "./service/RoleManagement.service";
 
 import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import { headerColor } from "../../../utils/styles";
 
 export const RoleManagement = () => {
   useTitle(strings.RoleManagementTitle);
   const classes = RoleManagementStyles;
+  const theme = useTheme();
   const [buttonClick, setButtonClick] = useState<string>(strings.rolesTable);
   const [loading, setLoading] = useState<boolean>(false);
   const [tableData, setTableData] = useState([]);
@@ -54,6 +57,8 @@ export const RoleManagement = () => {
   });
   const [industryType, setIndustryType] = useState([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState("Add");
 
   const hasRoleManagementAddAccess = hasAccessTo("RoleMangement", "Add");
 
@@ -133,13 +138,15 @@ export const RoleManagement = () => {
   };
 
   const handleEdit = (rowData: any) => {
-    setButtonClick(strings.editRole);
+    setDialogMode("Edit");
     setRoleData(rowData);
+    setDialogOpen(true);
   };
 
   const handleRoleCreator = () => {
-    setButtonClick(strings.createRole);
+    setDialogMode("Add");
     setRoleData(initialRoleData);
+    setDialogOpen(true);
   };
 
   const handlePerPageData = (event: any) => {
@@ -165,7 +172,7 @@ export const RoleManagement = () => {
                 <Chip
                   key={role.id + i}
                   label={i}
-                  sx={classes.addTagChip}
+                  sx={{ ...classes.addTagChip, color: "white" }}
                   variant="filled"
                 />
               ))}
@@ -177,7 +184,7 @@ export const RoleManagement = () => {
             <>
               <Tooltip title="Add / Edit Role" placement="top" arrow>
                 <EditIcon
-                  htmlColor={"#0F2167"}
+                  htmlColor={headerColor}
                   style={{ margin: "0px 8px -7px 17px" }}
                   onClick={() => handleEdit(role)}
                 />
@@ -198,9 +205,7 @@ export const RoleManagement = () => {
         justifyContent="space-between"
         alignItems={{ lg: "center" }}
       >
-        <Typography mt={1} sx={classes.pageSubtitle}>
-          List of Roles
-        </Typography>
+        <Typography mt={1} sx={classes.pageSubtitle}></Typography>
         <Stack
           direction={{ sm: "row", xs: "column" }}
           alignItems={{ sm: "center" }}
@@ -263,6 +268,8 @@ export const RoleManagement = () => {
         <Box
           sx={{
             minWidth: "300px",
+            maxHeight: "700px",
+            overflowY: "scroll",
             overflow: "auto",
             padding: "30px",
           }}
@@ -285,31 +292,30 @@ export const RoleManagement = () => {
     );
   };
 
-  const editModeRolePage = () => {
-    switch (buttonClick) {
-      case strings.createRole:
-      case strings.editRole:
-        return (
-          <AddUpdateRoles
-            name={buttonClick}
-            setButtonClick={setButtonClick}
-            rowData={roleData}
-            fetchRolesHandler={fetchRolesHandler}
-            resources={resources}
-            industryType={industryType}
-          />
-        );
-      case strings.rolesTable:
-      default:
-        return rolesTableRender();
-    }
-  };
-
   return (
-    <>
-      <Grid>{editModeRolePage()}</Grid>
+    <Box
+      sx={{
+        width: "100%",
+        margin: "auto",
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
+      <Grid>
+        {rolesTableRender()}
+        <AddUpdateRoles
+          open={dialogOpen}
+          handleClose={() => setDialogOpen(false)}
+          name={dialogMode}
+          rowData={roleData}
+          fetchRolesHandler={fetchRolesHandler}
+          setButtonClick={setButtonClick}
+          resources={resources}
+          industryType={industryType}
+        />
+      </Grid>
       <CustomLoader isLoading={loading} />
       {customDialog()}
-    </>
+    </Box>
   );
 };

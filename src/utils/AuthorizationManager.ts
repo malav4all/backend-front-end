@@ -197,7 +197,22 @@ const ListOfMenus = () =>
       visibleInSidebar: true,
       accessWithoutAnyResource: true,
       accessToResource: [],
-      subMenu: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Active Trips",
+          link: `${"/active-trips"}`,
+          pageName: strings.ACTIVE_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Archived Trips",
+          link: `${"/archived-trips"}`,
+          pageName: strings.ARCHIVED_TRIPS,
+        },
+      ],
     },
   ] as any;
 

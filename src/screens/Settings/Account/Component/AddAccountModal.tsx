@@ -4,7 +4,7 @@ import {
   CustomDialog,
   CustomInput,
 } from "../../../../global/components";
-import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Chip, Grid, MenuItem, Select, Typography, useTheme, } from "@mui/material";
 import AccountStyles from "../Account.styles";
 import { insertAccountField } from "../Account.helper";
 import { store } from "../../../../utils/store";
@@ -19,15 +19,14 @@ import {
   updateAccount,
 } from "../service/account.service";
 import uploadUser from "../../../../assets/images/uploadUser.svg";
-import { theme } from "../../../../utils/styles";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import cookies from "js-cookie";
 
 interface CustomProps {
-  openAddUserDialog: boolean;
-  handleCloseAddUserDialog?: Function;
+  openAddAccountDialog: boolean;
+  handleCloseAddAccountDialog?: Function;
   edit?: boolean;
   tableData?: Function;
   isLoading?: boolean;
@@ -67,7 +66,7 @@ const AddAccountModal = (props: CustomProps) => {
   const [authAccountNo, setAccountAuthNo] = useState([]);
   const [accountConfig, setAccountConfig] = useState([]);
   const [language, setLanguage] = useState("");
-
+  const theme = useTheme();
   useEffect(() => {
     setAccountFields(insertAccountField());
     setAccountConfig([]);
@@ -75,7 +74,7 @@ const AddAccountModal = (props: CustomProps) => {
     cookies.set("i18next", "en");
     i18next.changeLanguage("en");
     setLanguage("");
-  }, [props.openAddUserDialog]);
+  }, [props.openAddAccountDialog]);
 
   useEffect(() => {
     if (props.edit && props.selectedRowData) {
@@ -194,7 +193,7 @@ const AddAccountModal = (props: CustomProps) => {
     }
   };
 
-  const addUserDialogBody = () => {
+  const addAccountDialogBody = () => {
     return (
       <>
         {/* <Grid container spacing={2} mb={2}>
@@ -242,7 +241,7 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
-              label={t("accountName")}
+              label={t(" Account Name")}
               id="account_name_field"
               type="text"
               name="accountName"
@@ -255,7 +254,7 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
-              label={t("accountContactName")}
+              label={t("Account Contact Name")}
               id="account_name_field"
               type="text"
               name="accountContactName"
@@ -273,7 +272,9 @@ const AddAccountModal = (props: CustomProps) => {
             >
               <Box>
                 <Box display={"flex"}>
-                  <Typography sx={classes.label}>{t("accountType")}</Typography>
+                  <Typography sx={classes.label}>
+                    {t("Account Type")}
+                  </Typography>
                   <Typography sx={classes.star}>*</Typography>
                 </Box>
 
@@ -308,7 +309,7 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
-              label={t("accountContactEmail")}
+              label={t("Account Contact Email")}
               id="account_contact_email_field"
               type="text"
               name="accountContactEmail"
@@ -320,7 +321,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountAddress")}
+              label={t("Account Address")}
               id="account_address_field"
               type="text"
               name="accountAddress"
@@ -335,7 +336,7 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
-              label={t("accountContactMobile")}
+              label={t("Account Contact Mobile")}
               id="account_contact_mobile_field"
               type="text"
               name="accountContactMobile"
@@ -349,7 +350,7 @@ const AddAccountModal = (props: CustomProps) => {
 
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountPanNo")}
+              label={t("Account PAN Number")}
               id="account_address_field"
               type="number"
               name="accountPanNo"
@@ -362,7 +363,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountGstNo")}
+              label={t("Account GST Number")}
               id="account_address_field"
               type="number"
               name="accountGstNo"
@@ -375,7 +376,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountAadharNo")}
+              label={t("Account Aadhar Number")}
               id="account_address_field"
               type="number"
               name="accountAadharNo"
@@ -388,7 +389,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountState")}
+              label={t("Account State")}
               id="account_address_field"
               type="text"
               name="accountState"
@@ -401,7 +402,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("accountCity")}
+              label={t("Account City")}
               id="account_address_field"
               type="text"
               name="accountCity"
@@ -414,7 +415,7 @@ const AddAccountModal = (props: CustomProps) => {
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
-              label={t("remarks")}
+              label={t("Remarks")}
               id="account_address_field"
               type="text"
               name="remarks"
@@ -429,7 +430,7 @@ const AddAccountModal = (props: CustomProps) => {
             <Grid container gap={2}>
               <Grid item xs={12} sm={6} md={6} lg={8} xl={8}>
                 <CustomInput
-                  label={t("accountAuthMobile")}
+                  label={t("Account Auth Mobile")}
                   id="recipient_modal_tags_field"
                   type="text"
                   name="accountAuthorizedNo"
@@ -483,7 +484,7 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid container gap={2}>
             <Grid item xs={12} sm={6} md={6} lg={4} xl={4}>
               <CustomInput
-                label={t("accountKey")}
+                label={t("Account Key")}
                 id="recipient_modal_tags_field"
                 type="text"
                 name="accountKey"
@@ -495,7 +496,7 @@ const AddAccountModal = (props: CustomProps) => {
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={4} xl={4}>
               <CustomInput
-                label={t("accountValue")}
+                label={t("Account Value")}
                 id="recipient_modal_tags_field"
                 type="text"
                 name="accountValue"
@@ -593,21 +594,25 @@ const AddAccountModal = (props: CustomProps) => {
         openSuccessNotification(res?.createAccountModule?.message);
       }
       await props.tableData?.();
-      props.handleCloseAddUserDialog?.(false);
+      props.handleCloseAddAccountDialog?.(false);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const addUserDialogFooter = () => {
+  const addAccountDialogFooter = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
         <Box sx={classes.dialogFooter}>
           <CustomButton
             id="add_user_cancel_button"
             label="Cancel"
-            onClick={() => props?.handleCloseAddUserDialog?.()}
-            customClasses={classes.cancelButtonStyle}
+            onClick={() => props?.handleCloseAddAccountDialog?.()}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              backgroundColor: "#00000000",
+              color: theme.palette.text.primary,
+            }}
           />
           <CustomButton
             id="add_user_submit_button"
@@ -625,7 +630,7 @@ const AddAccountModal = (props: CustomProps) => {
     document.title = t("app_title");
   }, [currentLanguage, t]);
 
-  const addUserHeaderImg = () => {
+  const addAccountHeaderImg = () => {
     return (
       <Box display={"flex"}>
         <img src={uploadUser} alt="Add user not found!" />
@@ -633,28 +638,28 @@ const AddAccountModal = (props: CustomProps) => {
     );
   };
 
-  const addUserDialogTitle = () => {
+  const addAccountDialogTitle = () => {
     return (
       <Box>
         <Typography sx={classes.boldFonts}>
-          {props.edit ? t("updateAccount") : t("accountModalName")}
+          {props.edit ? t("Update Account") : t("Add Account")}
         </Typography>
       </Box>
     );
   };
 
-  const getAddUserDialog = () => {
+  const getAddAccountDialog = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
         <CustomDialog
-          isDialogOpen={props.openAddUserDialog}
+          isDialogOpen={props.openAddAccountDialog}
           closable
           closeButtonVisibility
-          handleDialogClose={props.handleCloseAddUserDialog}
-          dialogHeaderContent={addUserHeaderImg()}
-          dialogTitleContent={addUserDialogTitle()}
-          dialogBodyContent={addUserDialogBody()}
-          dialogFooterContent={addUserDialogFooter()}
+          handleDialogClose={props.handleCloseAddAccountDialog}
+          dialogHeaderContent={addAccountHeaderImg()}
+          dialogTitleContent={addAccountDialogTitle()}
+          dialogBodyContent={addAccountDialogBody()}
+          dialogFooterContent={addAccountDialogFooter()}
           width={"700px"}
           fullScreen={false}
         />
@@ -662,7 +667,7 @@ const AddAccountModal = (props: CustomProps) => {
     );
   };
 
-  return <Box>{getAddUserDialog()}</Box>;
+  return <Box>{getAddAccountDialog()}</Box>;
 };
 
 export default React.memo(AddAccountModal);

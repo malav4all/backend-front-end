@@ -318,7 +318,7 @@ const AssetAssingmentStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: offWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

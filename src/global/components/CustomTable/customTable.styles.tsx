@@ -26,13 +26,14 @@ const customTableStyles = {
   },
 
   tableBody: {
-    maxHeight: "500px",
-    maxwidth: "100%",
+    maxHeight: "700px",
+    maxWidth: "100%",
+    overflowY: "auto",
   },
 
   tableHeaderCell: {
     ...regularFont,
-    fontSize: '14px',
+    fontSize: "14px",
     border: "none",
     padding: "12px 18px",
     backgroundColor: "#F5F7F9",
@@ -83,7 +84,7 @@ const customTableStyles = {
   },
   regularFonts: {
     ...regularFont,
-    fontSize: '13px',
+    fontSize: "13px",
   },
   perPageDropdown: {
     height: "25px",

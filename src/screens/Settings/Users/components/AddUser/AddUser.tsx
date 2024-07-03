@@ -11,6 +11,7 @@ import {
   SelectChangeEvent,
   InputAdornment,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -44,6 +45,7 @@ import notifiers from "../../../../../global/constants/NotificationConstants";
 import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
 import showPasswordIcon from "../../../../../assets/images/Show.svg";
 import { fetchDeviceGroup } from "../../../../DeviceGroup/service/DeviceGroup.service";
+import { headerColor } from "../../../../../utils/styles";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -59,6 +61,7 @@ interface CustomProps {
 
 const AddUser = (props: CustomProps) => {
   const classes = usersStyles;
+  const theme = useTheme();
   const [userFormFields, setUserFormFields] = useState<any>(
     insertUserField(props?.selectedUserRowData)
   );
@@ -375,6 +378,9 @@ const AddUser = (props: CustomProps) => {
                       onClick={handleClickShowPassword}
                       onMouseDown={handleMouseDownPassword}
                       edge="end"
+                      sx={{
+                        color: theme.palette.text.primary,
+                      }}
                     >
                       <Box
                         component="img"
@@ -403,7 +409,13 @@ const AddUser = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Role
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -467,7 +479,13 @@ const AddUser = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Status
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -511,7 +529,13 @@ const AddUser = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Account
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -559,7 +583,13 @@ const AddUser = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
                 Device Group
                 <Box ml={0.4} sx={classes.star}>
                   *
@@ -612,7 +642,11 @@ const AddUser = (props: CustomProps) => {
             id="add_user_cancel_button"
             label="Cancel"
             onClick={() => props?.handleCloseAddUserDialog()}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              color: theme.palette.text.primary,
+              backgroundColor: "#00000000",
+            }}
           />
           <CustomButton
             id="add_user_submit_button"

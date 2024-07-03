@@ -44,7 +44,7 @@ import history from "../../utils/history";
 
 const DeviceGroup = () => {
   const theme = useTheme();
-  const classes = deviceGroupStyles;
+  const classes = deviceGroupStyles(theme);
   const [page, setPage] = useState<number>(1);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
@@ -66,7 +66,7 @@ const DeviceGroup = () => {
     } else {
       getDeviceGroupData();
     }
-  }, [searchDeviceGroups, page, setRowsPerPage, searchPageNumber]);
+  }, [searchDeviceGroups, page, rowsPerPage, searchPageNumber]);
 
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -104,7 +104,7 @@ const DeviceGroup = () => {
                   fontSize: "13px",
                   "&:hover": {
                     borderBottom: `1px solid ${theme.palette.primary.main}`,
-                    color: theme.palette.primary.main,
+                    color: theme.palette.text.primary,
                   },
                 }}
               >
@@ -137,8 +137,8 @@ const DeviceGroup = () => {
                 style={{
                   margin: "0px 8px -7px 0px",
                   cursor: "pointer",
-                  color: theme.palette.primary.main,
-                  fontSize: "17px",
+                  color: headerColor,
+                  fontSize: "20px",
                 }}
               />
             </Tooltip>
@@ -152,7 +152,7 @@ const DeviceGroup = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography sx={{ ...classes.mainCardHeading }}>
           Device Group
         </Typography>
       </Box>

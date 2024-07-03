@@ -66,9 +66,8 @@ const usersStyles = {
   },
   inputLabel: {
     display: "flex",
-    color: "#212121",
-    fontSize: getRelativeFontSize(7),
-    fontColor: theme.palette.common.black + " !important",
+    color: theme.palette.text.primary,
+    fontSize: getRelativeFontSize(6),
     variant: "standard",
     ...boldFont,
     "& .MuiTextField-root": {

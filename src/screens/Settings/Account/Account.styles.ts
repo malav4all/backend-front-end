@@ -8,7 +8,9 @@ import {
   pinkDarkColor,
   primaryHeadingColor,
   pureWhiteColor,
+  purpleThemedSelectComponent,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -89,12 +91,13 @@ const AccountStyles = {
   },
   cancelButtonStyle: {
     color: "#212121 !important",
-    backgroundColor: pureWhiteColor,
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",
     },
   },
+
   testAreaStyle: {
     borderColor: "rgba(0,0,0,0.2)",
     background: "none",
@@ -110,22 +113,24 @@ const AccountStyles = {
     },
   },
   label: {
-    ...boldFont,
+    ...semiBoldFont,
     marginBottom: "8px",
+    fontSize: "14px",
   },
   star: {
     color: inputLabelRequiredColor,
     ...boldFont,
   },
   dropDownStyle: {
-    ...regularFont,
-    // ...purpleThemedSelectComponent,
-    backgroundColor: pureWhiteColor,
     height: "47px",
     padding: "2px",
     width: "100%",
-    borderRadius: "12px",
-    fontSize: "16px",
+    borderRadius: "5px",
+    [theme.breakpoints.down("lg")]: {
+      marginBottom: "5px",
+    },
+    ...regularFont,
+    ...purpleThemedSelectComponent,
   },
   placeholderText: {
     ...regularFont,

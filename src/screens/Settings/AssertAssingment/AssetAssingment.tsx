@@ -107,8 +107,8 @@ const AssetAssingment = () => {
                 style={{
                   margin: "0px 8px -7px 0px",
                   cursor: "pointer",
-                  color: theme.palette.primary.main,
-                  fontSize: "17px",
+                  color: headerColor,
+                  fontSize: "20px",
                 }}
               />
             </Tooltip>
