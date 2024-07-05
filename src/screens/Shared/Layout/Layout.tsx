@@ -47,6 +47,9 @@ import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
 import Trip from "../../Trip/ActiveTrips/Trip";
 import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
+import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
+import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
+import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -261,6 +264,30 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/archived-trips"}
             component={ArchivedTrips}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-history"}
+            component={DeviceHistory}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-module"}
+            component={DeviceModule}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-onboarding"}
+            component={DeviceOnboarding}
             componentName={strings.ARCHIVED_TRIPS}
           />
 

@@ -121,11 +121,14 @@ const Login = () => {
               authenticated: true,
               accessToken: user?.loginUser?.data?.data?.user.accessToken,
               userName: user?.loginUser?.data?.data?.user.name,
-              role: user?.loginUser?.data?.data?.user?.roleId,
+              role: user?.loginUser?.data?.data?.user?.role,
               resources: formattedResources,
+              roleId: user?.loginUser?.data?.data?.user.roleId.name,
               userId: user?.loginUser?.data?.data?.user?._id,
               account: user?.loginUser?.data?.data?.user.roleId.name,
               accountId: user?.loginUser?.data?.data?.user?.account?._id,
+              roleName: user?.loginUser?.data?.data?.user.roleId.name,
+              tenantId: user?.loginUser?.data?.data?.user?.account?.tenantId,
             })
           );
           setIsLoading(false);

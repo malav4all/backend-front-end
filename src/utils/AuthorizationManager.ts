@@ -214,6 +214,39 @@ const ListOfMenus = () =>
         },
       ],
     },
+    {
+      icon: getTripIcon("#dbdbdb"),
+      activeIcon: getTripIcon(pinkDarkColor),
+      text: "Inventory",
+      link: `${"/inventory"}`,
+      pageName: strings.TRIP,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Module",
+          link: `${"/device-module"}`,
+          pageName: strings.ACTIVE_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device History",
+          link: `${"/device-history"}`,
+          pageName: strings.ARCHIVED_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Onboarding",
+          link: `${"/device-onboarding"}`,
+          pageName: strings.ARCHIVED_TRIPS,
+        },
+      ],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
