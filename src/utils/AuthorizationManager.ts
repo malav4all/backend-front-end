@@ -247,6 +247,17 @@ const ListOfMenus = () =>
         },
       ],
     },
+    {
+      icon: alertConfigIcon("#dbdbdb"),
+      activeIcon: alertConfigIcon(pinkDarkColor),
+      text: "Form Builder",
+      link: `${"/form-builder"}`,
+      pageName: strings.FORM_BUILDER,
+      visibleInSidebar: true,
+      accessWithoutAnyResource: true,
+      accessToResource: [],
+      subMenu: [],
+    },
   ] as any;
 
 export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {

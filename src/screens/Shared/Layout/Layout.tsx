@@ -1,20 +1,16 @@
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import PrivateRoute from "../../../global/components/PrivateRoute/PrivateRoute";
-
 import Dashboard from "../../Dashboard/Dashboard";
-
 import AppDrawer from "../AppDrawer/AppDrawer";
 import AppHeader from "../AppHeader/AppHeader";
 import layoutStyles from "./Layout.styles";
 import { useMediaQuery, useTheme } from "@mui/material";
-
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import { logOutAction, selectAuthenticated } from "../../../redux/authSlice";
 import PageNotFound from "../../PageNotFound/PageNotFound";
 import strings from "../../../global/constants/StringConstants";
-
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import Settings from "../../Settings/Settings";
 import { useIdleTimer } from "react-idle-timer";
@@ -26,16 +22,12 @@ import Journey from "../../Journey/Journey";
 import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
 import ViewLiveTracking from "../../Journey/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
-// import Reports from "../../Reports/screens/Reports";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
-import {
-  openErrorAlertNotification,
-  openErrorNotification,
-} from "../../../helpers/methods";
+import { openErrorAlertNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
@@ -50,6 +42,8 @@ import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
 import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
+import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
+// import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -67,15 +61,13 @@ const Layout = () => {
     const elapsedTime = (currentTime - lastActiveTime) / 1000 / 60;
 
     if (elapsedTime >= idleLogoutTime) {
-      // const _id = localStorage.getItem("userId");
-      // onLogout({ input: { _id } });
       localStorage.removeItem("userId");
       setTimeout(() => {
         history.push("/");
         store.dispatch(logOutAction());
       }, 1000);
     }
-  };
+  };  
 
   const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
     variables: { topic: "alerts/#" },
@@ -118,7 +110,6 @@ const Layout = () => {
             component={Settings}
             componentName={strings.SETTINGS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -140,7 +131,6 @@ const Layout = () => {
             component={ShowJourneyModal}
             componentName={strings.VIEW_JOURNEY}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -190,7 +180,6 @@ const Layout = () => {
             component={DeviceDashboard}
             componentName={strings.DEVICEDASHBOARD}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -198,7 +187,6 @@ const Layout = () => {
             component={Trackplay}
             componentName={strings.ACTIVE_JOURNEY}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -213,7 +201,6 @@ const Layout = () => {
             component={ViewOfflineDevice}
             componentName={strings.VIEW_OFFLINE}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -242,15 +229,6 @@ const Layout = () => {
             component={AlertConfig}
             componentName={strings.ALERT_CONFIG}
           />
-
-          <PrivateRoute
-            exact
-            isLoggedIn={isAuthenticated}
-            path={"/alert-config"}
-            component={AlertConfig}
-            componentName={strings.ALERT_CONFIG}
-          />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -258,7 +236,6 @@ const Layout = () => {
             component={Trip}
             componentName={strings.ACTIVE_TRIPS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -266,7 +243,13 @@ const Layout = () => {
             component={ArchivedTrips}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/form-builder"}
+            component={FormBuilderPage}
+            componentName={strings.FORM_BUILDER}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

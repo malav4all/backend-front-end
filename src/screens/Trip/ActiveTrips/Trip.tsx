@@ -46,7 +46,7 @@ const Trip = () => {
   const [isLoading, setIsLoading] = useState<any>(false);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [searchTrips, setSearchTrips] = useState<any>("");
-  const [addTripDialogHandler, setAddTripDialogHandler] = useState(false);
+  const [showAddTripForm, setShowAddTripForm] = useState(false);
   const [tripData, setTripData] = useState<any>([]);
   const [selectedTripRowData, setSelectedTripRowData] = useState<any>({});
   const [roles, setRoles] = useState([]);
@@ -196,23 +196,23 @@ const Trip = () => {
 
   const editTrip = React.useCallback(
     (rowdata: any) => {
-      setAddTripDialogHandler(true);
+      setShowAddTripForm(true);
       setSelectedTripRowData(rowdata);
       setEdit(true);
     },
     [edit]
   );
 
-  const closeAddTripDialogHandler = () => {
-    setAddTripDialogHandler(false);
+  const closeAddTripForm = () => {
+    setShowAddTripForm(false);
     setSelectedTripRowData(null);
   };
 
-  const addTripDailogBox = () => {
+  const addTripForm = () => {
     return (
       <AddTrip
-        openAddTripDialog={addTripDialogHandler}
-        handleCloseAddTripDialog={closeAddTripDialogHandler}
+        openAddTripForm={showAddTripForm}
+        handleCloseAddTripForm={closeAddTripForm}
         roles={roles}
         tableData={getTripData}
         selectedTripRowData={selectedTripRowData}
@@ -277,7 +277,7 @@ const Trip = () => {
       <CustomButton
         id="trip_add_button"
         label={"Add Trip"}
-        onClick={() => setAddTripDialogHandler(true)}
+        onClick={() => setShowAddTripForm(true)}
         customClasses={{
           width: "150px",
         }}
@@ -329,7 +329,7 @@ const Trip = () => {
         mt={2}
         mr={2}
       >
-        {addTripButton()}
+        {!showAddTripForm ? addTripButton() : ""}
       </Box>
 
       <Grid
@@ -341,8 +341,7 @@ const Trip = () => {
         xl={12}
         sx={classes.mainSection}
       >
-        {addTripDailogBox()}
-        {getCustomTable()}
+        {showAddTripForm ? addTripForm() : getCustomTable()}
         <CustomLoader isLoading={isLoading} />
       </Grid>
     </Box>
