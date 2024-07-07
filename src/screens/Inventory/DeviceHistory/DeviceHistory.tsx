@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import DeviceHistoryStyles from "./DeviceHistory.style";
 import { deviceOnboardingHistory } from "./DeviceHistory.helper";
 import { fetchDeviceOnboardingHistory } from "./service/DeviceOnboarding.service";
@@ -8,6 +8,7 @@ import DeviceSimHistoryTable from "./DeviceSimHistoryTable";
 import { openErrorNotification } from "../../../helpers/methods";
 import { CustomAppHeader, CustomTable } from "../../../global/components";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import { boldFont, headerColor, primaryHeadingColor, getRelativeFontSize } from "../../../utils/styles";
 
 const DeviceHistory = () => {
   const classes = DeviceHistoryStyles;
@@ -24,12 +25,13 @@ const DeviceHistory = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>
-          Device Onboarding History
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          Device Module
         </Typography>
       </Box>
     );
   };
+  
   const handlePerPageData = (event: any) => {
     setRowsPerPage(event.target.value);
   };
@@ -108,15 +110,27 @@ const DeviceHistory = () => {
     <>
       <CustomAppHeader
         className={{
-          backgroundColor: "#ECF9FF",
+          backgroundColor: headerColor,
           padding: "10px 20px 15px 18px",
         }}
       >
-        <Grid container xs={12} md={12} lg={12} xl={12} alignItems="center">
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+        <Stack
+          px={4}
+          pt={2}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
+          <Typography
+            sx={{
+              fontSize: getRelativeFontSize(6),
+              ...boldFont,
+              color: primaryHeadingColor,
+            }}
+          >
             {getHeader()}
-          </Grid>
-        </Grid>
+          </Typography>
+        </Stack>
       </CustomAppHeader>
       <Grid
         item

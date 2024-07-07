@@ -11,6 +11,7 @@ import {
   inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
+  semiBoldFont,
 } from "../../../utils/styles";
 
 const DeviceOnboardingStyle = {
@@ -33,6 +34,12 @@ const DeviceOnboardingStyle = {
   searchBarSection: {
     display: "flex",
     alignItems: "left",
+  },
+  label: {
+    ...semiBoldFont,
+    fontSize: "14px",
+    marginBottom: "8px",
+    // padding: "0px 12px",
   },
   dialogBox: {
     marginBottom: "10px",
@@ -66,9 +73,7 @@ const DeviceOnboardingStyle = {
   },
   inputLabel: {
     display: "flex",
-    color: "#212121",
-    fontSize: getRelativeFontSize(7),
-    fontColor: theme.palette.common.black + " !important",
+    fontSize: getRelativeFontSize(5),
     variant: "standard",
     ...boldFont,
     "& .MuiTextField-root": {
@@ -240,8 +245,7 @@ const DeviceOnboardingStyle = {
     textAlign: "center",
   },
   cancelButtonStyle: {
-    color: "#212121 !important",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#00000000",
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

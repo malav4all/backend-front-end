@@ -129,7 +129,10 @@ const AddDeviceModule = (props: CustomProps) => {
             id="add_user_cancel_button"
             label="Cancel"
             onClick={() => props?.handleCloseAddUserDialog?.()}
-            customClasses={classes.cancelButtonStyle}
+            customClasses={{
+              ...classes.cancelButtonStyle,
+              color: theme.palette.text.primary,
+            }}
           />
           <CustomButton
             id="add_user_submit_button"
@@ -365,7 +368,7 @@ const AddDeviceModule = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Box>
               <Stack direction="column">
-                <InputLabel sx={classes.inputLabel} shrink>
+                <InputLabel sx={{ ...classes.inputLabel }} shrink>
                   Device Sim Count
                   <Box ml={0.4} sx={classes.star}>
                     *

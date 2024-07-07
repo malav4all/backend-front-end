@@ -128,10 +128,7 @@ const DeviceModelStyles = {
       minHeight: "10px",
     },
   },
-  label: {
-    ...boldFont,
-    marginBottom: "8px",
-  },
+
   star: {
     color: inputLabelRequiredColor,
     ...boldFont,
