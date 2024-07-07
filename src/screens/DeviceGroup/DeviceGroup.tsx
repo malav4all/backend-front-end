@@ -349,6 +349,7 @@ const DeviceGroup = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
+      
       <Box
         sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
         mt={2}

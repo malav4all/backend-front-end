@@ -1,14 +1,35 @@
 import React, { ChangeEvent, useEffect, useState, lazy, Suspense } from "react";
-import { Box, Stepper, Step, StepLabel, Button, Grid, Typography, useTheme, SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  Stepper,
+  Step,
+  StepLabel,
+  Button,
+  Grid,
+  Typography,
+  useTheme,
+  SelectChangeEvent,
+} from "@mui/material";
 import useStyles from "./AddTrip.styles";
-import { insertTripField, validateAddTripForm } from "../../TripTypeAndValidation";
-import { addTrip, updateTrip, fetchDeviceList } from "../../service/Trip.service";
+import {
+  insertTripField,
+  validateAddTripForm,
+} from "../../TripTypeAndValidation";
+import {
+  addTrip,
+  updateTrip,
+  fetchDeviceList,
+} from "../../service/Trip.service";
 import { store } from "../../../../../utils/store";
-import { openErrorNotification, openSuccessNotification, isTruthy } from "../../../../../helpers/methods";
-import { CustomDialog, CustomButton } from "../../../../../global/components";
+import {
+  openErrorNotification,
+  openSuccessNotification,
+  isTruthy,
+} from "../../../../../helpers/methods";
 import strings from "../../../../../global/constants/StringConstants";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import CustomLoader from "../../../../../global/components/CustomLoader/CustomLoader";
+import { CustomButton } from "../../../../../global/components";
 
 const TransitType = lazy(() => import("./TransitType"));
 const TripInformation = lazy(() => import("./TripInformation"));
@@ -23,8 +44,8 @@ const steps = [
 ];
 
 interface CustomProps {
-  openAddTripDialog: boolean;
-  handleCloseAddTripDialog: () => void;
+  openAddTripForm: boolean;
+  handleCloseAddTripForm: () => void;
   roles: any[];
   tableData: () => void;
   isLoading: boolean;
@@ -36,7 +57,9 @@ interface CustomProps {
 const AddTrip: React.FC<CustomProps> = (props) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [tripFromFields, setTripFromFields] = useState(insertTripField(props?.selectedTripRowData));
+  const [tripFromFields, setTripFromFields] = useState(
+    insertTripField(props?.selectedTripRowData)
+  );
   const [imeiData, setImeiData] = useState([]);
   const [selectedImeis, setSelectedImeis] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
@@ -44,7 +67,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
   useEffect(() => {
     props.setEdit?.(false);
     setTripFromFields(insertTripField());
-  }, [props.openAddTripDialog]);
+  }, [props.openAddTripForm]);
 
   useEffect(() => {
     if (props.edit && props.selectedTripRowData) {
@@ -120,7 +143,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
               createdBy: store.getState().auth.userName,
             },
           });
-          props.handleCloseAddTripDialog();
+          props.handleCloseAddTripForm();
           openSuccessNotification(res?.updateTrip?.message);
           await props.tableData?.();
         } else {
@@ -130,7 +153,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
               createdBy: store?.getState()?.auth?.userName,
             },
           });
-          props.handleCloseAddTripDialog();
+          props.handleCloseAddTripForm();
           openSuccessNotification(res?.createTrip?.message);
           await props.tableData?.();
         }
@@ -154,7 +177,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const addTripDialogTitle = () => (
+  const addTripTitle = () => (
     <Box>
       <Typography className={classes.boldFonts}>
         {props.edit ? "Update Trip" : "Add Trip"}
@@ -162,7 +185,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     </Box>
   );
 
-  const addTripDialogBody = () => (
+  const addTripBody = () => (
     <Box>
       <Stepper
         activeStep={activeStep}
@@ -212,13 +235,13 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     </Box>
   );
 
-  const addTripDialogFooter = () => (
+  const addTripFooter = () => (
     <Grid container className={classes.centerItemFlex}>
       <Box className={classes.dialogFooter}>
         <CustomButton
           id="device_group_cancel_button"
           label="Cancel"
-          onClick={() => props?.handleCloseAddTripDialog()}
+          onClick={() => props?.handleCloseAddTripForm()}
           customClasses={classes.cancelButtonStyle}
         />
         <Button disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
@@ -231,23 +254,18 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     </Grid>
   );
 
-  const getAddTripDialog = () => (
-    <Grid container className={classes.centerItemFlex}>
-      <CustomDialog
-        isDialogOpen={props?.openAddTripDialog}
-        closable
-        closeButtonVisibility
-        handleDialogClose={props.handleCloseAddTripDialog}
-        dialogTitleContent={addTripDialogTitle()}
-        dialogBodyContent={addTripDialogBody()}
-        dialogFooterContent={addTripDialogFooter()}
-        width={"700px"}
-        fullScreen={false}
-      />
-    </Grid>
+  return (
+    <Box
+      sx={{
+        maxWidth: "700px",
+        margin: "auto",
+      }}
+    >
+      {addTripTitle()}
+      {addTripBody()}
+      {addTripFooter()}
+    </Box>
   );
-
-  return <Box>{getAddTripDialog()}</Box>;
 };
 
 export default AddTrip;

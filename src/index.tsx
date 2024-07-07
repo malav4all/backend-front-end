@@ -41,9 +41,7 @@ declare global {
   interface Window {
     __forceSmoothScrollPolyfill__: boolean;
   }
-}
 
-declare global {
   interface Window {
     __forceSmoothScrollPolyfill__: boolean;
     H: any;
