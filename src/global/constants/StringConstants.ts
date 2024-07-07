@@ -263,6 +263,9 @@ export class StringConstants {
   ARCHIVED_TRIPS = "ARCHIVED TRIPS";
   FORM_BUILDER = "FORM BUILDER";
   TRIP = "Trip";
+  DEVICE_MODULE = "DEVICE MODULE";
+  DEVICE_HISTORY = "DEVICE HISTORY";
+  DEVICE_ONBOARDING = "DEVICE ONBOARDING";
 }
 
 let strings = new StringConstants();

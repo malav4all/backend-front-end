@@ -39,6 +39,9 @@ import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
 import Trip from "../../Trip/ActiveTrips/Trip";
 import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
+import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
+import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
+import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
@@ -247,6 +250,30 @@ const Layout = () => {
             component={FormBuilderPage}
             componentName={strings.FORM_BUILDER}
           />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-history"}
+            component={DeviceHistory}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-module"}
+            component={DeviceModule}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-onboarding"}
+            component={DeviceOnboarding}
+            componentName={strings.ARCHIVED_TRIPS}
+          />
+
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
