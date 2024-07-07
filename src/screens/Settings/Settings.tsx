@@ -9,7 +9,7 @@ import { isAdmin } from "../../utils/AuthorizationManager";
 import UnauthorizedPage from "../UnauthorizedPage/UnauthorizedPage";
 
 import Users from "./Users/Users";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { validateTabValue } from "../../helpers/methods";
 import AssetAssingment from "./AssertAssingment/AssetAssingment";
 import LocationType from "./LocationType/LocationType";
@@ -20,16 +20,22 @@ import { RoleManagement } from "./RoleManagement/RoleManagement";
 
 const Settings = () => {
   const classes = SettingStyles;
-  const urlParams = new URLSearchParams(useLocation().search);
+  const location = useLocation();
+  const history = useHistory();
+  const urlParams = new URLSearchParams(location.search);
   const tabValueName = validateTabValue(urlParams.get("tabValue"));
   const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
-    window.history.replaceState(null, "", `?tabValue=${tabValue}`);
-  }, [tabValue]);
+    const tabValueName = validateTabValue(urlParams.get("tabValue"));
+    if (tabValueName !== tabValue) {
+      setTabValue(tabValueName!);
+    }
+  }, [location.search]);
 
   const handleChange = (newValue: string) => {
     setTabValue(newValue);
+    history.push(`?tabValue=${newValue}`);
   };
 
   const tabDataHandler = () => {
@@ -63,19 +69,14 @@ const Settings = () => {
         );
       case strings.INDUSTRY:
         return <Industry />;
-
       case strings.MODULE:
         return <CustomerModule />;
-
       case strings.ROLE_MANAGEMENT:
         return <RoleManagement />;
-
       case strings.ACCOUNT:
         return <Account />;
-
       case strings.LOCATIONTYPE:
         return <LocationType />;
-
       default:
         return <Users />;
     }

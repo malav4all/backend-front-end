@@ -43,6 +43,8 @@ import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
+import Users from "../../Settings/Users/Users";
+import Industry from "../../Settings/Industry/Industry";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -67,7 +69,7 @@ const Layout = () => {
         store.dispatch(logOutAction());
       }, 1000);
     }
-  };  
+  };
 
   const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
     variables: { topic: "alerts/#" },
@@ -257,7 +259,6 @@ const Layout = () => {
             component={DeviceHistory}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -265,7 +266,6 @@ const Layout = () => {
             component={DeviceModule}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -273,7 +273,20 @@ const Layout = () => {
             component={DeviceOnboarding}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings?tabValue=Users"}
+            component={Users}
+            componentName={strings.USERS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings?tabValue=Industry"}
+            component={Industry}
+            componentName={strings.INDUSTRY}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

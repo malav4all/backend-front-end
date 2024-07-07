@@ -89,6 +89,7 @@ export class StringConstants {
   LOGINACTIVITY = "LoginActivity";
   INDUSTRY = "Industry";
   MODULE = "Module";
+
   ROLE_MANAGEMENT = "Role";
   ACCOUNT = "Account";
   DEVICEMODULE = "DeviceModule";
