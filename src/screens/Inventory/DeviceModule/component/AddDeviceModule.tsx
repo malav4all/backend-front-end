@@ -131,7 +131,6 @@ const AddDeviceModule = (props: CustomProps) => {
             onClick={() => props?.handleCloseAddUserDialog?.()}
             customClasses={{
               ...classes.cancelButtonStyle,
-              color: theme.palette.text.primary,
             }}
           />
           <CustomButton

@@ -11,6 +11,7 @@ import {
   inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
+  headerColor,
 } from "../../../utils/styles";
 
 const usersStyles = {
@@ -27,7 +28,7 @@ const usersStyles = {
     gap: "15px",
   },
   headerBackgroundColor: {
-    backgroundColor: "#f1edff",
+    backgroundColor: headerColor,
     padding: "35px 0px 25px 20px",
   },
   searchBarSection: {
@@ -131,6 +132,14 @@ const usersStyles = {
     ...boldFont,
     fontSize: getRelativeFontSize(10),
     color: primaryHeadingColor,
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(3),
+    },
+  },
+  settingsTitle: {
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    color: "white",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(3),
     },

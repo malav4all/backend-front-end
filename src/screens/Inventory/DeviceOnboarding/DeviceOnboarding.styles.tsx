@@ -246,6 +246,7 @@ const DeviceOnboardingStyle = {
   },
   cancelButtonStyle: {
     backgroundColor: "#00000000",
+    color: theme.palette.text.primary,
     border: "1px solid #E7E7E7",
     "&:hover": {
       background: "none",

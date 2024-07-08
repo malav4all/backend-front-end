@@ -45,6 +45,12 @@ import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
 import Users from "../../Settings/Users/Users";
 import Industry from "../../Settings/Industry/Industry";
+import CustomerModule from "../../Settings/CustomerModule/CustomerModule";
+import Account from "../../Settings/Account/Account";
+import LocationType from "../../Settings/LocationType/LocationType";
+import Entity from "../../Trip/Entity/Entity";
+import EntityType from "../../Trip/EntityType/EntityType";
+import TripType from "../../Trip/TripType/TripType";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -276,16 +282,58 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/settings?tabValue=Users"}
+            path={"/settings/Users"}
             component={Users}
             componentName={strings.USERS}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/settings?tabValue=Industry"}
+            path={"/settings/Industry"}
             component={Industry}
             componentName={strings.INDUSTRY}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Module"}
+            component={CustomerModule}
+            componentName={strings.MODULE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Account"}
+            component={Account}
+            componentName={strings.ACCOUNT}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/LocationType"}
+            component={LocationType}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/entity"}
+            component={Entity}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/entity-type"}
+            component={EntityType}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trip-type"}
+            component={TripType}
+            componentName={strings.TRIPT_TYPE}
           />
           <PrivateRoute
             exact

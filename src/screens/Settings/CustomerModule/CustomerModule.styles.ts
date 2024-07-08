@@ -2,6 +2,7 @@ import {
   boldFont,
   centerItemFlex,
   getRelativeFontSize,
+  headerColor,
   inputLabelRequiredColor,
   lightTextColor,
   mediumFont,
@@ -49,6 +50,18 @@ const IndustryStyles = {
       "&.Mui-focused fieldset": {
         borderColor: "#0675f9",
       },
+    },
+  },
+  headerBackgroundColor: {
+    backgroundColor: headerColor,
+    padding: "35px 0px 25px 20px",
+  },
+  settingsTitle: {
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    color: "white",
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(3),
     },
   },
   nameField: {

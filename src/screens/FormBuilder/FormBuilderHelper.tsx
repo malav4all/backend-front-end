@@ -3,6 +3,8 @@ export interface FormField {
   type: string;
   label: string;
   options?: string[];
+  required?: boolean; // Optional boolean property
+  multiple?: boolean; // Optional boolean property
 }
 
 export interface Form {

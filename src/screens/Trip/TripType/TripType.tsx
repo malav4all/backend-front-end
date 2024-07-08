@@ -21,14 +21,14 @@ import {
   CustomInput,
   CustomTable,
 } from "../../../global/components";
-import IndustryStyles from "./Industry.styles";
+import TripTypeStyles from "./TripType.styles";
 import {
-  addIndustry,
-  checkExitsIndustry,
-  fetchIndustryTableHandler,
+  addTripType,
+  checkExitsTripType,
+  fetchTripTypeTableHandler,
   fetchTableHandler,
   searchTableHandler,
-} from "./service/Industry.service";
+} from "./service/TripType.service";
 import {
   debounceEventHandler,
   isTruthy,
@@ -37,22 +37,20 @@ import {
   validateTabValue,
 } from "../../../helpers/methods";
 import {
-  industryInsertField,
-  industryTableHeader,
-  industryValidation,
-} from "./IndustryHelpers";
+  tripTypeInsertField,
+  tripTypeTableHeader,
+  tripTypeValidation,
+} from "./TripTypeHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import {
   primaryHeadingColor,
   regularFont,
   getRelativeFontSize,
 } from "../../../utils/styles";
-import AddIndustry from "./component/AddIndustry";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { tabConfig } from "../SettingsHelpers";
+import AddTripType from "./component/AddTripType";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
-const Industry = () => {
+const TripType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -62,11 +60,11 @@ const Industry = () => {
       },
     },
   };
-  const classes = IndustryStyles;
+  const classes = TripTypeStyles;
   const theme = useTheme();
   const location = useLocation();
-  const [industryFormData, setIndustryFormData] = useState(
-    industryInsertField()
+  const [tripTypeFormData, setTripTypeFormData] = useState(
+    tripTypeInsertField()
   );
   const [modulesData, setModuleData] = useState([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -76,7 +74,7 @@ const Industry = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<any>();
-  const [addIndustryDialogHandler, setAddIndustryDialogHandler] =
+  const [addTripTypeDialogHandler, setAddTripTypeDialogHandler] =
     useState(false);
   const urlParams = new URLSearchParams(location.search);
   const tabValueName = validateTabValue(urlParams.get("tabValue"));
@@ -90,7 +88,7 @@ const Industry = () => {
     if (searchText) {
       searchDataHandler();
     } else {
-      fetchTableIndustry();
+      fetchTableTripType();
     }
   }, [pageNumber, perPageData, searchText]);
 
@@ -99,8 +97,8 @@ const Industry = () => {
   }, []);
 
   const handleModuleChange = (event: any) => {
-    setIndustryFormData({
-      ...industryFormData,
+    setTripTypeFormData({
+      ...tripTypeFormData,
       code: {
         value: event.target.value,
         error: "",
@@ -112,13 +110,13 @@ const Industry = () => {
     history.push(`?tabValue=${newValue}`);
   };
 
-  const fetchTableIndustry = async () => {
+  const fetchTableTripType = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchIndustryTableHandler({
+      const res = await fetchTripTypeTableHandler({
         input: { page: pageNumber, limit: perPageData },
       });
-      const finalData = res?.industryListAll?.data?.map((item: any) => {
+      const finalData = res?.tripTypeListAll?.data?.map((item: any) => {
         return {
           name: item.name,
           code: item?.code?.map((val: any) => val).join(","),
@@ -136,7 +134,7 @@ const Industry = () => {
         };
       });
       setTableData(finalData);
-      setCount(res?.industryListAll?.paginatorInfo?.count);
+      setCount(res?.tripTypeListAll?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -154,8 +152,8 @@ const Industry = () => {
           limit: perPageData,
         },
       });
-      setTableData(res?.searchIndustry?.data);
-      setCount(res?.searchIndustry?.paginatorInfo?.count);
+      setTableData(res?.searchTripType?.data);
+      setCount(res?.searchTripType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -165,33 +163,33 @@ const Industry = () => {
 
   const checkExitsRoleHandler = async () => {
     try {
-      const res = await checkExitsIndustry({
-        input: { name: industryFormData.name.value },
+      const res = await checkExitsTripType({
+        input: { name: tripTypeFormData.name.value },
       });
-      if (res?.checkIndustryExistsRecord?.success === 1) {
-        openErrorNotification(res.checkIndustryExistsRecord.message);
+      if (res?.checkTripTypeExistsRecord?.success === 1) {
+        openErrorNotification(res.checkTripTypeExistsRecord.message);
       }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const addIndustryHandler = async () => {
+  const addTripTypeHandler = async () => {
     try {
       const payload: any = {
-        name: industryFormData.name.value,
-        code: industryFormData.code.value,
-        description: industryFormData.description.value,
+        name: tripTypeFormData.name.value,
+        code: tripTypeFormData.code.value,
+        description: tripTypeFormData.description.value,
         file,
       };
       setIsLoading(true);
       if (handleValidation()) {
-        const res = await addIndustry({
+        const res = await addTripType({
           input: { ...payload },
         });
-        setIndustryFormData(industryInsertField());
-        await fetchTableIndustry();
-        openSuccessNotification(res.createIndustry.message);
+        setTripTypeFormData(tripTypeInsertField());
+        await fetchTableTripType();
+        openSuccessNotification(res.createTripType.message);
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -202,8 +200,8 @@ const Industry = () => {
 
   const handleValidation = () => {
     const { isValid, errors }: { isValid: boolean; errors: any } =
-      industryValidation(industryFormData);
-    setIndustryFormData({ ...errors });
+      tripTypeValidation(tripTypeFormData);
+    setTripTypeFormData({ ...errors });
     return isValid;
   };
 
@@ -229,8 +227,8 @@ const Industry = () => {
   };
 
   const onChangeHandler = (event: React.ChangeEvent<any>) => {
-    setIndustryFormData({
-      ...industryFormData,
+    setTripTypeFormData({
+      ...tripTypeFormData,
       [event.target.name]: {
         value: event.target.value,
         error: "",
@@ -243,13 +241,13 @@ const Industry = () => {
     setFile(fileList);
   };
 
-  const getAddIndustryBtn = () => {
+  const getAddTripTypeBtn = () => {
     return (
       <CustomButton
         id="profile_submit_button"
-        label="Add Industry"
+        label="Add Trip Type"
         customClasses={{ width: "150px" }}
-        onClick={() => setAddIndustryDialogHandler(true)}
+        onClick={() => setAddTripTypeDialogHandler(true)}
       />
     );
   };
@@ -267,7 +265,7 @@ const Industry = () => {
     return (
       <CustomInput
         id="role_mgmt_search_field"
-        placeHolder="Search Industry Name"
+        placeHolder="Search TripType Name"
         name="Role"
         onChange={debounceEventHandler(handleSearchOnChange, 2000)}
         InputProps={{
@@ -285,7 +283,7 @@ const Industry = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Settings / Industry</Typography>
+          <Typography style={classes.settingsTitle}>Entity Type</Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
@@ -314,7 +312,7 @@ const Industry = () => {
           px={3}
         >
           {searchBarRole()}
-          {getAddIndustryBtn()}
+          {getAddTripTypeBtn()}
         </Stack>
         <Box
           sx={{
@@ -324,7 +322,7 @@ const Industry = () => {
           }}
         >
           <CustomTable
-            headers={industryTableHeader}
+            headers={tripTypeTableHeader}
             rows={tableData}
             paginationCount={count}
             handlePageChange={handleChangePage}
@@ -348,17 +346,17 @@ const Industry = () => {
     >
       {SettingsHeader()}
       {rolesTableRender()}
-      <AddIndustry
-        open={addIndustryDialogHandler}
-        handleClose={() => setAddIndustryDialogHandler(false)}
-        industryFormData={industryFormData}
+      <AddTripType
+        open={addTripTypeDialogHandler}
+        handleClose={() => setAddTripTypeDialogHandler(false)}
+        tripTypeFormData={tripTypeFormData}
         modulesData={modulesData}
         file={file}
         onChangeHandler={onChangeHandler}
         handleModuleChange={handleModuleChange}
         checkExitsRoleHandler={checkExitsRoleHandler}
         handleFileChange={handleFileChange}
-        handleSave={addIndustryHandler}
+        handleSave={addTripTypeHandler}
         isLoading={isLoading}
         MenuProps={MenuProps}
         isTruthy={isTruthy}
@@ -369,4 +367,4 @@ const Industry = () => {
   );
 };
 
-export default Industry;
+export default TripType;

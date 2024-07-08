@@ -21,14 +21,14 @@ import {
   CustomInput,
   CustomTable,
 } from "../../../global/components";
-import IndustryStyles from "./Industry.styles";
+import EntityTypeStyles from "./EntityType.styles";
 import {
-  addIndustry,
-  checkExitsIndustry,
-  fetchIndustryTableHandler,
+  addEntityType,
+  checkExitsEntityType,
+  fetchEntityTypeTableHandler,
   fetchTableHandler,
   searchTableHandler,
-} from "./service/Industry.service";
+} from "./service/EntityType.service";
 import {
   debounceEventHandler,
   isTruthy,
@@ -37,22 +37,20 @@ import {
   validateTabValue,
 } from "../../../helpers/methods";
 import {
-  industryInsertField,
-  industryTableHeader,
-  industryValidation,
-} from "./IndustryHelpers";
+  entityTypeInsertField,
+  entityTypeTableHeader,
+  entityTypeValidation,
+} from "./EntityTypeHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import {
   primaryHeadingColor,
   regularFont,
   getRelativeFontSize,
 } from "../../../utils/styles";
-import AddIndustry from "./component/AddIndustry";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { tabConfig } from "../SettingsHelpers";
+import AddEntityType from "./component/AddEntityType";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
-const Industry = () => {
+const EntityType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -62,11 +60,11 @@ const Industry = () => {
       },
     },
   };
-  const classes = IndustryStyles;
+  const classes = EntityTypeStyles;
   const theme = useTheme();
   const location = useLocation();
-  const [industryFormData, setIndustryFormData] = useState(
-    industryInsertField()
+  const [entityTypeFormData, setEntityTypeFormData] = useState(
+    entityTypeInsertField()
   );
   const [modulesData, setModuleData] = useState([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -76,7 +74,7 @@ const Industry = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<any>();
-  const [addIndustryDialogHandler, setAddIndustryDialogHandler] =
+  const [addEntityTypeDialogHandler, setAddEntityTypeDialogHandler] =
     useState(false);
   const urlParams = new URLSearchParams(location.search);
   const tabValueName = validateTabValue(urlParams.get("tabValue"));
@@ -90,7 +88,7 @@ const Industry = () => {
     if (searchText) {
       searchDataHandler();
     } else {
-      fetchTableIndustry();
+      fetchTableEntityType();
     }
   }, [pageNumber, perPageData, searchText]);
 
@@ -99,8 +97,8 @@ const Industry = () => {
   }, []);
 
   const handleModuleChange = (event: any) => {
-    setIndustryFormData({
-      ...industryFormData,
+    setEntityTypeFormData({
+      ...entityTypeFormData,
       code: {
         value: event.target.value,
         error: "",
@@ -112,13 +110,13 @@ const Industry = () => {
     history.push(`?tabValue=${newValue}`);
   };
 
-  const fetchTableIndustry = async () => {
+  const fetchTableEntityType = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchIndustryTableHandler({
+      const res = await fetchEntityTypeTableHandler({
         input: { page: pageNumber, limit: perPageData },
       });
-      const finalData = res?.industryListAll?.data?.map((item: any) => {
+      const finalData = res?.entityTypeListAll?.data?.map((item: any) => {
         return {
           name: item.name,
           code: item?.code?.map((val: any) => val).join(","),
@@ -136,7 +134,7 @@ const Industry = () => {
         };
       });
       setTableData(finalData);
-      setCount(res?.industryListAll?.paginatorInfo?.count);
+      setCount(res?.entityTypeListAll?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -154,8 +152,8 @@ const Industry = () => {
           limit: perPageData,
         },
       });
-      setTableData(res?.searchIndustry?.data);
-      setCount(res?.searchIndustry?.paginatorInfo?.count);
+      setTableData(res?.searchEntityType?.data);
+      setCount(res?.searchEntityType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -165,33 +163,33 @@ const Industry = () => {
 
   const checkExitsRoleHandler = async () => {
     try {
-      const res = await checkExitsIndustry({
-        input: { name: industryFormData.name.value },
+      const res = await checkExitsEntityType({
+        input: { name: entityTypeFormData.name.value },
       });
-      if (res?.checkIndustryExistsRecord?.success === 1) {
-        openErrorNotification(res.checkIndustryExistsRecord.message);
+      if (res?.checkEntityTypeExistsRecord?.success === 1) {
+        openErrorNotification(res.checkEntityTypeExistsRecord.message);
       }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const addIndustryHandler = async () => {
+  const addEntityTypeHandler = async () => {
     try {
       const payload: any = {
-        name: industryFormData.name.value,
-        code: industryFormData.code.value,
-        description: industryFormData.description.value,
+        name: entityTypeFormData.name.value,
+        code: entityTypeFormData.code.value,
+        description: entityTypeFormData.description.value,
         file,
       };
       setIsLoading(true);
       if (handleValidation()) {
-        const res = await addIndustry({
+        const res = await addEntityType({
           input: { ...payload },
         });
-        setIndustryFormData(industryInsertField());
-        await fetchTableIndustry();
-        openSuccessNotification(res.createIndustry.message);
+        setEntityTypeFormData(entityTypeInsertField());
+        await fetchTableEntityType();
+        openSuccessNotification(res.createEntityType.message);
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -202,8 +200,8 @@ const Industry = () => {
 
   const handleValidation = () => {
     const { isValid, errors }: { isValid: boolean; errors: any } =
-      industryValidation(industryFormData);
-    setIndustryFormData({ ...errors });
+      entityTypeValidation(entityTypeFormData);
+    setEntityTypeFormData({ ...errors });
     return isValid;
   };
 
@@ -229,8 +227,8 @@ const Industry = () => {
   };
 
   const onChangeHandler = (event: React.ChangeEvent<any>) => {
-    setIndustryFormData({
-      ...industryFormData,
+    setEntityTypeFormData({
+      ...entityTypeFormData,
       [event.target.name]: {
         value: event.target.value,
         error: "",
@@ -243,13 +241,13 @@ const Industry = () => {
     setFile(fileList);
   };
 
-  const getAddIndustryBtn = () => {
+  const getAddEntityTypeBtn = () => {
     return (
       <CustomButton
         id="profile_submit_button"
-        label="Add Industry"
+        label="Add EntityType"
         customClasses={{ width: "150px" }}
-        onClick={() => setAddIndustryDialogHandler(true)}
+        onClick={() => setAddEntityTypeDialogHandler(true)}
       />
     );
   };
@@ -267,7 +265,7 @@ const Industry = () => {
     return (
       <CustomInput
         id="role_mgmt_search_field"
-        placeHolder="Search Industry Name"
+        placeHolder="Search EntityType Name"
         name="Role"
         onChange={debounceEventHandler(handleSearchOnChange, 2000)}
         InputProps={{
@@ -285,7 +283,7 @@ const Industry = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Settings / Industry</Typography>
+          <Typography style={classes.settingsTitle}>Entity Type</Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
@@ -314,7 +312,7 @@ const Industry = () => {
           px={3}
         >
           {searchBarRole()}
-          {getAddIndustryBtn()}
+          {getAddEntityTypeBtn()}
         </Stack>
         <Box
           sx={{
@@ -324,7 +322,7 @@ const Industry = () => {
           }}
         >
           <CustomTable
-            headers={industryTableHeader}
+            headers={entityTypeTableHeader}
             rows={tableData}
             paginationCount={count}
             handlePageChange={handleChangePage}
@@ -348,17 +346,17 @@ const Industry = () => {
     >
       {SettingsHeader()}
       {rolesTableRender()}
-      <AddIndustry
-        open={addIndustryDialogHandler}
-        handleClose={() => setAddIndustryDialogHandler(false)}
-        industryFormData={industryFormData}
+      <AddEntityType
+        open={addEntityTypeDialogHandler}
+        handleClose={() => setAddEntityTypeDialogHandler(false)}
+        entityTypeFormData={entityTypeFormData}
         modulesData={modulesData}
         file={file}
         onChangeHandler={onChangeHandler}
         handleModuleChange={handleModuleChange}
         checkExitsRoleHandler={checkExitsRoleHandler}
         handleFileChange={handleFileChange}
-        handleSave={addIndustryHandler}
+        handleSave={addEntityTypeHandler}
         isLoading={isLoading}
         MenuProps={MenuProps}
         isTruthy={isTruthy}
@@ -369,4 +367,4 @@ const Industry = () => {
   );
 };
 
-export default Industry;
+export default EntityType;

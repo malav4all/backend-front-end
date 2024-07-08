@@ -8,15 +8,16 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  CustomAppHeader,
   CustomButton,
   CustomInput,
   CustomTable,
 } from "../../../global/components";
 import {
   debounceEventHandler,
-  isTruthy,
   openErrorNotification,
   openSuccessNotification,
+  validateTabValue,
 } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import {
@@ -29,7 +30,11 @@ import { validateLocationTypeForm } from "./LocationTypeandValidations";
 import { regularFont } from "../../../utils/styles";
 import AddLocationTypeModal from "./component/AddLocationType";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-
+import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
+import LocationTypeStyles from "./LocationType.styles";
+import { tabConfig } from "../SettingsHelpers";
+import { useLocation } from "react-router-dom";
+import history from "../../../utils/history";
 const tableHeader = [
   {
     name: "Type",
@@ -39,6 +44,8 @@ const tableHeader = [
 
 const LocationType = () => {
   const theme = useTheme();
+  const classes = LocationTypeStyles;
+  const location = useLocation();
   const [formField, setFormField] = useState<any>({ value: "", error: "" });
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -48,6 +55,9 @@ const LocationType = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const urlParams = new URLSearchParams(location.search);
+  const tabValueName = validateTabValue(urlParams.get("tabValue"));
+  const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
     fetchLocationTypeHandler();
@@ -84,6 +94,11 @@ const LocationType = () => {
     } catch (error: any) {
       openErrorNotification(error.message);
     }
+  };
+
+  const handleChange = (newValue: string) => {
+    setTabValue(newValue);
+    history.push(`?tabValue=${newValue}`);
   };
 
   const fetchLocationTypeHandler = async () => {
@@ -180,6 +195,22 @@ const LocationType = () => {
     setPage(newPage);
   };
 
+  const SettingsHeader = () => {
+    return (
+      <CustomAppHeader className={classes.headerBackgroundColor}>
+        <Box ml={1}>
+          <Typography style={classes.settingsTitle}>Settings / Location Type</Typography>
+        </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        >
+        </Stack>
+      </CustomAppHeader>
+    );
+  };
+
   const locationTypeTable = () => {
     return (
       <Box
@@ -213,9 +244,10 @@ const LocationType = () => {
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          height: "100%",
+          height: "120%",
         }}
       >
+        {SettingsHeader()}
         <Stack
           px={4}
           pt={2}

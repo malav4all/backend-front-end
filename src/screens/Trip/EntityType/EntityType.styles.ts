@@ -13,7 +13,7 @@ import {
   theme,
 } from "../../../utils/styles";
 
-const IndustryStyles = {
+const EntityTypeStyles = {
   profileHeaderName: {
     fontSize: getRelativeFontSize(8),
     ...boldFont,
@@ -187,4 +187,4 @@ const IndustryStyles = {
   },
 } as const;
 
-export default IndustryStyles;
+export default EntityTypeStyles;
