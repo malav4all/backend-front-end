@@ -251,7 +251,7 @@ const Geozone = () => {
 
   useEffect(() => {
     fetchGeozone();
-    fetchLocationTypeHandler();
+    // fetchLocationTypeHandler();
   }, []);
 
   const fetchGeozone = async () => {
@@ -259,6 +259,7 @@ const Geozone = () => {
       setLoading(true);
       const res = await fetchGeozoneHandler({
         input: {
+          accountId: store.getState().auth.tenantId,
           page,
           limit,
         },
@@ -280,6 +281,7 @@ const Geozone = () => {
   const addGeozoneHandler = async () => {
     try {
       const payload = {
+        accountId: store.getState().auth.tenantId,
         name: formField.name?.value,
         description: formField.description?.value,
         locationType: formField.locationType?.value,
@@ -308,30 +310,30 @@ const Geozone = () => {
         },
         finalAddress: formField?.address?.value,
       };
-      if (handleValidation()) {
-        if (edit) {
-          const res = await updateGeozone({
-            input: {
-              _id: selectedRowData._id,
-              ...payload,
-              createdBy: store.getState().auth.userName,
-            },
-          });
-          openSuccessNotification(res.updateGeozone.message);
-          setEdit(false);
-        } else {
-          const res = await createGeozone({
-            input: { ...payload, createdBy: store.getState().auth.userName },
-          });
-          openSuccessNotification(res.addGeozone.message);
-        }
-        await handleCloseDialog();
-        setPointCheck(false);
-        mapCheck.removeEventListener("tap", setUpClickListener);
-        mapCheck.removeObjects(mapCheck.getObjects());
-        setFormField(geoZoneInsertField());
-        await fetchGeozone();
+      // if (handleValidation()) {
+      if (edit) {
+        const res = await updateGeozone({
+          input: {
+            _id: selectedRowData._id,
+            ...payload,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        openSuccessNotification(res.updateGeozone.message);
+        setEdit(false);
+      } else {
+        const res = await createGeozone({
+          input: { ...payload, createdBy: store.getState().auth.userName },
+        });
+        openSuccessNotification(res.addGeozone.message);
       }
+      await handleCloseDialog();
+      setPointCheck(false);
+      mapCheck.removeEventListener("tap", setUpClickListener);
+      mapCheck.removeObjects(mapCheck.getObjects());
+      setFormField(geoZoneInsertField());
+      await fetchGeozone();
+      // }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -1002,14 +1004,20 @@ const Geozone = () => {
                       <Box>
                         <ListItemText>
                           <Typography
-                            sx={{ color: theme.palette.text.primary, fontWeight: "bold" }}
+                            sx={{
+                              color: theme.palette.text.primary,
+                              fontWeight: "bold",
+                            }}
                           >
                             {item.name}
                           </Typography>
                         </ListItemText>
                         <ListItemText>
                           <Typography
-                            sx={{ color: theme.palette.text.secondary, fontSize:"13px" }}
+                            sx={{
+                              color: theme.palette.text.secondary,
+                              fontSize: "13px",
+                            }}
                           >
                             {item.description}
                           </Typography>
@@ -1047,7 +1055,14 @@ const Geozone = () => {
           borderRadius: "0.3rem",
         }}
       >
-        <Box sx={{ margin: "5px 5px", width: "350px", backgroundColor: theme.palette.background.paper, borderRadius:"5px", }}>
+        <Box
+          sx={{
+            margin: "5px 5px",
+            width: "350px",
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: "5px",
+          }}
+        >
           <CustomInput
             placeHolder="Search Location"
             id="users_search_field"

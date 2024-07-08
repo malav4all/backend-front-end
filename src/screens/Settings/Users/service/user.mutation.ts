@@ -12,12 +12,10 @@ export const FETCH_ACCOUNT = gql`
       data {
         _id
         accountName
-        
       }
     }
   }
 `;
-
 
 export const FETCH_USER = gql`
   mutation ($input: UserInput!) {

@@ -113,7 +113,7 @@ const Industry = () => {
           file: (
             <>
               <img
-                src={`http://localhost:5000/${item.file}`}
+                src={`http://localhost:3000/${item.file}`}
                 alt=""
                 width="30"
                 height="30"

@@ -54,31 +54,28 @@ export const FETCH_DEVICE_ONBOARDING_TENANT = gql`
         _id
         assetsType
         deviceOnboardingIMEINumber
-        deviceOnboardingAccount {
-          _id
-          accountName
-        }
-        deviceOnboardingUser {
-          _id
-          firstName
-        }
       }
     }
   }
 `;
 
 export const FETCH_ACCOUNT = gql`
-  mutation ($input: AccountModuleInput!) {
+  mutation ($input: AccountInput!) {
     fetchAccountModuleList(input: $input) {
+      paginatorInfo {
+        count
+      }
       success
       message
       data {
         _id
         accountName
+        accountAddress
+        accountContactName
+        accountContactEmail
+        accountContactMobile
         tenantId
-        industryType {
-          _id
-        }
+        accountId
       }
     }
   }

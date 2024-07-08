@@ -127,30 +127,10 @@ const AddUser = (props: CustomProps) => {
       return;
     }
 
-    if (!selectedAccount.industryType) {
-      console.error("Selected account does not have an industryType");
-      setUserFormFields((prevState: any) => ({
-        ...prevState,
-        accountId: {
-          value: selectedValue,
-          error: "",
-        },
-        industryType: {
-          value: "",
-          error: "Industry type not found for selected account",
-        },
-      }));
-      return;
-    }
-
     setUserFormFields((prevState: any) => ({
       ...prevState,
       accountId: {
         value: selectedValue,
-        error: "",
-      },
-      industryType: {
-        value: selectedAccount.industryType._id || "",
         error: "",
       },
     }));
@@ -250,33 +230,33 @@ const AddUser = (props: CustomProps) => {
         password: userFormFields?.password?.value,
         roleId: userFormFields?.roleId?.value,
         status: userFormFields?.status?.value,
-        deviceGroupId: userFormFields?.deviceGroupID?.value,
-        deviceGroupName: userFormFields?.deviceGroupName?.value,
+        accountId: userFormFields.accountId.value,
+        industryType: userFormFields.industryType.value,
       };
-      if (handleValidation()) {
-        if (props.edit) {
-          const res = await updateUser({
-            input: {
-              _id: props?.selectedUserRowData?._id,
-              ...insertUserBody,
-              createdBy: store.getState().auth.userName,
-            },
-          });
-          props.handleCloseAddUserDialog(false);
-          openSuccessNotification(res?.updateUser?.message);
-          await props.tableData?.();
-        } else {
-          const res = await createUser({
-            input: {
-              ...insertUserBody,
-              createdBy: store.getState().auth.userName,
-            },
-          });
-          props.handleCloseAddUserDialog(false);
-          openSuccessNotification(res?.createUser?.message);
-          await props.tableData?.();
-        }
+      // if (handleValidation()) {
+      if (props.edit) {
+        const res = await updateUser({
+          input: {
+            _id: props?.selectedUserRowData?._id,
+            ...insertUserBody,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        props.handleCloseAddUserDialog(false);
+        openSuccessNotification(res?.updateUser?.message);
+        await props.tableData?.();
+      } else {
+        const res = await createUser({
+          input: {
+            ...insertUserBody,
+            createdBy: store.getState().auth.userName,
+          },
+        });
+        props.handleCloseAddUserDialog(false);
+        openSuccessNotification(res?.createUser?.message);
+        await props.tableData?.();
       }
+      // }
     } catch (error: any) {
       openErrorNotification(
         isTruthy(error?.message) ? error?.message : notifiers?.GENERIC_ERROR
@@ -440,37 +420,15 @@ const AddUser = (props: CustomProps) => {
                   userFormFields.roleId.error.length !== 0
                 }
               >
-                {/* {roleData
-                  .filter((item: any) => {
-                    const loggedInRoleName = store.getState().auth.roleName;
-                    if (
-                      loggedInRoleName === "Master Admin" &&
-                      item.name === "Master Admin"
-                    ) {
-                      return false;
-                    } else if (
-                      loggedInRoleName === "Super Admin" &&
-                      item.name === "Super Admin"
-                    ) {
-                      return false;
-                    } else if (loggedInRoleName === "Admin") {
-                      return (
-                        item.name !== "Admin" &&
-                        item.name !== "Super Admin" &&
-                        item.name !== "Admin Assistant"
-                      );
-                    }
-                    return true;
-                  })
-                  .map((item: any, index: any) => (
-                    <MenuItem
-                      key={index}
-                      value={item._id}
-                      sx={classes.dropDownOptionsStyle}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  ))} */}
+                {roleData.map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item._id}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.name}
+                  </MenuItem>
+                ))}
               </Select>
             </Stack>
           </Box>

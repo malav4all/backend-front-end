@@ -135,12 +135,7 @@ const DeviceOnboarding = () => {
         res.fetchDeviceOnboardingList.data
       );
 
-      const finalTableDataTenant = tableDataRenderTenantData(
-        res.fetchDeviceOnboardingList.data
-      );
-      setTableData(
-        store.getState().auth.tenantId ? finalTableDataTenant : finalTableData
-      );
+      setTableData(finalTableData);
       setCount(res.fetchDeviceOnboardingList?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -220,11 +215,7 @@ const DeviceOnboarding = () => {
     return (
       <Box id="users_display_table" sx={classes.campaignerTable}>
         <CustomTable
-          headers={
-            store.getState().auth.tenantId
-              ? deviceOnboardingTableHeaderTenant
-              : deviceOnboardingTableHeader
-          }
+          headers={deviceOnboardingTableHeader}
           rows={tableData}
           paginationCount={count}
           handlePageChange={
@@ -266,10 +257,8 @@ const DeviceOnboarding = () => {
           spacing={1}
         >
           {getSearchBar()}
-          {(store.getState().auth.account === "Master Admin" ||
-            store.getState().auth.account === "Super Admin" ||
-            store.getState().auth.account === "Admin") &&
-            addUserButton()}
+
+          {addUserButton()}
         </Stack>
       </Stack>
 

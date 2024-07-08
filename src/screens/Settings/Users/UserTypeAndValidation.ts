@@ -164,7 +164,7 @@ export const validateAddUserForm = (userFormFields: any, edit = false) => {
   }
   if (!errors?.deviceGroupName?.value) {
     errors.deviceGroupName.error = "Please select device group";
-    isValid = false;
+    isValid = true;
   }
   return { isValid, errors };
 };
