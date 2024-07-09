@@ -15,14 +15,6 @@ export const tripTableHeader = [
 
 export const insertTripField = (data?: any) => {
   return {
-    tripName: {
-      value: data?.tripName ?? "",
-      error: "",
-    },
-    imeiList: {
-      value: data?.imeiList ?? "",
-      error: "",
-    },
     createdBy: {
       value: store?.getState().auth.userName,
       error: "",

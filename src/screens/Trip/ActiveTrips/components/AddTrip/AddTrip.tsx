@@ -40,8 +40,8 @@ const DriverInformation = lazy(() => import("./DriverInformation"));
 const steps = [
   "Transit Type",
   "Trip Information",
-  "Permit Details",
-  "Driver Information",
+  "Alert Details",
+  "Dynamic Form",
 ];
 
 interface CustomProps {
@@ -148,10 +148,14 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   const insertTripDetails = async () => {
     try {
+      // Log all field data
+      console.log('Trip Details:', tripFromFields); // Log the entire form data
+
       const insertTripBody = {
         imeiData: tripFromFields.imeiList?.value,
         tripName: tripFromFields.tripName?.value?.trim(),
       };
+
       if (handleValidation()) {
         if (props.edit) {
           const res = await updateTrip({

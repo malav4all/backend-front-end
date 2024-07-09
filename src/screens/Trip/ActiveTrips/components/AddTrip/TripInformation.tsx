@@ -98,6 +98,7 @@ const TripInformation: React.FC<TripInformationProps> = ({
           <InputLabel
             sx={{
               color: theme.palette.text.primary,
+              
             }}
             shrink
           >
