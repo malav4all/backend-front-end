@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   CustomAppHeader,
   CustomButton,
@@ -24,23 +24,55 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { debounceEventHandler } from "../../helpers/methods";
+import {
+  debounceEventHandler,
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../helpers/methods";
 import strings from "../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { store } from "../../utils/store";
 import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
+import { fetchAccountTableHandler } from "../Settings/Account/service/account.service";
+import {
+  filterImeiWithAccountId,
+  transferImeiWithOtherAccount,
+} from "./service/device-transfer.service";
 
 const DeviceTransfer = () => {
   const classes = DeviceOnboardingStyle;
   const [searchText, setSearchText] = useState<string>("");
   const [perPageData, setPerPageData] = useState(10);
-  const [selectedRowData, setSelectedRowData] = useState<any>(null);
   const [tableData, setTableData] = useState<any[]>([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [data, setData] = useState([]);
+  const [imeiList, setImeiList] = useState([]);
+  const [userField, setUserField] = useState({
+    fromAccountId: {
+      value: "",
+      error: "",
+    },
+    imei: {
+      value: "",
+      error: "",
+    },
+    toAccountId: {
+      value: "",
+      error: "",
+    },
+  });
+
+  useEffect(() => {
+    fetchTableAccount();
+  }, []);
+
+  useEffect(() => {
+    if (userField.fromAccountId.value) {
+      fetchImeiWithAccountId();
+    }
+  }, [userField.fromAccountId.value]);
 
   const deviceModelTableHeader = [
     {
@@ -105,6 +137,59 @@ const DeviceTransfer = () => {
     );
   };
 
+  const fetchImeiWithAccountId = async () => {
+    try {
+      const res = await filterImeiWithAccountId({
+        input: { accountId: userField.fromAccountId.value },
+      });
+      setImeiList(res?.filterRecordAccountId?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchTableAccount = async () => {
+    try {
+      const res = await fetchAccountTableHandler({
+        input: { page: -1, limit: 10000000 },
+      });
+      setData(res?.fetchAccountModuleList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const transferAccountImei = async () => {
+    try {
+      const res = await transferImeiWithOtherAccount({
+        input: {
+          fromAccountId: userField.fromAccountId.value,
+          imei: userField.imei.value,
+          toAccountId: userField.toAccountId.value,
+          accountTransferBy: store.getState().auth.userName,
+        },
+      });
+      openSuccessNotification(res?.deviceTransferOneToAnotherAccount?.message);
+      setUserField({
+        fromAccountId: {
+          value: "",
+          error: "",
+        },
+        imei: {
+          value: "",
+          error: "",
+        },
+        toAccountId: {
+          value: "",
+          error: "",
+        },
+      });
+      setImeiList([]);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
   const getDetails = () => {
     return (
       <Grid container mt={2} gap={3} display={"flex"} justifyContent={"center"}>
@@ -120,30 +205,36 @@ const DeviceTransfer = () => {
               <Select
                 sx={classes.dropDownStyle}
                 id="add_user_roles_dropdown"
-                name="deviceOnboardingModel"
-                value={""}
-                onChange={(e) => {}}
-                // renderValue={
-                //   userDeviceFields.businessModel.value !== ""
-                //     ? undefined
-                //     : () => "Select a Device Model"
-                // }
+                name="fromAccountId"
+                value={userField.fromAccountId.value}
+                onChange={(e) => {
+                  setUserField({
+                    ...userField,
+                    fromAccountId: {
+                      value: e.target.value,
+                      error: "",
+                    },
+                  });
+                }}
+                renderValue={
+                  userField.fromAccountId.value !== ""
+                    ? undefined
+                    : () => "Select From Account"
+                }
                 MenuProps={classes.menuProps}
                 displayEmpty
-                // error={
-                //   userDeviceFields.businessModel.value?.length < 4 &&
-                //   userDeviceFields.businessModel.error?.length !== 0
-                // }
               >
-                {["CAPEX", "OPEX"]?.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {data
+                  .filter((val: any) => val.accountId !== "")
+                  ?.map((item: any, index: any) => (
+                    <MenuItem
+                      key={index}
+                      value={item.accountId}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item.accountId}
+                    </MenuItem>
+                  ))}
               </Select>
             </Stack>
           </Box>
@@ -168,9 +259,9 @@ const DeviceTransfer = () => {
               sx={classes.emailDropDownStyle}
               id="update_user_manager_field"
               options={
-                data.map((item: any) => ({
+                imeiList.map((item: any) => ({
                   key: item._id,
-                  label: `${item.imei}`,
+                  label: `${item.deviceOnboardingIMEINumber}`,
                   value: item,
                 })) || []
               }
@@ -183,7 +274,15 @@ const DeviceTransfer = () => {
                     {...params}
                     name="startLocation"
                     placeholder="Select Imei"
-                    onSelect={() => {}}
+                    onSelect={(e: any) => {
+                      setUserField({
+                        ...userField,
+                        imei: {
+                          value: e.target.value,
+                          error: "",
+                        },
+                      });
+                    }}
                     InputProps={InputProps}
                   />
                 );
@@ -205,29 +304,39 @@ const DeviceTransfer = () => {
                 sx={classes.dropDownStyle}
                 id="add_user_roles_dropdown"
                 name="deviceOnboardingModel"
-                value={""}
-                onChange={(e) => {}}
-                // renderValue={
-                //   userDeviceFields.businessModel.value !== ""
-                //     ? undefined
-                //     : () => "Select a Device Model"
-                // }
+                value={userField.toAccountId.value}
+                onChange={(e) => {
+                  setUserField({
+                    ...userField,
+                    toAccountId: {
+                      value: e.target.value,
+                      error: "",
+                    },
+                  });
+                }}
+                renderValue={
+                  userField.toAccountId.value !== ""
+                    ? undefined
+                    : () => "Select a To Account"
+                }
                 MenuProps={classes.menuProps}
                 displayEmpty
-                // error={
-                //   userDeviceFields.businessModel.value?.length < 4 &&
-                //   userDeviceFields.businessModel.error?.length !== 0
-                // }
               >
-                {["CAPEX", "OPEX"]?.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {data
+                  .filter(
+                    (val: any) =>
+                      val.accountId !== userField.fromAccountId.value &&
+                      val.accountId !== ""
+                  )
+                  ?.map((item: any, index: any) => (
+                    <MenuItem
+                      key={index}
+                      value={item.accountId}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item.accountId}
+                    </MenuItem>
+                  ))}
               </Select>
             </Stack>
           </Box>
@@ -246,7 +355,7 @@ const DeviceTransfer = () => {
           <CustomButton
             id="submit_button"
             label={"Submit"}
-            onClick={() => {}}
+            onClick={transferAccountImei}
           />
         </Grid>
       </Grid>
@@ -338,7 +447,6 @@ const DeviceTransfer = () => {
         {getDetails()}
         {deviceTransferTableRender()}
       </Box>
-      <CustomLoader isLoading={isLoading} />
     </Box>
   );
 
