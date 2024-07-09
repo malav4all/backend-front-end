@@ -30,10 +30,11 @@ import strings from "../../../../../global/constants/StringConstants";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import CustomLoader from "../../../../../global/components/CustomLoader/CustomLoader";
 import { CustomButton } from "../../../../../global/components";
+import AlertConfiguration from "./AlertConfiguration";
 
 const TransitType = lazy(() => import("./TransitType"));
 const TripInformation = lazy(() => import("./TripInformation"));
-const PermitDetails = lazy(() => import("./PermitDetails"));
+const PermitDetails = lazy(() => import("./AlertConfiguration"));
 const DriverInformation = lazy(() => import("./DriverInformation"));
 
 const steps = [
@@ -116,6 +117,23 @@ const AddTrip: React.FC<CustomProps> = (props) => {
         value: date,
         error: "",
       },
+    });
+  };
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setTripFromFields((prevFields: any) => {
+      const updatedAlertTypes = checked
+        ? [...(prevFields.alertTypes?.value || []), name]
+        : prevFields.alertTypes?.value.filter((type: string) => type !== name);
+      return {
+        ...prevFields,
+        alertTypes: {
+          ...prevFields.alertTypes,
+          value: updatedAlertTypes,
+          error: "",
+        },
+      };
     });
   };
 
@@ -215,14 +233,16 @@ const AddTrip: React.FC<CustomProps> = (props) => {
             tripFromFields={tripFromFields}
             handleFormDataChange={handleFormDataChange}
             handleSelectChange={handleSelectChange}
+            handleDateChange={handleDateChange} // Pass handleDateChange prop
           />
         )}
         {activeStep === 2 && (
-          <PermitDetails
+          <AlertConfiguration
             tripFromFields={tripFromFields}
             handleFormDataChange={handleFormDataChange}
             handleSelectChange={handleSelectChange}
-            handleDateChange={handleDateChange}
+            handleDateChange={handleDateChange} // Pass handleDateChange prop
+            handleCheckboxChange={handleCheckboxChange} // Pass handleCheckboxChange prop
           />
         )}
         {activeStep === 3 && (

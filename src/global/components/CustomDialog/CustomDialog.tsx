@@ -30,7 +30,7 @@ interface CustomProps {
 
 const CustomDialog = (props: CustomProps) => {
   const classes = customDialogStyles();
-  const width = props.width ? props.width : "60%";
+  const width = props.width ? props.width : "50%";
   const radius = props.borderRadius ? props.borderRadius : borderRadius;
 
   const customStyles = makeStyles((theme: Theme) => ({

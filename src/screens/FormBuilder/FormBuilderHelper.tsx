@@ -3,12 +3,13 @@ export interface FormField {
   type: string;
   label: string;
   options?: string[];
-  required?: boolean; // Optional boolean property
-  multiple?: boolean; // Optional boolean property
+  required?: boolean;
 }
 
 export interface Form {
   id: string;
   title: string;
   fields: FormField[];
+  enabled?: boolean;
 }
+

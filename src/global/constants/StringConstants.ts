@@ -269,7 +269,8 @@ export class StringConstants {
   DEVICE_ONBOARDING = "DEVICE ONBOARDING";
   ENTITY = "ENTITY";
   ENTITY_TYPE = "ENTITY TYPE";
-  TRIPT_TYPE = "TRIP TYPE"
+  TRIPT_TYPE = "TRIP TYPE";
+  USER_ACCESS = "USER ACCESS"
 }
 
 let strings = new StringConstants();

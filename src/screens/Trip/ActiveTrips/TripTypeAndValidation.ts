@@ -34,11 +34,11 @@ export const validateAddTripForm = (tripFromFields: any, edit = false) => {
   let isValid = true;
   let errors: any = { ...tripFromFields };
   if (!errors.tripName?.value) {
-    errors.tripName.error = "Please enter Device Group Name";
+    errors.tripName.error = "Please enter Trip Name";
     isValid = false;
   }
   if (!errors.imeiList?.value) {
-    errors.imeiList.error = "Please select Imei";
+    errors.imeiList.error = "Please select IMEI";
     isValid = false;
   }
   return { isValid, errors };

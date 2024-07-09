@@ -1,4 +1,4 @@
-import { boldFont, primaryHeadingColor, theme } from "../../../utils/styles"
+import { boldFont, primaryHeadingColor, theme } from "../../../utils/styles";
 
 const tripStyles = {
   divderResponsive: {
@@ -18,6 +18,7 @@ const tripStyles = {
       marginTop: theme.spacing(0),
     },
   },
+
   mainCardHeading: {
     ...boldFont,
     fontFamily: "Geist_Medium",
@@ -30,6 +31,29 @@ const tripStyles = {
       marginBottom: theme.spacing(1),
     },
   },
-}
 
-export default tripStyles
+  inputLabel: {
+    display: "flex",
+    color: "rgba(0, 0, 0, 0.87)",
+    marginLeft: "6px",
+    fontSize: "1rem",
+    fontColor: theme.palette.common.black + " !important",
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
+
+};
+
+export default tripStyles;

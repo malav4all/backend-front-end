@@ -7,6 +7,8 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import { Form, FormField } from "./FormBuilderHelper";
@@ -41,6 +43,7 @@ const FormBuilderPage: React.FC = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [booleanValues, setBooleanValues] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     setForms([]);
@@ -51,6 +54,7 @@ const FormBuilderPage: React.FC = () => {
       id: uuidv4(),
       title: formTitle,
       fields: formFields,
+      enabled: true, 
     };
     setForms([...forms, newForm]);
     setFormTitle("");
@@ -59,6 +63,10 @@ const FormBuilderPage: React.FC = () => {
 
   const handleViewForm = (form: Form) => {
     setSelectedForm(form);
+    const initialBooleanValues = form.fields
+      .filter(field => field.type === "boolean")
+      .reduce((acc, field) => ({ ...acc, [field.id]: false }), {});
+    setBooleanValues(initialBooleanValues);
     setIsDialogOpen(true);
   };
 
@@ -69,6 +77,14 @@ const FormBuilderPage: React.FC = () => {
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
     setSelectedForm(null);
+  };
+
+  const handleBooleanChange = (id: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBooleanValues(prevValues => ({ ...prevValues, [id]: event.target.checked }));
+  };
+
+  const handleToggleEnable = (formId: string) => {
+    setForms(forms.map(form => form.id === formId ? { ...form, enabled: !form.enabled } : form));
   };
 
   const getHeader = () => {
@@ -153,6 +169,7 @@ const FormBuilderPage: React.FC = () => {
               forms={forms}
               onViewForm={handleViewForm}
               onDeleteForm={handleDeleteForm}
+              onToggleEnable={handleToggleEnable}
             />
           </Box>
         </Box>
@@ -165,10 +182,9 @@ const FormBuilderPage: React.FC = () => {
         dialogBodyContent={
           selectedForm ? (
             <Box component="form" sx={{ mt: 2 }}>
-              <Typography variant="h6">Title: {selectedForm.title}</Typography>
+              <Typography variant="h6" sx={{mb: 5}}>Title: {selectedForm.title}</Typography>
               {selectedForm.fields.map((field) => (
                 <Box key={field.id} sx={{ mb: 2 }}>
-                  <Typography>{field.label}</Typography>
                   {field.type === "text" && (
                     <CustomInput
                       type="text"
@@ -198,6 +214,7 @@ const FormBuilderPage: React.FC = () => {
                         value=""
                         onChange={() => {}}
                         displayEmpty
+                        sx={{width: "100%"}}
                       >
                         {journeys.map((item) => (
                           <MenuItem key={item._id} value={item._id}>
@@ -206,6 +223,18 @@ const FormBuilderPage: React.FC = () => {
                         ))}
                       </Select>
                     </Box>
+                  )}
+                  {field.type === "boolean" && (
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={booleanValues[field.id] || false}
+                          onChange={handleBooleanChange(field.id)}
+                          color="primary"
+                        />
+                      }
+                      label={field.label}
+                    />
                   )}
                 </Box>
               ))}

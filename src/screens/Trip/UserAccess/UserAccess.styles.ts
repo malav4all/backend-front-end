@@ -13,7 +13,7 @@ import {
   theme,
 } from "../../../utils/styles";
 
-const EntityStyles = {
+const UserAccessStyles = {
   profileHeaderName: {
     fontSize: getRelativeFontSize(8),
     ...boldFont,
@@ -156,6 +156,7 @@ const EntityStyles = {
     ...semiBoldFont,
     fontSize: "14px",
     marginBottom: "8px",
+    // padding: "0px 12px",
   },
 
   star: {
@@ -186,4 +187,4 @@ const EntityStyles = {
   },
 } as const;
 
-export default EntityStyles;
+export default UserAccessStyles;

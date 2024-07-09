@@ -51,6 +51,7 @@ import LocationType from "../../Settings/LocationType/LocationType";
 import Entity from "../../Trip/Entity/Entity";
 import EntityType from "../../Trip/EntityType/EntityType";
 import TripType from "../../Trip/TripType/TripType";
+import UserAccess from "../../Trip/UserAccess/UserAccess";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -338,10 +339,19 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
+            path={"/user-access"}
+            component={UserAccess}
+            componentName={strings.TRIPT_TYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
             path={""}
             component={PageNotFound}
             componentName={strings.PAGENOTFOUND}
           />
+
+          
         </Switch>
       </Box>
     );

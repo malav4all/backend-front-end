@@ -21,8 +21,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { CustomButton, CustomDialog } from "../../global/components";
+import {
+  CustomButton,
+  CustomDialog,
+  CustomInput,
+} from "../../global/components";
 import { useTheme } from "@mui/material";
+import formBuilderStyles from "./FormBuilderPage.styles";
+import { isTruthy } from "../../helpers/methods";
 
 const initialFields: FormField[] = [];
 
@@ -32,6 +38,7 @@ interface FormBuilderProps {
 
 const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
   const theme = useTheme();
+  const classes = formBuilderStyles;
   const [fields, setFields] = useState<FormField[]>(initialFields);
   const [newFieldLabel, setNewFieldLabel] = useState<string | null>(null);
   const [newFieldType, setNewFieldType] = useState("text");
@@ -116,8 +123,8 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.default,
-        padding: "3rem",
-        width: "600px",
+        padding: "2rem",
+        width: "800px",
         color: theme.palette.text.primary,
         border: "1px solid",
         borderColor: theme.palette.divider,
@@ -201,10 +208,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
                               <Typography flexGrow={1}>
                                 {field.label}{" "}
                                 {field.required && (
-                                  <Typography
-                                    component="span"
-                                    color="error"
-                                  >
+                                  <Typography component="span" color="error">
                                     *
                                   </Typography>
                                 )}
@@ -237,29 +241,37 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
             </Droppable>
           </DragDropContext>
           {newFieldLabel && (
-            <Box display="flex" my={2} alignItems="center">
-              <TextField
+            <Box
+              display="flex"
+              my={2}
+              alignItems="center"
+              justifyContent={"space-around"}
+            >
+              <CustomInput
                 label="Field Label"
+                sx={{ marginRight: "2rem" }}
                 value={newFieldLabel}
-                disabled
-                variant="outlined"
-                size="small"
-                sx={{ marginRight: 2 }}
               />
-              <TextField
-                select
-                label="Field Type"
-                value={newFieldType}
-                onChange={(e) => setNewFieldType(e.target.value)}
-                variant="outlined"
-                size="small"
-                sx={{ marginRight: 2, width: 150 }}
-              >
-                <MenuItem value="text">Text</MenuItem>
-                <MenuItem value="number">Number</MenuItem>
-                <MenuItem value="dropdown">Dropdown</MenuItem>
-                <MenuItem value="boolean">Boolean</MenuItem>
-              </TextField>
+              <Box>
+                <Box display={"flex"}>
+                  <Typography sx={classes.label}>Entity Type</Typography>
+                  <Typography sx={classes.star}>*</Typography>
+                </Box>
+                <Select
+                  id="role_management_select_permission_dropdown"
+                  name="permissions"
+                  sx={classes.dropDownStyle}
+                  displayEmpty
+                  value={newFieldType}
+                  onChange={(e) => setNewFieldType(e.target.value)}
+                  renderValue={() => <Typography>Select Modules</Typography>}
+                >
+                  <MenuItem value="text">Text</MenuItem>
+                  <MenuItem value="number">Number</MenuItem>
+                  <MenuItem value="dropdown">Dropdown</MenuItem>
+                  <MenuItem value="boolean">Boolean</MenuItem>
+                </Select>
+              </Box>
               <FormControlLabel
                 control={
                   <Switch
@@ -269,9 +281,15 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
                   />
                 }
                 label="Required"
-                sx={{ marginRight: 2 }}
+                sx={{ marginRight: 2, marginTop: "30px" }}
               />
-              <CustomButton onClick={addField} label="Add" />
+              <Box
+                sx={{
+                  marginTop: "30px",
+                }}
+              >
+                <CustomButton onClick={addField} label="Add" />
+              </Box>
             </Box>
           )}
         </Box>
@@ -284,18 +302,11 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
           <Typography variant="h6">Add Custom Option</Typography>
         }
         dialogBodyContent={
-          <TextField
+          <CustomInput
             label="Option Label"
+            placeHolder="Enter field name"
             value={newOption}
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-              borderRadius: "5px",
-            }}
-            onChange={(e) => setNewOption(e.target.value)}
-            fullWidth
-            variant="outlined"
-            size="small"
+            onChange={(e: any) => setNewOption(e.target.value)}
           />
         }
         dialogFooterContent={

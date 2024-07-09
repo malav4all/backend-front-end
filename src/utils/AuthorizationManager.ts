@@ -230,20 +230,27 @@ const ListOfMenus = () =>
       accessWithoutAnyResource: true,
       accessToResource: [],
       subMenu: [
-        // {
-        //   icon: geoZoneSvg("#dbdbdb"),
-        //   activeIcon: geoZoneSvg(pinkDarkColor),
-        //   text: "Active Trips",
-        //   link: `${"/active-trips"}`,
-        //   pageName: strings.ACTIVE_TRIPS,
-        // },
-        // {
-        //   icon: geoZoneSvg("#dbdbdb"),
-        //   activeIcon: geoZoneSvg(pinkDarkColor),
-        //   text: "Archived Trips",
-        //   link: `${"/archived-trips"}`,
-        //   pageName: strings.ARCHIVED_TRIPS,
-        // },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Active Trips",
+          link: `${"/active-trips"}`,
+          pageName: strings.ACTIVE_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Archived Trips",
+          link: `${"/archived-trips"}`,
+          pageName: strings.ARCHIVED_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "User Access",
+          link: `${"/user-access"}`,
+          pageName: strings.USER_ACCESS,
+        },
         {
           icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
@@ -265,6 +272,7 @@ const ListOfMenus = () =>
           link: `${"/trip-type"}`,
           pageName: strings.ENTITY_TYPE,
         },
+        
       ],
     },
     {
