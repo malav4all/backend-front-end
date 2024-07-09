@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   FormHelperText,
@@ -35,6 +35,7 @@ import {
   openSuccessNotification,
   isTruthy,
 } from "../../../../helpers/methods";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface AddUpdateRolesProps {
   open: boolean;
@@ -59,11 +60,15 @@ const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
 }) => {
   const theme = useTheme();
   const classes = RoleManagementStyles;
-  const edit = name === "Edit Role";
+  const edit = name === "Edit";
   const [roleFormData, setRoleFormData] = React.useState(
     createRoleFormData(rowData, edit)
   );
   const [loading, setLoading] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    setRoleFormData(createRoleFormData(rowData, edit));
+  }, [rowData, edit]);
 
   const handleValidation = (isAddResourceValidation: boolean = false) => {
     const { isValid, errors } = roleFormValidation(
@@ -231,7 +236,7 @@ const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
               value={roleFormData?.industryType?.value}
               onChange={handleIndustryTypeChange}
               renderValue={
-                roleFormData.industryType.value !== ""
+                roleFormData?.industryType?.value !== ""
                   ? undefined
                   : () => "Select a Industry Type"
               }
@@ -400,6 +405,16 @@ const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
                 <FormHelperText sx={classes.errorText}>
                   {item.permissions.error}
                 </FormHelperText>
+              </Grid>
+              <Grid item xs={12} sm={1} display="flex" justifyContent="center">
+                {resourceIndex > 0 && (
+                  <IconButton
+                    onClick={() => deleteRoleHandler(resourceIndex)}
+                    aria-label="delete"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
               </Grid>
             </>
           );

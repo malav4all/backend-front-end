@@ -125,10 +125,11 @@ const Login = () => {
               resources: {},
               roleId: user?.loginUser?.data?.data?.user.roleId.name,
               userId: user?.loginUser?.data?.data?.user?._id,
-              account: user?.loginUser?.data?.data?.user.roleId.name,
+              account: user?.loginUser?.data?.data?.user?.account?.accountName,
               accountId: user?.loginUser?.data?.data?.user?.account?._id,
               roleName: user?.loginUser?.data?.data?.user.roleId.name,
-              tenantId: user?.loginUser?.data?.data?.user?.account?.accountId,
+              tenantId:
+                user?.loginUser?.data?.data?.user?.account?.accountId || "",
             })
           );
           setIsLoading(false);

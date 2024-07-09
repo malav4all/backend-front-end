@@ -4,7 +4,15 @@ import {
   CustomDialog,
   CustomInput,
 } from "../../../../global/components";
-import { Box, Chip, Grid, MenuItem, Select, Typography, useTheme, } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Grid,
+  MenuItem,
+  Select,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import AccountStyles from "../Account.styles";
 import { insertAccountField } from "../Account.helper";
 import { store } from "../../../../utils/store";
@@ -299,7 +307,7 @@ const AddAccountModal = (props: CustomProps) => {
                       value={item._id}
                       sx={classes.optionStyle}
                     >
-                      {item.name}
+                      {item?.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -552,8 +560,8 @@ const AddAccountModal = (props: CustomProps) => {
   const onChangeHandler = (event: any) => {
     setAccountFields({
       ...accountFields,
-      [event.target.name]: {
-        value: event.target.value,
+      [event?.target?.name]: {
+        value: event?.target?.value,
         error: "",
       },
     });

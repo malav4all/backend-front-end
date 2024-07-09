@@ -66,12 +66,12 @@ const Account = () => {
       });
       const finalData = res?.fetchAccountModuleList?.data?.map((item: any) => {
         return {
-          accountName: item.accountName,
-          accountContactName: item.accountContactName,
-          accountContactEmail: item.accountContactEmail,
-          accountAddress: item.accountAddress,
-          accountContactMobile: item.accountContactMobile,
-          accountType: item.industryType.name,
+          accountName: item?.accountName,
+          accountContactName: item?.accountContactName,
+          accountContactEmail: item?.accountContactEmail,
+          accountAddress: item?.accountAddress,
+          accountContactMobile: item?.accountContactMobile,
+          accountType: item?.industryType?.name,
           action: (
             <>
               <Tooltip
