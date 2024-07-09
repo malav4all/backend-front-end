@@ -267,6 +267,7 @@ export class StringConstants {
   DEVICE_HISTORY = "DEVICE HISTORY";
   DEVICE_ONBOARDING = "DEVICE ONBOARDING";
   ADD_DEVICE = "ADD DEVICE";
+  DEVICE_TRANSFER = "DEVICE TRANSFER";
 }
 
 let strings = new StringConstants();

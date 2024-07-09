@@ -44,6 +44,7 @@ import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding"
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
 import AddDevice from "../../AddDevice/AddDevice";
+import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -273,6 +274,14 @@ const Layout = () => {
             path={"/add-device"}
             component={AddDevice}
             componentName={strings.ADD_DEVICE}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-transfer"}
+            component={DeviceTransfer}
+            componentName={strings.DEVICE_TRANSFER}
           />
 
           <PrivateRoute

@@ -252,6 +252,13 @@ const ListOfMenus = () =>
           link: `${"/device-onboarding"}`,
           pageName: strings.ARCHIVED_TRIPS,
         },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Transfer",
+          link: `${"/device-transfer"}`,
+          pageName: strings.DEVICE_TRANSFER,
+        },
       ],
     },
     {
@@ -281,7 +288,6 @@ export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
 
 export const hasAccessTo = (resourceName: string, permission: string) => {
   if (isAdmin()) {
-    console.log("If Condition");
     return true;
   }
 
