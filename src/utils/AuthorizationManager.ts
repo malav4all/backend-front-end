@@ -227,7 +227,14 @@ const ListOfMenus = () =>
         {
           icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
-          text: "Device Module",
+          text: "Add Device",
+          link: `${"/add-device"}`,
+          pageName: strings.ADD_DEVICE,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Model",
           link: `${"/device-module"}`,
           pageName: strings.ACTIVE_TRIPS,
         },

@@ -43,6 +43,7 @@ import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
+import AddDevice from "../../AddDevice/AddDevice";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -67,7 +68,7 @@ const Layout = () => {
         store.dispatch(logOutAction());
       }, 1000);
     }
-  };  
+  };
 
   const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
     variables: { topic: "alerts/#" },
@@ -264,6 +265,14 @@ const Layout = () => {
             path={"/device-module"}
             component={DeviceModule}
             componentName={strings.ARCHIVED_TRIPS}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/add-device"}
+            component={AddDevice}
+            componentName={strings.ADD_DEVICE}
           />
 
           <PrivateRoute

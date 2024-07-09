@@ -60,19 +60,19 @@ const Geozone = () => {
   const [searchLocationText, setSearchLocationText] = useState<string>("");
   const [viewGeozone, setViewGeozone] = useState<any>();
 
-  const fetchLocationTypeHandler = async () => {
-    try {
-      const res = await fetchLocationType({
-        input: {
-          page: -1,
-          limit: 0,
-        },
-      });
-      setLocationType(res.fetchLocationType.data);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
+  // const fetchLocationTypeHandler = async () => {
+  //   try {
+  //     const res = await fetchLocationType({
+  //       input: {
+  //         page: -1,
+  //         limit: 0,
+  //       },
+  //     });
+  //     setLocationType(res.fetchLocationType.data);
+  //   } catch (error: any) {
+  //     openErrorNotification(error.message);
+  //   }
+  // };
 
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);

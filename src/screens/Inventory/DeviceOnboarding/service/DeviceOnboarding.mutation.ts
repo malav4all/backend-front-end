@@ -19,24 +19,11 @@ export const FETCH_DEVICE_ONBOARDING = gql`
       message
       data {
         _id
-        assetsType
-        description
-        deviceOnboardingName
         deviceOnboardingSimNo
         deviceOnboardingIMEINumber
-        deviceOnboardingStatus
-        deviceOnboardingModel {
-          _id
-          deviceModelName
-        }
-        deviceOnboardingAccount {
-          _id
-          accountName
-        }
-        deviceOnboardingUser {
-          _id
-          firstName
-        }
+        accountId
+        createdBy
+        location
       }
     }
   }
@@ -101,6 +88,7 @@ export const FETCH_DEVICE_MODEL = gql`
       message
       data {
         _id
+        deviceId
         deviceModelName
       }
     }
@@ -110,6 +98,52 @@ export const FETCH_DEVICE_MODEL = gql`
 export const UPDATE_DEVICE_ONBOARDING = gql`
   mutation ($input: UpdateDeviceOnboardingInput!) {
     updateDeviceOnboarding(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const FETCH_GEOZONE = gql`
+  mutation ($input: GeozoneInput!) {
+    listGeozone(input: $input) {
+      success
+      message
+      paginatorInfo {
+        count
+      }
+      data {
+        _id
+        name
+        description
+        locationId
+        locationType
+        mobileNumber
+        finalAddress
+        address {
+          country
+          state
+          city
+          area
+          district
+          zipCode
+        }
+        geoCodeData {
+          type
+          geometry {
+            type
+            coordinates
+            radius
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const BULK_DEVICE_ASSIGNMENT = gql`
+  mutation ($input: [DeviceOnboardingInput!]!) {
+    bulkUploadDeviceAssignment(input: $input) {
       success
       message
     }

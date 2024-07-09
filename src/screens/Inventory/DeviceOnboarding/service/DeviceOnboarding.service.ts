@@ -1,13 +1,13 @@
-
 import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/graphql/service-response";
 import { store } from "../../../../utils/store";
 import {
   ADD_DEVICE_ONBOARDING,
+  BULK_DEVICE_ASSIGNMENT,
   FETCH_ACCOUNT,
   FETCH_DEVICE_MODEL,
   FETCH_DEVICE_ONBOARDING,
-  FETCH_DEVICE_ONBOARDING_TENANT,
+  FETCH_GEOZONE,
   FILTER_RECORD,
   UPDATE_DEVICE_ONBOARDING,
 } from "./DeviceOnboarding.mutation";
@@ -30,9 +30,7 @@ export const fetchDeviceOnboardingTableHandler = async (
 ): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: store.getState().auth.tenantId
-        ? FETCH_DEVICE_ONBOARDING_TENANT
-        : FETCH_DEVICE_ONBOARDING,
+      mutation: FETCH_DEVICE_ONBOARDING,
       variables,
     });
 
@@ -87,6 +85,32 @@ export const updateDeviceOnboardingList = async (
   try {
     const response = await client.mutate({
       mutation: UPDATE_DEVICE_ONBOARDING,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const fetchGeozoneHandler = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: FETCH_GEOZONE,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const bulkDeviceUpload = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: BULK_DEVICE_ASSIGNMENT,
       variables,
     });
 

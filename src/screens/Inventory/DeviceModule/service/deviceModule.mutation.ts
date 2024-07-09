@@ -19,6 +19,7 @@ export const FETCH_DEVICE_MODULE = gql`
       message
       data {
         _id
+        deviceId
         deviceModelName
         deviceModel
         deviceModelType

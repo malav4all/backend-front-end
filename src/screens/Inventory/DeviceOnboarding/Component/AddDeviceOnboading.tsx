@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { insertDeviceOnboardingField } from "../DeviceOnboarding.helpers";
 import DeviceOnboardingStyle from "../DeviceOnboarding.styles";
 import {
+  Autocomplete,
   Box,
   Chip,
   Grid,
@@ -9,12 +10,14 @@ import {
   MenuItem,
   Select,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import {
   addDeviceOnboarding,
   fetchAccountHandler,
   fetchDeviceModelList,
+  fetchGeozoneHandler,
   filterRecord,
   updateDeviceOnboardingList,
 } from "../service/DeviceOnboarding.service";
@@ -33,7 +36,8 @@ import {
 import uploadUser from "../../../../assets/images/uploadUser.svg";
 import _ from "lodash";
 import { theme } from "../../../../utils/styles";
-
+import UploadAssetGroup from "./UploadAsset/UploadAssetModal";
+import { fetchDeviceList } from "../../../AddDevice/service/add-device.service";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog?: Function;
@@ -48,21 +52,25 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   const [userDeviceFields, setDeviceFormFields] = useState<any>(
     insertDeviceOnboardingField(props?.selectedRowData)
   );
+  const [uploadAsset, setUploadAsset] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountData, setAccountData] = useState<any>([]);
   const [userData, setUserData] = useState([]);
+  const [geozoneData, setGeozoneData] = useState([]);
   const [simNo, setSimNo] = useState([]);
   const [deviceModelData, setDeviceModelData] = useState([]);
   const [tenantId, setTenantId] = useState<string>("");
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetchAccountData();
     fetchDeviceModel();
+    fetchDeviceListData();
   }, []);
 
   useEffect(() => {
-    if (userDeviceFields.deviceOnboardingAccount.value) {
-      fetchAccountUser();
+    if (userDeviceFields?.deviceOnboardingAccount?.value) {
+      fetchGeozone();
     }
   }, [userDeviceFields.deviceOnboardingAccount.value]);
 
@@ -77,17 +85,6 @@ const AddDeviceOnboarding = (props: CustomProps) => {
       setSimNo(props?.selectedRowData?.deviceOnboardingSimNo);
     }
   }, [props.selectedRowData]);
-
-  const fetchAccountUser = async () => {
-    try {
-      const res = await filterRecord({
-        input: { accountId: userDeviceFields.deviceOnboardingAccount.value },
-      });
-      setUserData(res.filterRecordUerAccountId);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
 
   const fetchAccountData = async () => {
     try {
@@ -133,13 +130,13 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     setLoading(true);
     // if (handleValidation()) {
     const insertUserBody: any = {
-      accountId: userDeviceFields.deviceOnboardingAccount.value,
+      location: userDeviceFields.locationId.value,
+      accountId: tenantId,
       deviceOnboardingSimNo: simNo,
-      deviceOnboardingModel: userDeviceFields.deviceOnboardingModel.value,
       createdBy: userDeviceFields.createdBy.value,
-      deviceOnboardingStatus: "Active",
       deviceOnboardingIMEINumber:
         userDeviceFields.deviceOnboardingIMEINumber.value,
+      businessModel: userDeviceFields.businessModel.value,
     };
     try {
       if (props.edit) {
@@ -216,6 +213,47 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     setSimNo(simNo.filter((v: any, i: number) => i !== index));
   };
 
+  const fetchGeozone = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchGeozoneHandler({
+        input: {
+          accountId: tenantId,
+          page: -1,
+          limit: 0,
+        },
+      });
+
+      setGeozoneData(res?.listGeozone?.data);
+      setLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchDeviceListData = async () => {
+    try {
+      const res = await fetchDeviceList({
+        input: {
+          page: -1,
+          limit: 1000000,
+        },
+      });
+      setData(res?.fetchDeviceList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const handleOnChange = (event: React.ChangeEvent<any>) => {
+    setDeviceFormFields({
+      ...userDeviceFields,
+      deviceOnboardingIMEINumber: {
+        value: event.target.value,
+      },
+    });
+  };
+
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2}>
@@ -223,7 +261,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
           <Box>
             <Stack direction="column">
               <InputLabel sx={classes.inputLabel} shrink>
-                Device Onboarding Account
+                Device Assignment Account
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
@@ -273,15 +311,46 @@ const AddDeviceOnboarding = (props: CustomProps) => {
         {userDeviceFields.deviceOnboardingAccount.value && (
           <>
             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-              <CustomInput
-                required
-                id="add_user_first_name_field"
-                placeHolder="Enter IMEI Number"
-                name="deviceOnboardingIMEINumber"
-                label="Device Onboarding IMEI No"
-                onChange={handleFormDataChange}
-                value={userDeviceFields.deviceOnboardingIMEINumber.value}
-              />
+              <Box>
+                <InputLabel
+                  sx={{
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
+                  }}
+                  shrink
+                >
+                  IMEI
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+
+                <Autocomplete
+                  sx={classes.emailDropDownStyle}
+                  id="update_user_manager_field"
+                  options={
+                    data.map((item: any) => ({
+                      key: item._id,
+                      label: `${item.imei}`,
+                      value: item,
+                    })) || []
+                  }
+                  renderInput={(params) => {
+                    const InputProps = { ...params.InputProps };
+                    InputProps.endAdornment = null;
+                    return (
+                      <TextField
+                        sx={classes.select}
+                        {...params}
+                        name="startLocation"
+                        placeholder="Select Imei"
+                        onSelect={handleOnChange}
+                        InputProps={InputProps}
+                      />
+                    );
+                  }}
+                />
+              </Box>
             </Grid>
 
             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -345,7 +414,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
               <Box>
                 <Stack direction="column">
                   <InputLabel sx={classes.inputLabel} shrink>
-                    Device Model
+                    Business Model
                     <Box ml={0.4} sx={classes.star}>
                       *
                     </Box>
@@ -354,35 +423,74 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                     sx={classes.dropDownStyle}
                     id="add_user_roles_dropdown"
                     name="deviceOnboardingModel"
-                    value={userDeviceFields.deviceOnboardingModel.value}
+                    value={userDeviceFields.businessModel.value}
                     onChange={(e) => {
                       setDeviceFormFields({
                         ...userDeviceFields,
-                        deviceOnboardingModel: {
+                        businessModel: {
                           value: e.target.value,
                         },
                       });
                     }}
                     renderValue={
-                      userDeviceFields.deviceOnboardingModel.value !== ""
+                      userDeviceFields.businessModel.value !== ""
                         ? undefined
                         : () => "Select a Device Model"
                     }
                     MenuProps={classes.menuProps}
                     displayEmpty
                     error={
-                      userDeviceFields.deviceOnboardingModel.value?.length <
-                        4 &&
-                      userDeviceFields.deviceOnboardingModel.error?.length !== 0
+                      userDeviceFields.businessModel.value?.length < 4 &&
+                      userDeviceFields.businessModel.error?.length !== 0
                     }
                   >
-                    {deviceModelData?.map((item: any, index: any) => (
+                    {["CAPEX", "OPEX"]?.map((item: any, index: any) => (
+                      <MenuItem
+                        key={index}
+                        value={item}
+                        sx={classes.dropDownOptionsStyle}
+                      >
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box>
+                <Stack direction="column">
+                  <InputLabel sx={classes.inputLabel} shrink>
+                    Account Location
+                  </InputLabel>
+                  <Select
+                    sx={classes.dropDownStyle}
+                    id="add_user_roles_dropdown"
+                    name="location"
+                    value={userDeviceFields.locationId.value}
+                    onChange={(e) => {
+                      setDeviceFormFields({
+                        ...userDeviceFields,
+                        locationId: {
+                          value: e.target.value,
+                        },
+                      });
+                    }}
+                    renderValue={
+                      userDeviceFields.locationId.value !== ""
+                        ? undefined
+                        : () => "Select Location"
+                    }
+                    MenuProps={classes.menuProps}
+                    displayEmpty
+                  >
+                    {geozoneData?.map((item: any, index: any) => (
                       <MenuItem
                         key={index}
                         value={item._id}
                         sx={classes.dropDownOptionsStyle}
                       >
-                        {item.deviceModelName}
+                        {item.locationId}
                       </MenuItem>
                     ))}
                   </Select>
