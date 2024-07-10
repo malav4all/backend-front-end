@@ -1,11 +1,11 @@
 import { client } from "../../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../../core-services/rest-api";
-import { ARCHIVE_JOURNEY } from "./ArchivedJourney.mutation";
+import { GET_ARCHIVE_ROUTES } from "./RoutesReport.mutation";
 
-export const archiveJourney = async (): Promise<any> => {
+export const archiveRoutes = async (): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: ARCHIVE_JOURNEY,
+      mutation: GET_ARCHIVE_ROUTES,
     });
 
     return response.data;

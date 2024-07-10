@@ -15,8 +15,8 @@ export const assetAssingmentTableHeader = [
   },
 
   {
-    name: "Journey",
-    field: "journey",
+    name: "Routes",
+    field: "routes",
   },
 
   {
@@ -45,8 +45,8 @@ export const insertAssetAssingmentField = (data?: any, edit?: any) => {
       value: data?.labelName ?? "",
       error: "",
     },
-    journey: {
-      value: data?.journey?._id ?? (data?.journey?.journeyName || ""),
+    routes: {
+      value: data?.routes?._id ?? (data?.routes?.routesName || ""),
       error: "",
     },
     boxSet: {
@@ -100,8 +100,8 @@ export const updateAssetAssingmentValidation = (data: any) => {
       value: data?.labelName,
       error: "",
     },
-    // journey: {
-    //   value: data?.journey,
+    // routes: {
+    //   value: data?.routes,
     //   error: "",
     // },
     boxSet: {
@@ -124,12 +124,12 @@ export const uploadGroupField = () => {
   };
 };
 
-export const validateBulkJourneyUploadForm = (tableData: any) => {
+export const validateBulkRoutesUploadForm = (tableData: any) => {
   let isValid = true;
   let errors = tableData.map((item: any) => {
-    let newItem = { ...item, journey: { ...item.journey } };
-    if (!newItem.journey.value) {
-      newItem.journey.error = "Please select journey";
+    let newItem = { ...item, routes: { ...item.routes } };
+    if (!newItem.routes.value) {
+      newItem.routes.error = "Please select routes";
       isValid = false;
     }
     return newItem;

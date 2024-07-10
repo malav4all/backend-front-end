@@ -1,5 +1,5 @@
-export const journeyTableHeader = [
-  { name: "Journey Name", field: "journeyName" },
+export const routesTableHeader = [
+  { name: "Routes Name", field: "routesName" },
   { name: "Total Distance", field: "totalDistance" },
   { name: "Total Duration", field: "totalDuration" },
   { name: "Start Date", field: "startDate" },
@@ -8,19 +8,11 @@ export const journeyTableHeader = [
   { name: "Action", field: "action" },
 ];
 
-export const validateJourneyForm = (formField: any) => {
+export const validateRoutesForm = (formField: any) => {
   let isValid = true;
   let errors = { ...formField };
-  if (!errors?.journeyName?.value) {
-    errors.journeyName.error = "Please enter journey name";
-    isValid = false;
-  }
-  if (!errors?.startDate.value) {
-    errors.startDate.error = "Please enter journey start date";
-    isValid = false;
-  }
-  if (!errors?.endDate.value) {
-    errors.endDate.error = "Please enter journey end date";
+  if (!errors?.routesName?.value) {
+    errors.routesName.error = "Please enter routes name";
     isValid = false;
   }
   if (!errors?.startLocation.value) {

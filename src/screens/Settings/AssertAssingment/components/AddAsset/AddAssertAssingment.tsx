@@ -40,7 +40,7 @@ import {
   addAssetAssingment,
   updateAssetAssingmentList,
 } from "../../service/AssetAssingment.service";
-import { fetchJourney } from "../../../../Journey/service/journey.service";
+import { fetchRoutes } from "../../../../Routes/service/routes.service";
 
 interface CustomProps {
   openAddAssetAssingmentDialog: boolean;
@@ -66,7 +66,7 @@ const AddAssetAssingment = (props: CustomProps) => {
       )
     );
     
-  const [journeyData, setJourneyData] = useState<any>([]);
+  const [routesData, setRoutesData] = useState<any>([]);
 
   useEffect(() => {
     props.setEdit?.(false);
@@ -83,7 +83,7 @@ const AddAssetAssingment = (props: CustomProps) => {
   }, [props.selectedAssetAssingmentRowData]);
 
   useEffect(() => {
-    fetchJourneyData();
+    fetchRoutesData();
   }, []);
 
   const handleValidation = () => {
@@ -106,10 +106,10 @@ const AddAssetAssingment = (props: CustomProps) => {
     });
   };
 
-  const handleSelectJourneyStatus = (formFillEvent: any) => {
+  const handleSelectRoutesStatus = (formFillEvent: any) => {
     setAssetAssingmentFormFields({
       ...assetAssingmentFormFields,
-      journey: {
+      routes: {
         value: formFillEvent.target.value,
         error: "",
       },
@@ -126,15 +126,15 @@ const AddAssetAssingment = (props: CustomProps) => {
     );
   };
 
-  const fetchJourneyData = async () => {
+  const fetchRoutesData = async () => {
     try {
-      const res = await fetchJourney({
+      const res = await fetchRoutes({
         input: {
           page: -1,
           limit: 10,
         },
       });
-      setJourneyData(res.fetchJourney.data);
+      setRoutesData(res.fetchRoutes.data);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -146,7 +146,7 @@ const AddAssetAssingment = (props: CustomProps) => {
         imei: Number(assetAssingmentFormFields.imei?.value),
         labelName: assetAssingmentFormFields.labelName?.value?.trim(),
         boxSet: assetAssingmentFormFields.boxSet?.value?.trim(),
-        journey: assetAssingmentFormFields.journey?.value,
+        routes: assetAssingmentFormFields.routes?.value,
         createdBy: assetAssingmentFormFields.createdBy?.value?.trim(),
       };
       if (handleValidation()) {
@@ -304,7 +304,7 @@ const AddAssetAssingment = (props: CustomProps) => {
                 }}
                 shrink
               >
-                Journey
+                Routes
               </InputLabel>
               <Select
                 sx={{
@@ -327,21 +327,21 @@ const AddAssetAssingment = (props: CustomProps) => {
                   },
                 }}
                 id="add_user_status_dropdown"
-                name="journey"
-                value={assetAssingmentFormFields?.journey?.value}
-                onChange={handleSelectJourneyStatus}
+                name="routes"
+                value={assetAssingmentFormFields?.routes?.value}
+                onChange={handleSelectRoutesStatus}
                 renderValue={(selectedValue) => {
-                  const selectedItem = journeyData.find(
+                  const selectedItem = routesData.find(
                     (item: any) => item._id === selectedValue
                   );
                   return selectedItem
-                    ? selectedItem.journeyName
-                    : "Select Journey";
+                    ? selectedItem.routesName
+                    : "Select Routes";
                 }}
                 MenuProps={classes.menuProps}
                 displayEmpty
               >
-                {journeyData.map((item: any, index: any) => (
+                {routesData.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
                     value={item._id}
@@ -350,7 +350,7 @@ const AddAssetAssingment = (props: CustomProps) => {
                       color: theme.palette.text.primary,
                     }}
                   >
-                    {item.journeyName}
+                    {item.routesName}
                   </MenuItem>
                 ))}
               </Select>

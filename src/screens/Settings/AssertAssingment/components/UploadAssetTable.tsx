@@ -15,16 +15,16 @@ import {
 import AssetAssingmentStyles from "../AssetAssingment.styles";
 import {
   assetAssingmentTableHeader,
-  validateBulkJourneyUploadForm,
+  validateBulkRoutesUploadForm,
 } from "../AssetAssingmentTypeAndValidation";
 import { store } from "../../../../utils/store";
-import { fetchJourney } from "../../../Journey/service/journey.service";
+import { fetchRoutes } from "../../../Routes/service/routes.service";
 import {
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../../../helpers/methods";
-import { bulkJourneyUpload } from "../service/AssetAssingment.service";
+import { bulkRoutesUpload } from "../service/AssetAssingment.service";
 
 interface Props {
   showDialog: boolean;
@@ -35,7 +35,7 @@ interface Props {
 
 const UploadTableAsset = (props: Props) => {
   const classes = AssetAssingmentStyles;
-  const [journeyData, setJourneyData] = useState<any>([]);
+  const [routesData, setRoutesData] = useState<any>([]);
   const [tableData, setTableData] = useState<any>([]);
   const [page, setPage] = useState(1);
 
@@ -43,7 +43,7 @@ const UploadTableAsset = (props: Props) => {
     setTableData(
       props.tableData.map((item: any) => ({
         ...item,
-        journey: {
+        routes: {
           value: "",
           error: "",
         },
@@ -53,18 +53,18 @@ const UploadTableAsset = (props: Props) => {
   }, [props.tableData]);
 
   useEffect(() => {
-    fetchJourneyData();
+    fetchRoutesData();
   }, []);
 
-  const fetchJourneyData = async () => {
+  const fetchRoutesData = async () => {
     try {
-      const res = await fetchJourney({
+      const res = await fetchRoutes({
         input: {
           page: -1,
           limit: 10,
         },
       });
-      setJourneyData(res.fetchJourney.data);
+      setRoutesData(res.fetchRoutes.data);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -74,11 +74,11 @@ const UploadTableAsset = (props: Props) => {
     return <Box sx={classes.mainHeader}>Uploaded Asset</Box>;
   };
 
-  const handleSelectJourneyStatus = (event: any, index: any) => {
-    const selectedJourneyId = event.target.value;
+  const handleSelectRoutesStatus = (event: any, index: any) => {
+    const selectedRoutesId = event.target.value;
     const updatedTableData = [...tableData];
-    updatedTableData[index].journey.value = selectedJourneyId;
-    updatedTableData[index].journey.error = "";
+    updatedTableData[index].routes.value = selectedRoutesId;
+    updatedTableData[index].routes.error = "";
     setTableData(updatedTableData);
   };
 
@@ -95,51 +95,51 @@ const UploadTableAsset = (props: Props) => {
     return tableData
       ?.slice(startIndex, endIndex)
       ?.map((item: any, index: number) => {
-        const filteredJourneyData = journeyData?.filter(
-          (journey: any) => journey._id !== item?.journey
+        const filteredRoutesData = routesData?.filter(
+          (routes: any) => routes._id !== item?.routes
         );
         return {
           imei: Number(item?.imei),
           labelName: item?.labelName,
-          journey: (
+          routes: (
             <>
               <Stack direction="column">
                 <Select
                   sx={classes.dropDownStyle}
                   id="add_user_status_dropdown"
-                  name="journey"
-                  value={item?.journey.value}
-                  onChange={(event) => handleSelectJourneyStatus(event, index)}
+                  name="routes"
+                  value={item?.routes.value}
+                  onChange={(event) => handleSelectRoutesStatus(event, index)}
                   renderValue={(selectedValue) => {
-                    const selectedItem = journeyData?.find(
+                    const selectedItem = routesData?.find(
                       (item: any) => item._id === selectedValue
                     );
                     return selectedItem
-                      ? selectedItem.journeyName
-                      : "Select Journey";
+                      ? selectedItem.routesName
+                      : "Select Routes";
                   }}
                   MenuProps={classes.menuProps}
                   displayEmpty
                   error={
-                    !isTruthy(tableData[0].journey?.value) &&
-                    tableData[0]?.journey?.error
+                    !isTruthy(tableData[0].routes?.value) &&
+                    tableData[0]?.routes?.error
                   }
                 >
-                  {filteredJourneyData.map(
-                    (journeyItem: any, journeyIndex: any) => (
+                  {filteredRoutesData.map(
+                    (routesItem: any, routesIndex: any) => (
                       <MenuItem
-                        key={journeyIndex}
-                        value={journeyItem._id}
+                        key={routesIndex}
+                        value={routesItem._id}
                         sx={classes.dropDownOptionsStyle}
                       >
-                        {journeyItem.journeyName}
+                        {routesItem.routesName}
                       </MenuItem>
                     )
                   )}
                 </Select>
-                {tableData[index]?.journey?.error && (
+                {tableData[index]?.routes?.error && (
                   <FormHelperText error sx={{ paddingLeft: "5px" }}>
-                    {tableData[index]?.journey?.error}
+                    {tableData[index]?.routes?.error}
                   </FormHelperText>
                 )}
               </Stack>
@@ -152,23 +152,23 @@ const UploadTableAsset = (props: Props) => {
   };
 
   const handleValidation = () => {
-    const { errors, isValid }: any = validateBulkJourneyUploadForm(tableData);
+    const { errors, isValid }: any = validateBulkRoutesUploadForm(tableData);
     setTableData(errors);
     return isValid;
   };
-  const bulkJourneyUploadHandler = async () => {
+  const bulkRoutesUploadHandler = async () => {
     const payload = tableData.map((item: any) => ({
       ...item,
-      journey: item.journey.value,
+      routes: item.routes.value,
     }));
 
     try {
       if (handleValidation()) {
-        const res = await bulkJourneyUpload({
+        const res = await bulkRoutesUpload({
           input: payload,
         });
         props.handleDialogClose(false);
-        openSuccessNotification(res?.bulkJourneyUpload?.message);
+        openSuccessNotification(res?.bulkRoutesUpload?.message);
         await props.getAssetAssingmentDetailTable?.();
       }
     } catch (error: any) {
@@ -207,7 +207,7 @@ const UploadTableAsset = (props: Props) => {
           />
           <CustomButton
             label="Upload"
-            onClick={bulkJourneyUploadHandler}
+            onClick={bulkRoutesUploadHandler}
             id="campaign_group_upload_button"
           />
         </Box>

@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
-export const ARCHIVE_JOURNEY = gql`
+export const ARCHIVE_ROUTES = gql`
   mutation {
-    archiveJourney {
+    archiveRoutes {
       data {
-        journeyName
+        routesName
         createdBy
         startDate
         endDate

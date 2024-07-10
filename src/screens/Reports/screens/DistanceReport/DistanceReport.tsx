@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { fetchJourney } from "../../../Journey/service/journey.service";
+import { fetchRoutes } from "../../../Routes/service/routes.service";
 import {
   Box,
   Grid,
@@ -25,7 +25,7 @@ import { time } from "console";
 import distanceReportStyles from "./DistanceReport.styles";
 import { getDistanceReport } from "./service/distance.service";
 interface CustomProps {
-  isFromJourneyReport: boolean;
+  isFromRoutesReport: boolean;
 }
 
 const DistanceReport = (props: CustomProps) => {
@@ -34,10 +34,10 @@ const DistanceReport = (props: CustomProps) => {
   const [isLoading, setIsLoading] = useState<any>(false);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
-  const [journeyTableData, setJourneyTableData] = useState([]);
+  const [routesTableData, setRoutesTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
-  const [searchJourney, setSearchJourney] = useState<string>("");
+  const [searchRoutes, setSearchRoutes] = useState<string>("");
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
@@ -47,10 +47,10 @@ const DistanceReport = (props: CustomProps) => {
   const [filterData, setFilterData] = useState<any>([]);
   const [isSearching, setIsSearching] = useState(false);
   useEffect(() => {
-    fetchJourneyHandler();
+    fetchRoutesHandler();
   }, [dateFilter]);
 
-  const fetchJourneyHandler = async () => {
+  const fetchRoutesHandler = async () => {
     try {
       setIsLoading(true);
       const res = await getDistanceReport({
@@ -62,7 +62,7 @@ const DistanceReport = (props: CustomProps) => {
 
       const data = tableRender(res.fetchDistanceReport);
 
-      setJourneyTableData(data);
+      setRoutesTableData(data);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -175,7 +175,7 @@ const DistanceReport = (props: CustomProps) => {
     const value = searchEvent?.target?.value.toLowerCase().trim();
     if (value) {
       setIsLoading(true);
-      const searchedReports = journeyTableData?.filter(
+      const searchedReports = routesTableData?.filter(
         (data: any) =>
           data?.imei?.toLowerCase()?.includes(value) ||
           data!?.totalDistance!?.toLowerCase()?.includes(value) ||
@@ -185,7 +185,7 @@ const DistanceReport = (props: CustomProps) => {
       setIsSearching(true);
       setIsLoading(false);
     } else {
-      setFilterData([...journeyTableData]);
+      setFilterData([...routesTableData]);
       setIsSearching(false);
     }
   };
@@ -432,11 +432,11 @@ const DistanceReport = (props: CustomProps) => {
                 { name: "Total Distance (Approx)", field: "distance" },
                 { name: "Total Duration (Approx)", field: "duration" },
               ]}
-              rows={isSearching ? filterData : journeyTableData}
+              rows={isSearching ? filterData : routesTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}
-              paginationCount={journeyTableData?.length}
+              paginationCount={routesTableData?.length}
               // rowsPerPage={rowsPerPage}
               pageNumber={page}
               setPage={setPage}

@@ -24,19 +24,19 @@ import {
 } from "../../../../helpers/methods";
 import strings from "../../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
-import upcomingJourneyStyles from "./UpcomingJourney.styles";
+import upcomingRoutesStyles from "./UpcomingRoutes.styles";
 import {
   alertRowData,
   statusDevice,
 } from "../../../Reports/service/Report.service";
-import { upComingJourney } from "./service/UpcomingJourney.service";
+import { upComingRoutes } from "./service/UpcomingRoutes.service";
 import {
   boldFont,
   headerColor,
   primaryHeadingColor,
 } from "../../../../utils/styles";
-const UpcomingJourney = () => {
-  const classes = upcomingJourneyStyles;
+const UpcomingRoutes = () => {
+  const classes = upcomingRoutesStyles;
   const theme = useTheme();
   const [alertTableData, setAlertTableData] = useState([]);
   const [page, setPage] = useState(1);
@@ -51,13 +51,13 @@ const UpcomingJourney = () => {
   const [upcommingTableData, setUpcommingTableData] = useState([]);
 
   useEffect(() => {
-    upcomingJourneyHandler();
+    upcomingRoutesHandler();
   }, []);
 
-  const upcomingJourneyHandler = async () => {
+  const upcomingRoutesHandler = async () => {
     try {
-      const response = await upComingJourney();
-      const res = tableRender(response.upComingJourney.data);
+      const response = await upComingRoutes();
+      const res = tableRender(response.upComingRoutes.data);
       setUpcommingTableData(res);
     } catch (error: any) {
       setIsLoading(false);
@@ -95,7 +95,7 @@ const UpcomingJourney = () => {
     const data = tableData?.map((item: any, index: number) => {
       return {
         key: item._id,
-        journeyName: item?.journeyName,
+        routesName: item?.routesName,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
         createdBy: item?.createdBy,
@@ -144,7 +144,7 @@ const UpcomingJourney = () => {
       setIsLoading(true);
       const searchedReports = upcommingTableData?.filter(
         (data: any) =>
-          data?.journeyName?.toLowerCase()?.includes(value) ||
+          data?.routesName?.toLowerCase()?.includes(value) ||
           data?.createdBy?.toLowerCase()?.includes(value) ||
           data?.startDate?.toLowerCase()?.includes(value) ||
           data?.endDate?.toLowerCase()?.includes(value) ||
@@ -163,7 +163,7 @@ const UpcomingJourney = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Upcoming Journey"
+        placeHolder="Search Upcoming Routes"
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(
@@ -185,7 +185,7 @@ const UpcomingJourney = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Upcoming Journey
+          Upcoming Routes
         </Typography>
       </Box>
     );
@@ -293,7 +293,7 @@ const UpcomingJourney = () => {
           <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
             <CustomTable
               headers={[
-                { name: "Journey Name", field: "journeyName" },
+                { name: "Routes Name", field: "routesName" },
                 { name: "Total Distance", field: "totalDistance" },
                 { name: "Total Duration", field: "totalDuration" },
                 { name: "Start Date", field: "startDate" },
@@ -361,4 +361,4 @@ const UpcomingJourney = () => {
   );
 };
 
-export default UpcomingJourney;
+export default UpcomingRoutes;

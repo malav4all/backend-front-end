@@ -25,7 +25,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import journeyStyles from "./Journey.styles";
+import routesStyles from "./Routes.styles";
 import {
   getRelativeFontSize,
   primaryHeadingColor,
@@ -46,15 +46,15 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
 import {
-  createJourney,
-  fetchJourney,
-  searchJourneys,
-} from "./service/journey.service";
+  createRoutes,
+  fetchRoutes,
+  searchRoutess,
+} from "./service/routes.service";
 import { store } from "../../utils/store";
 import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import history from "../../utils/history";
-import { journeyTableHeader, validateJourneyForm } from "./Journey.helper";
+import { routesTableHeader, validateRoutesForm } from "./Routes.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { RiCloseCircleFill } from "react-icons/ri";
@@ -62,20 +62,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
-const Journey = () => {
-  const classes = journeyStyles;
+const Routes = () => {
+  const classes = routesStyles;
   const theme = useTheme();
   const [page, setPage] = useState<number>(1);
   const [formField, setFormField] = useState<any>({
-    journeyName: {
-      value: "",
-      error: "",
-    },
-    startDate: {
-      value: "",
-      error: "",
-    },
-    endDate: {
+    routesName: {
       value: "",
       error: "",
     },
@@ -93,11 +85,11 @@ const Journey = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
-  const [journeyTableData, setJourneyTableData] = useState([]);
+  const [routesTableData, setRoutesTableData] = useState([]);
   const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
   const [counter, setCounter] = useState(66);
   const [isLoading, setIsLoading] = useState<any>(false);
-  const [searchJourney, setSearchJourney] = useState<string>("");
+  const [searchRoutes, setSearchRoutes] = useState<string>("");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [selectedValues, setSelectedValues] = React.useState<any>({});
   const [locationData, setLocationData] = useState<any>([
@@ -113,17 +105,17 @@ const Journey = () => {
 
   useEffect(() => {
     fetchGeozone();
-    fetchJourneyHandler();
+    fetchRoutesHandler();
   }, []);
 
   useEffect(() => {
-    if (searchJourney) {
+    if (searchRoutes) {
       getSearchData();
     } else {
       fetchGeozone();
-      fetchJourneyHandler();
+      fetchRoutesHandler();
     }
-  }, [searchJourney, page, rowsPerPage, searchPageNumber]);
+  }, [searchRoutes, page, rowsPerPage, searchPageNumber]);
 
   const handleOnChange = (event: React.ChangeEvent<any>) => {
     if (event.target.value.length <= 50) {
@@ -196,38 +188,28 @@ const Journey = () => {
   };
 
   const handleValidation = () => {
-    const { isValid, errors } = validateJourneyForm(formField);
+    const { isValid, errors } = validateRoutesForm(formField);
     setFormField({ ...errors });
     return isValid;
   };
 
-  const addJourneyHandler = async () => {
+  const addRoutesHandler = async () => {
     try {
       if (handleValidation()) {
         setIsLoading(true);
         const { totalDistance, totalDuration } = await calculateDistance();
-        const res = await createJourney({
+        const res = await createRoutes({
           input: {
-            journeyName: formField.journeyName?.value,
-            startDate: formField.startDate?.value,
-            endDate: formField.endDate?.value,
-            journeyData: finalLocationIds,
+            routesName: formField.routesName?.value,
+            routesData: finalLocationIds,
             createdBy: store.getState()?.auth?.userName,
             totalDistance: Number(totalDistance),
             totalDuration: Number(totalDuration),
           },
         });
-        openSuccessNotification(res.addJourney.message);
+        openSuccessNotification(res.addRoutes.message);
         setFormField({
-          journeyName: {
-            value: "",
-            error: "",
-          },
-          startDate: {
-            value: "",
-            error: "",
-          },
-          endDate: {
+          routesName: {
             value: "",
             error: "",
           },
@@ -251,7 +233,7 @@ const Journey = () => {
           },
         ]);
         setFinalLocationIds([]);
-        await fetchJourneyHandler();
+        await fetchRoutesHandler();
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -288,7 +270,7 @@ const Journey = () => {
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
-      const coordinates = item?.journeyData?.map((coor: any) => {
+      const coordinates = item?.routesData?.map((coor: any) => {
         const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
         return { lat, lng };
       });
@@ -305,9 +287,7 @@ const Journey = () => {
       }
       return {
         key: item._id,
-        journeyName: item?.journeyName,
-        startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
-        endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
+        routesName: item?.routesName,
         createdBy: item?.createdBy,
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
@@ -349,7 +329,7 @@ const Journey = () => {
                   className={{ backgroundColor: disabledBackgroundColor }}
                 >
                   <Typography sx={classes.liveTrackingTooltipText}>
-                    {"View Journey"}
+                    {"View Routes"}
                   </Typography>
                 </CustomPaper>
               }
@@ -368,7 +348,7 @@ const Journey = () => {
                 style={{ color: primaryHeaderColor, cursor: "pointer" }}
                 onClick={() => {
                   history.push({
-                    pathname: "/view-journey",
+                    pathname: "/view-routes",
                     state: {
                       coordinates: coordinates,
                       routeOrigin,
@@ -384,18 +364,18 @@ const Journey = () => {
     return data;
   };
 
-  const fetchJourneyHandler = async () => {
+  const fetchRoutesHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchJourney({
+      const res = await fetchRoutes({
         input: {
           page,
           limit: 10,
         },
       });
-      const data = tableRender(res.fetchJourney.data);
-      setJourneyTableData(data);
-      setCount(res.fetchJourney.paginatorInfo.count);
+      const data = tableRender(res.fetchRoutes.data);
+      setRoutesTableData(data);
+      setCount(res.fetchRoutes.paginatorInfo.count);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -421,7 +401,7 @@ const Journey = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Active Journey
+          Active Routes
         </Typography>
       </Box>
     );
@@ -443,16 +423,16 @@ const Journey = () => {
   const getSearchData = async () => {
     try {
       setIsLoading(true);
-      const res = await searchJourneys({
+      const res = await searchRoutess({
         input: {
-          search: searchJourney,
+          search: searchRoutes,
           page: 1,
           limit: 10,
         },
       });
-      const data = tableRender(res.searchJourneys.data);
-      setJourneyTableData(data);
-      setCount(res?.searchJourneys?.paginatorInfo?.count);
+      const data = tableRender(res.searchRoutess.data);
+      setRoutesTableData(data);
+      setCount(res?.searchRoutess?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -462,11 +442,11 @@ const Journey = () => {
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchJourney(SearchEvent.target.value.trim());
+      setSearchRoutes(SearchEvent.target.value.trim());
       setPage(1);
       setRowsPerPage(10);
     } else {
-      setSearchJourney("");
+      setSearchRoutes("");
     }
   };
 
@@ -481,11 +461,11 @@ const Journey = () => {
         }}
       >
         <CustomTable
-          headers={journeyTableHeader}
-          rows={journeyTableData}
+          headers={routesTableHeader}
+          rows={routesTableData}
           size={[5]}
           handlePageChange={
-            searchJourney ? handleSearchChangePage : handleChangePage
+            searchRoutes ? handleSearchChangePage : handleChangePage
           }
           handleRowsPerPage={handlePerPageData}
           paginationCount={count}
@@ -522,7 +502,7 @@ const Journey = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Journey..."
+        placeHolder="Search Routes..."
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -539,346 +519,238 @@ const Journey = () => {
     );
   };
 
-  const handleStartDate = (event: Date | null) => {
-    setFormField({
-      ...formField,
-      startDate: {
-        value: event,
-        error: "",
-      },
-    });
-  };
-
-  const handleEndDate = (event: Date | null) => {
-    setFormField({
-      ...formField,
-      endDate: {
-        value: event,
-        error: "",
-      },
-    });
-  };
-
   const inputSection = () => {
     return (
       <>
-        <Grid container spacing={4} direction="column">
-          <Grid item sx={{ display: "flex", gap: "1rem" }}>
-            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+        <Grid container spacing={2}>
+          <Grid item sx={{ display: "flex", gap: "1rem", width: "95%" }}>
+            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
               <CustomInput
-                label="Journey Name"
-                placeHolder="Enter Journey name"
-                value={formField?.journeyName?.value}
+                label="Routes Name"
+                placeHolder="Enter Routes name"
+                value={formField?.routesName?.value}
                 maxLength={100}
                 required
-                name="journeyName"
+                name="routesName"
                 onChange={handleOnChange}
-                error={formField?.journeyName?.error}
+                error={formField?.routesName?.error}
                 sx={{
                   backgroundColor: theme.palette.background.paper,
                 }}
               />
             </Grid>
-
-            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-              <Stack direction="column">
-                <InputLabel
-                  sx={{
-                    ...classes.inputLabel,
-                    color: theme.palette.text.primary,
-                  }}
-                  shrink
-                >
-                  Start Date
-                  <Box ml={0.4} sx={classes.star}>
-                    *
-                  </Box>
-                </InputLabel>
-                <Box>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                      value={formField?.startDate?.value}
-                      onChange={handleStartDate}
-                      format="dd/MM/yyyy hh:mm a"
-                      ampm={true}
-                      slotProps={{
-                        textField: {
-                          sx: classes.datePicker,
-                          variant: "outlined",
-                          fullWidth: true,
-                          error: isTruthy(formField?.startDate?.error),
-                          helperText: formField?.startDate?.error,
-                          inputProps: {
-                            placeholder: "DD/MM/YYYY",
-                          },
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </Box>
-              </Stack>
-            </Grid>
-
-            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-              <Stack direction="column">
-                <InputLabel
-                  sx={{
-                    ...classes.inputLabel,
-                    color: theme.palette.text.primary,
-                  }}
-                  shrink
-                >
-                  End Date
-                  <Box ml={0.4} sx={classes.star}>
-                    *
-                  </Box>
-                </InputLabel>
-                <Box>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                      value={formField?.endDate?.value}
-                      onChange={handleEndDate}
-                      format="dd/MM/yyyy hh:mm a"
-                      ampm={true}
-                      slotProps={{
-                        textField: {
-                          sx: classes.datePicker,
-                          variant: "outlined",
-                          fullWidth: true,
-                          error: isTruthy(formField?.endDate?.error),
-                          helperText: formField?.endDate?.error,
-                          inputProps: {
-                            placeholder: "DD/MM/YYYY",
-                          },
-                        },
-                      }}
-                    />
-                  </LocalizationProvider>
-                </Box>
-              </Stack>
-            </Grid>
           </Grid>
 
-          <Stack
-            sx={{
-              display: "flex",
-              height: "250px",
-              overflowY: "scroll",
-              padding: "0.5rem",
-              marginTop: "2rem",
-            }}
-          >
-            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4}>
-              <Box>
-                <InputLabel
-                  sx={{
-                    ...classes.inputLabel,
-                    color: theme.palette.text.primary,
-                  }}
-                  shrink
-                >
-                  Start Location
-                  <Box ml={0.4} sx={classes.star}>
-                    *
-                  </Box>
-                </InputLabel>
+          <Grid item xs={12} sm={6} md={12} lg={6} xl={6}>
+            <Box>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
+                Start Location
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
 
-                <Autocomplete
-                  sx={classes.emailDropDownStyle}
-                  id="update_user_manager_field"
-                  options={
-                    tableData
-                      ?.filter(
-                        (tItem) =>
-                          !Object.values(selectedValues).find(
-                            (selected: any) => selected?.value === tItem
-                          )
-                      )
-                      .map((item: any) => ({
-                        key: item._id,
-                        label: `${item.name} - ${item.description}`,
-                        value: item,
-                      })) || []
-                  }
-                  onChange={(event, newValue) =>
-                    handleAutocompleteChange(newValue, "startLocation")
-                  }
-                  renderInput={(params) => {
-                    const InputProps = { ...params.InputProps };
-                    InputProps.endAdornment = null;
-                    return (
-                      <TextField
-                        sx={classes.select}
-                        {...params}
-                        name="startLocation"
-                        placeholder="Select Start location"
-                        onSelect={handleOnChange}
-                        InputProps={InputProps}
-                        error={
-                          !isTruthy(formField.startLocation.value) &&
-                          formField.startLocation.error
-                        }
-                      />
-                    );
-                  }}
-                />
-                {!formField.startLocation.value && (
-                  <FormHelperText error sx={classes.errorStyle}>
-                    {formField.startLocation?.error}
-                  </FormHelperText>
-                )}
-              </Box>
-            </Grid>
+              <Autocomplete
+                sx={classes.emailDropDownStyle}
+                id="update_user_manager_field"
+                options={
+                  tableData
+                    ?.filter(
+                      (tItem) =>
+                        !Object.values(selectedValues).find(
+                          (selected: any) => selected?.value === tItem
+                        )
+                    )
+                    .map((item: any) => ({
+                      key: item._id,
+                      label: `${item.name} - ${item.description}`,
+                      value: item,
+                    })) || []
+                }
+                onChange={(event, newValue) =>
+                  handleAutocompleteChange(newValue, "startLocation")
+                }
+                renderInput={(params) => {
+                  const InputProps = { ...params.InputProps };
+                  InputProps.endAdornment = null;
+                  return (
+                    <TextField
+                      sx={classes.select}
+                      {...params}
+                      name="startLocation"
+                      placeholder="Select Start location"
+                      onSelect={handleOnChange}
+                      InputProps={InputProps}
+                      error={
+                        !isTruthy(formField.startLocation.value) &&
+                        formField.startLocation.error
+                      }
+                    />
+                  );
+                }}
+              />
+              {!formField.startLocation.value && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {formField.startLocation?.error}
+                </FormHelperText>
+              )}
+            </Box>
+          </Grid>
 
-            {locationData?.map((item: any, index: number) => (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Grid
-                  item
-                  xs={12}
-                  sm={3}
-                  md={3}
-                  lg={3}
-                  xl={3}
-                  ml={4}
-                  mt={2}
-                  key={index}
-                >
-                  <Box>
-                    <InputLabel
-                      sx={{
-                        ...classes.inputLabel,
-                        color: theme.palette.text.primary,
-                      }}
-                      shrink
-                    >
-                      {item.name.slice(0, -1) + " " + (index + 1)}
-                    </InputLabel>
-                    <Box>
-                      <Autocomplete
-                        sx={classes.emailDropDownStyle}
-                        id={`location-${item._id}`}
-                        options={
-                          tableData
-                            ?.filter(
-                              (tItem) =>
-                                !Object.values(selectedValues).find(
-                                  (selected: any) => selected?.value === tItem
-                                )
-                            )
-                            .map((tItem: any) => ({
-                              key: tItem._id,
-                              label: `${tItem.name} - ${tItem.description}`,
-                              value: tItem,
-                            })) || []
-                        }
-                        onChange={(event, newValue) =>
-                          handleAutocompleteChange(newValue, item.name)
-                        }
-                        renderInput={(params) => {
-                          const InputProps = { ...params.InputProps };
-                          InputProps.endAdornment = null;
-                          return (
-                            <TextField
-                              sx={classes.select}
-                              {...params}
-                              name={`location-${item._id}`}
-                              placeholder="Search location"
-                              onSelect={() => {}}
-                              InputProps={InputProps}
-                            />
-                          );
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Grid>
-
-                <Grid
-                  item
-                  xs={0.5}
-                  sm={0.5}
-                  md={0.5}
-                  lg={0.5}
-                  xl={0.5}
-                  key={index}
-                >
-                  <DeleteIcon
-                    style={{
-                      marginTop: "50px",
-                      marginLeft: "15px",
+          {locationData?.map((item: any, index: number) => (
+            <Box sx={{ display: "flex", alignItems: "center", width: "30%" }}>
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                md={3}
+                lg={3}
+                xl={3}
+                ml={4}
+                mt={2}
+                key={index}
+              >
+                <Box sx={{ width: "100%" }}>
+                  <InputLabel
+                    sx={{
+                      ...classes.inputLabel,
                       color: theme.palette.text.primary,
                     }}
-                    onClick={() =>
-                      setLocationData(
-                        locationData.filter((_: any, i: any) => i !== index)
-                      )
-                    }
-                  />
-                </Grid>
-              </Box>
-            ))}
+                    shrink
+                  >
+                    {item.name.slice(0, -1) + " " + (index + 1)}
+                  </InputLabel>
+                  <Box>
+                    <Autocomplete
+                      sx={classes.emailDropDownStyle}
+                      id={`location-${item._id}`}
+                      options={
+                        tableData
+                          ?.filter(
+                            (tItem) =>
+                              !Object.values(selectedValues).find(
+                                (selected: any) => selected?.value === tItem
+                              )
+                          )
+                          .map((tItem: any) => ({
+                            key: tItem._id,
+                            label: `${tItem.name} - ${tItem.description}`,
+                            value: tItem,
+                          })) || []
+                      }
+                      onChange={(event, newValue) =>
+                        handleAutocompleteChange(newValue, item.name)
+                      }
+                      renderInput={(params) => {
+                        const InputProps = { ...params.InputProps };
+                        InputProps.endAdornment = null;
+                        return (
+                          <TextField
+                            sx={classes.select}
+                            {...params}
+                            name={`location-${item._id}`}
+                            placeholder="Search location"
+                            onSelect={() => {}}
+                            InputProps={InputProps}
+                          />
+                        );
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Grid>
 
-            <Grid item xs={12} sm={3} md={3} lg={3} xl={3} ml={4} mt={2}>
-              <Box>
-                <InputLabel
-                  sx={{
-                    ...classes.inputLabel,
+              <Grid
+                item
+                xs={0.5}
+                sm={0.5}
+                md={0.5}
+                lg={0.5}
+                xl={0.5}
+                key={index}
+              >
+                <DeleteIcon
+                  style={{
+                    marginTop: "50px",
+                    marginLeft: "15px",
                     color: theme.palette.text.primary,
                   }}
-                  shrink
-                >
-                  End Location
-                  <Box ml={0.4} sx={classes.star}>
-                    *
-                  </Box>
-                </InputLabel>
-                <Autocomplete
-                  sx={classes.emailDropDownStyle}
-                  id="update_user_manager_field"
-                  options={
-                    tableData
-                      ?.filter(
-                        (tItem) =>
-                          !Object.values(selectedValues).find(
-                            (selected: any) => selected?.value === tItem
-                          )
-                      ) // Filter out selected values
-                      .map((item: any) => ({
-                        key: item._id,
-                        label: `${item.name} - ${item.description}`,
-                        value: item,
-                      })) || []
+                  onClick={() =>
+                    setLocationData(
+                      locationData.filter((_: any, i: any) => i !== index)
+                    )
                   }
-                  onChange={(event, newValue) =>
-                    handleAutocompleteChange(newValue, "endLocation")
-                  }
-                  renderInput={(params) => {
-                    const InputProps = { ...params.InputProps };
-                    InputProps.endAdornment = null;
-                    return (
-                      <TextField
-                        sx={classes.select}
-                        {...params}
-                        name="endLocation"
-                        placeholder="Select End location"
-                        onSelect={handleOnChange}
-                        InputProps={InputProps}
-                        error={
-                          !isTruthy(formField.startLocation.value) &&
-                          formField.startLocation.error
-                        }
-                      />
-                    );
-                  }}
                 />
-                {!formField.endLocation.value && (
-                  <FormHelperText error sx={classes.errorStyle}>
-                    {formField.endLocation?.error}
-                  </FormHelperText>
-                )}
-              </Box>
-            </Grid>
-          </Stack>
+              </Grid>
+            </Box>
+          ))}
+
+          <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+            <Box>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
+                End Location
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Autocomplete
+                sx={classes.emailDropDownStyle}
+                id="update_user_manager_field"
+                options={
+                  tableData
+                    ?.filter(
+                      (tItem) =>
+                        !Object.values(selectedValues).find(
+                          (selected: any) => selected?.value === tItem
+                        )
+                    ) // Filter out selected values
+                    .map((item: any) => ({
+                      key: item._id,
+                      label: `${item.name} - ${item.description}`,
+                      value: item,
+                    })) || []
+                }
+                onChange={(event, newValue) =>
+                  handleAutocompleteChange(newValue, "endLocation")
+                }
+                renderInput={(params) => {
+                  const InputProps = { ...params.InputProps };
+                  InputProps.endAdornment = null;
+                  return (
+                    <TextField
+                      sx={classes.select}
+                      {...params}
+                      name="endLocation"
+                      placeholder="Select End location"
+                      onSelect={handleOnChange}
+                      InputProps={InputProps}
+                      error={
+                        !isTruthy(formField.startLocation.value) &&
+                        formField.startLocation.error
+                      }
+                    />
+                  );
+                }}
+              />
+              {!formField.endLocation.value && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {formField.endLocation?.error}
+                </FormHelperText>
+              )}
+            </Box>
+          </Grid>
         </Grid>
       </>
     );
@@ -937,7 +809,7 @@ const Journey = () => {
         {!isHideForm ? (
           <CustomButton
             id="users_add_button"
-            label={"Create Journey"}
+            label={"Create Routes"}
             onClick={() => {
               setIsHideForm(!isHideForm);
             }}
@@ -1009,7 +881,7 @@ const Journey = () => {
             <CustomButton
               id="users_add_button"
               label={"Submit"}
-              onClick={addJourneyHandler}
+              onClick={addRoutesHandler}
               customClasses={{
                 width: "150px",
               }}
@@ -1042,4 +914,4 @@ const Journey = () => {
   );
 };
 
-export default React.memo(Journey);
+export default React.memo(Routes);

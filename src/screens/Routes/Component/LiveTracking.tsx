@@ -1,6 +1,6 @@
 import { useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { COORDINATES_SUBSCRIPTION } from "../service/journey.mutation";
+import { COORDINATES_SUBSCRIPTION } from "../service/routes.mutation";
 
 const ViewLiveTracking = () => {
   const [map, setMap] = useState<any>(null);

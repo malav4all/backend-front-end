@@ -14,7 +14,7 @@ import {
 } from "../../../../global/components";
 
 import { store } from "../../../../utils/store";
-import { fetchJourney } from "../../../Journey/service/journey.service";
+import { fetchRoutes } from "../../../Routes/service/routes.service";
 import {
   isTruthy,
   openErrorNotification,

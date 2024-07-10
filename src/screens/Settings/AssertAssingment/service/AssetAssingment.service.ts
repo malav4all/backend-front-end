@@ -2,7 +2,7 @@ import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/graphql/service-response";
 import {
   ADD_ASSET_ONBOARDING,
-  BULK_JOURNEY_UPLOAD,
+  BULK_ROUTES_UPLOAD,
   FETCH_ASSET_ONBOARDING,
   SEARCH_ASSET,
   UPDATE_ASSET_ONBOARDING,
@@ -78,10 +78,10 @@ export const searchAssetAssingment = async (variables: any): Promise<any> => {
   }
 };
 
-export const bulkJourneyUpload = async (variables: any): Promise<any> => {
+export const bulkRoutesUpload = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: BULK_JOURNEY_UPLOAD,
+      mutation: BULK_ROUTES_UPLOAD,
       variables,
     });
 

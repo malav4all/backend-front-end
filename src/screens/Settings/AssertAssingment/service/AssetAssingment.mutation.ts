@@ -22,9 +22,9 @@ export const FETCH_ASSET_ONBOARDING = gql`
         imei
         labelName
         boxSet
-        journey {
+        routes {
           _id
-          journeyName
+          routesName
         }
         createdBy
       }
@@ -54,9 +54,9 @@ export const SEARCH_ASSET = gql`
         imei
         labelName
         boxSet
-        journey {
+        routes {
           _id
-          journeyName
+          routesName
         }
         createdBy
       }
@@ -64,9 +64,9 @@ export const SEARCH_ASSET = gql`
   }
 `;
 
-export const BULK_JOURNEY_UPLOAD = gql`
+export const BULK_ROUTES_UPLOAD = gql`
   mutation ($input: [CreateAssertAssingmentModuleInput!]!) {
-    bulkJourneyUpload(input: $input) {
+    bulkRoutesUpload(input: $input) {
       success
       message
     }

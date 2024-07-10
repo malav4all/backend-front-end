@@ -92,7 +92,7 @@ const AssetAssingment = () => {
       return {
         imei: assetAssingmentData?.imei,
         labelName: assetAssingmentData?.labelName,
-        journey: assetAssingmentData?.journey?.journeyName,
+        routes: assetAssingmentData?.routes?.routesName,
         boxSet: assetAssingmentData?.boxSet,
         createdBy: assetAssingmentData?.createdBy,
         action: (
