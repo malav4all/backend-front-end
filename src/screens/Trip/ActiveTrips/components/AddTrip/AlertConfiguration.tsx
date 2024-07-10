@@ -42,6 +42,8 @@ const AlertConfiguration: React.FC<AlertConfigurationProps> = ({
     "low battery",
   ];
 
+  const getAlertOptions = ["SMS", "WhatsApp", "Email"];
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -66,6 +68,34 @@ const AlertConfiguration: React.FC<AlertConfigurationProps> = ({
                   />
                 }
                 label={alert}
+              />
+            ))}
+          </Box>
+        </Stack>
+      </Grid>
+
+      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+        <Stack direction="column">
+          <InputLabel className={classes.inputLabel} shrink>
+            Get Alerts
+            <Box ml={0.4} className={classes.star}>
+              *
+            </Box>
+          </InputLabel>
+          <Box>
+            {getAlertOptions.map((option) => (
+              <FormControlLabel
+                key={option}
+                control={
+                  <Checkbox
+                    checked={
+                      tripFromFields.getAlerts?.value.includes(option) || false
+                    }
+                    onChange={handleCheckboxChange}
+                    name={option}
+                  />
+                }
+                label={option}
               />
             ))}
           </Box>
