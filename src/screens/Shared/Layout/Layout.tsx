@@ -52,6 +52,8 @@ import Entity from "../../Trip/Entity/Entity";
 import EntityType from "../../Trip/EntityType/EntityType";
 import TripType from "../../Trip/TripType/TripType";
 import UserAccess from "../../Trip/UserAccess/UserAccess";
+import AddDevice from "../../AddDevice/AddDevice";
+import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
 
 const Layout = () => {
@@ -273,6 +275,22 @@ const Layout = () => {
             component={DeviceModule}
             componentName={strings.ARCHIVED_TRIPS}
           />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/add-device"}
+            component={AddDevice}
+            componentName={strings.ADD_DEVICE}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-transfer"}
+            component={DeviceTransfer}
+            componentName={strings.DEVICE_TRANSFER}
+          />
+
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}

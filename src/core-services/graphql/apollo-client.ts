@@ -29,7 +29,7 @@ let apiCount = 0;
 const customFetch = async (uri: any, options: any): Promise<any> => {
   try {
     apiCount++;
-    const response = await fetch(uri, options).then(response => {
+    const response = await fetch(uri, options).then((response) => {
       if (response.status >= 500) {
         apiCount--;
         return Promise.reject(response.status);
@@ -59,6 +59,9 @@ const authLink = setContext(async (_, { headers }) => {
     headers: {
       ...headers,
       Authorization: `Bearer ${store.getState().auth.accessToken}`,
+      "x-tenant-id": store.getState().auth.tenantId
+        ? store.getState().auth.tenantId
+        : "",
     },
   };
 });
@@ -75,7 +78,7 @@ const errorLink = onError(
         switch (err.extensions.exception?.status) {
           case 401:
             const observable = new Observable<FetchResult<Record<string, any>>>(
-              observer => {
+              (observer) => {
                 (async () => {
                   try {
                     const accessToken = await refreshToken();

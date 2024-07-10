@@ -288,7 +288,14 @@ const ListOfMenus = () =>
         {
           icon: geoZoneSvg("#dbdbdb"),
           activeIcon: geoZoneSvg(pinkDarkColor),
-          text: "Device Module",
+          text: "Add Device",
+          link: `${"/add-device"}`,
+          pageName: strings.ADD_DEVICE,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Model",
           link: `${"/device-module"}`,
           pageName: strings.ACTIVE_TRIPS,
         },
@@ -305,6 +312,13 @@ const ListOfMenus = () =>
           text: "Device Onboarding",
           link: `${"/device-onboarding"}`,
           pageName: strings.ARCHIVED_TRIPS,
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Device Transfer",
+          link: `${"/device-transfer"}`,
+          pageName: strings.DEVICE_TRANSFER,
         },
       ],
     },
@@ -597,7 +611,6 @@ export const GenerateMenu = (mainMenus: ListOfMenusType[] = ListOfMenus()) => {
 
 export const hasAccessTo = (resourceName: string, permission: string) => {
   if (isAdmin()) {
-    console.log("If Condition");
     return true;
   }
 

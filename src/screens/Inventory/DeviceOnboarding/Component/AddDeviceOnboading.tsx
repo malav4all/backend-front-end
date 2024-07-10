@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { insertDeviceOnboardingField } from "../DeviceOnboarding.helpers";
 import DeviceOnboardingStyle from "../DeviceOnboarding.styles";
 import {
+  Autocomplete,
   Box,
   Chip,
   Grid,
@@ -9,12 +10,14 @@ import {
   MenuItem,
   Select,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import {
   addDeviceOnboarding,
   fetchAccountHandler,
   fetchDeviceModelList,
+  fetchGeozoneHandler,
   filterRecord,
   updateDeviceOnboardingList,
 } from "../service/DeviceOnboarding.service";
@@ -33,7 +36,8 @@ import {
 import uploadUser from "../../../../assets/images/uploadUser.svg";
 import _ from "lodash";
 import { theme } from "../../../../utils/styles";
-
+import UploadAssetGroup from "./UploadAsset/UploadAssetModal";
+import { fetchDeviceList } from "../../../AddDevice/service/add-device.service";
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog?: Function;
@@ -48,21 +52,25 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   const [userDeviceFields, setDeviceFormFields] = useState<any>(
     insertDeviceOnboardingField(props?.selectedRowData)
   );
+  const [uploadAsset, setUploadAsset] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountData, setAccountData] = useState<any>([]);
   const [userData, setUserData] = useState([]);
+  const [geozoneData, setGeozoneData] = useState([]);
   const [simNo, setSimNo] = useState([]);
   const [deviceModelData, setDeviceModelData] = useState([]);
   const [tenantId, setTenantId] = useState<string>("");
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     fetchAccountData();
     fetchDeviceModel();
+    fetchDeviceListData();
   }, []);
 
   useEffect(() => {
-    if (userDeviceFields.deviceOnboardingAccount.value) {
-      fetchAccountUser();
+    if (userDeviceFields?.deviceOnboardingAccount?.value) {
+      fetchGeozone();
     }
   }, [userDeviceFields.deviceOnboardingAccount.value]);
 
@@ -77,17 +85,6 @@ const AddDeviceOnboarding = (props: CustomProps) => {
       setSimNo(props?.selectedRowData?.deviceOnboardingSimNo);
     }
   }, [props.selectedRowData]);
-
-  const fetchAccountUser = async () => {
-    try {
-      const res = await filterRecord({
-        input: { accountId: userDeviceFields.deviceOnboardingAccount.value },
-      });
-      setUserData(res.filterRecordUerAccountId);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
 
   const fetchAccountData = async () => {
     try {
@@ -133,17 +130,13 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     setLoading(true);
     // if (handleValidation()) {
     const insertUserBody: any = {
-      assetsType: userDeviceFields.assetsType.value,
-      deviceOnboardingName: userDeviceFields.deviceOnboardingName.value,
-      deviceOnboardingAccount: userDeviceFields.deviceOnboardingAccount.value,
-      deviceOnboardingUser: userDeviceFields.deviceOnboardingUser.value,
+      location: userDeviceFields.locationId.value,
+      accountId: tenantId,
       deviceOnboardingSimNo: simNo,
-      deviceOnboardingModel: userDeviceFields.deviceOnboardingModel.value,
       createdBy: userDeviceFields.createdBy.value,
-      deviceOnboardingStatus: userDeviceFields.deviceOnboardingStatus.value,
       deviceOnboardingIMEINumber:
         userDeviceFields.deviceOnboardingIMEINumber.value,
-      tenantId,
+      businessModel: userDeviceFields.businessModel.value,
     };
     try {
       if (props.edit) {
@@ -219,72 +212,56 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   const removeSimNoHandler = (index: number) => {
     setSimNo(simNo.filter((v: any, i: number) => i !== index));
   };
+
+  const fetchGeozone = async () => {
+    try {
+      setLoading(true);
+      const res = await fetchGeozoneHandler({
+        input: {
+          accountId: tenantId,
+          page: -1,
+          limit: 0,
+        },
+      });
+
+      setGeozoneData(res?.listGeozone?.data);
+      setLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchDeviceListData = async () => {
+    try {
+      const res = await fetchDeviceList({
+        input: {
+          page: -1,
+          limit: 1000000,
+        },
+      });
+      setData(res?.fetchDeviceList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const handleOnChange = (event: React.ChangeEvent<any>) => {
+    setDeviceFormFields({
+      ...userDeviceFields,
+      deviceOnboardingIMEINumber: {
+        value: event.target.value,
+      },
+    });
+  };
+
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_first_name_field"
-            placeHolder="Enter device name"
-            name="deviceOnboardingName"
-            label="Device Name"
-            onChange={handleFormDataChange}
-            value={userDeviceFields.deviceOnboardingName.value}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
               <InputLabel sx={classes.inputLabel} shrink>
-                Assets Type
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="assetsType"
-                value={userDeviceFields.assetsType.value}
-                onChange={(e) => {
-                  setDeviceFormFields({
-                    ...userDeviceFields,
-                    assetsType: {
-                      value: e.target.value,
-                    },
-                  });
-                }}
-                renderValue={
-                  userDeviceFields.assetsType.value !== ""
-                    ? undefined
-                    : () => "Select a Asset Type"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userDeviceFields.assetsType.value?.length < 4 &&
-                  userDeviceFields.assetsType.error?.length !== 0
-                }
-              >
-                {["Container", "Truck"]?.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Device Onboarding Account
+                Device Assignment Account
                 <Box ml={0.4} sx={classes.star}>
                   *
                 </Box>
@@ -331,217 +308,197 @@ const AddDeviceOnboarding = (props: CustomProps) => {
             </Stack>
           </Box>
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Device Onboarding User
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="deviceOnboardingUser"
-                value={userDeviceFields.deviceOnboardingUser.value}
-                onChange={(e) => {
-                  setDeviceFormFields({
-                    ...userDeviceFields,
-                    deviceOnboardingUser: {
-                      value: e.target.value,
-                    },
-                  });
-                }}
-                renderValue={
-                  userDeviceFields.deviceOnboardingUser.value !== ""
-                    ? undefined
-                    : () => "Select a user"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userDeviceFields.deviceOnboardingUser.value?.length < 4 &&
-                  userDeviceFields.deviceOnboardingUser.error?.length !== 0
-                }
-              >
-                {userData?.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item._id}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item.userName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Grid container gap={2}>
-            <Grid item xs={12} sm={6} md={6} lg={8} xl={8}>
-              <CustomInput
-                label="Device Onboarding Sim No"
-                id="recipient_modal_tags_field"
-                type="text"
-                name="tagsValue"
-                placeHolder="Enter Sim No"
-                required
-                error={userDeviceFields.deviceOnboardingSimNo.error}
-                onChange={(e: any) => {
-                  setDeviceFormFields({
-                    ...userDeviceFields,
-                    deviceOnboardingSimNo: {
-                      value: e.target.value,
-                    },
-                  });
-                }}
-                value={userDeviceFields.deviceOnboardingSimNo.value}
-              />
-            </Grid>
-            <Grid xs={12} sm={6} md={4} lg={3} xl={3}>
-              <CustomButton
-                id="recipient_modal_add_tag_button"
-                customClasses={{
-                  width: "100%",
-                  marginTop: "30px",
-                  [theme.breakpoints.down("lg")]: {
-                    marginTop: theme.spacing(0),
-                  },
-                }}
-                onClick={addSimNoHandler}
-                label="Add"
-              />
-            </Grid>
-          </Grid>
-          <Grid container>
-            <Grid item xl={6}>
-              {simNo.map((tag: any, index: any) => (
-                <Chip
-                  key={index}
-                  label={tag}
+        {userDeviceFields.deviceOnboardingAccount.value && (
+          <>
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box>
+                <InputLabel
                   sx={{
-                    marginLeft: "5px",
-                    marginTop: "8px",
-                    borderRadius: "5px",
-                    fontSize: "15px",
-                    backgroundColor: "#ECF9FF",
+                    ...classes.inputLabel,
+                    color: theme.palette.text.primary,
                   }}
-                  variant="filled"
-                  onDelete={() => removeSimNoHandler(index)}
+                  shrink
+                >
+                  IMEI
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
+
+                <Autocomplete
+                  sx={classes.emailDropDownStyle}
+                  id="update_user_manager_field"
+                  options={
+                    data.map((item: any) => ({
+                      key: item._id,
+                      label: `${item.imei}`,
+                      value: item,
+                    })) || []
+                  }
+                  renderInput={(params) => {
+                    const InputProps = { ...params.InputProps };
+                    InputProps.endAdornment = null;
+                    return (
+                      <TextField
+                        sx={classes.select}
+                        {...params}
+                        name="startLocation"
+                        placeholder="Select Imei"
+                        onSelect={handleOnChange}
+                        InputProps={InputProps}
+                      />
+                    );
+                  }}
                 />
-              ))}
+              </Box>
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Device Model
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="deviceOnboardingModel"
-                value={userDeviceFields.deviceOnboardingModel.value}
-                onChange={(e) => {
-                  setDeviceFormFields({
-                    ...userDeviceFields,
-                    deviceOnboardingModel: {
-                      value: e.target.value,
-                    },
-                  });
-                }}
-                renderValue={
-                  userDeviceFields.deviceOnboardingModel.value !== ""
-                    ? undefined
-                    : () => "Select a Device Model"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userDeviceFields.deviceOnboardingModel.value?.length < 4 &&
-                  userDeviceFields.deviceOnboardingModel.error?.length !== 0
-                }
-              >
-                {deviceModelData?.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item._id}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item.deviceModelName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-          </Box>
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_first_name_field"
-            placeHolder="Enter IMEI Number"
-            name="deviceOnboardingIMEINumber"
-            label="Device Onboarding IMEI No"
-            onChange={handleFormDataChange}
-            value={userDeviceFields.deviceOnboardingIMEINumber.value}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel sx={classes.inputLabel} shrink>
-                Device Onboarding Status
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="deviceOnboardingStatus"
-                value={userDeviceFields.deviceOnboardingStatus.value}
-                onChange={(e) => {
-                  setDeviceFormFields({
-                    ...userDeviceFields,
-                    deviceOnboardingStatus: {
-                      value: e.target.value,
-                    },
-                  });
-                }}
-                renderValue={
-                  userDeviceFields.deviceOnboardingStatus.value !== ""
-                    ? undefined
-                    : () => "Select a  Status"
-                }
-                MenuProps={classes.menuProps}
-                displayEmpty
-                error={
-                  userDeviceFields.deviceOnboardingStatus.value?.length < 4 &&
-                  userDeviceFields.deviceOnboardingStatus.error?.length !== 0
-                }
-              >
-                {["Active", "Inactive", "Repair"]?.map(
-                  (item: any, index: any) => (
-                    <MenuItem
+
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Grid container gap={2}>
+                <Grid item xs={12} sm={6} md={6} lg={8} xl={8}>
+                  <CustomInput
+                    label="Device Onboarding Sim No"
+                    id="recipient_modal_tags_field"
+                    type="text"
+                    name="tagsValue"
+                    placeHolder="Enter Sim No"
+                    required
+                    error={userDeviceFields.deviceOnboardingSimNo.error}
+                    onChange={(e: any) => {
+                      setDeviceFormFields({
+                        ...userDeviceFields,
+                        deviceOnboardingSimNo: {
+                          value: e.target.value,
+                        },
+                      });
+                    }}
+                    value={userDeviceFields.deviceOnboardingSimNo.value}
+                  />
+                </Grid>
+                <Grid xs={12} sm={6} md={4} lg={3} xl={3}>
+                  <CustomButton
+                    id="recipient_modal_add_tag_button"
+                    customClasses={{
+                      width: "100%",
+                      marginTop: "30px",
+                      [theme.breakpoints.down("lg")]: {
+                        marginTop: theme.spacing(0),
+                      },
+                    }}
+                    onClick={addSimNoHandler}
+                    label="Add"
+                  />
+                </Grid>
+              </Grid>
+              <Grid container>
+                <Grid item xl={6}>
+                  {simNo.map((tag: any, index: any) => (
+                    <Chip
                       key={index}
-                      value={item}
-                      sx={classes.dropDownOptionsStyle}
-                    >
-                      {item}
-                    </MenuItem>
-                  )
-                )}
-              </Select>
-            </Stack>
-          </Box>
-        </Grid>
+                      label={tag}
+                      sx={{
+                        marginLeft: "5px",
+                        marginTop: "8px",
+                        borderRadius: "5px",
+                        fontSize: "15px",
+                        backgroundColor: "#ECF9FF",
+                      }}
+                      variant="filled"
+                      onDelete={() => removeSimNoHandler(index)}
+                    />
+                  ))}
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box>
+                <Stack direction="column">
+                  <InputLabel sx={classes.inputLabel} shrink>
+                    Business Model
+                    <Box ml={0.4} sx={classes.star}>
+                      *
+                    </Box>
+                  </InputLabel>
+                  <Select
+                    sx={classes.dropDownStyle}
+                    id="add_user_roles_dropdown"
+                    name="deviceOnboardingModel"
+                    value={userDeviceFields.businessModel.value}
+                    onChange={(e) => {
+                      setDeviceFormFields({
+                        ...userDeviceFields,
+                        businessModel: {
+                          value: e.target.value,
+                        },
+                      });
+                    }}
+                    renderValue={
+                      userDeviceFields.businessModel.value !== ""
+                        ? undefined
+                        : () => "Select a Device Model"
+                    }
+                    MenuProps={classes.menuProps}
+                    displayEmpty
+                    error={
+                      userDeviceFields.businessModel.value?.length < 4 &&
+                      userDeviceFields.businessModel.error?.length !== 0
+                    }
+                  >
+                    {["CAPEX", "OPEX"]?.map((item: any, index: any) => (
+                      <MenuItem
+                        key={index}
+                        value={item}
+                        sx={classes.dropDownOptionsStyle}
+                      >
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Stack>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box>
+                <Stack direction="column">
+                  <InputLabel sx={classes.inputLabel} shrink>
+                    Account Location
+                  </InputLabel>
+                  <Select
+                    sx={classes.dropDownStyle}
+                    id="add_user_roles_dropdown"
+                    name="location"
+                    value={userDeviceFields.locationId.value}
+                    onChange={(e) => {
+                      setDeviceFormFields({
+                        ...userDeviceFields,
+                        locationId: {
+                          value: e.target.value,
+                        },
+                      });
+                    }}
+                    renderValue={
+                      userDeviceFields.locationId.value !== ""
+                        ? undefined
+                        : () => "Select Location"
+                    }
+                    MenuProps={classes.menuProps}
+                    displayEmpty
+                  >
+                    {geozoneData?.map((item: any, index: any) => (
+                      <MenuItem
+                        key={index}
+                        value={item._id}
+                        sx={classes.dropDownOptionsStyle}
+                      >
+                        {item.locationId}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Stack>
+              </Box>
+            </Grid>
+          </>
+        )}
       </Grid>
     );
   };

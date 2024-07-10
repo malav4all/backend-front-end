@@ -156,8 +156,8 @@ export const RoleManagement = () => {
   const tableDataConversion = (finalTableData: any) => {
     return finalTableData?.map((role: any, index: number) => {
       return {
-        name: role.name,
-        industryType: role.industryType.name,
+        name: role?.name,
+        industryType: role.industryType?.name,
         resources: role?.resources?.map((res: any) => {
           return (
             <Stack
@@ -167,10 +167,10 @@ export const RoleManagement = () => {
               spacing={1}
               mt={1}
             >
-              <Typography>{res.name}</Typography>:
+              <Typography>{res?.name}</Typography>:
               {res?.permissions?.map((i: any) => (
                 <Chip
-                  key={role.id + i}
+                  key={role?.id + i}
                   label={i}
                   sx={{ ...classes.addTagChip, color: "white" }}
                   variant="filled"

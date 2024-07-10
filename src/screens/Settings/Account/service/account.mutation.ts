@@ -25,6 +25,7 @@ export const FETCH_ACCOUNT = gql`
         accountContactEmail
         accountContactMobile
         tenantId
+        accountId
         accountConfiguration {
           key
           value

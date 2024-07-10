@@ -60,6 +60,10 @@ export const deviceModuleInsertField = (data?: any) => {
 
 export const deviceModelTableHeader = [
   {
+    name: "Device Id",
+    field: "deviceId",
+  },
+  {
     name: "Device Model Name",
     field: "deviceModelName",
   },

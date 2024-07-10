@@ -21,6 +21,7 @@ export const FETCH_GEOZONE = gql`
         _id
         name
         description
+        locationId
         locationType
         mobileNumber
         finalAddress

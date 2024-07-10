@@ -27,15 +27,14 @@ import {
   primaryHeadingColor,
 } from "../../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  deviceOnboardingTableHeader,
-  deviceOnboardingTableHeaderTenant,
-} from "./DeviceOnboarding.helpers";
+import { deviceOnboardingTableHeader } from "./DeviceOnboarding.helpers";
 import AddDeviceOnboarding from "./Component/AddDeviceOnboading";
 import { fetchDeviceOnboardingTableHandler } from "./service/DeviceOnboarding.service";
 import EditIcon from "@mui/icons-material/Edit";
 import { store } from "../../../utils/store";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import ExportCSV from "../../../global/components/ExportCSV";
+import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 
 const DeviceOnboarding = () => {
   const classes = DeviceOnboardingStyle;
@@ -50,10 +49,11 @@ const DeviceOnboarding = () => {
   const [perPageData, setPerPageData] = useState(10);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [tableData, setTableData] = useState<any>([]);
+  const [uploadAsset, setUploadAsset] = useState(false);
 
   useEffect(() => {
     fetchDeviceOnboardingData();
-  }, []);
+  }, [pageNumber, perPageData]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -71,17 +71,11 @@ const DeviceOnboarding = () => {
     const data = tableValue.map((item: any) => {
       return {
         _id: item._id,
-        assetsType: item?.assetsType,
-        description: item.description,
-        deviceOnboardingName: item.deviceOnboardingName,
-        deviceOnboardingAccount: item.deviceOnboardingAccount.accountName,
-        deviceOnboardingUser: item.deviceOnboardingUser.firstName,
+        accountId: item.accountId,
+        deviceOnboardingAccount: store.getState().auth.account,
         deviceOnboardingSimNo: item.deviceOnboardingSimNo
           ?.map((val: any) => val)
           ?.join("-"),
-
-        deviceOnboardingModel: item.deviceOnboardingModel?.deviceModelName,
-        deviceOnboardingStatus: item.deviceOnboardingStatus,
         deviceOnboardingIMEINumber: item.deviceOnboardingIMEINumber,
         action: (
           <>
@@ -101,50 +95,35 @@ const DeviceOnboarding = () => {
     });
     return data;
   };
+  const uploadAssetModalClose = () => {
+    setUploadAsset(false);
+  };
 
-  const tableDataRenderTenantData = (tableValue: string[]) => {
-    const data = tableValue.map((item: any) => {
-      return {
-        _id: item._id,
-        assetsType: item?.assetsType,
-        deviceOnboardingAccount: item.deviceOnboardingAccount.accountName,
-        deviceOnboardingUser: item.deviceOnboardingUser.firstName,
-        deviceOnboardingIMEINumber: item.deviceOnboardingIMEINumber,
-        action: (
-          <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                setAddUserDialogHandler(true);
-                setSelectedRowData(item);
-                setEdit(true);
-              }}
-            >
-              <EditIcon />
-            </Tooltip>
-          </>
-        ),
-      };
-    });
-    return data;
+  const uploadAssetGroupModal = () => {
+    return (
+      <UploadAssetGroup
+        showDialog={uploadAsset}
+        handleDialogClose={uploadAssetModalClose}
+        getAssetAssingmentDetailTable={() => {}}
+      />
+    );
   };
 
   const fetchDeviceOnboardingData = async () => {
     try {
       setIsLoading(true);
       const res = await fetchDeviceOnboardingTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
       const finalTableData = tableDataRender(
         res.fetchDeviceOnboardingList.data
       );
 
-      const finalTableDataTenant = tableDataRenderTenantData(
-        res.fetchDeviceOnboardingList.data
-      );
-      setTableData(
-        store.getState().auth.tenantId ? finalTableDataTenant : finalTableData
-      );
+      setTableData(finalTableData);
       setCount(res.fetchDeviceOnboardingList?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -224,11 +203,7 @@ const DeviceOnboarding = () => {
     return (
       <Box id="users_display_table" sx={classes.campaignerTable}>
         <CustomTable
-          headers={
-            store.getState().auth.tenantId
-              ? deviceOnboardingTableHeaderTenant
-              : deviceOnboardingTableHeader
-          }
+          headers={deviceOnboardingTableHeader}
           rows={tableData}
           paginationCount={count}
           handlePageChange={
@@ -270,6 +245,24 @@ const DeviceOnboarding = () => {
           spacing={1}
         >
           {getSearchBar()}
+          <CustomButton
+            id="groups_download_template_button"
+            label="Download&nbsp;Template"
+            onClick={ExportCSV(
+              ["imei,accountId,simno,businessmodel,location"],
+              "deviceassignment"
+            )}
+            customClasses={{
+              width: "170px",
+            }}
+          />
+          <CustomButton
+            id="groups_download_template_button"
+            label="Upload Bulk Device"
+            onClick={() => {
+              setUploadAsset(true);
+            }}
+          />
           {addUserButton()}
         </Stack>
       </Stack>
@@ -331,6 +324,7 @@ const DeviceOnboarding = () => {
         sx={classes.mainSection}
       >
         {getDeviceOnboarding()}
+        {uploadAssetGroupModal()}
       </Grid>
 
       <CustomLoader isLoading={isLoading} />

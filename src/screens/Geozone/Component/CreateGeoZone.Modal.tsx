@@ -191,7 +191,7 @@ const CreateGeoZone = ({
                   formField.locationType?.error
                 }
               >
-                {locationType.map((item: any, index: number) => (
+                {[{ type: "Malav" }].map((item: any, index: number) => (
                   <MenuItem
                     key={index}
                     value={item.type}

@@ -122,13 +122,14 @@ const Login = () => {
               accessToken: user?.loginUser?.data?.data?.user.accessToken,
               userName: user?.loginUser?.data?.data?.user.name,
               role: user?.loginUser?.data?.data?.user?.role,
-              resources: formattedResources,
+              resources: {},
               roleId: user?.loginUser?.data?.data?.user.roleId.name,
               userId: user?.loginUser?.data?.data?.user?._id,
-              account: user?.loginUser?.data?.data?.user.roleId.name,
+              account: user?.loginUser?.data?.data?.user?.account?.accountName,
               accountId: user?.loginUser?.data?.data?.user?.account?._id,
               roleName: user?.loginUser?.data?.data?.user.roleId.name,
-              tenantId: user?.loginUser?.data?.data?.user?.account?.tenantId,
+              tenantId:
+                user?.loginUser?.data?.data?.user?.account?.accountId || "",
             })
           );
           setIsLoading(false);

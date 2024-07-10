@@ -106,6 +106,7 @@ const DeviceModule = () => {
       });
       const finalData = res?.fetchDeviceModel?.data?.map((item: any) => {
         return {
+          deviceId: item.deviceId,
           deviceModelName: item.deviceModelName,
           deviceModel: item.deviceModel,
           deviceModelIpAddress: item.deviceModelIpAddress,
