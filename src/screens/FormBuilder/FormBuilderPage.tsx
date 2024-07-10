@@ -29,10 +29,10 @@ import {
 import formBuilderStyles from "./FormBuilderPage.styles";
 import { useTheme } from "@mui/material";
 
-const journeys = [
-  { _id: "1", journeyName: "Journey 1" },
-  { _id: "2", journeyName: "Journey 2" },
-  { _id: "3", journeyName: "Journey 3" },
+const routess = [
+  { _id: "1", routesName: "Routes 1" },
+  { _id: "2", routesName: "Routes 2" },
+  { _id: "3", routesName: "Routes 3" },
 ];
 
 const FormBuilderPage: React.FC = () => {
@@ -216,9 +216,9 @@ const FormBuilderPage: React.FC = () => {
                         displayEmpty
                         sx={{width: "100%"}}
                       >
-                        {journeys.map((item) => (
+                        {routess.map((item) => (
                           <MenuItem key={item._id} value={item._id}>
-                            {item.journeyName}
+                            {item.routesName}
                           </MenuItem>
                         ))}
                       </Select>

@@ -58,7 +58,7 @@ export const updateDevice = async (variables: any): Promise<any> => {
   }
 };
 
-export const bulkJourneyDeviceList = async (variables: any): Promise<any> => {
+export const bulkRoutesDeviceList = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: BULK_DEVICE_UPLOAD,

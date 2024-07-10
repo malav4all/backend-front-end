@@ -1,31 +1,41 @@
 import {
   boldFont,
+  getRelativeFontSize,
   theme,
   primaryHeadingColor,
-  getRelativeFontSize,
   regularFont,
+  pinkThemedMenuItems,
   purpleThemedSelectComponent,
   pureWhiteColor,
-  pinkThemedMenuItems,
   headerColor,
-} from "../../../../utils/styles"
-
-const journeyReportStyles = {
+} from "../../../../utils/styles";
+const archivedRoutesStyles = {
   header: {
     display: "flex",
     alignItems: "center",
     backgroundColor: headerColor,
-    padding: "16px 3rem",
+    padding: "16px",
     paddingBottom: "64px",
     paddingTop: "35px",
   },
-
   heading: {
-    fontFamily: "Geist_Medium",
+    ...boldFont,
     color: primaryHeadingColor,
-    fontSize: "2rem",
+    fontSize: getRelativeFontSize(7),
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
+    },
+  },
+  mainCardHeading: {
+    ...regularFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0px 0",
+    width: "100%",
+    color: primaryHeadingColor,
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(5),
+      marginBottom: theme.spacing(1),
     },
   },
   dropDownStyle: {
@@ -42,6 +52,12 @@ const journeyReportStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-}
+  liveTrackingTooltipText: {
+    padding: "10px",
+    color: "white",
+    fontSize: "14px",
+    ...regularFont,
+  },
+} as const;
 
-export default journeyReportStyles
+export default archivedRoutesStyles;

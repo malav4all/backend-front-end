@@ -1,7 +1,7 @@
 export interface addAssetAssingmentPayload{
     imei:string;
     labelName: string;
-    // journey: string[]
+    // routes: string[]
     boxSet: string;
     createdBy: string;
 }

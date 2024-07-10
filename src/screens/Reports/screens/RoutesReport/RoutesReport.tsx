@@ -18,18 +18,18 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { ChangeEvent, useEffect, useState } from "react";
 import moment from "moment";
-import journeyReportStyles from "./JourneyReport.styles";
-import { archiveJourney } from "./service/JourneyReport.service";
-const JourneyReport = () => {
+import routesReportStyles from "./RoutesReport.styles";
+import { archiveRoutes } from "./service/RoutesReport.service";
+const RoutesReport = () => {
   const theme = useTheme();
-  const classes = journeyReportStyles;
+  const classes = routesReportStyles;
   const [isLoading, setIsLoading] = useState<any>(false);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
-  const [journeyTableData, setJourneyTableData] = useState([]);
+  const [routesTableData, setRoutesTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
-  const [searchJourney, setSearchJourney] = useState<string>("");
+  const [searchRoutes, setSearchRoutes] = useState<string>("");
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
@@ -39,15 +39,15 @@ const JourneyReport = () => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [filterData, setFilterData] = useState<any[]>([]);
   useEffect(() => {
-    fetchJourneyHandler();
+    fetchRoutesHandler();
   }, []);
 
-  const fetchJourneyHandler = async () => {
+  const fetchRoutesHandler = async () => {
     try {
       setIsLoading(true);
-      const res = await archiveJourney();
-      const data = tableRender(res.archiveJourney.data);
-      setJourneyTableData(data);
+      const res = await archiveRoutes();
+      const data = tableRender(res.archiveRoutes.data);
+      setRoutesTableData(data);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -157,7 +157,7 @@ const JourneyReport = () => {
       // totalDistance += distance;
       // totalTime += timeee;
       return {
-        journeyName: item.journeyName,
+        routesName: item.routesName,
         createdBy: item.createdBy,
         distance: formatDistance(item.totalDistance),
         duration: formatDuration(item.totalDuration),
@@ -185,9 +185,9 @@ const JourneyReport = () => {
     const value = searchEvent?.target?.value.toLowerCase().trim();
     if (value) {
       setIsLoading(true);
-      const searchedReports = journeyTableData?.filter(
+      const searchedReports = routesTableData?.filter(
         (data: any) =>
-          data?.journeyName?.toLowerCase()?.includes(value) ||
+          data?.routesName?.toLowerCase()?.includes(value) ||
           data?.createdBy?.toLowerCase()?.includes(value) ||
           data?.startDate?.toLowerCase()?.includes(value) ||
           data?.endDate?.toLowerCase()?.includes(value) ||
@@ -198,7 +198,7 @@ const JourneyReport = () => {
       setIsSearching(true);
       setIsLoading(false);
     } else {
-      setFilterData([...journeyTableData]);
+      setFilterData([...routesTableData]);
       setIsSearching(false);
     }
   };
@@ -228,7 +228,7 @@ const JourneyReport = () => {
       <Grid container sx={classes.header}>
         <Grid item xs={12} md={5} lg={6} xl={6}>
           <Typography variant="h5" sx={{ ...classes.heading, color: "white" }}>
-            Journey Reports
+            Routes Reports
           </Typography>
         </Grid>
 
@@ -312,18 +312,18 @@ const JourneyReport = () => {
           <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
             <CustomTable
               headers={[
-                { name: "Journey Name", field: "journeyName" },
+                { name: "Routes Name", field: "routesName" },
                 { name: "Total Distance ", field: "distance" },
                 { name: "Total Duration ", field: "duration" },
                 { name: "Start Date", field: "startDate" },
                 { name: "End Date", field: "startDate" },
                 { name: "Created By", field: "createdBy" },
               ]}
-              rows={isSearching ? filterData : journeyTableData}
+              rows={isSearching ? filterData : routesTableData}
               size={[5]}
               handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}
-              paginationCount={journeyTableData?.length}
+              paginationCount={routesTableData?.length}
               // rowsPerPage={rowsPerPage}
               pageNumber={page}
               setPage={setPage}
@@ -351,4 +351,4 @@ const JourneyReport = () => {
   );
 };
 
-export default JourneyReport;
+export default RoutesReport;

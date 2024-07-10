@@ -27,7 +27,7 @@ import {
   alertRowData,
   statusDevice,
 } from "../../../Reports/service/Report.service"
-import archivedJourneyStyles from "./ArchivedJourney.styles"
+import archivedRoutesStyles from "./ArchivedRoutes.styles"
 import { FaRoute } from "react-icons/fa"
 import { NavLink } from "react-router-dom"
 import {
@@ -36,10 +36,10 @@ import {
   headerColor,
   primaryHeadingColor,
 } from "../../../../utils/styles"
-import { archiveJourney } from "./service/ArchivedJourney.service"
+import { archiveRoutes } from "./service/ArchivedRoutes.service"
 import history from "../../../../utils/history"
 const ArchivedJoruney = () => {
-  const classes = archivedJourneyStyles
+  const classes = archivedRoutesStyles
   const theme = useTheme();
   const [alertTableData, setAlertTableData] = useState([])
   const [page, setPage] = useState(1)
@@ -60,7 +60,7 @@ const ArchivedJoruney = () => {
   const [archivedTableData, setArchivedTableData] = useState([])
 
   useEffect(() => {
-    fetchArchivedJourneys()
+    fetchArchivedRoutess()
   }, [])
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -75,7 +75,7 @@ const ArchivedJoruney = () => {
       setIsLoading(true)
       const searchedReports = archivedTableData?.filter(
         (data: any) =>
-          data?.journeyName?.toLowerCase()?.includes(value) ||
+          data?.routesName?.toLowerCase()?.includes(value) ||
           data?.createdBy?.toLowerCase()?.includes(value) ||
           data?.startDate?.toLowerCase()?.includes(value) ||
           data?.endDate?.toLowerCase()?.includes(value) ||
@@ -91,10 +91,10 @@ const ArchivedJoruney = () => {
     }
   }
 
-  const fetchArchivedJourneys = async () => {
+  const fetchArchivedRoutess = async () => {
     try {
-      const response = await archiveJourney()
-      const res = tableRender(response.archiveJourney.data)
+      const response = await archiveRoutes()
+      const res = tableRender(response.archiveRoutes.data)
       setArchivedTableData(res)
     } catch (error: any) {
       setIsLoading(false)
@@ -105,7 +105,7 @@ const ArchivedJoruney = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Archived Journey"
+        placeHolder="Search Archived Routes"
         id="report_search_field"
         // inputRef={serachInputValue}
         onChange={debounceEventHandler(
@@ -192,7 +192,7 @@ const ArchivedJoruney = () => {
       <Box>
         <Typography sx={{...classes.mainCardHeading,
           color: "white",
-        }}>Archived Journey</Typography>
+        }}>Archived Routes</Typography>
       </Box>
     )
   }
@@ -220,7 +220,7 @@ const ArchivedJoruney = () => {
     const data = tableData?.map((item: any, index: number) => {
       return {
         key: item._id,
-        journeyName: item?.journeyName,
+        routesName: item?.routesName,
         startDate: moment(item.startDate).format("DD-MMM-YYYY hh:mm A"),
         endDate: moment(item.endDate).format("DD-MMM-YYYY hh:mm A"),
         createdBy: item?.createdBy,
@@ -316,7 +316,7 @@ const ArchivedJoruney = () => {
           >
             <CustomTable
               headers={[
-                { name: "Journey Name", field: "journeyName" },
+                { name: "Routes Name", field: "routesName" },
                 { name: "Total Distance", field: "totalDistance" },
                 { name: "Total Duration", field: "totalDuration" },
                 { name: "Start Date", field: "startDate" },

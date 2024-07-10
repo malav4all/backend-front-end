@@ -39,19 +39,19 @@ export const options = [
     value: 45,
   },
 ];
-export const validateJourneyForm = (formField: any) => {
+export const validateRoutesForm = (formField: any) => {
   let isValid = true;
   let errors = { ...formField };
-  if (!errors?.journeyName?.value) {
-    errors.journeyName.error = "Please enter journey name";
+  if (!errors?.routesName?.value) {
+    errors.routesName.error = "Please enter routes name";
     isValid = false;
   }
   if (!errors?.startDate.value) {
-    errors.startDate.error = "Please enter journey start date";
+    errors.startDate.error = "Please enter routes start date";
     isValid = false;
   }
   if (!errors?.endDate.value) {
-    errors.endDate.error = "Please enter journey end date";
+    errors.endDate.error = "Please enter routes end date";
     isValid = false;
   }
 
