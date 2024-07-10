@@ -32,6 +32,8 @@ export type AccessToResource = {
   allPermissionRequired: boolean;
 };
 
+console.log(store.getState().auth.tenantId);
+
 const ListOfMenus = () =>
   [
     {
@@ -280,7 +282,6 @@ const ListOfMenus = () =>
           link: `${"/trip-type"}`,
           pageName: strings.ENTITY_TYPE,
         },
-        
       ],
     },
     {

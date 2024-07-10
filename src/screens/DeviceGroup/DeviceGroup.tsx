@@ -79,6 +79,8 @@ const DeviceGroup = () => {
     return history.push(`/device-group/view/${_id}`);
   };
 
+
+
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
       return {
@@ -148,7 +150,6 @@ const DeviceGroup = () => {
     });
     setDeviceGroupData([...data]);
   };
-
   const getHeader = () => {
     return (
       <Box>
