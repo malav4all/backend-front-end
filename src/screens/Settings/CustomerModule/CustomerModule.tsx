@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  CustomAppHeader,
   CustomButton,
   CustomInput,
   CustomTable,
@@ -24,14 +25,19 @@ import {
   debounceEventHandler,
   openErrorNotification,
   openSuccessNotification,
+  validateTabValue,
 } from "../../../helpers/methods";
 import {
   customerModuleInsertField,
   customerModuleTableHeader,
   customerModuleValidation,
 } from "./CustomerIndustryHelpers";
+import history from "../../../utils/history";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddCustomerModule from "./component/AddCustomerModule";
+import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
+import { useLocation } from "react-router-dom";
+import { tabConfig } from "../SettingsHelpers";
 
 const CustomerModule = () => {
   const classes = IndustryStyles;
@@ -46,7 +52,10 @@ const CustomerModule = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const tabValueName = validateTabValue(urlParams.get("tabValue"));
+  const [tabValue, setTabValue] = useState<string>(tabValueName!);
   useEffect(() => {
     setPageNumber(1);
   }, [searchText, perPageData]);
@@ -63,6 +72,12 @@ const CustomerModule = () => {
     setPageNumber(1);
     setPerPageData(event.target.value);
   };
+
+  const handleChange = (newValue: string) => {
+    setTabValue(newValue);
+    history.push(`?tabValue=${newValue}`);
+  };
+
 
   const createCustomerModule = async () => {
     try {
@@ -98,6 +113,22 @@ const CustomerModule = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const SettingsHeader = () => {
+    return (
+      <CustomAppHeader className={classes.headerBackgroundColor}>
+        <Box ml={1}>
+        <Typography style={classes.settingsTitle}>Settings / Module</Typography>
+        </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        >
+        </Stack>
+      </CustomAppHeader>
+    );
   };
 
   const searchDataHandler = async () => {
@@ -240,6 +271,7 @@ const CustomerModule = () => {
         height: "100%",
       }}
     >
+      {SettingsHeader()}
       <AddCustomerModule
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}

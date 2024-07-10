@@ -2,6 +2,7 @@ import {
   boldFont,
   centerItemFlex,
   getRelativeFontSize,
+  headerColor,
   inputLabelRequiredColor,
   lightTextColor,
   mediumFont,
@@ -22,7 +23,18 @@ const IndustryStyles = {
   profileHeaderEmail: {
     color: lightTextColor,
   },
-
+  headerBackgroundColor: {
+    backgroundColor: headerColor,
+    padding: "35px 0px 25px 20px",
+  },
+  settingsTitle: {
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    color: "white",
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(3),
+    },
+  },
   pageSubtitle: {
     fontSize: getRelativeFontSize(6),
     ...boldFont,
@@ -169,7 +181,7 @@ const IndustryStyles = {
   optionStyle: {
     ...regularFont,
   },
-  
+
   checkbox: {
     "&.MuiCheckbox-colorPrimary": { color: pinkDarkColor },
   },

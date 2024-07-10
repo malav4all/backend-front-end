@@ -16,6 +16,7 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  CustomAppHeader,
   CustomButton,
   CustomInput,
   CustomTable,
@@ -33,6 +34,7 @@ import {
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
+  validateTabValue,
 } from "../../../helpers/methods";
 import {
   industryInsertField,
@@ -46,7 +48,10 @@ import {
   getRelativeFontSize,
 } from "../../../utils/styles";
 import AddIndustry from "./component/AddIndustry";
-
+import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
+import { tabConfig } from "../SettingsHelpers";
+import history from "../../../utils/history";
+import { useLocation } from "react-router-dom";
 const Industry = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -59,6 +64,7 @@ const Industry = () => {
   };
   const classes = IndustryStyles;
   const theme = useTheme();
+  const location = useLocation();
   const [industryFormData, setIndustryFormData] = useState(
     industryInsertField()
   );
@@ -72,6 +78,9 @@ const Industry = () => {
   const [file, setFile] = useState<any>();
   const [addIndustryDialogHandler, setAddIndustryDialogHandler] =
     useState(false);
+  const urlParams = new URLSearchParams(location.search);
+  const tabValueName = validateTabValue(urlParams.get("tabValue"));
+  const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
     setPageNumber(1);
@@ -97,6 +106,10 @@ const Industry = () => {
         error: "",
       },
     });
+  };
+  const handleChange = (newValue: string) => {
+    setTabValue(newValue);
+    history.push(`?tabValue=${newValue}`);
   };
 
   const fetchTableIndustry = async () => {
@@ -268,6 +281,22 @@ const Industry = () => {
     );
   };
 
+  const SettingsHeader = () => {
+    return (
+      <CustomAppHeader className={classes.headerBackgroundColor}>
+        <Box ml={1}>
+          <Typography style={classes.settingsTitle}>Settings / Industry</Typography>
+        </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        >
+        </Stack>
+      </CustomAppHeader>
+    );
+  };
+
   const handlePerPageData = (event: any) => {
     setPageNumber(1);
     setPerPageData(event.target.value);
@@ -317,6 +346,7 @@ const Industry = () => {
         height: "100%",
       }}
     >
+      {SettingsHeader()}
       {rolesTableRender()}
       <AddIndustry
         open={addIndustryDialogHandler}

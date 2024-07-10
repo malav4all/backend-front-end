@@ -124,7 +124,7 @@ const AppDrawer = (props: CustomProps) => {
     );
     setActiveIndex(activeIndexFromUrl);
   };
-
+// console.log("optionItems",optionItems)
   const generateAppDrawer = () => {
     setOptionItems(GenerateMenu());
   };

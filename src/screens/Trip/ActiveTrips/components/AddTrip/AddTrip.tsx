@@ -14,6 +14,7 @@ import useStyles from "./AddTrip.styles";
 import {
   insertTripField,
   validateAddTripForm,
+  TripFields,
 } from "../../TripTypeAndValidation";
 import {
   addTrip,
@@ -30,10 +31,11 @@ import strings from "../../../../../global/constants/StringConstants";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import CustomLoader from "../../../../../global/components/CustomLoader/CustomLoader";
 import { CustomButton } from "../../../../../global/components";
+import AlertConfiguration from "./AlertConfiguration";
 
 const TransitType = lazy(() => import("./TransitType"));
 const TripInformation = lazy(() => import("./TripInformation"));
-const PermitDetails = lazy(() => import("./PermitDetails"));
+const PermitDetails = lazy(() => import("./AlertConfiguration"));
 const DriverInformation = lazy(() => import("./DriverInformation"));
 
 const steps = [
@@ -57,7 +59,7 @@ interface CustomProps {
 const AddTrip: React.FC<CustomProps> = (props) => {
   const theme = useTheme();
   const classes = useStyles();
-  const [tripFromFields, setTripFromFields] = useState(
+  const [tripFromFields, setTripFromFields] = useState<TripFields>(
     insertTripField(props?.selectedTripRowData)
   );
   const [imeiData, setImeiData] = useState([]);
@@ -87,37 +89,77 @@ const AddTrip: React.FC<CustomProps> = (props) => {
   };
 
   const handleFormDataChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setTripFromFields({
-      ...tripFromFields,
-      [event.target.name]: {
-        ...tripFromFields[event.target.name],
-        value: event.target.value,
+    const { name, value } = event.target;
+    setTripFromFields((prevFields) => ({
+      ...prevFields,
+      [name]: {
+        ...prevFields[name as keyof TripFields],
+        value,
         error: "",
       },
-    });
+    }));
   };
 
   const handleSelectChange = (event: SelectChangeEvent<any>) => {
-    setTripFromFields({
-      ...tripFromFields,
-      [event.target.name]: {
-        ...tripFromFields[event.target.name],
-        value: event.target.value,
+    const { name, value } = event.target;
+    setTripFromFields((prevFields) => ({
+      ...prevFields,
+      [name]: {
+        ...prevFields[name as keyof TripFields],
+        value,
         error: "",
       },
-    });
+    }));
   };
 
   const handleDateChange = (name: string, date: Date | null) => {
-    setTripFromFields({
-      ...tripFromFields,
+    setTripFromFields((prevFields) => ({
+      ...prevFields,
       [name]: {
-        ...tripFromFields[name],
+        ...prevFields[name as keyof TripFields],
         value: date,
         error: "",
       },
+    }));
+  };
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    setTripFromFields((prevFields) => {
+      let updatedField;
+
+      if (["lock", "Unlock", "Geozone-In", "Geozone-out", "Trip created", "Trip ended", "Tamper Alert", "Overspeeding", "low battery"].includes(name)) {
+        // Update alertTypes
+        updatedField = checked
+          ? [...(prevFields.alertTypes.value || []), name]
+          : prevFields.alertTypes.value.filter((type: string) => type !== name);
+        return {
+          ...prevFields,
+          alertTypes: {
+            ...prevFields.alertTypes,
+            value: updatedField,
+            error: "",
+          },
+        };
+      } else if (["SMS", "WhatsApp", "Email"].includes(name)) {
+
+        updatedField = checked
+          ? [...(prevFields.getAlerts.value || []), name]
+          : prevFields.getAlerts.value.filter((type: string) => type !== name);
+        return {
+          ...prevFields,
+          getAlerts: {
+            ...prevFields.getAlerts,
+            value: updatedField,
+            error: "",
+          },
+        };
+      }
+
+      return prevFields;
     });
   };
+
 
   const fetchImeiData = async () => {
     try {
@@ -130,10 +172,13 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   const insertTripDetails = async () => {
     try {
+      console.log('Trip Details:', tripFromFields);
+
       const insertTripBody = {
-        imeiData: tripFromFields.imeiList?.value,
-        tripName: tripFromFields.tripName?.value?.trim(),
+        imeiData: tripFromFields.imeiList.value,
+        tripName: tripFromFields.tripName.value?.trim(),
       };
+
       if (handleValidation()) {
         if (props.edit) {
           const res = await updateTrip({
@@ -215,14 +260,16 @@ const AddTrip: React.FC<CustomProps> = (props) => {
             tripFromFields={tripFromFields}
             handleFormDataChange={handleFormDataChange}
             handleSelectChange={handleSelectChange}
+            handleDateChange={handleDateChange} // Pass handleDateChange prop
           />
         )}
         {activeStep === 2 && (
-          <PermitDetails
+          <AlertConfiguration
             tripFromFields={tripFromFields}
             handleFormDataChange={handleFormDataChange}
             handleSelectChange={handleSelectChange}
-            handleDateChange={handleDateChange}
+            handleDateChange={handleDateChange} // Pass handleDateChange prop
+            handleCheckboxChange={handleCheckboxChange} // Pass handleCheckboxChange prop
           />
         )}
         {activeStep === 3 && (

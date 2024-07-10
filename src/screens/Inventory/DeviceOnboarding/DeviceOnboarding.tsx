@@ -7,6 +7,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   CustomAppHeader,
@@ -20,7 +21,9 @@ import {
 } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import {
+  boldFont,
   getRelativeFontSize,
+  headerColor,
   primaryHeadingColor,
 } from "../../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -35,6 +38,7 @@ import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 
 const DeviceOnboarding = () => {
   const classes = DeviceOnboardingStyle;
+  const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -216,7 +220,7 @@ const DeviceOnboarding = () => {
     );
   };
 
-  const getUser = () => (
+  const getDeviceOnboarding = () => (
     <Box>
       <Stack
         px={4}
@@ -287,16 +291,29 @@ const DeviceOnboarding = () => {
     <>
       <CustomAppHeader
         className={{
-          backgroundColor: "#ECF9FF",
-          padding: "59px 10px 79px 44px",
+          backgroundColor: headerColor,
+          padding: "10px 20px 15px 18px",
         }}
       >
-        <Grid container xs={12} md={12} lg={12} xl={12} alignItems="center">
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+        <Stack
+          px={4}
+          pt={4}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
+          <Typography
+            sx={{
+              fontSize: getRelativeFontSize(6),
+              ...boldFont,
+              color: primaryHeadingColor,
+            }}
+          >
             {getHeader()}
-          </Grid>
-        </Grid>
+          </Typography>
+        </Stack>
       </CustomAppHeader>
+
       <Grid
         item
         xs={12}
@@ -306,9 +323,10 @@ const DeviceOnboarding = () => {
         xl={12}
         sx={classes.mainSection}
       >
-        {getUser()}
+        {getDeviceOnboarding()}
         {uploadAssetGroupModal()}
       </Grid>
+
       <CustomLoader isLoading={isLoading} />
     </>
   );

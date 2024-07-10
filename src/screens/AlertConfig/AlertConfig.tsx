@@ -365,7 +365,7 @@ const AlertConfig = () => {
                 sx={{
                   fontSize: getRelativeFontSize(6),
                   ...boldFont,
-                  color: primaryHeadingColor,
+                  color: "white",
                 }}
               >
                 {getHeader()}

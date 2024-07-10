@@ -74,7 +74,7 @@ const Trip = () => {
     } else {
       getTripData();
     }
-  }, [searchTrips, page, setRowsPerPage, searchPageNumber]);
+  }, [searchTrips, page, rowsPerPage, searchPageNumber]);
 
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,

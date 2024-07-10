@@ -43,6 +43,15 @@ import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
 import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
+import Users from "../../Settings/Users/Users";
+import Industry from "../../Settings/Industry/Industry";
+import CustomerModule from "../../Settings/CustomerModule/CustomerModule";
+import Account from "../../Settings/Account/Account";
+import LocationType from "../../Settings/LocationType/LocationType";
+import Entity from "../../Trip/Entity/Entity";
+import EntityType from "../../Trip/EntityType/EntityType";
+import TripType from "../../Trip/TripType/TripType";
+import UserAccess from "../../Trip/UserAccess/UserAccess";
 import AddDevice from "../../AddDevice/AddDevice";
 import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 // import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
@@ -259,7 +268,6 @@ const Layout = () => {
             component={DeviceHistory}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -267,7 +275,6 @@ const Layout = () => {
             component={DeviceModule}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -291,7 +298,69 @@ const Layout = () => {
             component={DeviceOnboarding}
             componentName={strings.ARCHIVED_TRIPS}
           />
-
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Users"}
+            component={Users}
+            componentName={strings.USERS}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Industry"}
+            component={Industry}
+            componentName={strings.INDUSTRY}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Module"}
+            component={CustomerModule}
+            componentName={strings.MODULE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Account"}
+            component={Account}
+            componentName={strings.ACCOUNT}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/LocationType"}
+            component={LocationType}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/entity"}
+            component={Entity}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/entity-type"}
+            component={EntityType}
+            componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trip-type"}
+            component={TripType}
+            componentName={strings.TRIPT_TYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/user-access"}
+            component={UserAccess}
+            componentName={strings.TRIPT_TYPE}
+          />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
@@ -299,6 +368,8 @@ const Layout = () => {
             component={PageNotFound}
             componentName={strings.PAGENOTFOUND}
           />
+
+          
         </Switch>
       </Box>
     );

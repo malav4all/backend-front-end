@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { Theme } from "@mui/material/styles";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const TripStyles = makeStyles((theme: Theme) => ({
   boldFonts: {
     fontWeight: 600,
     fontSize: "1.5rem",
@@ -84,4 +84,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default useStyles;
+export default TripStyles;

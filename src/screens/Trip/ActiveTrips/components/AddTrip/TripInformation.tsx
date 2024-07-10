@@ -1,176 +1,76 @@
 import React from "react";
-import { Box, Stack, InputLabel, Select, MenuItem, Grid, useTheme, FormHelperText, SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  Stack,
+  InputLabel,
+  Grid,
+  useTheme,
+  SelectChangeEvent,
+} from "@mui/material";
 import useStyles from "./AddTrip.styles";
 import { isTruthy } from "../../../../../helpers/methods";
 import { CustomInput } from "../../../../../global/components";
 import strings from "../../../../../global/constants/StringConstants";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 interface TripInformationProps {
   tripFromFields: any;
   handleFormDataChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleSelectChange: (event: SelectChangeEvent<any>) => void;
+  handleDateChange: (field: string, date: Date | null) => void; // Ensure handleDateChange is passed as a prop
 }
 
-const TripInformation: React.FC<TripInformationProps> = ({ tripFromFields, handleFormDataChange, handleSelectChange }) => {
+const TripInformation: React.FC<TripInformationProps> = ({
+  tripFromFields,
+  handleFormDataChange,
+  handleSelectChange,
+  handleDateChange, // Ensure handleDateChange is received as a prop
+}) => {
   const theme = useTheme();
   const classes = useStyles();
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-        <Box>
-          <Stack direction="column">
-            <InputLabel
-              className={classes.inputLabel}
-              shrink
-            >
-              Distributor
-              <Box ml={0.4} className={classes.star}>
-                *
-              </Box>
-            </InputLabel>
-            <Select
-              className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
-              name="distributor"
-              value={tripFromFields?.distributor?.value || ""}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              {["A", "B", "C"].map((item, index) => (
-                <MenuItem
-                  key={index}
-                  value={item}
-                  className={classes.dropDownOptionsStyle}
-                >
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-            {!isTruthy(tripFromFields.distributor?.value) && (
-              <FormHelperText error className={classes.errorStyle}>
-                {tripFromFields.distributor?.error}
-              </FormHelperText>
-            )}
-          </Stack>
-        </Box>
+        <CustomInput
+          required
+          id="add_device_group_name_field"
+          placeHolder="Enter Start Point"
+          name="startPoint"
+          label="Start Point"
+          onChange={handleFormDataChange}
+          value={tripFromFields.startPoint?.value}
+          error={tripFromFields.startPoint?.error}
+          propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
+          sx={{
+            input: {
+              color: theme.palette.text.primary,
+              backgroundColor: theme.palette.background.default,
+            },
+          }}
+        />
       </Grid>
 
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-        <Box>
-          <Stack direction="column">
-            <InputLabel
-              className={classes.inputLabel}
-              shrink
-            >
-              Transporter
-              <Box ml={0.4} className={classes.star}>
-                *
-              </Box>
-            </InputLabel>
-            <Select
-              className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
-              name="transporter"
-              value={tripFromFields?.transporter?.value || ""}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              {["A", "B", "C"].map((item, index) => (
-                <MenuItem
-                  key={index}
-                  value={item}
-                  className={classes.dropDownOptionsStyle}
-                >
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-            {!isTruthy(tripFromFields.transporter?.value) && (
-              <FormHelperText error className={classes.errorStyle}>
-                {tripFromFields.transporter?.error}
-              </FormHelperText>
-            )}
-          </Stack>
-        </Box>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-        <Box>
-          <Stack direction="column">
-            <InputLabel
-              className={classes.inputLabel}
-              shrink
-            >
-              Source
-              <Box ml={0.4} className={classes.star}>
-                *
-              </Box>
-            </InputLabel>
-            <Select
-              className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
-              name="source"
-              value={tripFromFields?.source?.value || ""}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              {["A", "B", "C"].map((item, index) => (
-                <MenuItem
-                  key={index}
-                  value={item}
-                  className={classes.dropDownOptionsStyle}
-                >
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-            {!isTruthy(tripFromFields.source?.value) && (
-              <FormHelperText error className={classes.errorStyle}>
-                {tripFromFields.source?.error}
-              </FormHelperText>
-            )}
-          </Stack>
-        </Box>
-      </Grid>
-
-      <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-        <Box>
-          <Stack direction="column">
-            <InputLabel
-              className={classes.inputLabel}
-              shrink
-            >
-              Destination
-              <Box ml={0.4} className={classes.star}>
-                *
-              </Box>
-            </InputLabel>
-            <Select
-              className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
-              name="destination"
-              value={tripFromFields?.destination?.value || ""}
-              onChange={handleSelectChange}
-              displayEmpty
-            >
-              {["A", "B", "C"].map((item, index) => (
-                <MenuItem
-                  key={index}
-                  value={item}
-                  className={classes.dropDownOptionsStyle}
-                >
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
-            {!isTruthy(tripFromFields.destination?.value) && (
-              <FormHelperText error className={classes.errorStyle}>
-                {tripFromFields.destination?.error}
-              </FormHelperText>
-            )}
-          </Stack>
-        </Box>
+        <CustomInput
+          required
+          id="add_device_group_name_field"
+          placeHolder="Enter End Point"
+          name="endPoint"
+          label="End Point"
+          onChange={handleFormDataChange}
+          value={tripFromFields.endPoint?.value}
+          error={tripFromFields.endPoint?.error}
+          propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
+          sx={{
+            input: {
+              color: theme.palette.text.primary,
+              backgroundColor: theme.palette.background.default,
+            },
+          }}
+        />
       </Grid>
 
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -193,24 +93,75 @@ const TripInformation: React.FC<TripInformationProps> = ({ tripFromFields, handl
         />
       </Grid>
 
-      <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-        <CustomInput
-          required
-          id="add_device_group_name_field"
-          placeHolder="Enter Vehicle Number"
-          name="vehicleNumber"
-          label="Vehicle Number"
-          onChange={handleFormDataChange}
-          value={tripFromFields.vehicleNumber?.value}
-          error={tripFromFields.vehicleNumber?.error}
-          propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
-          sx={{
-            input: {
+      <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+        <Stack direction="column">
+          <InputLabel
+            sx={{
               color: theme.palette.text.primary,
-              backgroundColor: theme.palette.background.default,
-            },
-          }}
-        />
+              
+            }}
+            shrink
+          >
+            Trip Start Date & Time
+            <Box ml={0.4}>*</Box>
+          </InputLabel>
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                value={tripFromFields?.startDate?.value}
+                onChange={(date) => handleDateChange("startDate", date)} // Use handleDateChange for date fields
+                format="dd/MM/yyyy hh:mm a"
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    variant: "outlined",
+                    fullWidth: true,
+                    error: isTruthy(tripFromFields?.startDate?.error),
+                    helperText: tripFromFields?.startDate?.error,
+                    inputProps: {
+                      placeholder: "DD/MM/YYYY",
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Stack>
+      </Grid>
+
+      <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+        <Stack direction="column">
+          <InputLabel
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+            shrink
+          >
+            Trip End Date & Time
+            <Box ml={0.4}>*</Box>
+          </InputLabel>
+          <Box>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                value={tripFromFields?.endDate?.value}
+                onChange={(date) => handleDateChange("endDate", date)} 
+                format="dd/MM/yyyy hh:mm a"
+                ampm={true}
+                slotProps={{
+                  textField: {
+                    variant: "outlined",
+                    fullWidth: true,
+                    error: isTruthy(tripFromFields?.endDate?.error),
+                    helperText: tripFromFields?.endDate?.error,
+                    inputProps: {
+                      placeholder: "DD/MM/YYYY",
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Stack>
       </Grid>
     </Grid>
   );

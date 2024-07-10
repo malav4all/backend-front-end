@@ -2,6 +2,7 @@ import {
     boldFont,
     centerItemFlex,
     getRelativeFontSize,
+    headerColor,
     inputLabelRequiredColor,
     lightTextColor,
     mediumFont,
@@ -12,13 +13,24 @@ import {
     theme,
   } from "../../../utils/styles";
   
-  const LocationType = {
+  const LocationTypeStyles = {
     profileHeaderName: {
       fontSize: getRelativeFontSize(8),
       ...boldFont,
       color: primaryHeadingColor,
     },
-  
+    headerBackgroundColor: {
+      backgroundColor: headerColor,
+      padding: "35px 0px 25px 20px",
+    },
+    settingsTitle: {
+      fontFamily: "Geist_Medium",
+      fontSize: "2rem",
+      color: "white",
+      [theme.breakpoints.down("md")]: {
+        marginTop: theme.spacing(3),
+      },
+    },
     profileHeaderEmail: {
       color: lightTextColor,
     },
@@ -173,4 +185,4 @@ import {
     },
   } as const;
   
-  export default LocationType;
+  export default LocationTypeStyles;

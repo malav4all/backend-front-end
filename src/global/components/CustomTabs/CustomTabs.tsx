@@ -1,38 +1,44 @@
-import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Box, Stack, Tab, Tabs, Typography } from "@mui/material";
 import customTabsStyles from "./CustomTabs.styles";
 
 interface TabConfig {
   label: string;
   count?: number | null;
-  // [key: string]: string[];
 }
 
 interface CustomProps {
-  changeValue: Function;
+  changeValue: (value: string) => void;
   selected: string;
-  tabConfig: any;
+  tabConfig: TabConfig[];
   redirectTabValue?: string;
   state?: any;
   containerId?: string;
 }
 
-const CustomTabs = (props: CustomProps) => {
+const CustomTabs: React.FC<CustomProps> = ({
+  changeValue,
+  selected,
+  tabConfig,
+  redirectTabValue,
+  state,
+  containerId,
+}) => {
   const classes = customTabsStyles;
-  const [value, setValue] = useState(props.selected);
+  const [value, setValue] = useState<string>(selected);
 
   useEffect(() => {
-    if (props?.redirectTabValue) {
-      setValue(props?.redirectTabValue);
+    if (redirectTabValue) {
+      setValue(redirectTabValue);
     }
-  }, [props?.redirectTabValue, props?.state]);
+  }, [redirectTabValue, state]);
 
   useEffect(() => {
-    setValue(props.selected);
-  }, [props.selected]);
+    setValue(selected);
+  }, [selected]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    props.changeValue(newValue);
+    changeValue(newValue);
     setValue(newValue);
   };
 
@@ -41,14 +47,10 @@ const CustomTabs = (props: CustomProps) => {
   };
 
   return (
-    <Box id={props?.containerId}>
+    <Box id={containerId}>
       <Stack
         direction="row"
-        justifyContent={{
-          lg: "flex-start",
-          sm: "flex-start",
-          xs: "flex-start",
-        }}
+        justifyContent={{ lg: "flex-start", sm: "flex-start", xs: "flex-start" }}
       >
         <Tabs
           sx={classes.tab}
@@ -62,27 +64,23 @@ const CustomTabs = (props: CustomProps) => {
             },
           }}
         >
-          {props.tabConfig?.map((tab: TabConfig) => {
-            return (
-              <Tab
-                sx={{ padding: "8px" }}
-                label={
-                  <Box
-                    sx={classes.tabBox}
-                    style={getStyle(value === tab.label)}
-                  >
-                    <Typography sx={classes.tabText}>
-                      {tab.label}
-                      {tab.count !== 0 && (
-                        <Box sx={classes.counts}> {tab.count} </Box>
-                      )}
-                    </Typography>
-                  </Box>
-                }
-                value={tab.label}
-              />
-            );
-          })}
+          {tabConfig.map((tab) => (
+            <Tab
+              key={tab.label}
+              sx={{ padding: "8px" }}
+              label={
+                <Box sx={classes.tabBox} style={getStyle(value === tab.label)}>
+                  <Typography sx={classes.tabText}>
+                    {tab.label}
+                    {tab.count !== 0 && (
+                      <Box sx={classes.counts}> {tab.count} </Box>
+                    )}
+                  </Typography>
+                </Box>
+              }
+              value={tab.label}
+            />
+          ))}
         </Tabs>
       </Stack>
     </Box>

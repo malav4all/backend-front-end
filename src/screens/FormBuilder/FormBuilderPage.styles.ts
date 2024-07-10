@@ -1,4 +1,4 @@
-import { boldFont, primaryHeadingColor, theme } from "../../utils/styles";
+import { boldFont, inputLabelRequiredColor, primaryHeadingColor, regularFont, semiBoldFont, theme } from "../../utils/styles";
 
 const formBuilderStyles = {
   mainCardHeading: {
@@ -13,6 +13,30 @@ const formBuilderStyles = {
       marginBottom: theme.spacing(1),
     },
   },
+
+  label: {
+    ...semiBoldFont,
+    fontSize: "14px",
+    marginBottom: "8px",
+  },
+
+  star: {
+    color: inputLabelRequiredColor,
+    ...boldFont,
+  },
+
+  dropDownStyle: {
+    ...regularFont,
+    height: "42px",
+    padding: "2px",
+    width: "100%",
+    borderRadius: "5px",
+    fontSize: "16px",
+  },
+
+  
+
+  
 };
 
 export default formBuilderStyles;

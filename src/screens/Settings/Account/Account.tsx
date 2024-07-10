@@ -11,6 +11,7 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
+  CustomAppHeader,
   CustomButton,
   CustomInput,
   CustomTable,
@@ -23,6 +24,7 @@ import {
 import {
   debounceEventHandler,
   openErrorNotification,
+  validateTabValue,
 } from "../../../helpers/methods";
 import AddAccountModal from "./Component/AddAccountModal";
 import {
@@ -34,9 +36,15 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { accountTableHeader } from "./Account.helper";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import AccountStyles from "./Account.styles";
+import history from "../../../utils/history";
+import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
+import { useLocation } from "react-router-dom";
+import { tabConfig } from "../SettingsHelpers";
 
 const Account = () => {
   const theme = useTheme();
+  const classes = AccountStyles;
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
   const [count, setCount] = useState(0);
@@ -46,6 +54,10 @@ const Account = () => {
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [edit, setEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const tabValueName = validateTabValue(urlParams.get("tabValue"));
+  const [tabValue, setTabValue] = useState<string>(tabValueName!);
   useEffect(() => {
     setPageNumber(1);
   }, [searchText, perPageData]);
@@ -100,6 +112,11 @@ const Account = () => {
     }
   };
 
+  const handleChange = (newValue: string) => {
+    setTabValue(newValue);
+    history.push(`?tabValue=${newValue}`);
+  };
+
   const searchDataHandler = async () => {
     try {
       setIsLoading(true);
@@ -148,6 +165,22 @@ const Account = () => {
         selectedRowData={selectedRowData}
         edit={edit}
       />
+    );
+  };
+
+  const SettingsHeader = () => {
+    return (
+      <CustomAppHeader className={classes.headerBackgroundColor}>
+        <Box ml={1}>
+          <Typography style={classes.settingsTitle}>Settings / Account</Typography>
+        </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        >
+        </Stack>
+      </CustomAppHeader>
     );
   };
 
@@ -246,7 +279,7 @@ const Account = () => {
       lg={12}
       xl={12}
       sx={{
-        padding: theme.spacing(2),
+        // padding: theme.spacing(2),
         paddingTop: "2px",
         marginTop: "2px",
         width: "100%",
@@ -255,6 +288,7 @@ const Account = () => {
         height: "130%",
       }}
     >
+      {SettingsHeader()}
       {rolesTableRender()}
       {addAccountDialogBox()}
       <CustomLoader isLoading={isLoading} />

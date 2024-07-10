@@ -7,8 +7,8 @@ import {
   Typography,
   List,
   ListItem,
-  Button,
   IconButton,
+  Switch,
 } from "@mui/material";
 import { Form } from "./FormBuilderHelper";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -19,15 +19,17 @@ interface FormListProps {
   forms: Form[];
   onViewForm: (form: Form) => void;
   onDeleteForm: (formId: string) => void;
+  onToggleEnable: (formId: string) => void;
 }
 
 const FormList: React.FC<FormListProps> = ({
   forms,
   onViewForm,
   onDeleteForm,
+  onToggleEnable,
 }) => {
   const theme = useTheme();
-  // console.log(forms);
+  console.log(forms);
   return (
     <Box
       sx={{
@@ -59,7 +61,6 @@ const FormList: React.FC<FormListProps> = ({
                 >
                   <VisibilityIcon />
                 </IconButton>
-
                 <IconButton
                   size="small"
                   color="secondary"
@@ -67,6 +68,12 @@ const FormList: React.FC<FormListProps> = ({
                 >
                   <DeleteIcon />
                 </IconButton>
+                <Switch
+                  checked={form.enabled}
+                  onChange={() => onToggleEnable(form.id)}
+                  color="primary"
+                />
+                <Typography>{form.enabled ? "Enabled" : "Disabled"}</Typography>
               </CardActions>
             </Card>
           </ListItem>

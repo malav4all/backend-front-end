@@ -89,6 +89,7 @@ export class StringConstants {
   LOGINACTIVITY = "LoginActivity";
   INDUSTRY = "Industry";
   MODULE = "Module";
+
   ROLE_MANAGEMENT = "Role";
   ACCOUNT = "Account";
   DEVICEMODULE = "DeviceModule";
@@ -266,6 +267,10 @@ export class StringConstants {
   DEVICE_MODULE = "DEVICE MODULE";
   DEVICE_HISTORY = "DEVICE HISTORY";
   DEVICE_ONBOARDING = "DEVICE ONBOARDING";
+  ENTITY = "ENTITY";
+  ENTITY_TYPE = "ENTITY TYPE";
+  TRIPT_TYPE = "TRIP TYPE";
+  USER_ACCESS = "USER ACCESS"
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
 }
