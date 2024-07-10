@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const ADD_ROUTES = gql`
-  mutation ($input: CreateRoutesInput!) {
-    addRoutes(input: $input) {
+  mutation ($input: CreateRouteInput!) {
+    addRoute(input: $input) {
       success
       message
     }
@@ -10,8 +10,8 @@ export const ADD_ROUTES = gql`
 `;
 
 export const FETCH_ROUTES = gql`
-  mutation ($input: RoutesInput!) {
-    fetchRoutes(input: $input) {
+  mutation ($input: RouteInput!) {
+    fetchRoute(input: $input) {
       success
       message
       paginatorInfo {
@@ -19,36 +19,11 @@ export const FETCH_ROUTES = gql`
       }
       data {
         _id
-        routesName
-        imei
-        startDate
-        endDate
+        routeName
+        routeId
+        routeDetails
         totalDistance
         totalDuration
-        routesData {
-          _id
-          name
-          description
-          locationType
-          mobileNumber
-          finalAddress
-          address {
-            country
-            state
-            city
-            area
-            district
-            zipCode
-          }
-          geoCodeData {
-            type
-            geometry {
-              type
-              coordinates
-              radius
-            }
-          }
-        }
         createdBy
       }
     }
@@ -66,8 +41,8 @@ export const COORDINATES_SUBSCRIPTION = gql`
 `;
 
 export const SEARCH_ROUTES = gql`
-  mutation ($input: SearchRoutessInput!) {
-    searchRoutess(input: $input) {
+  mutation ($input: SearchRouteInput!) {
+    searchRoute(input: $input) {
       success
       message
       paginatorInfo {
@@ -75,13 +50,10 @@ export const SEARCH_ROUTES = gql`
       }
       data {
         _id
-        imei
-        routesName
-        startDate
-        endDate
+        routeName
         totalDistance
         totalDuration
-        routesData {
+        routeData {
           _id
           name
           description

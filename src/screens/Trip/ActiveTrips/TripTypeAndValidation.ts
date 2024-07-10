@@ -6,6 +6,8 @@ export interface TripField {
 }
 
 export interface TripFields {
+  transitType: TripField;
+  routeId: TripField;
   tripName: TripField;
   imeiList: TripField;
   alertTypes: TripField;
@@ -28,6 +30,14 @@ export const tripTableHeader = [
 
 export const insertTripField = (data?: any): TripFields => {
   return {
+    routeId: {
+      value: data?.tripName ?? "",
+      error: "",
+    },
+    transitType: {
+      value: data?.tripName ?? "",
+      error: "",
+    },
     tripName: {
       value: data?.tripName ?? "",
       error: "",
@@ -51,7 +61,10 @@ export const insertTripField = (data?: any): TripFields => {
   };
 };
 
-export const validateAddTripForm = (tripFromFields: TripFields, edit = false) => {
+export const validateAddTripForm = (
+  tripFromFields: TripFields,
+  edit = false
+) => {
   let isValid = true;
   let errors: TripFields = { ...tripFromFields };
   if (!errors.tripName.value) {

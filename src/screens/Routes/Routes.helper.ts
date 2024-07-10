@@ -1,9 +1,8 @@
 export const routesTableHeader = [
+  { name: "Route ID", field: "routeId" },
   { name: "Routes Name", field: "routesName" },
   { name: "Total Distance", field: "totalDistance" },
   { name: "Total Duration", field: "totalDuration" },
-  { name: "Start Date", field: "startDate" },
-  { name: "End Date", field: "endDate" },
   { name: "Created By", field: "createdBy" },
   { name: "Action", field: "action" },
 ];
