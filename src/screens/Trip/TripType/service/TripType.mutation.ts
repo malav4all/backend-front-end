@@ -26,9 +26,9 @@ export const ADD_INDUSTRY = gql`
   }
 `;
 
-export const FETCH_INDUSTRY = gql`
+export const FETCH_TRIP_TYPE = gql`
   mutation ($input: TripTypeInput!) {
-    tripTypeListAll(input: $input) {
+    tripTypeList(input: $input) {
       paginatorInfo {
         count
       }
@@ -36,10 +36,14 @@ export const FETCH_INDUSTRY = gql`
       message
       data {
         _id
-        name
-        code
-        description
-        file
+        accountId
+        tripName
+        minBatteryPercentage
+        tripRate
+        disableField
+        filtrationFelid
+        gstPercentage
+        createdBy
       }
     }
   }

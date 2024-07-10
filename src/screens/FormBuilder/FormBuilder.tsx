@@ -13,8 +13,6 @@ import {
   FormControlLabel,
   Switch,
   Select,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import { FormField } from "./FormBuilderHelper";
 import EditIcon from "@mui/icons-material/Edit";
@@ -28,7 +26,6 @@ import {
 } from "../../global/components";
 import { useTheme } from "@mui/material";
 import formBuilderStyles from "./FormBuilderPage.styles";
-import { isTruthy } from "../../helpers/methods";
 
 const initialFields: FormField[] = [];
 
@@ -268,7 +265,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onFieldsChange }) => {
                 >
                   <MenuItem value="text">Text</MenuItem>
                   <MenuItem value="number">Number</MenuItem>
-                  <MenuItem value="dropdown">Dropdown</MenuItem>
+                  <MenuItem value="select">Select</MenuItem>
                   <MenuItem value="boolean">Boolean</MenuItem>
                 </Select>
               </Box>

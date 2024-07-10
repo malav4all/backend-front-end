@@ -41,7 +41,7 @@ const DriverInformation = lazy(() => import("./DriverInformation"));
 const steps = [
   "Transit Type",
   "Trip Information",
-  "Permit Details",
+  "Alert Detail",
   "Driver Information",
 ];
 
@@ -128,7 +128,19 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     setTripFromFields((prevFields) => {
       let updatedField;
 
-      if (["lock", "Unlock", "Geozone-In", "Geozone-out", "Trip created", "Trip ended", "Tamper Alert", "Overspeeding", "low battery"].includes(name)) {
+      if (
+        [
+          "lock",
+          "Unlock",
+          "Geozone-In",
+          "Geozone-out",
+          "Trip created",
+          "Trip ended",
+          "Tamper Alert",
+          "Overspeeding",
+          "low battery",
+        ].includes(name)
+      ) {
         // Update alertTypes
         updatedField = checked
           ? [...(prevFields.alertTypes.value || []), name]
@@ -142,7 +154,6 @@ const AddTrip: React.FC<CustomProps> = (props) => {
           },
         };
       } else if (["SMS", "WhatsApp", "Email"].includes(name)) {
-
         updatedField = checked
           ? [...(prevFields.getAlerts.value || []), name]
           : prevFields.getAlerts.value.filter((type: string) => type !== name);
@@ -160,7 +171,6 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     });
   };
 
-
   const fetchImeiData = async () => {
     try {
       const res = await fetchDeviceList();
@@ -172,7 +182,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   const insertTripDetails = async () => {
     try {
-      console.log('Trip Details:', tripFromFields);
+      console.log("Trip Details:", tripFromFields);
 
       const insertTripBody = {
         imeiData: tripFromFields.imeiList.value,
@@ -225,7 +235,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
   const addTripTitle = () => (
     <Box>
       <Typography className={classes.boldFonts}>
-        {props.edit ? "Update Trip" : "Add Trip"}
+        {props.edit ? "Update Trip" : "Create Trip"}
       </Typography>
     </Box>
   );

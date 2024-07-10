@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Checkbox,
   Grid,
-  FormHelperText,
   InputLabel,
-  ListItemText,
   MenuItem,
   Select,
-  TextField,
+  Stack,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -17,7 +14,8 @@ import {
   CustomInput,
   CustomDialog,
 } from "../../../../global/components";
-import { isTruthy } from "../../../../helpers/methods";
+import { fetchAccountTableHandler } from "../../../Settings/Account/service/account.service";
+import { openErrorNotification } from "../../../../helpers/methods";
 
 const AddTripType = ({
   open,
@@ -25,41 +23,85 @@ const AddTripType = ({
   tripTypeFormData,
   modulesData,
   onChangeHandler,
-  handleModuleChange,
-  checkExitsRoleHandler,
-  handleFileChange,
   handleSave,
   isLoading,
-  MenuProps,
   classes,
 }: any) => {
+  useEffect(() => {
+    fetchTableAccount();
+  }, []);
   const theme = useTheme();
+  const [data, setData] = useState([]);
 
   const addTripTypeDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>
-          Add TripType
-        </Typography>
+        <Typography sx={classes.boldFonts}>Add TripType</Typography>
       </Box>
     );
+  };
+
+  const fetchTableAccount = async () => {
+    try {
+      const res = await fetchAccountTableHandler({
+        input: { page: -1, limit: 10000000 },
+      });
+      setData(res?.fetchAccountModuleList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const addTripTypeDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
+        <Grid item xs={12} sm={12} lg={6} xl={6}>
+          <Box>
+            <Stack direction="column">
+              <InputLabel sx={classes.inputLabel} shrink>
+                Account
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_roles_dropdown"
+                name="accountId"
+                value={tripTypeFormData?.accountId?.value}
+                onChange={onChangeHandler}
+                renderValue={
+                  tripTypeFormData?.accountId?.value !== ""
+                    ? undefined
+                    : () => "Select From Account Id"
+                }
+                MenuProps={classes.menuProps}
+                displayEmpty
+              >
+                {data
+                  .filter((val: any) => val.accountId !== "")
+                  ?.map((item: any, index: any) => (
+                    <MenuItem
+                      key={index}
+                      value={item.accountId}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item.accountId}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </Stack>
+          </Box>
+        </Grid>
         <Grid item xs={12} sm={12} lg={6}>
           <CustomInput
             required
-            label="Trip Name"
+            label="Name"
             id="trip_name_field"
             type="text"
             name="name"
-            placeHolder="Enter Trip Name"
+            placeHolder="Enter Name"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
             value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
+            // onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.name.error}
           />
         </Grid>
@@ -70,13 +112,13 @@ const AddTripType = ({
             label="Min Battery Percentage"
             id="trip_name_field"
             type="number"
-            name="name"
+            name="minBatteryPercentage"
             placeHolder="Enter Minimun Battery Percentage"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.name.error}
+            value={tripTypeFormData.minBatteryPercentage.value}
+            // onBlur={checkExitsRoleHandler}
+            error={tripTypeFormData.minBatteryPercentage.error}
           />
         </Grid>
 
@@ -86,13 +128,13 @@ const AddTripType = ({
             label="Trip Rate"
             id="trip_name_field"
             type="number"
-            name="name"
+            name="tripRate"
             placeHolder="Enter Trip Rate"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.name.error}
+            value={tripTypeFormData.tripRate.value}
+            // onBlur={checkExitsRoleHandler}
+            error={tripTypeFormData.tripRate.error}
           />
         </Grid>
 
@@ -102,17 +144,17 @@ const AddTripType = ({
             label="GST Percentage"
             id="trip_name_field"
             type="text"
-            name="name"
+            name="gstPercentage"
             placeHolder="Enter GST Percentage"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.name.error}
+            value={tripTypeFormData.gstPercentage.value}
+            // onBlur={checkExitsRoleHandler}
+            error={tripTypeFormData.gstPercentage.error}
           />
         </Grid>
 
-        <Grid item xs={12} sm={12} lg={6}>
+        {/* <Grid item xs={12} sm={12} lg={6}>
           <CustomInput
             required
             label="Disabled Field"
@@ -126,9 +168,9 @@ const AddTripType = ({
             onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.name.error}
           />
-        </Grid>
+        </Grid> */}
 
-        <Grid item xs={12} sm={12} lg={6}>
+        {/* <Grid item xs={12} sm={12} lg={6}>
           <CustomInput
             required
             label="Filtration Field"
@@ -142,7 +184,7 @@ const AddTripType = ({
             onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.name.error}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   };
@@ -184,7 +226,7 @@ const AddTripType = ({
     <CustomDialog
       isDialogOpen={open}
       closable
-    //   closeButtonVisibility
+      //   closeButtonVisibility
       handleDialogClose={handleClose}
       dialogHeaderContent={addTripTypeHeaderImg()}
       dialogTitleContent={addTripTypeDialogTitle()}

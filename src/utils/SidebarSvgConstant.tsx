@@ -1,4 +1,3 @@
-import { RiRouteFill } from "react-icons/ri";
 export const getSettingsIcon = (fillColor: string) => {
   return (
     <svg

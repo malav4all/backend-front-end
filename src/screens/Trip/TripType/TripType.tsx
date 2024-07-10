@@ -1,15 +1,7 @@
 import {
   Box,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Grid,
   InputAdornment,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -24,7 +16,6 @@ import {
 import TripTypeStyles from "./TripType.styles";
 import {
   addTripType,
-  checkExitsTripType,
   fetchTripTypeTableHandler,
   fetchTableHandler,
   searchTableHandler,
@@ -42,14 +33,10 @@ import {
   tripTypeValidation,
 } from "./TripTypeHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import {
-  primaryHeadingColor,
-  regularFont,
-  getRelativeFontSize,
-} from "../../../utils/styles";
 import AddTripType from "./component/AddTripType";
-import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
+import { store } from "../../../utils/store";
+
 const TripType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -77,8 +64,6 @@ const TripType = () => {
   const [addTripTypeDialogHandler, setAddTripTypeDialogHandler] =
     useState(false);
   const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
     setPageNumber(1);
@@ -105,36 +90,25 @@ const TripType = () => {
       },
     });
   };
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
-  };
 
   const fetchTableTripType = async () => {
     try {
       setIsLoading(true);
       const res = await fetchTripTypeTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: { accountId: "IMZ113343", page: pageNumber, limit: perPageData },
       });
-      const finalData = res?.tripTypeListAll?.data?.map((item: any) => {
+      const finalData = res?.tripTypeList?.data?.map((item: any) => {
         return {
-          name: item.name,
-          code: item?.code?.map((val: any) => val).join(","),
-          description: item.description,
-          file: (
-            <>
-              <img
-                src={`http://localhost:5000/${item.file}`}
-                alt=""
-                width="30"
-                height="30"
-              />
-            </>
-          ),
+          accountId: item.accountId,
+          name: item.tripName,
+          minBatteryPercentage: item.minBatteryPercentage,
+          tripRate: item.tripRate,
+          gstPercentage: item.gstPercentage,
+          createdBy: item.createdBy,
         };
       });
       setTableData(finalData);
-      setCount(res?.tripTypeListAll?.paginatorInfo?.count);
+      setCount(res?.tripTypeList?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -161,26 +135,17 @@ const TripType = () => {
     }
   };
 
-  const checkExitsRoleHandler = async () => {
-    try {
-      const res = await checkExitsTripType({
-        input: { name: tripTypeFormData.name.value },
-      });
-      if (res?.checkTripTypeExistsRecord?.success === 1) {
-        openErrorNotification(res.checkTripTypeExistsRecord.message);
-      }
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
-
   const addTripTypeHandler = async () => {
     try {
       const payload: any = {
-        name: tripTypeFormData.name.value,
-        code: tripTypeFormData.code.value,
-        description: tripTypeFormData.description.value,
-        file,
+        accountId: tripTypeFormData?.accountId?.value,
+        tripName: tripTypeFormData.name.value,
+        minBatteryPercentage: Number(
+          tripTypeFormData.minBatteryPercentage.value
+        ),
+        tripRate: Number(tripTypeFormData.tripRate.value),
+        gstPercentage: tripTypeFormData.gstPercentage.value,
+        createdBy: store.getState().auth.userName,
       };
       setIsLoading(true);
       if (handleValidation()) {
@@ -283,14 +248,8 @@ const TripType = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Entity Type</Typography>
+          <Typography style={classes.settingsTitle}>Trip Type</Typography>
         </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        >
-        </Stack>
       </CustomAppHeader>
     );
   };
@@ -354,7 +313,7 @@ const TripType = () => {
         file={file}
         onChangeHandler={onChangeHandler}
         handleModuleChange={handleModuleChange}
-        checkExitsRoleHandler={checkExitsRoleHandler}
+        checkExitsRoleHandler={() => {}}
         handleFileChange={handleFileChange}
         handleSave={addTripTypeHandler}
         isLoading={isLoading}
