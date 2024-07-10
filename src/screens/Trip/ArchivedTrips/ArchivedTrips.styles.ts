@@ -9,7 +9,7 @@ import {
   pureWhiteColor,
   headerColor,
 } from "../../../utils/styles";
-const archivedJourneyStyles = {
+const archivedRoutesStyles = {
   header: {
     display: "flex",
     alignItems: "center",
@@ -60,4 +60,4 @@ const archivedJourneyStyles = {
   },
 } as const;
 
-export default archivedJourneyStyles;
+export default archivedRoutesStyles;

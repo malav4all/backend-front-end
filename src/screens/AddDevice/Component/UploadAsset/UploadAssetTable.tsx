@@ -7,7 +7,7 @@ import {
 } from "../../../../global/components";
 import { store } from "../../../../utils/store";
 import AssetAssingmentStyles from "../../../Settings/AssertAssingment/AssetAssingment.styles";
-import { bulkJourneyDeviceList } from "../../service/add-device.service";
+import { bulkRoutesDeviceList } from "../../service/add-device.service";
 import {
   openErrorNotification,
   openSuccessNotification,
@@ -49,7 +49,7 @@ const UploadTableAsset = (props: Props) => {
           createdBy: store.getState().auth.userName,
         };
       });
-      const res = await bulkJourneyDeviceList({
+      const res = await bulkRoutesDeviceList({
         input: payload,
       });
       props.handleDialogClose(false);

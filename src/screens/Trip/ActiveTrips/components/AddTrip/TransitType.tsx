@@ -26,9 +26,9 @@ const TransitType: React.FC<TransitTypeProps> = ({
   const theme = useTheme();
   const classes = useStyles();
 
-  const journeys = [
-    { _id: "1", journeyName: "Journey 1" },
-    { _id: "2", journeyName: "Journey 2" },
+  const routess = [
+    { _id: "1", routesName: "Routes 1" },
+    { _id: "2", routesName: "Routes 2" },
   ];
 
   return (
@@ -46,13 +46,13 @@ const TransitType: React.FC<TransitTypeProps> = ({
             onChange={handleSelectChange}
             displayEmpty
           >
-            {journeys.map((item, index) => (
+            {routess.map((item, index) => (
               <MenuItem
                 key={index}
                 value={item._id}
                 className={classes.dropDownOptionsStyle}
               >
-                {item.journeyName}
+                {item.routesName}
               </MenuItem>
             ))}
           </Select>

@@ -9,7 +9,7 @@ import {
   pureWhiteColor,
   headerColor,
 } from "../../../../utils/styles";
-const upcomingJourneyStyles = {
+const upcomingRoutesStyles = {
   header: {
     display: "flex",
     alignItems: "center",
@@ -54,4 +54,4 @@ const upcomingJourneyStyles = {
   },
 } as const;
 
-export default upcomingJourneyStyles;
+export default upcomingRoutesStyles;

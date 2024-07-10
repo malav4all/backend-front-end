@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 
-interface ViewJourneyProps {
+interface ViewRoutesProps {
   location: any;
 }
 
-const ShowJourneyModal = (props: ViewJourneyProps) => {
+const ShowRoutesModal = (props: ViewRoutesProps) => {
   useEffect(() => {
     const routeOrigin = props?.location?.state?.routeOrigin;
     const coordinates = props?.location?.state?.coordinates;
@@ -135,4 +135,4 @@ const ShowJourneyModal = (props: ViewJourneyProps) => {
   return <div id="map" style={{ width: "100%", height: "100%" }}></div>;
 };
 
-export default ShowJourneyModal;
+export default ShowRoutesModal;

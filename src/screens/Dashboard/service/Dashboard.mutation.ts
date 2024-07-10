@@ -5,8 +5,8 @@ export const FETCH_DASHBOARD_DETAIL = gql`
     fetchDashboardDetail {
       data {
         totalUser
-        totalJourney
-        ongoingJourney
+        totalRoutes
+        ongoingRoutes
       }
     }
   }

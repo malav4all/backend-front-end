@@ -428,10 +428,10 @@ const Trackplay = () => {
   //       <Grid container spacing={4}>
   //         <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
   //           <CustomInput
-  //             label="Journey Name"
-  //             placeHolder="Enter Journey name"
+  //             label="Routes Name"
+  //             placeHolder="Enter Routes name"
   //             required
-  //             name="journeyName"
+  //             name="routesName"
   //           />
   //         </Grid>
 

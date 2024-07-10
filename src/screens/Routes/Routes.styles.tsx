@@ -13,9 +13,9 @@ import {
   semiBoldFont,
 } from "../../utils/styles"
 
-const journeyStyles = {
+const routesStyles = {
   divderResponsive: {
-    width: "100px",
+    // width: "100px",
     borderColor: "#828282",
     // marginBottom: "66px",
     [theme.breakpoints.down("md")]: {
@@ -219,4 +219,4 @@ const journeyStyles = {
   },
 }
 
-export default journeyStyles
+export default routesStyles

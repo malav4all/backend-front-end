@@ -18,9 +18,9 @@ import { onLogout } from "../../LandingPage/landingPageService";
 import { store } from "../../../utils/store";
 import history from "../../../utils/history";
 import Geozone from "../../Geozone/Geozone";
-import Journey from "../../Journey/Journey";
-import ShowJourneyModal from "../../Journey/Component/ShowJourneyModal";
-import ViewLiveTracking from "../../Journey/Component/LiveTracking";
+import Routes from "../../Routes/Routes";
+import ShowRoutesModal from "../../Routes/Component/ShowRoutesModal";
+import ViewLiveTracking from "../../Routes/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
@@ -30,9 +30,9 @@ import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation"
 import { openErrorAlertNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
-import JourneyReport from "../../Reports/screens/JourneyReport/JourneyReport";
-import UpcomingJourney from "../../Journey/screens/UpcomingJourney/UpcomingJourney";
-import ArchivedJoruney from "../../Journey/screens/ArchivedJourney/ArchivedJourney";
+import RoutesReport from "../../Reports/screens/RoutesReport/RoutesReport";
+import UpcomingRoutes from "../../Routes/screens/UpcomingRoutes/UpcomingRoutes";
+import ArchivedJoruney from "../../Routes/screens/ArchivedRoutes/ArchivedRoutes";
 import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
 import DeviceGroup from "../../DeviceGroup/DeviceGroup";
@@ -131,16 +131,16 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/journey"}
-            component={Journey}
-            componentName={strings.JOURNEY}
+            path={"/routes"}
+            component={Routes}
+            componentName={strings.ROUTES}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/view-journey"}
-            component={ShowJourneyModal}
-            componentName={strings.VIEW_JOURNEY}
+            path={"/view-routes"}
+            component={ShowRoutesModal}
+            componentName={strings.VIEW_ROUTES}
           />
           <PrivateRoute
             exact
@@ -173,9 +173,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/journey-reports"}
-            component={JourneyReport}
-            componentName={strings.JOURNEY_REPORTS}
+            path={"/routes-reports"}
+            component={RoutesReport}
+            componentName={strings.ROUTES_REPORTS}
           />
           <PrivateRoute
             exact
@@ -196,14 +196,14 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/trackplay"}
             component={Trackplay}
-            componentName={strings.ACTIVE_JOURNEY}
+            componentName={strings.ACTIVE_ROUTES}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/upcoming-journey"}
-            component={UpcomingJourney}
-            componentName={strings.UPCOMING_JOURNEY}
+            path={"/upcoming-routes"}
+            component={UpcomingRoutes}
+            componentName={strings.UPCOMING_ROUTES}
           />
           <PrivateRoute
             exact
@@ -215,9 +215,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/archived-journey"}
+            path={"/archived-routes"}
             component={ArchivedJoruney}
-            componentName={strings.ARCHIVED_JOURNEY}
+            componentName={strings.ARCHIVED_ROUTES}
           />
           <PrivateRoute
             exact

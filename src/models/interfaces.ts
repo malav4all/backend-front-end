@@ -92,7 +92,7 @@ export interface UserData {
 export interface AssetAssingmentData {
   imei: number,
   labelName: string,
-  // journey: string,
+  // routes: string,
   boxSet: string,
   createdBy: string
 }

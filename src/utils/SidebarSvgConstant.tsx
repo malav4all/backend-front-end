@@ -750,7 +750,7 @@ export const liveSvg = (fillColor: string) => {
   );
 };
 
-export const journeyIcon = (fillColor: any) => {
+export const routesIcon = (fillColor: any) => {
   return (
     <>
       <svg

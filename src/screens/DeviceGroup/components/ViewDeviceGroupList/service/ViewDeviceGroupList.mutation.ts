@@ -15,14 +15,14 @@ export const FETCH_DEVICE_GROUP_BY_ID = gql`
           labelName
           _id
           boxSet
-          journey {
+          routes {
             _id
             totalDuration
             totalDistance
             endDate
             startDate
             createdBy
-            journeyName
+            routesName
           }
         }
         deviceGroupName
@@ -48,14 +48,14 @@ export const SEARCH_DEVICE_GROUP_BY_ID = gql`
           labelName
           _id
           boxSet
-          journey {
+          routes {
             _id
             totalDuration
             totalDistance
             endDate
             startDate
             createdBy
-            journeyName
+            routesName
           }
         }
         deviceGroupName

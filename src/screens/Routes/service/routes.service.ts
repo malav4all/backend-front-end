@@ -1,16 +1,16 @@
 import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/rest-api";
 import {
-  ADD_JOURNEY,
+  ADD_ROUTES,
   COORDINATES_SUBSCRIPTION,
-  FETCH_JOURNEY,
-  SEARCH_JOURNEY,
-} from "./journey.mutation";
+  FETCH_ROUTES,
+  SEARCH_ROUTES,
+} from "./routes.mutation";
 
-export const createJourney = async (variables: any): Promise<any> => {
+export const createRoutes = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: ADD_JOURNEY,
+      mutation: ADD_ROUTES,
       variables,
     });
 
@@ -20,10 +20,10 @@ export const createJourney = async (variables: any): Promise<any> => {
   }
 };
 
-export const fetchJourney = async (variables: any): Promise<any> => {
+export const fetchRoutes = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_JOURNEY,
+      mutation: FETCH_ROUTES,
       variables,
     });
 
@@ -46,10 +46,10 @@ export const viewLiveTracking = async (variables: any): Promise<any> => {
   }
 };
 
-export const searchJourneys = async (variables: any): Promise<any> => {
+export const searchRoutess = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: SEARCH_JOURNEY,
+      mutation: SEARCH_ROUTES,
       variables,
     });
     return response.data;
