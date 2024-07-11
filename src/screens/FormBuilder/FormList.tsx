@@ -29,7 +29,6 @@ const FormList: React.FC<FormListProps> = ({
   onToggleEnable,
 }) => {
   const theme = useTheme();
-  console.log(forms);
   return (
     <Box
       sx={{

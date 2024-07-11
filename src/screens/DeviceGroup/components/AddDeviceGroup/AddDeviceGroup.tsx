@@ -86,28 +86,22 @@ const AddDeviceGroup = (props: CustomProps) => {
   };
 
   const insertDeviceGroupDetails = async () => {
-    console.log("insertDeviceGroupDetails function called");
     try {
       const accountId = store.getState().auth.accountId;
       const tenantId = store.getState().auth.tenantId;
-      console.log(store.getState().auth.tenantId);
       const insertDeviceGroupBody = {
         deviceGroupName: deviceGroupFromFields.deviceGroupName?.value?.trim(),
         accountId,
         tenantId,
       };
 
-      console.log("Payload:", insertDeviceGroupBody);
-
       if (props.edit) {
         const res = await updateDeviceGroup({
           input: {
             _id: props?.selectedDeviceGroupRowData?._id,
             ...insertDeviceGroupBody,
-            createdBy: store.getState().auth.userName,
           },
         });
-        console.log("Update response:", res);
         props.handleCloseAddDeviceGroupDialog(false);
         openSuccessNotification(res?.updateDeviceGroup?.message);
         await props.tableData?.();
@@ -118,7 +112,6 @@ const AddDeviceGroup = (props: CustomProps) => {
             createdBy: store?.getState()?.auth?.userName,
           },
         });
-        console.log("Create response:", res);
         props.handleCloseAddDeviceGroupDialog(false);
         openSuccessNotification(res?.createDeviceGroup?.message);
         await props.tableData?.();

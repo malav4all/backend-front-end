@@ -32,8 +32,6 @@ export type AccessToResource = {
   allPermissionRequired: boolean;
 };
 
-console.log(store.getState().auth.tenantId);
-
 const ListOfMenus = () =>
   [
     {

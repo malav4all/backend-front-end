@@ -29,7 +29,6 @@ export const fetchUserDataHandler = async (variables: any): Promise<any> => {
       mutation: FETCH_USER,
       variables,
     });
-    console.log(response);
     return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);

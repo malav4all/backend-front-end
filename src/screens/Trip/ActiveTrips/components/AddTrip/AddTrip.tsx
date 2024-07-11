@@ -172,7 +172,6 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   const insertTripDetails = async () => {
     try {
-      console.log('Trip Details:', tripFromFields);
 
       const insertTripBody = {
         imeiData: tripFromFields.imeiList.value,

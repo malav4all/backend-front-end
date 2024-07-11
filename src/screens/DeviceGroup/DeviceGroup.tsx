@@ -27,10 +27,8 @@ import {
   isTruthy,
   openErrorNotification,
 } from "../../helpers/methods";
-
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
-
 import deviceGroupStyles from "./DeviceGroup.styles";
 import {
   fetchDeviceGroup,
@@ -41,6 +39,7 @@ import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import EditIcon from "@mui/icons-material/Edit";
 import history from "../../utils/history";
+import { store } from "../../utils/store";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -78,8 +77,6 @@ const DeviceGroup = () => {
   const getRedirectionUrl = (_id: any) => {
     return history.push(`/device-group/view/${_id}`);
   };
-
-
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
@@ -150,6 +147,7 @@ const DeviceGroup = () => {
     });
     setDeviceGroupData([...data]);
   };
+
   const getHeader = () => {
     return (
       <Box>
@@ -175,9 +173,11 @@ const DeviceGroup = () => {
 
   const getDeviceGroupData = async () => {
     try {
+      const tenantId = store.getState().auth.tenantId;
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
+          tenantId: tenantId,
           page: page,
           limit: rowsPerPage,
         },
@@ -195,9 +195,11 @@ const DeviceGroup = () => {
 
   const getSearchData = async () => {
     try {
+      const tenantId = store.getState().auth.tenantId;
       setIsLoading(true);
       const res = await searchDeviceGroup({
         input: {
+          accountId: tenantId,
           search: searchDeviceGroups,
           page: 1,
           limit: 10,
@@ -221,6 +223,7 @@ const DeviceGroup = () => {
       setSearchDeviceGroups("");
     }
   };
+
   const editDeviceGroup = React.useCallback(
     (rowdata: any) => {
       setAddDeviceGroupDialogHandler(true);
@@ -229,6 +232,7 @@ const DeviceGroup = () => {
     },
     [edit]
   );
+
   const closeAddDeviceGroupDialogHandler = () => {
     setAddDeviceGroupDialogHandler(false);
     setSelectedDeviceGroupRowData(null);
@@ -350,7 +354,7 @@ const DeviceGroup = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
-      
+
       <Box
         sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
         mt={2}
