@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { useAppSelector } from "../../utils/hooks";
-import { selectName } from "../../redux/authSlice";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import moment from "moment-timezone";
 import { useTheme } from "@mui/material/styles";
@@ -10,14 +8,15 @@ import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
 import { alertRowData, statusDevice } from "./service/Dashboard.service";
-import { FaBell } from "react-icons/fa6";
-import CustomTable from "../../global/components/CustomTable/CustomTable";
-import { isTruthy, openErrorNotification } from "../../helpers/methods";
-import { weekValue, weekValueNextMonth } from "./DashboardData";
+import { openErrorNotification } from "../../helpers/methods";
 import { CustomButton, CustomDialog } from "../../global/components";
 import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
 import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
+import LineChart from "./components/Chart/LineChart";
+import PieChart from "./components/Chart/PieChart";
+import GetAlerts from "./components/Chart/GetAlerts";
+import DashboardHeader from "./DashboardHeader";
 
 interface CustomDateRange {
   fromDate: string;
@@ -190,66 +189,66 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, [offlineDateFilter, offlinePage, offlineLimit]);
 
-  const getDashboardHeader = () => {
-    return (
-      <Grid
-        container
-        sx={classes.header}
-        xs={12}
-        md={12}
-        lg={12}
-        xl={12}
-        width="100%"
-      >
-        <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}></Grid>
+  // const getDashboardHeader = () => {
+  //   return (
+  //     <Grid
+  //       container
+  //       sx={classes.header}
+  //       xs={12}
+  //       md={12}
+  //       lg={12}
+  //       xl={12}
+  //       width="100%"
+  //     >
+  //       <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}></Grid>
 
-        <Grid
-          item
-          xs={12}
-          md={7}
-          lg={4}
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-          }}
-        >
-          <Select
-            id="campaigns_interval_dropdown"
-            sx={{
-              ...classes.dropDownStyle,
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-            }}
-            value={selectedRange}
-            onChange={handleChange}
-            displayEmpty
-            inputProps={{ "aria-label": "Without label" }}
-            renderValue={() => selectedRange}
-          >
-            <MenuItem value="Past 1m" sx={classes.optionStyle}>
-              Past 1m
-            </MenuItem>
-            <MenuItem value="Past 5m" sx={classes.optionStyle}>
-              Past 5m
-            </MenuItem>
-            <MenuItem value="Past 15m" sx={classes.optionStyle}>
-              Past 15m
-            </MenuItem>
-            <MenuItem value="Past 30m" sx={classes.optionStyle}>
-              Past 30m
-            </MenuItem>
-            <MenuItem
-              value="Custom"
-              onClick={CustomChange}
-              sx={classes.optionStyle}
-            >
-              Custom
-            </MenuItem>
-          </Select>
-        </Grid>
-      </Grid>
-    );
-  };
+  //       <Grid
+  //         item
+  //         xs={12}
+  //         md={7}
+  //         lg={4}
+  //         sx={{
+  //           display: "flex",
+  //           justifyContent: "flex-end",
+  //         }}
+  //       >
+  //         <Select
+  //           id="campaigns_interval_dropdown"
+  //           sx={{
+  //             ...classes.dropDownStyle,
+  //             backgroundColor: theme.palette.background.paper,
+  //             color: theme.palette.text.primary,
+  //           }}
+  //           value={selectedRange}
+  //           onChange={handleChange}
+  //           displayEmpty
+  //           inputProps={{ "aria-label": "Without label" }}
+  //           renderValue={() => selectedRange}
+  //         >
+  //           <MenuItem value="Past 1m" sx={classes.optionStyle}>
+  //             Past 1m
+  //           </MenuItem>
+  //           <MenuItem value="Past 5m" sx={classes.optionStyle}>
+  //             Past 5m
+  //           </MenuItem>
+  //           <MenuItem value="Past 15m" sx={classes.optionStyle}>
+  //             Past 15m
+  //           </MenuItem>
+  //           <MenuItem value="Past 30m" sx={classes.optionStyle}>
+  //             Past 30m
+  //           </MenuItem>
+  //           <MenuItem
+  //             value="Custom"
+  //             onClick={CustomChange}
+  //             sx={classes.optionStyle}
+  //           >
+  //             Custom
+  //           </MenuItem>
+  //         </Select>
+  //       </Grid>
+  //     </Grid>
+  //   );
+  // };
 
   const CustomChange = () => {
     setOpenModal(true);
@@ -407,253 +406,6 @@ const Dashboard = () => {
       startDate: startDate,
       endDate: endDate,
     });
-  };
-
-  const getAlerts = () => {
-    return (
-      <Box
-        id="Alerts_pannel"
-        sx={{
-          marginTop: "1rem",
-          backgroundColor: "transparent",
-        }}
-      >
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="start"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "2rem 1.5rem",
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: "8px",
-                boxShadow:
-                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                border: "1px solid",
-                borderColor: theme.palette.divider,
-              }}
-            >
-              <Box
-                sx={{
-                  fontFamily: "Geist_Bold",
-                  fontWeight: 700,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  color: theme.palette.text.primary,
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontFamily: "Geist_Medium",
-                    color: theme.palette.text.secondary,
-                    fontSize: "18px",
-                  }}
-                >
-                  Tamper/Misc
-                </Typography>
-                <Typography sx={classes.statsValue}>
-                  {
-                    alertTableData.filter((item: any) => item.event === "other")
-                      .length
-                  }
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  fontSize: "1rem",
-                  color: "white",
-                  padding: "0.7rem",
-                  borderRadius: "5px",
-                  backgroundColor: "#855BDE",
-                }}
-              >
-                <FaBell />
-              </Box>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="start"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "2rem 1.5rem",
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: "8px",
-                boxShadow:
-                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                border: "1px solid",
-                borderColor: theme.palette.divider,
-              }}
-            >
-              <Box
-                sx={{
-                  fontFamily: "Geist_Bold",
-                  fontWeight: 700,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  color: theme.palette.text.primary,
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontFamily: "Geist_Medium",
-                    color: theme.palette.text.secondary,
-                    fontSize: "18px",
-                  }}
-                >
-                  Lock/Unlock
-                </Typography>
-
-                <Typography sx={classes.statsValue}>
-                  {alertTableData.filter((item: any) => item.event === "locked")
-                    .length +
-                    alertTableData.filter(
-                      (item: any) => item.event === "unlocked"
-                    ).length}
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  fontSize: "1rem",
-                  color: "white",
-                  padding: "0.7rem",
-                  borderRadius: "5px",
-                  backgroundColor: "#855BDE",
-                }}
-              >
-                <FaBell />
-              </Box>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="start"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "2rem 1.5rem",
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: "8px",
-                boxShadow:
-                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                border: "1px solid",
-                borderColor: theme.palette.divider,
-              }}
-            >
-              <Box
-                sx={{
-                  fontFamily: "Geist_Bold",
-                  fontWeight: 700,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  color: theme.palette.text.primary,
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontFamily: "Geist_Medium",
-                    color: theme.palette.text.secondary,
-                    fontSize: "18px",
-                  }}
-                >
-                  Geozone In/Out
-                </Typography>
-                <Typography sx={classes.statsValue}>
-                  {alertTableData.filter(
-                    (item: any) => item.event === "geo_exit"
-                  ).length +
-                    alertTableData.filter(
-                      (item: any) => item.event === "geo_entry"
-                    ).length}
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  fontSize: "1rem",
-                  color: "white",
-                  padding: "0.7rem",
-                  borderRadius: "5px",
-                  backgroundColor: "#855BDE",
-                }}
-              >
-                <FaBell />
-              </Box>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={12} xl={3} lg={3}>
-            <Box
-              display="flex"
-              justifyContent="space-between"
-              alignItems="start"
-              component={"div"}
-              id="dashboard_stats"
-              sx={{
-                padding: "2rem 1.5rem",
-                backgroundColor: theme.palette.background.paper,
-                borderRadius: "8px",
-                boxShadow:
-                  "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-                border: "1px solid",
-                borderColor: theme.palette.divider,
-              }}
-            >
-              <Box
-                sx={{
-                  fontFamily: "Geist_Bold",
-                  fontWeight: 700,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.5rem",
-                  color: theme.palette.text.primary,
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontFamily: "Geist_Medium",
-                    color: theme.palette.text.secondary,
-                    fontSize: "18px",
-                  }}
-                >
-                  Total Alerts
-                </Typography>
-                <Typography sx={classes.statsValue}>
-                  {alertTableData.length}
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  fontSize: "1rem",
-                  color: "white",
-                  padding: "0.7rem",
-                  borderRadius: "5px",
-                  backgroundColor: "#855BDE",
-                }}
-              >
-                <FaBell />
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    );
   };
 
   const handleChangePage = (
@@ -819,7 +571,21 @@ const Dashboard = () => {
           sx={{ margin: "-30px auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12}>
-            {getAlerts()}
+            <GetAlerts />
+          </Grid>
+
+          <Grid item spacing={2} xs={12} md={12} lg={12} xl={12}>
+            <LineChart height={400} />
+          </Grid>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6} lg={6} xl={6}>
+              <PieChart />
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={6} xl={6}>
+              <PieChart />
+            </Grid>
           </Grid>
 
           <Grid item spacing={2} xs={12} md={12} lg={12} xl={12}>
@@ -835,13 +601,17 @@ const Dashboard = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         width: "100%",
-        height: "100%",
+        height: "auto",
         margin: "auto",
       }}
     >
-      {getDashboardHeader()}
+      {/* {getDashboardHeader()} */}
+      <Box>
+        <DashboardHeader />
+      </Box>
       {getDashboardBody()}
       {customDialog()}
+
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
