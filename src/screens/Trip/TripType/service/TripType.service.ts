@@ -4,7 +4,7 @@ import {
   ADD_INDUSTRY,
   CHECK_EXITS_INDUSTRY,
   FETCH_CUSTOMER_MODULE,
-  FETCH_INDUSTRY,
+  FETCH_TRIP_TYPE,
   SEARCH_INDUSTRY_MODULE,
 } from "./TripType.mutation";
 
@@ -39,7 +39,7 @@ export const fetchTripTypeTableHandler = async (
 ): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_INDUSTRY,
+      mutation: FETCH_TRIP_TYPE,
       variables,
     });
 

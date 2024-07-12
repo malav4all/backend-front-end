@@ -63,7 +63,7 @@ const Routes = () => {
   const theme = useTheme();
   const [page, setPage] = useState<number>(1);
   const [formField, setFormField] = useState<any>({
-    routesName: {
+    routeName: {
       value: "",
       error: "",
     },
@@ -191,47 +191,48 @@ const Routes = () => {
 
   const addRoutesHandler = async () => {
     try {
-      if (handleValidation()) {
-        setIsLoading(true);
-        const { totalDistance, totalDuration } = await calculateDistance();
-        const res = await createRoutes({
-          input: {
-            routesName: formField.routesName?.value,
-            routesData: finalLocationIds,
-            createdBy: store.getState()?.auth?.userName,
-            totalDistance: Number(totalDistance),
-            totalDuration: Number(totalDuration),
-          },
-        });
-        openSuccessNotification(res.addRoutes.message);
-        setFormField({
-          routesName: {
-            value: "",
-            error: "",
-          },
-          endLocation: {
-            value: "",
-            error: "",
-          },
-          startLocation: {
-            value: "",
-            error: "",
-          },
-        });
-        setLocationData([
-          {
-            name: "LocationA",
-            field: "locationA",
-            type: "String",
-            fieldMapping: "",
-            required: true,
-            error: "",
-          },
-        ]);
-        setFinalLocationIds([]);
-        await fetchRoutesHandler();
-        setIsLoading(false);
-      }
+      // if (handleValidation()) {
+      setIsLoading(true);
+      const { totalDistance, totalDuration } = await calculateDistance();
+      const res = await createRoutes({
+        input: {
+          accountId: "IMZ113343",
+          routeName: formField?.routeName?.value,
+          routesData: finalLocationIds,
+          createdBy: store.getState()?.auth?.userName,
+          totalDistance: Number(totalDistance),
+          totalDuration: Number(totalDuration),
+        },
+      });
+      openSuccessNotification(res?.addRoute?.message);
+      setFormField({
+        routesName: {
+          value: "",
+          error: "",
+        },
+        endLocation: {
+          value: "",
+          error: "",
+        },
+        startLocation: {
+          value: "",
+          error: "",
+        },
+      });
+      setLocationData([
+        {
+          name: "LocationA",
+          field: "locationA",
+          type: "String",
+          fieldMapping: "",
+          required: true,
+          error: "",
+        },
+      ]);
+      setFinalLocationIds([]);
+      await fetchRoutesHandler();
+      setIsLoading(false);
+      // }
     } catch (error: any) {
       setIsLoading(false);
       openErrorNotification(error.message);
@@ -283,7 +284,8 @@ const Routes = () => {
       }
       return {
         key: item._id,
-        routesName: item?.routesName,
+        routeId: item.routeId,
+        routesName: item?.routeName,
         createdBy: item?.createdBy,
         totalDistance: formatDistance(item?.totalDistance),
         totalDuration: formatDuration(item?.totalDuration),
@@ -365,13 +367,14 @@ const Routes = () => {
       setIsLoading(true);
       const res = await fetchRoutes({
         input: {
+          accountId: "IMZ113343",
           page,
           limit: 10,
         },
       });
-      const data = tableRender(res.fetchRoutes.data);
+      const data = tableRender(res?.fetchRoute?.data);
       setRoutesTableData(data);
-      setCount(res.fetchRoutes.paginatorInfo.count);
+      setCount(res.fetchRoute?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -383,6 +386,7 @@ const Routes = () => {
     try {
       const res = await fetchGeozoneHandler({
         input: {
+          accountId: "IMZ113343",
           page: -1,
           limit: 0,
         },
@@ -524,12 +528,12 @@ const Routes = () => {
               <CustomInput
                 label="Routes Name"
                 placeHolder="Enter Routes name"
-                value={formField?.routesName?.value}
+                value={formField?.routeName?.value}
                 maxLength={100}
                 required
-                name="routesName"
+                name="routeName"
                 onChange={handleOnChange}
-                error={formField?.routesName?.error}
+                error={formField?.routeName?.error}
                 sx={{
                   backgroundColor: theme.palette.background.paper,
                 }}
@@ -584,8 +588,8 @@ const Routes = () => {
                       onSelect={handleOnChange}
                       InputProps={InputProps}
                       error={
-                        !isTruthy(formField.startLocation.value) &&
-                        formField.startLocation.error
+                        !isTruthy(formField.startLocation?.value) &&
+                        formField?.startLocation?.error
                       }
                     />
                   );
@@ -739,8 +743,8 @@ const Routes = () => {
                       onSelect={handleOnChange}
                       InputProps={InputProps}
                       error={
-                        !isTruthy(formField.startLocation.value) &&
-                        formField.startLocation.error
+                        !isTruthy(formField.startLocation?.value) &&
+                        formField.startLocation?.error
                       }
                     />
                   );

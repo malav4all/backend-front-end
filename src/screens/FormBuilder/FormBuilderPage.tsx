@@ -28,6 +28,11 @@ import {
 } from "../../utils/styles";
 import formBuilderStyles from "./FormBuilderPage.styles";
 import { useTheme } from "@mui/material";
+import {
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../helpers/methods";
+import { addFormBuilder } from "./service/form-builder.service";
 
 const routess = [
   { _id: "1", routesName: "Routes 1" },
@@ -43,28 +48,44 @@ const FormBuilderPage: React.FC = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [selectedForm, setSelectedForm] = useState<Form | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [booleanValues, setBooleanValues] = useState<{ [key: string]: boolean }>({});
+  const [booleanValues, setBooleanValues] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   useEffect(() => {
     setForms([]);
   }, []);
 
-  const saveForm = () => {
-    const newForm: Form = {
-      id: uuidv4(),
-      title: formTitle,
-      fields: formFields,
-      enabled: true, 
-    };
-    setForms([...forms, newForm]);
-    setFormTitle("");
-    setFormFields([]);
+  const saveForm = async () => {
+    try {
+      const newForm: Form = {
+        id: uuidv4(),
+        title: formTitle,
+        fields: formFields,
+        enabled: true,
+      };
+      const res = await addFormBuilder({
+        input: {
+          accountId: "IMZ113343",
+          formTitle: formTitle,
+          fields: formFields,
+          isFormEnable: true,
+          createdBy: "Malav",
+        },
+      });
+      openSuccessNotification(res.addFormBuilder.message);
+      setForms([...forms, newForm]);
+      setFormTitle("");
+      setFormFields([]);
+    } catch (error) {
+      openErrorNotification(error);
+    }
   };
 
   const handleViewForm = (form: Form) => {
     setSelectedForm(form);
     const initialBooleanValues = form.fields
-      .filter(field => field.type === "boolean")
+      .filter((field) => field.type === "boolean")
       .reduce((acc, field) => ({ ...acc, [field.id]: false }), {});
     setBooleanValues(initialBooleanValues);
     setIsDialogOpen(true);
@@ -79,12 +100,20 @@ const FormBuilderPage: React.FC = () => {
     setSelectedForm(null);
   };
 
-  const handleBooleanChange = (id: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setBooleanValues(prevValues => ({ ...prevValues, [id]: event.target.checked }));
-  };
+  const handleBooleanChange =
+    (id: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setBooleanValues((prevValues) => ({
+        ...prevValues,
+        [id]: event.target.checked,
+      }));
+    };
 
   const handleToggleEnable = (formId: string) => {
-    setForms(forms.map(form => form.id === formId ? { ...form, enabled: !form.enabled } : form));
+    setForms(
+      forms.map((form) =>
+        form.id === formId ? { ...form, enabled: !form.enabled } : form
+      )
+    );
   };
 
   const getHeader = () => {
@@ -182,7 +211,9 @@ const FormBuilderPage: React.FC = () => {
         dialogBodyContent={
           selectedForm ? (
             <Box component="form" sx={{ mt: 2 }}>
-              <Typography variant="h6" sx={{mb: 5}}>Title: {selectedForm.title}</Typography>
+              <Typography variant="h6" sx={{ mb: 5 }}>
+                Title: {selectedForm.title}
+              </Typography>
               {selectedForm.fields.map((field) => (
                 <Box key={field.id} sx={{ mb: 2 }}>
                   {field.type === "text" && (
@@ -206,7 +237,7 @@ const FormBuilderPage: React.FC = () => {
                       placeHolder={`Enter ${field.label}`}
                     />
                   )}
-                  {field.type === "dropdown" && (
+                  {field.type === "select" && (
                     <Box>
                       <InputLabel>{field.label}</InputLabel>
                       <Select
@@ -214,7 +245,7 @@ const FormBuilderPage: React.FC = () => {
                         value=""
                         onChange={() => {}}
                         displayEmpty
-                        sx={{width: "100%"}}
+                        sx={{ width: "100%" }}
                       >
                         {routess.map((item) => (
                           <MenuItem key={item._id} value={item._id}>
