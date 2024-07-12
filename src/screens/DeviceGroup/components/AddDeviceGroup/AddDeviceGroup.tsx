@@ -88,11 +88,9 @@ const AddDeviceGroup = (props: CustomProps) => {
   const insertDeviceGroupDetails = async () => {
     try {
       const accountId = store.getState().auth.accountId;
-      const tenantId = store.getState().auth.tenantId;
       const insertDeviceGroupBody = {
         deviceGroupName: deviceGroupFromFields.deviceGroupName?.value?.trim(),
         accountId,
-        tenantId,
       };
 
       if (props.edit) {

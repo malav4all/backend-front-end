@@ -177,7 +177,7 @@ const DeviceGroup = () => {
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
-          tenantId: tenantId,
+          accountId: tenantId,
           page: page,
           limit: rowsPerPage,
         },
