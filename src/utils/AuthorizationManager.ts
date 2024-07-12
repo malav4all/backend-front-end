@@ -280,7 +280,6 @@ const ListOfMenus = () =>
           link: `${"/trip-type"}`,
           pageName: strings.ENTITY_TYPE,
         },
-        
       ],
     },
     {

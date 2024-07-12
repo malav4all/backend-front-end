@@ -116,26 +116,7 @@ const ViewDeviceGroupList = () => {
     );
   };
 
-  const searchImeiData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await searchDeviceImeiData({
-        input: {
-          id: _id.id,
-          search: searchDeviceGroup,
-          page,
-          limit: 10,
-        },
-      });
-      const data = tableRender(res?.searchDeviceImeiData?.data[0]?.imeiData);
-      setTableData(data);
-      setCount(res?.searchDeviceImeiData?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
-  };
+
 
   const fetchDeviceGroupData = async () => {
     try {

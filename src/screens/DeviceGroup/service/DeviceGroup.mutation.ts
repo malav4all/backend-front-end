@@ -21,14 +21,6 @@ export const FETCH_DEVICE_GROUP = gql`
         _id
         deviceGroupName
         createdBy
-        updateBy
-        imeiData {
-          _id
-          imei
-          boxSet
-          labelName
-          createdBy
-        }
       }
     }
   }
@@ -55,7 +47,6 @@ export const SEARCH_DEVICE_GROUP = gql`
         _id
         deviceGroupName
         createdBy
-        updateBy
       }
     }
   }

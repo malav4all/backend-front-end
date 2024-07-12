@@ -523,8 +523,8 @@ const Routes = () => {
     return (
       <>
         <Grid container spacing={2}>
-          <Grid item sx={{ display: "flex", gap: "1rem", width: "95%" }}>
-            <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+          <Grid item sx={{ width: "95%" }}>
+            <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
               <CustomInput
                 label="Routes Name"
                 placeHolder="Enter Routes name"
@@ -541,7 +541,7 @@ const Routes = () => {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} sm={6} md={12} lg={6} xl={6}>
+          <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
             <Box>
               <InputLabel
                 sx={{
@@ -604,16 +604,22 @@ const Routes = () => {
           </Grid>
 
           {locationData?.map((item: any, index: number) => (
-            <Box sx={{ display: "flex", alignItems: "center", width: "30%" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: "30%",
+              }}
+            >
               <Grid
                 item
                 xs={12}
-                sm={3}
-                md={3}
-                lg={3}
-                xl={3}
-                ml={4}
-                mt={2}
+                sm={12}
+                md={12}
+                lg={5}
+                xl={5}
+                ml={5}
+                mt={1}
                 key={index}
               >
                 <Box sx={{ width: "100%" }}>
@@ -626,7 +632,7 @@ const Routes = () => {
                   >
                     {item.name.slice(0, -1) + " " + (index + 1)}
                   </InputLabel>
-                  <Box>
+                  <Box sx={{ width: "350px",  }}>
                     <Autocomplete
                       sx={classes.emailDropDownStyle}
                       id={`location-${item._id}`}
@@ -678,7 +684,7 @@ const Routes = () => {
                 <DeleteIcon
                   style={{
                     marginTop: "50px",
-                    marginLeft: "15px",
+                    marginLeft: "190px",
                     color: theme.palette.text.primary,
                   }}
                   onClick={() =>
@@ -691,7 +697,7 @@ const Routes = () => {
             </Box>
           ))}
 
-          <Grid item xs={12} sm={12} md={12} lg={6} xl={6}>
+          <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
             <Box>
               <InputLabel
                 sx={{
