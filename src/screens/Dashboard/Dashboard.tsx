@@ -14,10 +14,11 @@ import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDat
 import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
-import PieChart from "./components/Chart/PieChart";
+import PieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
-import DashboardHeader from "./DashboardHeader";
-
+import DashboardHeader from "./components/DashboardHeader";
+import OfflinePieChart from "./components/Chart/OfflinePieChart";
+import OnlinePieChart from "./components/Chart/OnlinePieChart";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -189,67 +190,6 @@ const Dashboard = () => {
     return () => clearInterval(intervalId);
   }, [offlineDateFilter, offlinePage, offlineLimit]);
 
-  // const getDashboardHeader = () => {
-  //   return (
-  //     <Grid
-  //       container
-  //       sx={classes.header}
-  //       xs={12}
-  //       md={12}
-  //       lg={12}
-  //       xl={12}
-  //       width="100%"
-  //     >
-  //       <Grid item xs={12} md={5} lg={8} sx={{ display: "flex" }}></Grid>
-
-  //       <Grid
-  //         item
-  //         xs={12}
-  //         md={7}
-  //         lg={4}
-  //         sx={{
-  //           display: "flex",
-  //           justifyContent: "flex-end",
-  //         }}
-  //       >
-  //         <Select
-  //           id="campaigns_interval_dropdown"
-  //           sx={{
-  //             ...classes.dropDownStyle,
-  //             backgroundColor: theme.palette.background.paper,
-  //             color: theme.palette.text.primary,
-  //           }}
-  //           value={selectedRange}
-  //           onChange={handleChange}
-  //           displayEmpty
-  //           inputProps={{ "aria-label": "Without label" }}
-  //           renderValue={() => selectedRange}
-  //         >
-  //           <MenuItem value="Past 1m" sx={classes.optionStyle}>
-  //             Past 1m
-  //           </MenuItem>
-  //           <MenuItem value="Past 5m" sx={classes.optionStyle}>
-  //             Past 5m
-  //           </MenuItem>
-  //           <MenuItem value="Past 15m" sx={classes.optionStyle}>
-  //             Past 15m
-  //           </MenuItem>
-  //           <MenuItem value="Past 30m" sx={classes.optionStyle}>
-  //             Past 30m
-  //           </MenuItem>
-  //           <MenuItem
-  //             value="Custom"
-  //             onClick={CustomChange}
-  //             sx={classes.optionStyle}
-  //           >
-  //             Custom
-  //           </MenuItem>
-  //         </Select>
-  //       </Grid>
-  //     </Grid>
-  //   );
-  // };
-
   const CustomChange = () => {
     setOpenModal(true);
     setDateRange({
@@ -307,6 +247,12 @@ const Dashboard = () => {
       [date]: formattedDate,
     });
   };
+
+  const domainData = [
+    { name: "Domain 1", count: 30 },
+    { name: "Domain 2", count: 20 },
+    { name: "Domain 3", count: 50 },
+  ];
 
   const customDate = () => {
     return (
@@ -450,64 +396,8 @@ const Dashboard = () => {
           xs={12}
           sm={12}
           md={12}
-          xl={5.9}
-          lg={5.9}
-          sx={{
-            padding: "1.5rem 1.5rem",
-            backgroundColor: theme.palette.background.paper,
-            border: "1px solid",
-            borderColor: theme.palette.divider,
-            borderRadius: "8px",
-            boxShadow:
-              "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              fontFamily: "Geist_Light",
-              fontSize: "1.5rem",
-              marginBottom: "0.5rem",
-              padding: "0.2rem 0.8rem",
-              borderRadius: "5px",
-              borderLeft: "7px solid",
-              borderLeftColor: "#855BDE",
-            }}
-          >
-            Alert Logs
-          </Typography>
-
-          <CustomTableDashboard
-            headers={[
-              { name: "Name", field: "label" },
-              { name: "IMEI", field: "imei" },
-              { name: "Alert Time", field: "time" },
-              { name: "Event", field: "event" },
-              { name: "Mode", field: "mode" },
-              { name: "Source", field: "source" },
-              { name: "Message", field: "message" },
-            ]}
-            rows={alertTableData}
-            paginationCount={count}
-            rowsPerPage={limit}
-            pageNumber={page}
-            perPageData={limit}
-            isRowPerPageEnable={false}
-            setPage={setPage}
-            handlePageChange={handleChangePage}
-            handlePerPageData={handlePerPageData}
-          />
-        </Grid>
-
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={12}
-          xl={5.9}
-          lg={5.9}
+          xl={12}
+          lg={12}
           sx={{
             padding: "1.5rem 1.5rem",
             backgroundColor: theme.palette.background.paper,
@@ -570,7 +460,7 @@ const Dashboard = () => {
           lg={12}
           sx={{ margin: "-30px auto", width: " 97%" }}
         >
-          <Grid item xs={12} md={12} lg={12} xl={12}>
+          <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
             <GetAlerts />
           </Grid>
 
@@ -579,12 +469,11 @@ const Dashboard = () => {
           </Grid>
 
           <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={6} xl={6}>
-              <PieChart />
+            <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+              <OnlinePieChart />
             </Grid>
-
-            <Grid item xs={12} md={6} lg={6} xl={6}>
-              <PieChart />
+            <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
+              <OfflinePieChart />
             </Grid>
           </Grid>
 
@@ -605,7 +494,6 @@ const Dashboard = () => {
         margin: "auto",
       }}
     >
-      {/* {getDashboardHeader()} */}
       <Box>
         <DashboardHeader />
       </Box>

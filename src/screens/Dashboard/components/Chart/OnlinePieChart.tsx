@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import ApexCharts from "apexcharts";
+import { Box, useTheme } from "@mui/material";
 
 interface PieChartProps {
   width?: number;
 }
 
-const PieChart: React.FC<PieChartProps> = ({ width = 350 }) => {
+const OnlinePieChart: React.FC<PieChartProps> = ({ width = 300 }) => {
+  const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,10 +19,10 @@ const PieChart: React.FC<PieChartProps> = ({ width = 350 }) => {
           background: "#ffffff",
         },
         series: [44, 55, 13],
-        labels: ["Motion", "Idel", "Stop",],
+        labels: ["Motion", "Idel", "Stop"],
         responsive: [
           {
-            breakpoint: 4080,
+            breakpoint: 480,
             options: {
               chart: {
                 width: 400,
@@ -42,7 +44,21 @@ const PieChart: React.FC<PieChartProps> = ({ width = 350 }) => {
     }
   }, [width]);
 
-  return <div ref={chartRef} />;
+  return (
+    <Box
+      ref={chartRef}
+      sx={{
+        padding: "2rem 1.5rem",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: "8px",
+        boxShadow:
+          "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+        border: "1px solid",
+        borderColor: theme.palette.divider,
+        color: theme.palette.text.primary,
+      }}
+    />
+  );
 };
 
-export default PieChart;
+export default OnlinePieChart;

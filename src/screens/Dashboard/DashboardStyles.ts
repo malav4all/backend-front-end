@@ -17,16 +17,6 @@ import thoughtsbg from "../../assets/images/dashboard/quotesbg.webp";
 import { Height } from "@mui/icons-material";
 
 const dashboardStyles = {
-  // thoughtsBox: {
-  //   height: "100%",
-  //   backgroundImage: "url(" + thoughtsbg + ") ",
-  //   backgroundRepeat: "no-repeat",
-  //   backgroundSize: "cover",
-  //   boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.07)",
-  //   borderRadius: "8px",
-  //   textAlign: "center",
-  //   padding: "0px",
-  // },
   campaignDate: {
     color: "#929292",
     ...mediumFont,
@@ -37,6 +27,15 @@ const dashboardStyles = {
   dateRangeText: {
     ...boldFont,
     fontSize: getRelativeFontSize(),
+  },
+  emailDropDownStyle: {
+    "& .MuiOutlinedInput-root": {
+      padding: "0, 9px",
+      height: "47px",
+      "&.Mui-focused fieldset": {
+        borderColor: "#0675f9",
+      },
+    },
   },
   campaignType: {
     color: "#B1B1B1",
@@ -201,6 +200,14 @@ const dashboardStyles = {
     ...regularFont,
     fontSize: getRelativeFontSize(),
     fontStyle: "italic",
+  },
+  cancelButtonStyle: {
+    color: "#212121 !important",
+    backgroundColor: "#00000000",
+    border: "1px solid #E7E7E7",
+    "&:hover": {
+      background: "none",
+    },
   },
   dropDownStyle: {
     ...regularFont,

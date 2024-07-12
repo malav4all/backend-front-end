@@ -1,6 +1,7 @@
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { FaBell } from "react-icons/fa6";
 import dashboardStyles from "../../DashboardStyles";
+import { headerColor } from "../../../../utils/styles";
 
 const GetAlerts = () => {
   const theme = useTheme();
@@ -50,9 +51,7 @@ const GetAlerts = () => {
               >
                 Tamper/Misc
               </Typography>
-              <Typography sx={classes.statsValue}>
-                79
-              </Typography>
+              <Typography sx={classes.statsValue}>79</Typography>
             </Box>
 
             <Box
@@ -61,7 +60,7 @@ const GetAlerts = () => {
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
-                backgroundColor: "#855BDE",
+                backgroundColor: headerColor,
               }}
             >
               <FaBell />
@@ -106,9 +105,7 @@ const GetAlerts = () => {
                 Lock/Unlock
               </Typography>
 
-              <Typography sx={classes.statsValue}>
-                357
-              </Typography>
+              <Typography sx={classes.statsValue}>357</Typography>
             </Box>
 
             <Box
@@ -117,7 +114,7 @@ const GetAlerts = () => {
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
-                backgroundColor: "#855BDE",
+                backgroundColor: headerColor,
               }}
             >
               <FaBell />
@@ -161,9 +158,7 @@ const GetAlerts = () => {
               >
                 Geozone In/Out
               </Typography>
-              <Typography sx={classes.statsValue}>
-                951
-              </Typography>
+              <Typography sx={classes.statsValue}>951</Typography>
             </Box>
 
             <Box
@@ -172,7 +167,7 @@ const GetAlerts = () => {
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
-                backgroundColor: "#855BDE",
+                backgroundColor: headerColor,
               }}
             >
               <FaBell />
@@ -225,7 +220,7 @@ const GetAlerts = () => {
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
-                backgroundColor: "#855BDE",
+                backgroundColor: headerColor,
               }}
             >
               <FaBell />

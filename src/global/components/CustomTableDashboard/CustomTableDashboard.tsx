@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Checkbox,
   InputLabel,
   MenuItem,
   Select,
@@ -14,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import NoData from "../../../assets/images/tableNoData.svg";
 import Pagination from "@mui/material/Pagination";
 import CustomButton from "../CustomButton/CustomButton";
 import customTableDashboardStyles from "./customTableDashboard.styles";
