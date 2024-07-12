@@ -1,10 +1,11 @@
 import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/graphql/service-response";
 import {
-  ADD_INDUSTRY,
+  ADD_USER_ACCESS,
   CHECK_EXITS_INDUSTRY,
   FETCH_CUSTOMER_MODULE,
-  FETCH_INDUSTRY,
+  FETCH_USER_ACCESS,
+  FETCH_USER_ACCOUNT_WISE,
   SEARCH_INDUSTRY_MODULE,
 } from "./UserAccess.mutation";
 
@@ -24,7 +25,7 @@ export const fetchTableHandler = async (variables: any): Promise<any> => {
 export const addUserAccess = async (data: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: ADD_INDUSTRY,
+      mutation: ADD_USER_ACCESS,
       variables: data,
     });
 
@@ -39,7 +40,7 @@ export const fetchUserAccessTableHandler = async (
 ): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_INDUSTRY,
+      mutation: FETCH_USER_ACCESS,
       variables,
     });
 
@@ -66,6 +67,19 @@ export const checkExitsUserAccess = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: CHECK_EXITS_INDUSTRY,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const fetchUserAccountWise = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: FETCH_USER_ACCOUNT_WISE,
       variables,
     });
 

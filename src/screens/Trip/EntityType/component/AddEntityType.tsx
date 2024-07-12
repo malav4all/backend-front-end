@@ -1,17 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Checkbox,
-  Grid,
-  FormHelperText,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Grid, TextField, Typography, useTheme } from "@mui/material";
 import {
   CustomButton,
   CustomInput,
@@ -38,9 +26,7 @@ const AddEntityType = ({
   const addEntityTypeDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>
-          Add EntityType
-        </Typography>
+        <Typography sx={classes.boldFonts}>Add EntityType</Typography>
       </Box>
     );
   };
@@ -104,7 +90,7 @@ const AddEntityType = ({
           <CustomButton
             id="add_entityType_submit_button"
             label="Add"
-            onClick={handleSave}
+            onClick={() => handleSave()}
             loading={isLoading}
           />
         </Box>
@@ -124,7 +110,7 @@ const AddEntityType = ({
     <CustomDialog
       isDialogOpen={open}
       closable
-    //   closeButtonVisibility
+      //   closeButtonVisibility
       handleDialogClose={handleClose}
       dialogHeaderContent={addEntityTypeHeaderImg()}
       dialogTitleContent={addEntityTypeDialogTitle()}

@@ -1,15 +1,7 @@
 import {
   Box,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Grid,
   InputAdornment,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -42,11 +34,6 @@ import {
   userAccessValidation,
 } from "./UserAccessHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import {
-  primaryHeadingColor,
-  regularFont,
-  getRelativeFontSize,
-} from "../../../utils/styles";
 import AddUserAccess from "./component/AddUserAccess";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
@@ -84,13 +71,13 @@ const UserAccess = () => {
     setPageNumber(1);
   }, [searchText, perPageData]);
 
-  useEffect(() => {
-    if (searchText) {
-      searchDataHandler();
-    } else {
-      fetchTableUserAccess();
-    }
-  }, [pageNumber, perPageData, searchText]);
+  // useEffect(() => {
+  //   if (searchText) {
+  //     searchDataHandler();
+  //   } else {
+  //     fetchTableUserAccess();
+  //   }
+  // }, [pageNumber, perPageData, searchText]);
 
   useEffect(() => {
     fetchTableDataHandler();
@@ -289,8 +276,7 @@ const UserAccess = () => {
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

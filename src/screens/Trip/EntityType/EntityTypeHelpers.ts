@@ -4,16 +4,12 @@ export const entityTypeTableHeader = [
     field: "name",
   },
   {
-    name: "EntityType Modules",
-    field: "code",
-  },
-  {
     name: "Description",
     field: "description",
   },
   {
-    name: "Image",
-    field: "file",
+    name: "EnteredBy",
+    field: "createdBy",
   },
 ];
 

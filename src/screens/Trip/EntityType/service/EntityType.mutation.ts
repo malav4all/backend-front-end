@@ -17,18 +17,18 @@ export const FETCH_CUSTOMER_MODULE = gql`
   }
 `;
 
-export const ADD_INDUSTRY = gql`
+export const ADD_ENTITY_TYPE = gql`
   mutation ($input: CreateEntityTypeInput!) {
-    createEntityType(input: $input) {
+    addEntityType(input: $input) {
       success
       message
     }
   }
 `;
 
-export const FETCH_INDUSTRY = gql`
+export const FETCH_ENTITY_TYPE = gql`
   mutation ($input: EntityTypeInput!) {
-    entityTypeListAll(input: $input) {
+    fetchEntityType(input: $input) {
       paginatorInfo {
         count
       }
@@ -37,9 +37,8 @@ export const FETCH_INDUSTRY = gql`
       data {
         _id
         name
-        code
+        createdBy
         description
-        file
       }
     }
   }

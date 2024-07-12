@@ -87,7 +87,7 @@ const AddDeviceGroup = (props: CustomProps) => {
 
   const insertDeviceGroupDetails = async () => {
     try {
-      const accountId = store.getState().auth.accountId;
+      const accountId = store.getState().auth.tenantId;
       const insertDeviceGroupBody = {
         deviceGroupName: deviceGroupFromFields.deviceGroupName?.value?.trim(),
         accountId,

@@ -17,18 +17,18 @@ export const FETCH_CUSTOMER_MODULE = gql`
   }
 `;
 
-export const ADD_INDUSTRY = gql`
-  mutation ($input: CreateIndustryInput!) {
-    createIndustry(input: $input) {
+export const ADD_ENTITES_TYPE = gql`
+  mutation ($input: CreateEntitesInput!) {
+    addEntitesType(input: $input) {
       success
       message
     }
   }
 `;
 
-export const FETCH_INDUSTRY = gql`
-  mutation ($input: IndustryInput!) {
-    industryListAll(input: $input) {
+export const FETCH_ENTITTES = gql`
+  mutation ($input: EntitesTypeInput!) {
+    fetchEntitesType(input: $input) {
       paginatorInfo {
         count
       }
@@ -36,10 +36,20 @@ export const FETCH_INDUSTRY = gql`
       message
       data {
         _id
+        accountId
         name
-        code
-        description
-        file
+        type
+        address
+        city
+        state
+        area
+        district
+        pinCode
+        contactName
+        contactPhone
+        gstIn
+        aadharCardNo
+        createdBy
       }
     }
   }

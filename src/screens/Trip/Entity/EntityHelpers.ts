@@ -4,16 +4,52 @@ export const entityTableHeader = [
     field: "name",
   },
   {
-    name: "Entity Modules",
-    field: "code",
+    name: "Entity Type",
+    field: "type",
   },
   {
-    name: "Description",
-    field: "description",
+    name: "Address",
+    field: "address",
   },
   {
-    name: "Image",
-    field: "file",
+    name: "City",
+    field: "city",
+  },
+  {
+    name: "State",
+    field: "state",
+  },
+  {
+    name: "Area",
+    field: "area",
+  },
+  {
+    name: "District",
+    field: "district",
+  },
+  {
+    name: "Pincode",
+    field: "pinCode",
+  },
+  {
+    name: "Contact Name",
+    field: "contactName",
+  },
+  {
+    name: "Contact Phone",
+    field: "contactPhone",
+  },
+  {
+    name: "GST No",
+    field: "gstIn",
+  },
+  {
+    name: "Aadhar No",
+    field: "aadharCardNo",
+  },
+  {
+    name: "Entered By",
+    field: "createdBy",
   },
 ];
 
@@ -23,11 +59,55 @@ export const entityInsertField = () => {
       value: "",
       error: "",
     },
-    code: {
-      value: [],
+    type: {
+      value: "",
       error: "",
     },
-    description: {
+    tripTypeList: {
+      value: "",
+      error: "",
+    },
+    address: {
+      value: "",
+      error: "",
+    },
+    city: {
+      value: "",
+      error: "",
+    },
+    state: {
+      value: "",
+      error: "",
+    },
+    area: {
+      value: "",
+      error: "",
+    },
+    district: {
+      value: "",
+      error: "",
+    },
+    pinCode: {
+      value: "",
+      error: "",
+    },
+    contactName: {
+      value: "",
+      error: "",
+    },
+    contactEmail: {
+      value: "",
+      error: "",
+    },
+    contactPhone: {
+      value: "",
+      error: "",
+    },
+    gstIn: {
+      value: "",
+      error: "",
+    },
+    aadharCardNo: {
       value: "",
       error: "",
     },

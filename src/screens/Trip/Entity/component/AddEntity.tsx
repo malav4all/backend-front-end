@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Checkbox,
@@ -11,13 +11,20 @@ import {
   TextField,
   Typography,
   useTheme,
+  Autocomplete,
 } from "@mui/material";
 import {
   CustomButton,
   CustomInput,
   CustomDialog,
 } from "../../../../global/components";
-import { isTruthy } from "../../../../helpers/methods";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
+import { fetchEntityTypeTableHandler } from "../../EntityType/service/EntityType.service";
+import { store } from "../../../../utils/store";
+import { getAddressDetailsByPincode } from "../../../Geozone/service/geozone.service";
+import { fetchTripTypeTableHandler } from "../../TripType/service/TripType.service";
 
 const AddEntity = ({
   open,
@@ -32,8 +39,29 @@ const AddEntity = ({
   isLoading,
   MenuProps,
   classes,
+  setEntityFormData,
 }: any) => {
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const theme = useTheme();
+  const [tableData, setTableData] = useState([]);
+  const [zipCodeDate, setZipCodeData] = useState([]);
+  const [tripType, setTripType] = useState<any>([]);
+  const [selectedTripType, setSelectedTripType] = useState<any>([]);
+
+  const fetchZipCodeHandler = async (value: any) => {
+    try {
+      const res = await getAddressDetailsByPincode(value);
+      setZipCodeData(res);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchTableEntityType();
+    fetchTableTripType();
+  }, []);
 
   const addEntityDialogTitle = () => {
     return (
@@ -42,7 +70,77 @@ const AddEntity = ({
       </Box>
     );
   };
-  
+
+  const fetchTableTripType = async () => {
+    try {
+      const res = await fetchTripTypeTableHandler({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: -1,
+          limit: 10000,
+        },
+      });
+      setTripType(res?.tripTypeList?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchTableEntityType = async () => {
+    try {
+      const res = await fetchEntityTypeTableHandler({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: -1,
+          limit: 1000,
+        },
+      });
+      setTableData(res?.fetchEntityType?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const handleSelectAll = (event: any) => {
+    if (event.target.checked) {
+      const allTrips = tripType.map((option: any) => option.tripName);
+      setSelectedTripType(allTrips);
+      setEntityFormData({
+        ...entityFormData,
+        tripTypeList: {
+          value: allTrips,
+          error: "",
+        },
+      });
+    } else {
+      setSelectedTripType([]);
+      setEntityFormData({
+        ...entityFormData,
+        tripTypeList: {
+          value: [],
+          error: "",
+        },
+      });
+    }
+  };
+
+  const handleChange = (event: any, value: any) => {
+    const filteredValues = value.filter((v: any) => typeof v !== "string");
+    const selectedNames = filteredValues.map((option: any) => option.tripName);
+    setSelectedTripType(selectedNames);
+    setEntityFormData({
+      ...entityFormData,
+      tripTypeList: {
+        value: selectedNames,
+        error: "",
+      },
+    });
+  };
+
+  const isOptionSelected = (option: any) => {
+    return selectedTripType.includes(option.tripName);
+  };
+
   const addEntityDialogBody = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
@@ -57,9 +155,71 @@ const AddEntity = ({
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
             value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
+            // onBlur={checkExitsRoleHandler}
             error={entityFormData.name.error}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={6} lg={6}>
+          <Box>
+            <InputLabel sx={{ color: theme.palette.text.primary }} shrink>
+              Trip Type
+            </InputLabel>
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={["Select All", ...tripType]}
+              disableCloseOnSelect
+              getOptionLabel={(option) =>
+                typeof option === "string" ? option : option.tripName
+              }
+              value={selectedTripType.map((tripName: any) =>
+                tripType.find((option: any) => option.tripName === tripName)
+              )}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
+              onChange={handleChange}
+              placeholder="Enter Device Group Name"
+              renderOption={(props, option, { selected }) => {
+                if (typeof option === "string") {
+                  return (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selectedTripType.length === tripType.length}
+                        onChange={handleSelectAll}
+                      />
+                      Select All
+                    </li>
+                  );
+                }
+                return (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={isOptionSelected(option)}
+                    />
+                    {option.tripName}
+                  </li>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={
+                    selectedTripType.length === 0 ? "Select Trip Type" : ""
+                  }
+                />
+              )}
+            />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={6} lg={6}>
@@ -71,36 +231,24 @@ const AddEntity = ({
               </Box>
               <Select
                 id="role_management_select_permission_dropdown"
-                name="permissions"
+                name="type"
                 sx={classes.dropDownStyle}
                 displayEmpty
-                value={entityFormData.code.value}
+                value={entityFormData.type.value || ""}
                 onChange={handleModuleChange}
-                multiple
-                MenuProps={MenuProps}
-                renderValue={(selected) => (
-                  <Typography>
-                    {selected.length === 0
-                      ? "Select Modules"
-                      : selected.join(", ")}
-                  </Typography>
-                )}
-                error={
-                  !isTruthy(entityFormData.code?.value) &&
-                  entityFormData.code?.error
+                renderValue={() =>
+                  entityFormData.type.value !== ""
+                    ? entityFormData.type.value
+                    : "Select Entity Type"
                 }
               >
-                {modulesData.map((item: any) => (
+                {tableData.map((item: any) => (
                   <MenuItem
                     key={item._id}
                     value={item.name}
                     sx={classes.optionStyle}
                   >
-                    <Checkbox
-                      checked={entityFormData.code?.value?.includes(item.name)}
-                      sx={classes.checkbox}
-                    />
-                    <ListItemText primary={item.name} />
+                    {item.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -113,6 +261,73 @@ const AddEntity = ({
           </Box>
         </Grid>
 
+        <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <Box>
+            <InputLabel
+              sx={{ ...classes.inputLabel, color: theme.palette.text.primary }}
+              shrink
+            >
+              PinCode
+            </InputLabel>
+            <Autocomplete
+              sx={{
+                ...classes.emailDropDownStyle,
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
+              id="zipCode"
+              options={
+                zipCodeDate?.map((item: any) => ({
+                  label: `${item.Pincode} - ${item.Country} - ${item.State} - ${item.Name} - ${item.Block} - ${item.District}`,
+                  value: item,
+                })) || []
+              }
+              onChange={(event, newValue) => {
+                setEntityFormData({
+                  ...entityFormData,
+                  country: { value: newValue?.value?.Country },
+                  state: { value: newValue?.value?.State },
+                  area: { value: newValue?.value?.Name },
+                  district: { value: newValue?.value?.District },
+                  city: { value: newValue?.value?.Block },
+                  zipCode: { value: newValue?.value?.Pincode },
+                  address: {
+                    value: `${newValue?.value?.Country} - ${newValue?.value?.State} - ${newValue?.value?.Name} - ${newValue?.value?.District} - ${newValue?.value?.Block}`,
+                  },
+                });
+              }}
+              value={entityFormData.pinCode.value}
+              renderInput={(params) => (
+                <TextField
+                  sx={classes.select}
+                  {...params}
+                  value={entityFormData.pinCode.value}
+                  name="zipCode"
+                  placeholder="Enter PinCode"
+                  onSelect={() => {}}
+                  onChange={(e) => {
+                    const regex = /^\D*\d{0,6}\D*$/;
+                    const value = e.target.value;
+                    if (regex.test(value)) {
+                      setEntityFormData({
+                        ...entityFormData,
+                        pinCode: {
+                          value: value,
+                          error: "",
+                        },
+                      });
+                    }
+                    if (value.length >= 6) {
+                      fetchZipCodeHandler(value);
+                    }
+                  }}
+                />
+              )}
+            />
+          </Box>
+        </Grid>
+
         <Grid item xs={12} sm={6} lg={6}>
           <CustomInput
             required
@@ -120,12 +335,12 @@ const AddEntity = ({
             id="address_field"
             type="text"
             name="address"
-            placeHolder="Enter Entity Name"
+            placeHolder="Enter Address"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.address.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.address.error}
           />
         </Grid>
 
@@ -135,13 +350,13 @@ const AddEntity = ({
             label="City"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="city"
+            placeHolder="Enter city"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.city.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.city.error}
           />
         </Grid>
 
@@ -151,13 +366,13 @@ const AddEntity = ({
             label="State"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="state"
+            placeHolder="Enter State"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.state.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.state.error}
           />
         </Grid>
 
@@ -167,13 +382,13 @@ const AddEntity = ({
             label="Area"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="area"
+            placeHolder="Enter area"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.area.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.area.error}
           />
         </Grid>
 
@@ -183,29 +398,13 @@ const AddEntity = ({
             label="District"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="district"
+            placeHolder="Enter district"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={6}>
-          <CustomInput
-            required
-            label="Pincode"
-            id="city_field"
-            type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
-            onChange={onChangeHandler}
-            propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.district.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.district.error}
           />
         </Grid>
 
@@ -220,8 +419,23 @@ const AddEntity = ({
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
             value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
+            // onBlur={checkExitsRoleHandler}
             error={entityFormData.name.error}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} lg={6}>
+          <CustomInput
+            required
+            label="Contact Name"
+            id="city_field"
+            type="text"
+            name="contactName"
+            placeHolder="Enter Contact Name"
+            onChange={onChangeHandler}
+            propsToInputElement={{ maxLength: 50 }}
+            value={entityFormData.contactName.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.contactName.error}
           />
         </Grid>
 
@@ -231,13 +445,13 @@ const AddEntity = ({
             label="Contact Email"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="contactEmail"
+            placeHolder="Enter Contact Name"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.contactEmail.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.contactEmail.error}
           />
         </Grid>
 
@@ -247,13 +461,13 @@ const AddEntity = ({
             label="Contact Phone"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="contactPhone"
+            placeHolder="Enter Contact Phone"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.contactPhone.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.contactPhone.error}
           />
         </Grid>
 
@@ -262,13 +476,13 @@ const AddEntity = ({
             label="GST"
             id="city_field"
             type="text"
-            name="address"
-            placeHolder="Enter Entity Name"
+            name="gstIn"
+            placeHolder="Enter GST no"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.gstIn.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.gstIn.error}
           />
         </Grid>
 
@@ -277,17 +491,15 @@ const AddEntity = ({
             label="Aadhar Number"
             id="city_field"
             type="text"
-            name="address"
+            name="aadharCardNo"
             placeHolder="Enter Entity Name"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 50 }}
-            value={entityFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={entityFormData.name.error}
+            value={entityFormData.aadharCardNo.value}
+            // onBlur={checkExitsRoleHandler}
+            error={entityFormData.aadharCardNo.error}
           />
         </Grid>
-
-
       </Grid>
     );
   };

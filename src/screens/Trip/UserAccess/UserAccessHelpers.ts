@@ -17,10 +17,9 @@ export const userAccessTableHeader = [
   },
 ];
 
-
 export const userAccessInsertField = () => {
   return {
-    name: {
+    userId: {
       value: "",
       error: "",
     },
@@ -34,7 +33,6 @@ export const userAccessInsertField = () => {
     },
   } as any;
 };
-
 
 export const userAccessValidation = (customerModuleFormData: any) => {
   let isValid = true;

@@ -1,10 +1,10 @@
 import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/graphql/service-response";
 import {
-  ADD_INDUSTRY,
+  ADD_ENTITY_TYPE,
   CHECK_EXITS_INDUSTRY,
   FETCH_CUSTOMER_MODULE,
-  FETCH_INDUSTRY,
+  FETCH_ENTITY_TYPE,
   SEARCH_INDUSTRY_MODULE,
 } from "./EntityType.mutation";
 
@@ -24,7 +24,7 @@ export const fetchTableHandler = async (variables: any): Promise<any> => {
 export const addEntityType = async (data: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: ADD_INDUSTRY,
+      mutation: ADD_ENTITY_TYPE,
       variables: data,
     });
 
@@ -39,7 +39,7 @@ export const fetchEntityTypeTableHandler = async (
 ): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_INDUSTRY,
+      mutation: FETCH_ENTITY_TYPE,
       variables,
     });
 
