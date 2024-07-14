@@ -14,11 +14,11 @@ import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDat
 import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
-import PieChart from "./components/Chart/OfflinePieChart";
+import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
-import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
+
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -58,327 +58,7 @@ const Dashboard = () => {
     endDate: moment().toISOString(),
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (dateFilter) {
-        try {
-          setIsLoading(true);
-          const res = await alertRowData({
-            input: {
-              startDate: dateFilter.startDate,
-              endDate: dateFilter.endDate,
-              page,
-              limit,
-            },
-          });
-          const alertTableDataValue = res?.getAlertData?.data?.map(
-            (item: any) => ({
-              imei: item.imei,
-              label: item.label,
-              mode: item.mode,
-              event: item.event,
-              message: item.message,
-              source: item.source,
-              time: moment(item.time).fromNow(),
-              action: (
-                <span style={{ color: "#845ADF" }}>
-                  <IoMdInformationCircleOutline />
-                </span>
-              ),
-            })
-          );
-          setAlertTableData(alertTableDataValue);
-          setCount(res?.getAlertData?.paginatorInfo?.count);
-          setIsLoading(false);
-        } catch (error: any) {
-          setIsLoading(false);
-          openErrorNotification(error.message);
-        }
-      }
-    };
-
-    const intervalId = setInterval(fetchData, 500000);
-    fetchData();
-
-    return () => clearInterval(intervalId);
-  }, [dateFilter, page, limit]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (offlineDateFilter) {
-        try {
-          setIsLoading(true);
-          const res = await statusDevice({
-            input: {
-              startDate: offlineDateFilter.startDate,
-              endDate: offlineDateFilter.endDate,
-              page: offlinePage,
-              limit: offlineLimit,
-            },
-          });
-          setOfflineCount(res?.getStatusDevice?.paginatorInfo?.count);
-          const deviceStatus = res?.getStatusDevice?.data?.map(
-            (item: any, index: number) => ({
-              id: index,
-              imei: item.imei,
-              label: item.label,
-              status: (
-                <Chip
-                  label={item.status}
-                  sx={{
-                    backgroundColor: "red",
-                    color: "white",
-                    borderRadius: "5px",
-                    padding: "0.1rem 0.2rem",
-                    fontFamily: "Geist_Regular",
-                    animation: "pulse 2s infinite",
-                    "@keyframes pulse": {
-                      "0%": {
-                        transform: "scale(1)",
-                        opacity: 1,
-                      },
-                      "50%": {
-                        transform: "scale(1.1)",
-                        opacity: 0.75,
-                      },
-                      "100%": {
-                        transform: "scale(1)",
-                        opacity: 1,
-                      },
-                    },
-                  }}
-                  variant="filled"
-                />
-              ),
-              time: moment(item.time).fromNow(),
-              action: (
-                <span
-                  style={{
-                    color: "#5f22e1",
-                    fontSize: "1.5rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <IoMdInformationCircleOutline
-                    onClick={() => {
-                      history.push({
-                        pathname: "/view-offline",
-                        state: {
-                          data: item,
-                        },
-                      });
-                    }}
-                  />
-                </span>
-              ),
-            })
-          );
-          setStatData(deviceStatus);
-          setIsLoading(false);
-        } catch (error: any) {
-          setIsLoading(false);
-          openErrorNotification(error.message);
-        }
-      }
-    };
-
-    const intervalId = setInterval(fetchData, 500000);
-    fetchData();
-
-    return () => clearInterval(intervalId);
-  }, [offlineDateFilter, offlinePage, offlineLimit]);
-
-  const CustomChange = () => {
-    setOpenModal(true);
-    setDateRange({
-      fromDate: lastSelectedRange.startDate,
-      toDate: lastSelectedRange.endDate,
-    });
-  };
-
-  const handleCloseModel = () => {
-    setOpenModal(false);
-  };
-
-  const datePickerChanged = () => {
-    setDateFilter({
-      startDate: dateRange.fromDate,
-      endDate: dateRange.toDate,
-    });
-    setOfflineDateFilter({
-      startDate: dateRange.fromDate,
-      endDate: dateRange.toDate,
-    });
-    handleCloseModel();
-  };
-
-  const addEmailsDialogFooter = () => {
-    return (
-      <>
-        <Box mt={3} width={"100%"} mb={3}>
-          <Box sx={classes.buttonWrapper} gap={3}>
-            <CustomButton
-              label="Cancel"
-              onClick={() => handleCloseModel()}
-              customClasses={{ width: "110px" }}
-              // variant={"outlined"}`
-            />
-            <CustomButton
-              label={"Submit"}
-              onClick={() => {
-                datePickerChanged();
-              }}
-              customClasses={{ width: "110px" }}
-              // buttonType={"contained"}
-            />
-          </Box>
-        </Box>
-      </>
-    );
-  };
-
-  const handleDaterangeChange = (value: string, date: string) => {
-    const formattedDate =
-      value && value != "Invalid Date" ? moment(value).toISOString() : null;
-    setDateRange({
-      ...dateRange,
-      [date]: formattedDate,
-    });
-  };
-
-  const domainData = [
-    { name: "Domain 1", count: 30 },
-    { name: "Domain 2", count: 20 },
-    { name: "Domain 3", count: 50 },
-  ];
-
-  const customDate = () => {
-    return (
-      <>
-        <Box
-          mt={5}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Box>
-            <CustomDatePicker
-              handleDaterangeChange={handleDaterangeChange}
-              dateRange={dateRange}
-              customWidth={{
-                xl: "480px",
-                lg: "480px",
-                md: "320px",
-                sm: "260px",
-                xs: "260px",
-              }}
-              toDate="toDate"
-              fromDate="fromDate"
-              labelFirst="From Date"
-              labelSecond="To Date"
-              labelWidth={{
-                xl: "250px",
-                lg: "250px",
-                md: "160px",
-                sm: "130px",
-                xs: "130px",
-              }}
-              placeholderstart="Select From Date"
-              placeholderend="Select To Date"
-            />
-          </Box>
-        </Box>
-      </>
-    );
-  };
-
-  const customDialog = () => {
-    return (
-      <CustomDialog
-        isDialogOpen={openModal}
-        handleDialogClose={handleCloseModel}
-        dialogBodyContent={customDate()}
-        dialogFooterContent={addEmailsDialogFooter()}
-        width="550px"
-        closable
-        closeButtonVisibility
-        borderRadius="33px"
-      />
-    );
-  };
-
-  const handleChange = (event: any) => {
-    setSelectedRange(event.target.value);
-    const now = moment();
-    let startDate, endDate;
-    switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Custom":
-        startDate = lastSelectedRange.startDate;
-        endDate = lastSelectedRange.endDate;
-        break;
-      default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-    }
-    if (event.target.value !== "Custom") {
-      setLastSelectedRange({ startDate, endDate });
-    }
-    setDateFilter({
-      startDate: startDate,
-      endDate: endDate,
-    });
-
-    setOfflineDateFilter({
-      startDate: startDate,
-      endDate: endDate,
-    });
-  };
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
-
-  const handleStatusChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setOfflinePage(newPage);
-  };
-
-  const handlePerPageData = (event: any) => {
-    setPage(1);
-    setLimit(event.target.value);
-  };
-
-  const handlePerOfflinePageData = (event: any) => {
-    setOfflinePage(1);
-    setOfflineLimit(event.target.value);
-  };
-
-  const getAlertsTable = () => {
+  const getDeviceList = () => {
     return (
       <Grid
         container
@@ -421,7 +101,7 @@ const Dashboard = () => {
               borderLeftColor: "#855BDE",
             }}
           >
-            Offline Devices
+            Device List
           </Typography>
 
           <CustomTableDashboard
@@ -439,8 +119,6 @@ const Dashboard = () => {
             paginationCount={offlineCount}
             pageNumber={offlinePage}
             setPage={setOfflinePage}
-            handlePageChange={handleStatusChangePage}
-            handlePerPageData={handlePerOfflinePageData}
           />
         </Grid>
       </Grid>
@@ -466,7 +144,7 @@ const Dashboard = () => {
 
           <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} sm={12} md={12} xl={6} lg={6}>
-              <LineChart height={400} />
+              <LineChart height={300} />
             </Grid>
             <Grid
               container
@@ -492,7 +170,7 @@ const Dashboard = () => {
           </Grid>
 
           <Grid item spacing={2} xs={12} md={12} lg={12} xl={12}>
-            {getAlertsTable()}
+            {getDeviceList()}
           </Grid>
         </Grid>
       </Grid>
@@ -512,8 +190,6 @@ const Dashboard = () => {
         <DashboardHeader />
       </Box>
       {getDashboardBody()}
-      {customDialog()}
-
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
