@@ -4,9 +4,13 @@ import { Box, useTheme } from "@mui/material";
 
 interface PieChartProps {
   width?: number;
+  height?: number;
 }
 
-const OnlinePieChart: React.FC<PieChartProps> = ({ width = 300 }) => {
+const OnlinePieChart: React.FC<PieChartProps> = ({
+  width = "100%",
+  height = 400,
+}) => {
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -14,25 +18,46 @@ const OnlinePieChart: React.FC<PieChartProps> = ({ width = 300 }) => {
     if (chartRef.current) {
       const options: ApexCharts.ApexOptions = {
         chart: {
-          type: "pie",
+          type: "radialBar",
           width: width,
+          height: height,
           background: "#ffffff",
         },
-        series: [44, 55, 13],
-        labels: ["Motion", "Idel", "Stop"],
-        responsive: [
-          {
-            breakpoint: 480,
-            options: {
-              chart: {
-                width: 400,
+        plotOptions: {
+          radialBar: {
+            dataLabels: {
+              name: {
+                fontSize: "22px",
               },
-              legend: {
-                position: "bottom",
+              value: {
+                fontSize: "16px",
+              },
+              total: {
+                show: true,
+                label: "Online Device",
+                formatter: function (w) {
+                  return "112";
+                },
               },
             },
           },
-        ],
+        },
+        series: [44, 55, 13],
+        labels: ["Motion", "Idle", "Stop"],
+        tooltip: {
+          enabled: true,
+          theme: "dark",
+          y: {
+            formatter: function (value, { seriesIndex }) {
+              return `${value} Devices`;
+            },
+            title: {
+              formatter: function (seriesName) {
+                return `${seriesName}:`;
+              },
+            },
+          },
+        },
       };
 
       const chart = new ApexCharts(chartRef.current, options);
@@ -42,12 +67,13 @@ const OnlinePieChart: React.FC<PieChartProps> = ({ width = 300 }) => {
         chart.destroy();
       };
     }
-  }, [width]);
+  }, [width, height]);
 
   return (
     <Box
       ref={chartRef}
       sx={{
+        height: height,
         padding: "2rem 1.5rem",
         backgroundColor: theme.palette.background.paper,
         borderRadius: "8px",

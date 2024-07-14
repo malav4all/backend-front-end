@@ -464,16 +464,30 @@ const Dashboard = () => {
             <GetAlerts />
           </Grid>
 
-          <Grid item spacing={2} xs={12} md={12} lg={12} xl={12}>
-            <LineChart height={400} />
-          </Grid>
-
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-              <OnlinePieChart />
+          <Grid container item xs={12} spacing={2}>
+            <Grid item xs={12} sm={12} md={12} xl={6} lg={6}>
+              <LineChart height={400} />
             </Grid>
-            <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
-              <OfflinePieChart />
+            <Grid
+              container
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              xl={6}
+              lg={6}
+              spacing={2}
+            >
+              <Grid item xs={12} sm={6} md={6}>
+                <Box>
+                  <OnlinePieChart />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} md={6}>
+                <Box>
+                  <OfflinePieChart />
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
 

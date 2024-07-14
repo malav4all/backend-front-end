@@ -46,7 +46,7 @@ const ListOfMenus = () =>
         {
           icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
-          text: "Live Monitoring",
+          text: "Device Dashboard",
           link: "/dashboard",
           pageName: strings.DASHBOARD,
           visibleInSidebar: true,
@@ -56,7 +56,7 @@ const ListOfMenus = () =>
         {
           icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
-          text: "All Devices",
+          text: "Trip Dashboard",
           link: "/device-dashboard",
           pageName: strings.DEVICEDASHBOARD,
           visibleInSidebar: true,
