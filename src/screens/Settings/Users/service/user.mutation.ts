@@ -30,35 +30,18 @@ export const FETCH_USER = gql`
         firstName
         lastName
         userName
+        accountName
         email
-        status
         mobileNumber
-        # createdBy
-        # accountId{
-        #   _id
-        # }
-        # accountId {
-        #   _id
-        #   accountName
-        #   industryType {
-        #     _id
-        #     name
-        #   }
-        # }
-        # roleId {
-        #   _id
-        #   name
-        # }
-        # deviceGroup {
-        #   deviceGroupName
-        #   _id
-        #   imeiData {
-        #     imei
-        #     labelName
-        #     _id
-        #     boxSet
-        #   }
-        # }
+        createdBy
+        roleId {
+          _id
+        }
+        roleName
+        status
+        accountId {
+          _id
+        }
       }
     }
   }
@@ -119,12 +102,13 @@ export const SEARCH_USER = gql`
         _id
         firstName
         lastName
-        userName
         email
         mobileNumber
-        createdBy
-        roleId
+        userName
+        roleName
+        accountName
         status
+        createdBy
       }
     }
   }
