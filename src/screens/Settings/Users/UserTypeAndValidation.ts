@@ -11,12 +11,8 @@ export const userTableHeader = [
     field: "email",
   },
   {
-    name: "Device Group",
-    field: "deviceGroupName",
-  },
-  {
     name: "Role Name",
-    field: "roleId",
+    field: "roleName",
   },
 
   {
@@ -77,24 +73,24 @@ export const insertUserField = (data?: any) => {
       value: store?.getState()?.auth?.userName,
       error: "",
     },
+    roleName: {
+      value: data?.roleName || "",
+      error: "",
+    },
     roleId: {
-      value: data?.roleId ?? "",
+      value: data?.roleId?._id ?? "",
       error: "",
     },
     accountId: {
-      value: data?.accountId?._id ?? (data?.accountId?.accountName || ""),
+      value: data?.accountId?._id ?? "",
       error: "",
     },
-    industryType: {
-      value: "",
+    accountName: {
+      value: data?.accountName ?? "",
       error: "",
     },
     status: {
       value: data?.status ?? "Active",
-      error: "",
-    },
-    deviceGroupName: {
-      value: data?.deviceGroup?.deviceGroupName ?? "",
       error: "",
     },
   } as any;
