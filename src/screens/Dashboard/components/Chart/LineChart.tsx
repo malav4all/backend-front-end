@@ -3,74 +3,80 @@ import ApexCharts from "apexcharts";
 import { Box, useTheme } from "@mui/material";
 
 interface LineChartProps {
+  width?: number | string;
   height?: number;
 }
 
-const LineChart: React.FC<LineChartProps> = ({ height = 350 }) => {
+const LineChart: React.FC<LineChartProps> = ({
+  width = "100%",
+  height = 400,
+}) => {
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (chartRef.current) {
+      const isDarkMode = theme.palette.mode === "dark";
+
+      // Apply custom styles for the export menu in dark mode
+      const customStyles = `
+        .apexcharts-menu {
+          background: ${isDarkMode ? '#060B25' : '#FFFFFF'} !important;
+          color: ${isDarkMode ? '#FFFFFF' : '#000000'} !important;
+        }
+        .apexcharts-menu-item:hover {
+          background: ${isDarkMode ? '#15152E' : '#E0E0E0'} !important;
+        }
+      `;
+      const styleSheet = document.createElement("style");
+      styleSheet.type = "text/css";
+      styleSheet.innerText = customStyles;
+      document.head.appendChild(styleSheet);
+
       const options: ApexCharts.ApexOptions = {
         chart: {
+          type: "area", 
+          width: width,
           height: height,
-          type: "area",
-          zoom: {
-            enabled: false,
-          },
-          background: "#0000000",
+          background: theme.palette.background.paper,
+          foreColor: theme.palette.text.primary,
+          toolbar: {
+            tools: {
+              download: true,
+              selection: true,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+              reset: true,
+            },
+            autoSelected: 'zoom',
+          }
+        },
+        stroke: {
+          curve: 'smooth', 
         },
         series: [
           {
             name: "series1",
-            data: [31, 40, 28, 51, 42, 109, 100],
+            data: [31, 40, 28, 51, 42, 109, 100]
           },
           {
             name: "series2",
-            data: [11, 32, 45, 32, 34, 52, 41],
-          },
+            data: [11, 32, 45, 32, 34, 52, 41]
+          }
         ],
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          curve: "smooth",
-        },
         xaxis: {
-          type: "datetime",
-          categories: [
-            "2018-09-19T00:00:00.000Z",
-            "2018-09-19T01:30:00.000Z",
-            "2018-09-19T02:30:00.000Z",
-            "2018-09-19T03:30:00.000Z",
-            "2018-09-19T04:30:00.000Z",
-            "2018-09-19T05:30:00.000Z",
-            "2018-09-19T06:30:00.000Z",
-          ],
-          labels: {
-            style: {
-              colors: theme.palette.text.primary,
-            },
-          },
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
         },
         yaxis: {
-          labels: {
-            style: {
-              colors: theme.palette.text.primary,
-            },
-          },
+          opposite: isDarkMode,
+        },
+        grid: {
+          borderColor: isDarkMode ? "#060B25" : "#E0E0E0",
         },
         tooltip: {
-          theme: "dark", // or 'light' depending on your preference
-          x: {
-            format: "dd/MM/yy HH:mm",
-          },
-        },
-        legend: {
-          labels: {
-            colors: theme.palette.text.primary,
-          },
+          theme: theme.palette.mode,
         },
       };
 
@@ -79,13 +85,16 @@ const LineChart: React.FC<LineChartProps> = ({ height = 350 }) => {
 
       return () => {
         chart.destroy();
+        document.head.removeChild(styleSheet);
       };
     }
-  }, [height, theme.palette.text.primary]);
+  }, [width, height, theme]);
 
   return (
     <Box
+      ref={chartRef}
       sx={{
+        height: height,
         padding: "2rem 1.5rem",
         backgroundColor: theme.palette.background.paper,
         borderRadius: "8px",
@@ -95,7 +104,6 @@ const LineChart: React.FC<LineChartProps> = ({ height = 350 }) => {
         borderColor: theme.palette.divider,
         color: theme.palette.text.primary,
       }}
-      ref={chartRef}
     />
   );
 };

@@ -3,7 +3,7 @@ import ApexCharts from "apexcharts";
 import { Box, useTheme } from "@mui/material";
 
 interface PieChartProps {
-  width?: number;
+  width?: number | string;
   height?: number;
 }
 
@@ -16,15 +16,20 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
 
   useEffect(() => {
     if (chartRef.current) {
+      const isDarkMode = theme.palette.mode === "dark";
       const options: ApexCharts.ApexOptions = {
         chart: {
           type: "radialBar",
           width: width,
           height: height,
-          background: "#ffffff",
+          background: theme.palette.background.paper,
+          foreColor: theme.palette.text.primary,
         },
         plotOptions: {
           radialBar: {
+            track: {
+              background: isDarkMode ? "#060B25" : "#F4F4F4",
+            },
             dataLabels: {
               name: {
                 fontSize: "22px",
@@ -44,6 +49,20 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
         },
         series: [44, 66],
         labels: ["Offline", "Disconnected"],
+        tooltip: {
+          enabled: true,
+          theme: theme.palette.mode,
+          y: {
+            formatter: function (value, { seriesIndex }) {
+              return `${value} Devices`;
+            },
+            title: {
+              formatter: function (seriesName) {
+                return `${seriesName}:`;
+              },
+            },
+          },
+        },
       };
 
       const chart = new ApexCharts(chartRef.current, options);
@@ -53,7 +72,7 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
         chart.destroy();
       };
     }
-  }, [width, height]);
+  }, [width, height, theme]);
 
   return (
     <Box
