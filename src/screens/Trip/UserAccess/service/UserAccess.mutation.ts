@@ -36,6 +36,11 @@ export const FETCH_USER_ACCESS = gql`
       message
       data {
         _id
+        userId
+        devicesImei
+        entites
+        deviceGroup
+        createdBy
       }
     }
   }
