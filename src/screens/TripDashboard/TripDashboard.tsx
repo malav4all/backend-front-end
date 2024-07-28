@@ -39,14 +39,62 @@ const TripDashboard = () => {
   const [searchData, setSearchData] = useState<any>([]);
 
   const trips = [
-    { id: 1, name: "Trip 1", description: "Description of Trip 1" },
-    { id: 2, name: "Trip 2", description: "Description of Trip 2" },
-    { id: 3, name: "Trip 3", description: "Description of Trip 3" },
-    { id: 4, name: "Trip 4", description: "Description of Trip 4" },
-    { id: 5, name: "Trip 5", description: "Description of Trip 5" },
-    { id: 6, name: "Trip 6", description: "Description of Trip 6" },
-    { id: 7, name: "Trip 7", description: "Description of Trip 7" },
-    { id: 8, name: "Trip 8", description: "Description of Trip 8" },
+    {
+      id: 1,
+      name: "Name of Trip 1",
+      tripID: "123123123212",
+      source: "Source 1",
+      destination: "Destination 1",
+    },
+    {
+      id: 2,
+      name: "Name of Trip 2",
+      tripID: "123123123212",
+      source: "Source 2",
+      destination: "Destination 2",
+    },
+    {
+      id: 3,
+      name: "Name of Trip 3",
+      tripID: "123123123212",
+      source: "Source 3",
+      destination: "Destination 3",
+    },
+    {
+      id: 4,
+      name: "Name of Trip 4",
+      tripID: "123123123212",
+      source: "Source 4",
+      destination: "Destination 4",
+    },
+    {
+      id: 5,
+      name: "Name of Trip 5",
+      tripID: "123123123212",
+      source: "Source 5",
+      destination: "Destination 5",
+    },
+    {
+      id: 6,
+      name: "Name of Trip 6",
+      tripID: "123123123212",
+      source: "Source 6",
+      destination: "Destination 6",
+    },
+    {
+      id: 7,
+      name: "Name of Trip 7",
+      tripID: "123123123212",
+      source: "Source 7",
+      destination: "Destination 7",
+    },
+    {
+      id: 8,
+      name: "Name of Trip 8",
+      tripID: "123123123212",
+      source: "Source 8",
+      destination: "Destination 8",
+    },
   ];
 
   const stats = {
@@ -97,16 +145,45 @@ const TripDashboard = () => {
           {trips.map((trip) => (
             <ListItem key={trip.id} sx={{ borderBottom: "1px solid #ddd" }}>
               <ListItemText
-                primary={trip.name}
-                secondary={trip.description}
-                primaryTypographyProps={{
-                  fontFamily: "Geist_Medium",
-                  fontSize: "1.2rem",
-                }}
-                secondaryTypographyProps={{
-                  fontFamily: "Geist_Light",
-                  fontSize: "1rem",
-                }}
+                primary={
+                  <Typography
+                    sx={{
+                      fontFamily: "Geist_Bold",
+                      fontSize: "1rem",
+                    }}
+                  >
+                    {trip.name}
+                  </Typography>
+                }
+                secondary={
+                  <>
+                    <Typography
+                      sx={{
+                        fontFamily: "Geist_Regular",
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      Trip ID: {trip.tripID}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Geist_Light",
+                        fontSize: "0.9rem",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      Source: {trip.source}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: "Geist_Light",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      Destination: {trip.destination}
+                    </Typography>
+                  </>
+                }
               />
             </ListItem>
           ))}
@@ -341,7 +418,7 @@ const TripDashboard = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         width: "100%",
-        height: "100%",
+        height: "auto",
         margin: "auto",
       }}
     >
