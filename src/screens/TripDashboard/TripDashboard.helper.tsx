@@ -1,5 +1,5 @@
 import { FcInfo } from "react-icons/fc";
-export const deviceDashboardTableHeader = [
+export const tripDashboardTableHeader = [
   { name: "Label", field: "name" },
   { name: "Imei", field: "imei" },
   { name: "Status", field: "status" },

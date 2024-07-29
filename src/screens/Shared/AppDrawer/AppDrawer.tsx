@@ -386,7 +386,7 @@ const AppDrawer = (props: CustomProps) => {
             component={"div"}
           >
             <Typography sx={classes.avatarStyle}>
-              {userName.charAt(0)}
+              {/* {userName.charAt(0)} */}
             </Typography>
           </Box>
 

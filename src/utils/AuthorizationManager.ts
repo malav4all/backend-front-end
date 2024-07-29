@@ -46,7 +46,7 @@ const ListOfMenus = () =>
         {
           icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
-          text: "Live Monitoring",
+          text: "Device Dashboard",
           link: "/dashboard",
           pageName: strings.DASHBOARD,
           visibleInSidebar: true,
@@ -56,9 +56,9 @@ const ListOfMenus = () =>
         {
           icon: getHomeIcon("#dbdbdb"),
           activeIcon: getHomeIcon(pinkDarkColor),
-          text: "All Devices",
-          link: "/device-dashboard",
-          pageName: strings.DEVICEDASHBOARD,
+          text: "Trip Dashboard",
+          link: "/trip-dashboard",
+          pageName: strings.TRIPDASHBOARD,
           visibleInSidebar: true,
           accessToResource: [],
           subMenu: [],
@@ -356,9 +356,9 @@ const ListOfMenus = () =>
 //         {
 //           icon: getHomeIcon("#dbdbdb"),
 //           activeIcon: getHomeIcon(pinkDarkColor),
-//           text: "Device Dashboard",
+//           text: "Trip Dashboard",
 //           link: "/b",
-//           pageName: strings.DEVICEDASHBOARD,
+//           pageName: strings.TRIPDASHBOARD,
 //           visibleInSidebar: true,
 //           accessToResource: [],
 //           subMenu: [],
