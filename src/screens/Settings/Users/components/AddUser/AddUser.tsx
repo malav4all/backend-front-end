@@ -106,20 +106,11 @@ const AddUser = (props: CustomProps) => {
     }
   };
 
-  const handleValidation = () => {
-    const { isValid, errors }: any = validateAddUserForm(
-      userFormFields,
-      props?.edit
-    );
-    setUserFormFields({ ...errors });
-    return isValid;
-  };
-
   const handleSelectAccount = (formFillEvent: SelectChangeEvent<any>) => {
     const selectedValue = formFillEvent.target.value;
 
     const selectedAccount = accountData.find(
-      (item: any) => item._id === selectedValue
+      (item: any) => item.accountId === selectedValue
     );
 
     if (!selectedAccount) {
@@ -521,7 +512,7 @@ const AddUser = (props: CustomProps) => {
                 {accountData?.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item._id}
+                    value={item.accountId}
                     sx={classes.dropDownOptionsStyle}
                   >
                     {item.accountName}

@@ -37,6 +37,7 @@ import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddEntity from "./component/AddEntity";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
+import { store } from "../../../utils/store";
 const Entity = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -50,9 +51,7 @@ const Entity = () => {
   const classes = EntityStyles;
   const theme = useTheme();
   const location = useLocation();
-  const [entityFormData, setEntityFormData] = useState(
-    entityInsertField()
-  );
+  const [entityFormData, setEntityFormData] = useState(entityInsertField());
   const [modulesData, setModuleData] = useState([]);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
@@ -61,8 +60,7 @@ const Entity = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<any>();
-  const [addEntityDialogHandler, setAddEntityDialogHandler] =
-    useState(false);
+  const [addEntityDialogHandler, setAddEntityDialogHandler] = useState(false);
   const urlParams = new URLSearchParams(location.search);
   const tabValueName = validateTabValue(urlParams.get("tabValue"));
   const [tabValue, setTabValue] = useState<string>(tabValueName!);
@@ -86,42 +84,26 @@ const Entity = () => {
   const handleModuleChange = (event: any) => {
     setEntityFormData({
       ...entityFormData,
-      code: {
-        value: event.target.value,
+      [event?.target?.name]: {
+        ...entityFormData[event?.target?.name],
+        value: event?.target?.value,
         error: "",
       },
     });
-  };
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
   };
 
   const fetchTableEntity = async () => {
     try {
       setIsLoading(true);
       const res = await fetchEntityTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
-      const finalData = res?.entityListAll?.data?.map((item: any) => {
-        return {
-          name: item.name,
-          code: item?.code?.map((val: any) => val).join(","),
-          description: item.description,
-          file: (
-            <>
-              <img
-                src={`http://localhost:5000/${item.file}`}
-                alt=""
-                width="30"
-                height="30"
-              />
-            </>
-          ),
-        };
-      });
-      setTableData(finalData);
-      setCount(res?.entityListAll?.paginatorInfo?.count);
+      setTableData(res?.fetchEntitesType?.data);
+      setCount(res?.fetchEntitesType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -164,21 +146,34 @@ const Entity = () => {
   const addEntityHandler = async () => {
     try {
       const payload: any = {
-        name: entityFormData.name.value,
-        code: entityFormData.code.value,
-        description: entityFormData.description.value,
-        file,
+        accountId: store.getState().auth.tenantId,
+        tripTypeList: entityFormData.tripTypeList?.value,
+        name: entityFormData.name?.value,
+        type: entityFormData.type?.value,
+        address: entityFormData.address?.value,
+        city: entityFormData.city?.value,
+        state: entityFormData.state?.value,
+        area: entityFormData.area?.value,
+        district: entityFormData.district?.value,
+        pinCode: entityFormData.pinCode?.value,
+        contactName: entityFormData.contactName?.value,
+        contactEmail: entityFormData.contactEmail?.value,
+        contactPhone: entityFormData.contactPhone?.value,
+        code: entityFormData.code?.value,
+        gstIn: entityFormData.gstIn?.value,
+        aadharCardNo: entityFormData.aadharCardNo?.value,
+        createdBy: store.getState().auth.userName,
       };
       setIsLoading(true);
-      if (handleValidation()) {
-        const res = await addEntity({
-          input: { ...payload },
-        });
-        setEntityFormData(entityInsertField());
-        await fetchTableEntity();
-        openSuccessNotification(res.createEntity.message);
-        setIsLoading(false);
-      }
+      // if (handleValidation()) {
+      const res = await addEntity({
+        input: { ...payload },
+      });
+      setEntityFormData(entityInsertField());
+      await fetchTableEntity();
+      openSuccessNotification(res.addEntitesType.message);
+      setIsLoading(false);
+      // }
     } catch (error: any) {
       openErrorNotification(error.message);
       setIsLoading(false);
@@ -276,8 +271,7 @@ const Entity = () => {
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };
@@ -348,6 +342,7 @@ const Entity = () => {
         MenuProps={MenuProps}
         isTruthy={isTruthy}
         classes={classes}
+        setEntityFormData={setEntityFormData}
       />
       <CustomLoader isLoading={isLoading} />
     </Box>

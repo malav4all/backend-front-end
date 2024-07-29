@@ -82,6 +82,7 @@ const LocationType = () => {
       if (handleValidation()) {
         const res = await createLocationType({
           input: {
+            accountId: store.getState().auth.tenantId,
             type: formField.value,
             createdBy: store?.getState()?.auth.userName,
           },
@@ -105,6 +106,7 @@ const LocationType = () => {
     try {
       const res = await fetchLocationType({
         input: {
+          accountId: store.getState().auth.tenantId,
           page,
           limit,
         },
@@ -205,8 +207,7 @@ const LocationType = () => {
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

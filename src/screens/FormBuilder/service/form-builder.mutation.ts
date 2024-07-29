@@ -8,3 +8,24 @@ export const ADD_FORM_BUILDER = gql`
     }
   }
 `;
+
+export const FETCH_FORM_BUILDER = gql`
+  mutation ($input: FormBuildInput!) {
+    fetchFormBuilder(input: $input) {
+      success
+      message
+      data {
+        accountId
+        formTitle
+        fields {
+          id
+          label
+          required
+          type
+        }
+        createdBy
+        isFormEnable
+      }
+    }
+  }
+`;

@@ -17,18 +17,18 @@ export const FETCH_CUSTOMER_MODULE = gql`
   }
 `;
 
-export const ADD_INDUSTRY = gql`
+export const ADD_USER_ACCESS = gql`
   mutation ($input: CreateUserAccessInput!) {
-    createUserAccess(input: $input) {
+    addUserAccess(input: $input) {
       success
       message
     }
   }
 `;
 
-export const FETCH_INDUSTRY = gql`
+export const FETCH_USER_ACCESS = gql`
   mutation ($input: UserAccessInput!) {
-    UserAccessListAll(input: $input) {
+    fetchUserAccess(input: $input) {
       paginatorInfo {
         count
       }
@@ -36,10 +36,11 @@ export const FETCH_INDUSTRY = gql`
       message
       data {
         _id
-        name
-        code
-        description
-        file
+        userId
+        devicesImei
+        entites
+        deviceGroup
+        createdBy
       }
     }
   }
@@ -68,6 +69,19 @@ export const CHECK_EXITS_INDUSTRY = gql`
     checkUserAccessExistsRecord(input: $input) {
       success
       message
+    }
+  }
+`;
+
+export const FETCH_USER_ACCOUNT_WISE = gql`
+  mutation ($input: AccountIdInput!) {
+    fetchUserAccountWise(input: $input) {
+      success
+      message
+      data {
+        _id
+        firstName
+      }
     }
   }
 `;

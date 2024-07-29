@@ -1,26 +1,29 @@
 export const userAccessTableHeader = [
   {
     name: "UserAccess Name",
-    field: "name",
+    field: "userId",
   },
   {
-    name: "UserAccess Modules",
-    field: "code",
+    name: "Imei",
+    field: "devicesImei",
   },
   {
-    name: "Description",
-    field: "description",
+    name: "Enitites",
+    field: "entites",
   },
   {
-    name: "Image",
-    field: "file",
+    name: "Device Group",
+    field: "deviceGroup",
+  },
+  {
+    name: "Entered by",
+    field: "createdBy",
   },
 ];
 
-
 export const userAccessInsertField = () => {
   return {
-    name: {
+    userId: {
       value: "",
       error: "",
     },
@@ -34,7 +37,6 @@ export const userAccessInsertField = () => {
     },
   } as any;
 };
-
 
 export const userAccessValidation = (customerModuleFormData: any) => {
   let isValid = true;

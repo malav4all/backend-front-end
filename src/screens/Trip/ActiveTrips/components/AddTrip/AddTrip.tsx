@@ -32,6 +32,7 @@ import notifiers from "../../../../../global/constants/NotificationConstants";
 import CustomLoader from "../../../../../global/components/CustomLoader/CustomLoader";
 import { CustomButton } from "../../../../../global/components";
 import AlertConfiguration from "./AlertConfiguration";
+import { fetchFormBuilder } from "../../../../FormBuilder/service/form-builder.service";
 
 const TransitType = lazy(() => import("./TransitType"));
 const TripInformation = lazy(() => import("./TripInformation"));
@@ -42,7 +43,7 @@ const steps = [
   "Transit Type",
   "Trip Information",
   "Alert Detail",
-  "Driver Information",
+  // "Driver Information",
 ];
 
 interface CustomProps {
@@ -57,13 +58,13 @@ interface CustomProps {
 }
 
 const AddTrip: React.FC<CustomProps> = (props) => {
-  const theme = useTheme();
   const classes = useStyles();
   const [tripFromFields, setTripFromFields] = useState<TripFields>(
     insertTripField(props?.selectedTripRowData)
   );
   const [imeiData, setImeiData] = useState([]);
-  const [selectedImeis, setSelectedImeis] = useState([]);
+  const [dynamicForm, setDynamicForm] = useState<any>(null);
+
   const [activeStep, setActiveStep] = useState(0);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   useEffect(() => {
     fetchImeiData();
+    fetchFormbuilderForm();
   }, []);
 
   const handleValidation = () => {
@@ -180,10 +182,38 @@ const AddTrip: React.FC<CustomProps> = (props) => {
     }
   };
 
+  const fetchFormbuilderForm = async () => {
+    try {
+      const res = await fetchFormBuilder({
+        input: {
+          accountId: "IMZ113343",
+          page: -1,
+          limit: 10000,
+        },
+      });
+      setDynamicForm(res.fetchFormBuilder.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const renderDynamicFormFields = (form: any) => {
+    return form.fields.map((field: any) => (
+      <Box key={field.id}>
+        <label>{field.label}</label>
+        <input
+          type={field.type}
+          required={field.required}
+          onChange={(e) =>
+            handleFormDataChange(e as ChangeEvent<HTMLInputElement>)
+          }
+        />
+      </Box>
+    ));
+  };
+
   const insertTripDetails = async () => {
     try {
-      console.log("Trip Details:", tripFromFields);
-
       const insertTripBody = {
         imeiData: tripFromFields.imeiList.value,
         tripName: tripFromFields.tripName.value?.trim(),
@@ -251,11 +281,17 @@ const AddTrip: React.FC<CustomProps> = (props) => {
           justifyContent: "space-around",
         }}
       >
-        {steps.map((label) => (
+        {steps?.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
+        {dynamicForm.map(
+          (form: any, index: any) =>
+            activeStep === steps.length + index && (
+              <Box key={index}>{renderDynamicFormFields(form)}</Box>
+            )
+        )}
       </Stepper>
 
       <Suspense fallback={<CustomLoader isLoading={true} />}>
@@ -278,15 +314,16 @@ const AddTrip: React.FC<CustomProps> = (props) => {
             tripFromFields={tripFromFields}
             handleFormDataChange={handleFormDataChange}
             handleSelectChange={handleSelectChange}
-            handleDateChange={handleDateChange} // Pass handleDateChange prop
-            handleCheckboxChange={handleCheckboxChange} // Pass handleCheckboxChange prop
+            handleDateChange={handleDateChange}
+            handleCheckboxChange={handleCheckboxChange}
           />
         )}
-        {activeStep === 3 && (
-          <DriverInformation
-            tripFromFields={tripFromFields}
-            handleFormDataChange={handleFormDataChange}
-          />
+
+        {dynamicForm.map(
+          (form: any, index: any) =>
+            activeStep === steps.length + index && (
+              <Box key={index}>{renderDynamicFormFields(form)}</Box>
+            )
         )}
       </Suspense>
     </Box>

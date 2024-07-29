@@ -52,13 +52,13 @@ const ViewDeviceGroupList = () => {
   const [searchDeviceGroup, setSearchDeviceGroup] = useState<string>("");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
 
-  useEffect(() => {
-    if (searchDeviceGroup) {
-      searchImeiData();
-    } else {
-      fetchDeviceGroupData();
-    }
-  }, [searchDeviceGroup, page, rowsPerPage]);
+  // useEffect(() => {
+  //   if (searchDeviceGroup) {
+  //     searchImeiData();
+  //   } else {
+  //     fetchDeviceGroupData();
+  //   }
+  // }, [searchDeviceGroup, page, rowsPerPage]);
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
@@ -114,27 +114,6 @@ const ViewDeviceGroupList = () => {
         />
       </Box>
     );
-  };
-
-  const searchImeiData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await searchDeviceImeiData({
-        input: {
-          id: _id.id,
-          search: searchDeviceGroup,
-          page,
-          limit: 10,
-        },
-      });
-      const data = tableRender(res?.searchDeviceImeiData?.data[0]?.imeiData);
-      setTableData(data);
-      setCount(res?.searchDeviceImeiData?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
   };
 
   const fetchDeviceGroupData = async () => {

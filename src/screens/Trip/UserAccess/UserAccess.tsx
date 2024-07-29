@@ -1,15 +1,7 @@
 import {
   Box,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Grid,
   InputAdornment,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -42,14 +34,10 @@ import {
   userAccessValidation,
 } from "./UserAccessHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import {
-  primaryHeadingColor,
-  regularFont,
-  getRelativeFontSize,
-} from "../../../utils/styles";
 import AddUserAccess from "./component/AddUserAccess";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
+import { store } from "../../../utils/store";
 const UserAccess = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -85,12 +73,8 @@ const UserAccess = () => {
   }, [searchText, perPageData]);
 
   useEffect(() => {
-    if (searchText) {
-      searchDataHandler();
-    } else {
-      fetchTableUserAccess();
-    }
-  }, [pageNumber, perPageData, searchText]);
+    fetchTableUserAccess();
+  }, [pageNumber, perPageData]);
 
   useEffect(() => {
     fetchTableDataHandler();
@@ -114,27 +98,23 @@ const UserAccess = () => {
     try {
       setIsLoading(true);
       const res = await fetchUserAccessTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
-      const finalData = res?.userAccessListAll?.data?.map((item: any) => {
+      const finalData = res?.fetchUserAccess?.data?.map((item: any) => {
         return {
-          name: item.name,
-          code: item?.code?.map((val: any) => val).join(","),
-          description: item.description,
-          file: (
-            <>
-              <img
-                src={`http://localhost:5000/${item.file}`}
-                alt=""
-                width="30"
-                height="30"
-              />
-            </>
-          ),
+          userId: item?.userId?.firstName,
+          devicesImei: item?.devicesImei?.map((val: any) => val).join(","),
+          entites: item?.entites?.map((val: any) => val).join(","),
+          deviceGroup: item?.deviceGroup?.map((val: any) => val).join(","),
+          createdBy: item.createdBy,
         };
       });
       setTableData(finalData);
-      setCount(res?.userAccessListAll?.paginatorInfo?.count);
+      setCount(res?.fetchUserAccess?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -289,8 +269,7 @@ const UserAccess = () => {
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

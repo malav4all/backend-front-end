@@ -1,15 +1,7 @@
 import {
   Box,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Grid,
   InputAdornment,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -50,6 +42,7 @@ import {
 import AddEntityType from "./component/AddEntityType";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
+import { store } from "../../../utils/store";
 const EntityType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -92,10 +85,6 @@ const EntityType = () => {
     }
   }, [pageNumber, perPageData, searchText]);
 
-  useEffect(() => {
-    fetchTableDataHandler();
-  }, []);
-
   const handleModuleChange = (event: any) => {
     setEntityTypeFormData({
       ...entityTypeFormData,
@@ -114,27 +103,22 @@ const EntityType = () => {
     try {
       setIsLoading(true);
       const res = await fetchEntityTypeTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
-      const finalData = res?.entityTypeListAll?.data?.map((item: any) => {
+      const finalData = res?.fetchEntityType?.data?.map((item: any) => {
         return {
+          accountId: store.getState().auth.tenantId,
           name: item.name,
-          code: item?.code?.map((val: any) => val).join(","),
           description: item.description,
-          file: (
-            <>
-              <img
-                src={`http://localhost:5000/${item.file}`}
-                alt=""
-                width="30"
-                height="30"
-              />
-            </>
-          ),
+          createdBy: item.createdBy,
         };
       });
       setTableData(finalData);
-      setCount(res?.entityTypeListAll?.paginatorInfo?.count);
+      setCount(res?.fetchEntityType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -177,24 +161,22 @@ const EntityType = () => {
   const addEntityTypeHandler = async () => {
     try {
       const payload: any = {
+        accountId: store.getState().auth.tenantId,
         name: entityTypeFormData.name.value,
-        code: entityTypeFormData.code.value,
         description: entityTypeFormData.description.value,
-        file,
+        createdBy: store.getState().auth.userName,
       };
-      setIsLoading(true);
-      if (handleValidation()) {
-        const res = await addEntityType({
-          input: { ...payload },
-        });
-        setEntityTypeFormData(entityTypeInsertField());
-        await fetchTableEntityType();
-        openSuccessNotification(res.createEntityType.message);
-        setIsLoading(false);
-      }
+
+      // if (handleValidation()) {
+      const res = await addEntityType({
+        input: { ...payload },
+      });
+      setEntityTypeFormData(entityTypeInsertField());
+      await fetchTableEntityType();
+      openSuccessNotification(res.addEntityType.message);
+      // }
     } catch (error: any) {
       openErrorNotification(error.message);
-      setIsLoading(false);
     }
   };
 
@@ -210,20 +192,6 @@ const EntityType = () => {
     newPage: number
   ) => {
     setPageNumber(newPage);
-  };
-
-  const fetchTableDataHandler = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetchTableHandler({
-        input: { page: -1, limit: 0 },
-      });
-      setModuleData(res?.customerModuleListAll?.data);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
-    }
   };
 
   const onChangeHandler = (event: React.ChangeEvent<any>) => {
@@ -289,8 +257,7 @@ const EntityType = () => {
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };
