@@ -37,7 +37,7 @@ const TripDashboard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tripDashboardData, setTripDashboardData] = useState([{}]);
   const [searchData, setSearchData] = useState<any>([]);
-
+  const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const trips = [
     {
       id: 1,
@@ -142,8 +142,13 @@ const TripDashboard = () => {
         </Typography>
         <Box my={3}>{getSearchBar()}</Box>
         <Box sx={{ height: "400px", overflowY: "auto" }}>
+          {console.log(trips)}
           {trips.map((trip) => (
-            <ListItem key={trip.id} sx={{ borderBottom: "1px solid #ddd" }}>
+            <ListItem
+              key={trip.id}
+              sx={{ borderBottom: "1px solid #ddd", cursor: "pointer" }}
+              onClick={() => setSelectedTrip(trip)}
+            >
               <ListItemText
                 primary={
                   <Typography
@@ -261,67 +266,89 @@ const TripDashboard = () => {
     return (
       <Box sx={{ position: "relative", height: "670px" }}>
         <HereMap />
-        <Paper
-          sx={{
-            position: "absolute",
-            bottom: "20px",
-            left: "20px",
-            padding: "1rem",
-            backgroundColor: theme.palette.background.paper,
-            border: "1px solid",
-            borderColor: theme.palette.divider,
-            borderRadius: "8px",
-            boxShadow:
-              "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
-            zIndex: 10,
-            width: "40%",
-            minWidth: "385px",
-          }}
-        >
-          <Typography
-            variant="h6"
+        {selectedTrip && (
+          <Paper
             sx={{
-              fontFamily: "Geist_Medium",
-              fontSize: "1.2rem",
-              marginBottom: "1rem",
+              position: "absolute",
+              bottom: "20px",
+              left: "20px",
+              padding: "1rem",
+              backgroundColor: theme.palette.background.paper,
+              border: "1px solid",
+              borderColor: theme.palette.divider,
+              borderRadius: "8px",
+              boxShadow:
+                "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+              zIndex: 10,
+              width: "40%",
+              minWidth: "385px",
             }}
           >
-            Trip 1
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ fontFamily: "Geist_Light", fontSize: "1rem" }}
-          >
-            Description of Trip 1 .....
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: "1rem",
-              width: "100%",
-            }}
-          >
-            <CustomButton
-              label={"Request OTP"}
-              onClick={() => {
-                // Add your onClick handler here
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "Geist_Medium",
+                fontSize: "1.2rem",
+                marginBottom: "1rem",
               }}
-            />
-            <CustomButton
-              label={"Device Details"}
-              onClick={() => {
-                // Add your onClick handler here
+            >
+              {selectedTrip.name}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ fontFamily: "Geist_Light", fontSize: "1rem" }}
+            >
+              Trip ID: {selectedTrip.tripID}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: "Geist_Light",
+                fontSize: "1rem",
+                marginTop: "0.5rem",
               }}
-            />
-            <CustomButton
-              label={"Trip Details"}
-              onClick={() => {
-                // Add your onClick handler here
+            >
+              Source: {selectedTrip.source}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontFamily: "Geist_Light",
+                fontSize: "1rem",
+                marginTop: "0.5rem",
               }}
-            />
-          </Box>
-        </Paper>
+            >
+              Destination: {selectedTrip.destination}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "1rem",
+                width: "100%",
+              }}
+            >
+              <CustomButton
+                label={"Request OTP"}
+                onClick={() => {
+                  // Add your onClick handler here
+                }}
+              />
+              <CustomButton
+                label={"Device Details"}
+                onClick={() => {
+                  // Add your onClick handler here
+                }}
+              />
+              <CustomButton
+                label={"Trip Details"}
+                onClick={() => {
+                  // Add your onClick handler here
+                }}
+              />
+            </Box>
+          </Paper>
+        )}
       </Box>
     );
   };
