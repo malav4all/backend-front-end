@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/system";
-import { Switch, Route } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import PrivateRoute from "../../../global/components/PrivateRoute/PrivateRoute";
 import Dashboard from "../../Dashboard/Dashboard";
 import AppDrawer from "../AppDrawer/AppDrawer";
 import AppHeader from "../AppHeader/AppHeader";
 import layoutStyles from "./Layout.styles";
 import { useMediaQuery, useTheme } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
+import { useAppSelector } from "../../../utils/hooks";
 import { logOutAction, selectAuthenticated } from "../../../redux/authSlice";
 import PageNotFound from "../../PageNotFound/PageNotFound";
 import strings from "../../../global/constants/StringConstants";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import Settings from "../../Settings/Settings";
 import { useIdleTimer } from "react-idle-timer";
-import { onLogout } from "../../LandingPage/landingPageService";
 import { store } from "../../../utils/store";
 import history from "../../../utils/history";
 import Geozone from "../../Geozone/Geozone";
@@ -24,7 +23,6 @@ import ViewLiveTracking from "../../Routes/Component/LiveTracking";
 import Trackplay from "../../Trackplay/Trackplay";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
-import DeviceDashboard from "../../DeviceDashboard/DeviceDashboard";
 import { useSubscription } from "@apollo/client";
 import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
 import { openErrorAlertNotification } from "../../../helpers/methods";
@@ -54,7 +52,7 @@ import TripType from "../../Trip/TripType/TripType";
 import UserAccess from "../../Trip/UserAccess/UserAccess";
 import AddDevice from "../../AddDevice/AddDevice";
 import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
-// import FormBuilderPage from '../../FormBuilder/FormBuilderPage';
+import TripDashboard from "../../TripDashboard/TripDashboard";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -106,6 +104,13 @@ const Layout = () => {
             path={"/dashboard"}
             component={Dashboard}
             componentName={strings.DASHBOARD}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/trip-dashboard"}
+            component={TripDashboard}
+            componentName={strings.TRIPDASHBOARD}
           />
           <PrivateRoute
             exact
@@ -183,13 +188,6 @@ const Layout = () => {
             path={"/live-tracking"}
             component={Trackplay}
             componentName={strings.TRACK_PLAY}
-          />
-          <PrivateRoute
-            exact
-            isLoggedIn={isAuthenticated}
-            path={"/device-dashboard"}
-            component={DeviceDashboard}
-            componentName={strings.DEVICEDASHBOARD}
           />
           <PrivateRoute
             exact
@@ -368,8 +366,6 @@ const Layout = () => {
             component={PageNotFound}
             componentName={strings.PAGENOTFOUND}
           />
-
-          
         </Switch>
       </Box>
     );

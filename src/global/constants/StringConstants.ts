@@ -77,7 +77,7 @@ export class StringConstants {
 
   // authManager
   DASHBOARD = "Dashboard";
-  DEVICEDASHBOARD = "DeviceDashboard";
+  TRIPDASHBOARD = "TripDashboard";
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
   GROUPS = "Campaign Groups";
