@@ -52,7 +52,6 @@ const appDrawerStyles = {
   },
   openDrawerIconBox: {
     borderRadius: "5px",
-    // backgroundColor: "#221261",
     right: 0,
     marginTop: "-3px",
     marginRight: "10px",
@@ -61,7 +60,7 @@ const appDrawerStyles = {
   closedDrawerIconBox: {
     borderRadius: "5px",
     right: 16,
-    opacity: 0.8
+    opacity: 0.8,
   },
   drawerHide: {
     display: "flex",
@@ -77,6 +76,14 @@ const appDrawerStyles = {
     zIndex: 110,
     color: textColor,
     borderRight: "1px solid #374278",
+  },
+  drawerHeader: {
+    display: "flex",
+    alignItems: "center",
+    padding: "16px",
+  },
+  logoutSection: {
+    padding: "16px",
   },
   drawerWidth: {
     width: drawerWidth,
@@ -102,7 +109,6 @@ const appDrawerStyles = {
     margin: "4px",
   },
   closedDrawerListItemStyles: {
-    // paddingLeft: "5px",
     margin: "8px auto",
   },
   openDrawerListItemIcon: {
@@ -119,17 +125,21 @@ const appDrawerStyles = {
   closedDrawerSubMenuItem: { paddingLeft: "5px", margin: "4px 0" },
   menuOptionsHeight: {
     height: "75vh",
-    overflowY: "hidden",
+    overflowY: "auto",
     overflowX: "hidden",
     [theme.breakpoints.down("xs")]: {
       height: "50vh",
     },
     "&::-webkit-scrollbar": {
-      width: "20px",
+      width: "7px",
     },
     "&::-webkit-scrollbar-thumb": {
       borderRadius: "10px",
-      border: "3px solid #ffffff",
+      padding: "1rem",
+      backgroundColor: "#5F22E1",
+      "&:hover": {
+        backgroundColor: "#5F22E1", 
+      },
     },
   },
   menuOptionListItem: {
@@ -142,7 +152,7 @@ const appDrawerStyles = {
     display: "flex",
     borderLeft: "4px solid",
     height: "30px",
-    fontWeigh: "400",
+    fontWeight: "400",
     color: textColor,
   },
   menuOption: {

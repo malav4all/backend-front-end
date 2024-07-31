@@ -43,8 +43,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
       >
         <Toolbar className="main-header">
           <Grid container justifyContent="space-between" alignItems="center">
-            <Grid item>
-            </Grid>
+            <Grid item></Grid>
 
             <Grid
               item
@@ -77,16 +76,29 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
                       {...params}
                       placeholder="Device Group Filter"
                       variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        sx: {
+                          "& input": {
+                            display: "flex",
+                            alignItems: "center", 
+                          },
+                          "& .MuiInputBase-input::placeholder": {
+                            textAlign: "center", 
+                            opacity: 1, 
+                          },
+                          display: "flex",
+                          alignItems: "center", 
+                        },
+                      }}
                     />
                   )}
                 />
               </Box>
-
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-
     </>
   );
 };

@@ -10,8 +10,10 @@ import {
   Grid,
   MenuItem,
   Select,
+  Switch,
   Typography,
   useTheme,
+  Dialog,
 } from "@mui/material";
 import AccountStyles from "../Account.styles";
 import { insertAccountField } from "../Account.helper";
@@ -31,6 +33,7 @@ import _ from "lodash";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import cookies from "js-cookie";
+import Datapush from "./DataPush/Datapush";
 
 interface CustomProps {
   openAddAccountDialog: boolean;
@@ -74,6 +77,8 @@ const AddAccountModal = (props: CustomProps) => {
   const [authAccountNo, setAccountAuthNo] = useState([]);
   const [accountConfig, setAccountConfig] = useState([]);
   const [language, setLanguage] = useState("");
+  const [dataPushActive, setDataPushActive] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
   const theme = useTheme();
   useEffect(() => {
     setAccountFields(insertAccountField());
@@ -95,6 +100,11 @@ const AddAccountModal = (props: CustomProps) => {
   useEffect(() => {
     fetchTableDataHandler();
   }, []);
+
+  useEffect(() => {
+    document.body.dir = currentLanguage as any;
+    document.title = t("app_title");
+  }, [currentLanguage, t]);
 
   const fetchTableDataHandler = async () => {
     try {
@@ -201,50 +211,20 @@ const AddAccountModal = (props: CustomProps) => {
     }
   };
 
+  const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDataPushActive(event.target.checked);
+    if (event.target.checked) {
+      setOpenPopup(true);
+    }
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+  };
+
   const addAccountDialogBody = () => {
     return (
       <>
-        {/* <Grid container spacing={2} mb={2}>
-          <Grid item xs={12} sm={8} md={8} lg={8} xl={8}></Grid>
-          <Grid item xs={12} sm={4} md={4} lg={4} xl={4}>
-            <Box>
-              <Box>
-                <Box display={"flex"}>
-                  <Typography sx={classes.label}>
-                    {t("selectLanguage")}
-                  </Typography>
-                </Box>
-
-                <Select
-                  id="role_select_dropdown"
-                  name="chooseLanguage"
-                  sx={classes.dropDownStyle}
-                  value={language}
-                  displayEmpty
-                  onChange={(e: any) => {
-                    const chooseLan = e.target.value;
-                    i18next.changeLanguage(chooseLan);
-                    setLanguage(chooseLan);
-                  }}
-                  MenuProps={MenuProps}
-                  renderValue={
-                    language !== "" ? undefined : () => "Select a Language"
-                  }
-                >
-                  {languages.map((item: any, index: number) => (
-                    <MenuItem
-                      key={index}
-                      value={item.code}
-                      sx={classes.optionStyle}
-                    >
-                      {item.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid> */}
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
@@ -256,7 +236,6 @@ const AddAccountModal = (props: CustomProps) => {
               placeHolder="Enter Account Name"
               onChange={onChangeHandler}
               value={accountFields.accountName.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -269,7 +248,6 @@ const AddAccountModal = (props: CustomProps) => {
               placeHolder="Enter Account Contact Name"
               onChange={onChangeHandler}
               value={accountFields.accountContactName.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -298,7 +276,7 @@ const AddAccountModal = (props: CustomProps) => {
                   renderValue={
                     accountFields.accountType.value !== ""
                       ? undefined
-                      : () => "Select a Industry Type"
+                      : () => "Select an Industry Type"
                   }
                 >
                   {roleData.map((item: any, index: number) => (
@@ -324,7 +302,6 @@ const AddAccountModal = (props: CustomProps) => {
               placeHolder="Enter Account Contact Email"
               onChange={onChangeHandler}
               value={accountFields.accountContactEmail.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -335,9 +312,7 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountAddress"
               placeHolder="Enter Address"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountAddress.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
 
@@ -350,88 +325,74 @@ const AddAccountModal = (props: CustomProps) => {
               name="accountContactMobile"
               placeHolder="Enter contact mobile number"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountContactMobile.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
 
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Account PAN Number")}
-              id="account_address_field"
+              id="account_pan_field"
               type="number"
               name="accountPanNo"
               placeHolder="Enter Account Pan No"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountPanNo.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Account GST Number")}
-              id="account_address_field"
+              id="account_gst_field"
               type="number"
               name="accountGstNo"
               placeHolder="Enter Account GST No"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountGstNo.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Account Aadhar Number")}
-              id="account_address_field"
+              id="account_aadhar_field"
               type="number"
               name="accountAadharNo"
               placeHolder="Enter Account Aadhar Card Number"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountAadharNo.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Account State")}
-              id="account_address_field"
+              id="account_state_field"
               type="text"
               name="accountState"
               placeHolder="Enter Account State"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountState.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Account City")}
-              id="account_address_field"
+              id="account_city_field"
               type="text"
               name="accountCity"
               placeHolder="Enter Account City"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.accountCity.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               label={t("Remarks")}
-              id="account_address_field"
+              id="remarks_field"
               type="text"
               name="remarks"
               placeHolder="Enter Remarks"
               onChange={onChangeHandler}
-              // propsToInputElement={{ maxlength: 100 }}
               value={accountFields.remarks.value}
-              //   error={profileFormData.name.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={12} xl={12}>
@@ -439,7 +400,7 @@ const AddAccountModal = (props: CustomProps) => {
               <Grid item xs={12} sm={6} md={6} lg={8} xl={8}>
                 <CustomInput
                   label={t("Account Auth Mobile")}
-                  id="recipient_modal_tags_field"
+                  id="auth_mobile_field"
                   type="text"
                   name="accountAuthorizedNo"
                   placeHolder="Enter Authorized Contact No"
@@ -450,7 +411,7 @@ const AddAccountModal = (props: CustomProps) => {
               </Grid>
               <Grid xs={12} sm={6} md={4} lg={3} xl={3}>
                 <CustomButton
-                  id="recipient_modal_add_tag_button"
+                  id="auth_no_add_button"
                   customClasses={{
                     width: "100%",
                     marginTop: "30px",
@@ -491,45 +452,20 @@ const AddAccountModal = (props: CustomProps) => {
         <Grid item xs={12} sm={6} md={12} lg={12} xl={12} mt={2}>
           <Grid container gap={2}>
             <Grid item xs={12} sm={6} md={6} lg={4} xl={4}>
-              <CustomInput
-                label={t("Account Key")}
-                id="recipient_modal_tags_field"
-                type="text"
-                name="accountKey"
-                placeHolder="Enter Account Key"
-                error={accountFields.accountKey.error}
-                onChange={onChangeHandler}
-                value={accountFields.accountKey.value}
+              <Typography component="div" variant="h6">
+                {t("Data Push Status")}
+              </Typography>
+              <Switch
+                checked={dataPushActive}
+                onChange={handleToggleChange}
+                color="primary"
+                name="dataPushStatus"
+                inputProps={{ "aria-label": "primary checkbox" }}
               />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6} lg={4} xl={4}>
-              <CustomInput
-                label={t("Account Value")}
-                id="recipient_modal_tags_field"
-                type="text"
-                name="accountValue"
-                placeHolder="Enter Account value"
-                required
-                error={accountFields.accountValue.error}
-                onChange={onChangeHandler}
-                value={accountFields.accountValue.value}
-              />
-            </Grid>
-            <Grid xs={12} sm={6} md={4} lg={3} xl={3}>
-              <CustomButton
-                id="recipient_modal_add_tag_button"
-                customClasses={{
-                  width: "100%",
-                  marginTop: "30px",
-                  [theme.breakpoints.down("lg")]: {
-                    marginTop: theme.spacing(0),
-                  },
-                }}
-                onClick={addAccountConfig}
-                label="Add"
-              />
+              {dataPushActive ? "Active" : "Not-Active"}
             </Grid>
           </Grid>
+
           <Grid container>
             <Grid item xl={6}>
               {accountConfig?.map((tag: any, index: any) => (
@@ -554,9 +490,14 @@ const AddAccountModal = (props: CustomProps) => {
             </Grid>
           </Grid>
         </Grid>
+
+        <Dialog open={openPopup} onClose={handleClosePopup}>
+          <Datapush />
+        </Dialog>
       </>
     );
   };
+
   const onChangeHandler = (event: any) => {
     setAccountFields({
       ...accountFields,
@@ -626,17 +567,11 @@ const AddAccountModal = (props: CustomProps) => {
             id="add_user_submit_button"
             label={props.edit ? "Update" : "Add"}
             onClick={addAccountHandler}
-            // loading={loading}
           />
         </Box>
       </Grid>
     );
   };
-
-  useEffect(() => {
-    document.body.dir = currentLanguage as any;
-    document.title = t("app_title");
-  }, [currentLanguage, t]);
 
   const addAccountHeaderImg = () => {
     return (

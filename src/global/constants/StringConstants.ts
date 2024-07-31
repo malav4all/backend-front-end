@@ -270,9 +270,10 @@ export class StringConstants {
   ENTITY = "ENTITY";
   ENTITY_TYPE = "ENTITY TYPE";
   TRIPT_TYPE = "TRIP TYPE";
-  USER_ACCESS = "USER ACCESS"
+  USER_ACCESS = "USER ACCESS";
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
+  DATAPUSH = "DATA PUSH";
 }
 
 let strings = new StringConstants();

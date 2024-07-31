@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 @font-face {
   font-family: "Geist_Thin";
   src: url("./assets/fonts/Geist-Thin.woff") format("truetype");
