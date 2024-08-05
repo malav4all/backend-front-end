@@ -26,16 +26,16 @@ import { CustomButton, CustomInput } from "../../global/components";
 import { getAllDeviceStatus } from "../Dashboard/service/Dashboard.service";
 import moment from "moment";
 import { fetchAssetAssingmentDataHandler } from "../Settings/AssertAssingment/service/AssetAssingment.service";
-import dummyData from "./TripDashboard.helper";
-import dashboardStyles from "./TripDashboardStyles";
+import dummyData from "./ClusterViewDashboard.helper";
+import dashboardStyles from "./ClusterViewDashboardStyles";
 import HereMap from "./components/HereMap";
 import DashboardHeader from "./components/DashboardHeader";
-const TripDashboard = () => {
+const ClusterViewDashboard = () => {
   const theme = useTheme();
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [tripDashboardData, setTripDashboardData] = useState([{}]);
+  const [clusterViewDashboardData, setClusterViewDashboardData] = useState([{}]);
   const [searchData, setSearchData] = useState<any>([]);
   const [selectedTrip, setSelectedTrip] = useState<any>(null);
   const trips = [
@@ -196,10 +196,10 @@ const TripDashboard = () => {
     );
   };
 
-  const fetchTripDashboardHandler = async () => {
+  const fetchClusterViewDashboardHandler = async () => {
     try {
       setIsLoading(true);
-      setTripDashboardData(dummyData);
+      setClusterViewDashboardData(dummyData);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -436,7 +436,7 @@ const TripDashboard = () => {
   };
 
   useEffect(() => {         
-    fetchTripDashboardHandler();
+    fetchClusterViewDashboardHandler();
   }, []);
 
   return (
@@ -458,4 +458,4 @@ const TripDashboard = () => {
   );
 };
 
-export default TripDashboard;
+export default ClusterViewDashboard;

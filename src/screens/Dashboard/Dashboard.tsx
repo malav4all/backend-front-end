@@ -1,23 +1,17 @@
-import { useState, useEffect } from "react";
-import { Box, Chip, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { IoMdInformationCircleOutline } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { Box, Grid, Typography } from "@mui/material";
 import moment from "moment-timezone";
 import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
-import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
-import { alertRowData, statusDevice } from "./service/Dashboard.service";
-import { openErrorNotification } from "../../helpers/methods";
-import { CustomButton, CustomDialog } from "../../global/components";
-import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
-import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
 import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
+import { gql, useSubscription } from "@apollo/client";
 
 interface CustomDateRange {
   fromDate: string;
@@ -32,31 +26,31 @@ const Dashboard = () => {
 
   useTitle(strings.DashboardTitle);
   const theme = useTheme();
-  const classes = dashboardStyles;
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [count, setCount] = useState(0);
+  // const classes = dashboardStyles;
+  // const [page, setPage] = useState(1);
+  // const [limit, setLimit] = useState(10);
+  // const [count, setCount] = useState(0);
   const [offlinePage, setOfflinePage] = useState(1);
   const [offlineLimit, setOfflineLimit] = useState(10);
   const [offlineCount, setOfflineCount] = useState<number>(0);
-  const [alertTableData, setAlertTableData] = useState([]);
-  const [dateFilter, setDateFilter] = useState({
-    startDate: moment().clone().subtract(30, "minutes").toISOString(),
-    endDate: moment().toISOString(),
-  });
-  const [offlineDateFilter, setOfflineDateFilter] = useState({
-    startDate: moment().clone().subtract(30, "minutes").toISOString(),
-    endDate: moment().toISOString(),
-  });
-  const [selectedRange, setSelectedRange] = useState("Past 30m");
+  // const [alertTableData, setAlertTableData] = useState([]);
+  // const [dateFilter, setDateFilter] = useState({
+  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
+  //   endDate: moment().toISOString(),
+  // });
+  // const [offlineDateFilter, setOfflineDateFilter] = useState({
+  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
+  //   endDate: moment().toISOString(),
+  // });
+  // const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
-  const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
-  const [openModal, setOpenModal] = useState(false);
-  const [lastSelectedRange, setLastSelectedRange] = useState({
-    startDate: moment().clone().subtract(30, "minutes").toISOString(),
-    endDate: moment().toISOString(),
-  });
+  // const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
+  // const [openModal, setOpenModal] = useState(false);
+  // const [lastSelectedRange, setLastSelectedRange] = useState({
+  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
+  //   endDate: moment().toISOString(),
+  // });
 
   const getDeviceList = () => {
     return (
@@ -176,6 +170,40 @@ const Dashboard = () => {
       </Grid>
     );
   };
+
+  const SUBSCRIBE_LOGS = gql`
+    subscription SubscribeLogs($accountId: String!) {
+      subscribeLogs(accountId: $accountId) {
+        accountId
+        imeiStatus {
+          imei
+          status
+          connectedTime
+          disconnectedTime
+        }
+        totalConnectedCount
+        totalDisconnectedCount
+      }
+    }
+  `;
+
+  const { data, loading, error } = useSubscription(SUBSCRIBE_LOGS, {
+    variables: { accountId: "IMZ765352" },
+  });
+
+  useEffect(() => {
+    if (loading) {
+      console.log("Loading...");
+    }
+
+    if (error) {
+      console.error("Error:", error.message);
+    }
+
+    if (data && data.subscribeLogs) {
+      console.log("Live Data:", data.subscribeLogs);
+    }
+  }, [data, loading, error]);
 
   return (
     <Box

@@ -264,14 +264,21 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/device-history"}
             component={DeviceHistory}
-            componentName={strings.ARCHIVED_TRIPS}
+            componentName={strings.DEVICE_HISTORY}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/device-module"}
             component={DeviceModule}
-            componentName={strings.ARCHIVED_TRIPS}
+            componentName={strings.DEVICE_MODULE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-list"}
+            component={DeviceModule}
+            componentName={strings.DEVICE_LIST}
           />
           <PrivateRoute
             exact

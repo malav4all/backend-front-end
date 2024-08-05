@@ -92,7 +92,6 @@ export class StringConstants {
 
   ROLE_MANAGEMENT = "Role";
   ACCOUNT = "Account";
-  DEVICEMODULE = "DeviceModule";
   DEVICEONBOARDING = "Device Onboarding";
   INTEGRATION = "Integration";
   CREATECAMPAIGN = "Create Campaign";
@@ -110,6 +109,9 @@ export class StringConstants {
   ALERT = "Alert";
   LIVE_MONITORING = "Live Monitoring";
   ALL_DEVICES = "All Devices";
+  DEVICES = "Devices";
+  DEVICE_FORM_BUILDER = "Device Form Builder";
+  DEVICE_LIST = "Device List";
   STATE = "123456789";
   FACEBOOK_APP_ID = 1347418019080617;
   FACEBOOK_APP_SECRET = "f474dc2284358fc1a8fdd73955d2fa81";
@@ -270,7 +272,7 @@ export class StringConstants {
   ENTITY = "ENTITY";
   ENTITY_TYPE = "ENTITY TYPE";
   TRIPT_TYPE = "TRIP TYPE";
-  USER_ACCESS = "USER ACCESS"
+  USER_ACCESS = "USER ACCESS";
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
 }

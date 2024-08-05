@@ -4,73 +4,45 @@ import {
   ApolloProvider,
   ApolloClient,
   InMemoryCache,
-  from,
-  Observable,
-  FetchResult,
   split,
-  HttpLink,
+  FetchResult,
+  from,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { store } from "../../utils/store";
 import { REFRESH_TOKEN } from "../../screens/LandingPage/login-mutation";
 import { updateTokens } from "../../redux/authSlice";
-import { getMainDefinition } from "@apollo/client/utilities";
-import { createClient } from "graphql-ws";
-import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename";
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition, Observable } from "@apollo/client/utilities";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { HttpLink } from "@apollo/client/link/http";
+
 interface AccessToken {
   accessToken: string;
 }
 
-const removeTypenameLink = removeTypenameFromVariables();
-
-let apiCount = 0;
-const customFetch = async (uri: any, options: any): Promise<any> => {
-  try {
-    apiCount++;
-    const response = await fetch(uri, options).then((response) => {
-      if (response.status >= 500) {
-        apiCount--;
-        return Promise.reject(response.status);
-      }
-      if (response) {
-        apiCount--;
-      }
-      return response;
-    });
-    return response;
-  } catch (error) {
-    return await Promise.reject(error);
-  }
-};
-
-const getBaseUrl = (env: any) => {
-  switch (env) {
-    case "Development":
-      return process.env.REACT_APP_API_HOST_DEV;
-    default:
-      return process.env.REACT_APP_API_HOST_LOCAL;
-  }
-};
-
-const authLink = setContext(async (_, { headers }) => {
-  return {
-    headers: {
-      ...headers,
-      Authorization: `Bearer ${store.getState().auth.accessToken}`,
-      "x-tenant-id": store.getState().auth.tenantId
-        ? store.getState().auth.tenantId
-        : "",
-    },
-  };
+const httpLink = new HttpLink({
+  uri: `http://localhost:8081/graphql`,
 });
 
-const UploadLink = createUploadLink({
-  uri: getBaseUrl(process.env.REACT_APP_ENV),
-  fetch: customFetch,
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:8081/subscriptions`,
+  options: {
+    reconnect: true,
+  },
 });
+
+const link = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }: any) => {
@@ -120,44 +92,28 @@ const errorLink = onError(
   }
 );
 
-const httpLink = new HttpLink({
-  uri: getBaseUrl(process.env.REACT_APP_ENV),
-  fetch: customFetch,
-});
-
-const wsLink = new GraphQLWsLink(createClient({
-  url: `ws://localhost:8080/subscriptions`,
-}));
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
-  },
-  wsLink,
-  from([removeTypenameLink, authLink.concat(httpLink), errorLink, UploadLink])
-);
+console.log('here in live data.......')
 
 const refreshToken = async () => {
   try {
-    const refreshResolverResponse = await client.mutate<{
+    console.log("1")
+    const refreshResolverResponse = await liveClient.mutate<{
       refreshToken: AccessToken;
     }>({
       mutation: REFRESH_TOKEN,
     });
-    const accessToken = refreshResolverResponse;
-    store.dispatch(updateTokens(accessToken.data?.refreshToken! as any));
-    return accessToken.data?.refreshToken;
+    console.log("2")
+    const accessToken = refreshResolverResponse.data?.refreshToken.accessToken;
+    console.log(accessToken);
+    // store.dispatch(updateTokens(accessToken));
+    return accessToken;
   } catch (err) {
     throw err;
   }
 };
 
-export const client = new ApolloClient({
-  link: splitLink,
+export const liveClient = new ApolloClient({
+  link: from([link, errorLink]),
   cache: new InMemoryCache(),
 });
 
