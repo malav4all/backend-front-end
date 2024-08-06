@@ -5,15 +5,21 @@ import { Box, Typography, useTheme } from "@mui/material";
 interface PieChartProps {
   width?: number | string;
   height?: number;
+  dataGraph?: any;
 }
 
 const OnlinePieChart: React.FC<PieChartProps> = ({
   width = "100%",
   height = 300,
+  dataGraph,
 }) => {
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<ApexCharts | null>(null);
+  const [chart, setChart] = useState<any>(null);
+  let sum = dataGraph?.online?.series?.reduce(
+    (accumulator: any, currentValue: any) => accumulator + currentValue,
+    0
+  );
 
   useEffect(() => {
     const isDarkMode = theme.palette.mode === "dark";
@@ -56,14 +62,14 @@ const OnlinePieChart: React.FC<PieChartProps> = ({
               show: true,
               label: "Online Device",
               formatter: function () {
-                return "112";
+                return sum;
               },
             },
           },
         },
       },
-      series: [44, 55, 13],
-      labels: ["Motion", "Idle", "Stop"],
+      series: dataGraph?.online?.series || [],
+      labels: dataGraph?.online?.labels || [],
       tooltip: {
         enabled: true,
         theme: theme.palette.mode, // Use theme mode for tooltip theme
@@ -88,14 +94,14 @@ const OnlinePieChart: React.FC<PieChartProps> = ({
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme]);
+  }, [height, theme, dataGraph?.online]);
 
   useEffect(() => {
     const handleResize = () => {
-      if (chart && chartRef.current) {
-        chart.updateOptions({
+      if (chart && chartRef?.current) {
+        chart?.updateOptions({
           chart: {
-            width: chartRef.current.offsetWidth,
+            width: chartRef?.current?.offsetWidth,
           },
         });
       }

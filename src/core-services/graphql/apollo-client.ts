@@ -120,7 +120,7 @@ const errorLink = onError(
 );
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:8080/graphql`,
+  uri: `ws://localhost:6090/graphql`,
   options: {
     reconnect: true,
   },
