@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const HereMap = () => {
   useEffect(() => {
@@ -21,11 +21,13 @@ const HereMap = () => {
     const behavior = new window.H.mapevents.Behavior(
       new window.H.mapevents.MapEvents(map)
     );
+
     const ui = window.H.ui.UI.createDefault(map, defaultLayers);
 
     return () => {
       map.dispose();
     };
+
   }, []);
 
   return (

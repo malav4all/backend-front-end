@@ -28,7 +28,6 @@ import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation"
 import { openErrorAlertNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
-import RoutesReport from "../../Reports/screens/RoutesReport/RoutesReport";
 import UpcomingRoutes from "../../Routes/screens/UpcomingRoutes/UpcomingRoutes";
 import ArchivedJoruney from "../../Routes/screens/ArchivedRoutes/ArchivedRoutes";
 import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
@@ -53,6 +52,8 @@ import UserAccess from "../../Trip/UserAccess/UserAccess";
 import AddDevice from "../../AddDevice/AddDevice";
 import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 import TripDashboard from "../../TripDashboard/TripDashboard";
+import TripReport from "../../Reports/screens/TripReport/TripReport";
+import MapView from "../../MapView/MapView";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -111,6 +112,13 @@ const Layout = () => {
             path={"/trip-dashboard"}
             component={TripDashboard}
             componentName={strings.TRIPDASHBOARD}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/map-view"}
+            component={MapView}
+            componentName={strings.MAPVIEW}
           />
           <PrivateRoute
             exact
@@ -178,9 +186,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/routes-reports"}
-            component={RoutesReport}
-            componentName={strings.ROUTES_REPORTS}
+            path={"/trip-reports"}
+            component={TripReport}
+            componentName={strings.TRIP_REPORT}
           />
           <PrivateRoute
             exact

@@ -1,7 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
-  Chip,
   Grid,
   InputAdornment,
   ListItem,
@@ -11,8 +10,6 @@ import {
   useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { useAppSelector } from "../../utils/hooks";
-import { selectName } from "../../redux/authSlice";
 import {
   debounceEventHandler,
   isTruthy,
@@ -23,9 +20,6 @@ import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
 import { CustomButton, CustomInput } from "../../global/components";
-import { getAllDeviceStatus } from "../Dashboard/service/Dashboard.service";
-import moment from "moment";
-import { fetchAssetAssingmentDataHandler } from "../Settings/AssertAssingment/service/AssetAssingment.service";
 import dummyData from "./TripDashboard.helper";
 import dashboardStyles from "./TripDashboardStyles";
 import HereMap from "./components/HereMap";
@@ -426,7 +420,7 @@ const TripDashboard = () => {
                 borderLeft: "7px solid #5F22E1",
               }}
             >
-              All Devices Table
+              Trip Map View
             </Typography>
             {getMap()}
           </Box>

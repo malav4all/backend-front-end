@@ -78,6 +78,7 @@ export class StringConstants {
   // authManager
   DASHBOARD = "Dashboard";
   TRIPDASHBOARD = "TripDashboard";
+  MAPVIEW= "MapView"
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
   GROUPS = "Campaign Groups";
@@ -272,6 +273,7 @@ export class StringConstants {
   ENTITY = "ENTITY";
   ENTITY_TYPE = "ENTITY TYPE";
   TRIPT_TYPE = "TRIP TYPE";
+  TRIP_REPORT = "TRIP REPORT";
   USER_ACCESS = "USER ACCESS";
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";

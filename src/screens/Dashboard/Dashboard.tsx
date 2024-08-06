@@ -30,7 +30,7 @@ const Dashboard = () => {
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(10);
   // const [count, setCount] = useState(0);
-  const [offlinePage, setOfflinePage] = useState(1);
+  const [offlinePage, setOfflinePage] = useState(1); 
   const [offlineLimit, setOfflineLimit] = useState(10);
   const [offlineCount, setOfflineCount] = useState<number>(0);
   // const [alertTableData, setAlertTableData] = useState([]);
