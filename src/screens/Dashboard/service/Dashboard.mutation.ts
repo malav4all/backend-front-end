@@ -80,3 +80,35 @@ export const ALERTS_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const ONLINE_DEVICE_GRAPH = gql`
+  mutation ($input: DeviceOnboardingAccountIdInput!) {
+    onlineDeviceGraph(input: $input) {
+      series
+      labels
+    }
+  }
+`;
+
+export const OFFLINE_DEVICE_GRAPH = gql`
+  mutation ($input: DeviceOnboardingAccountIdInput!) {
+    offlineDeviceGraph(input: $input) {
+      series
+      labels
+    }
+  }
+`;
+
+export const LINE_CHART_DEVICE_GRAPH = gql`
+  mutation ($input: DeviceOnboardingAccountIdInput!) {
+    lineGraphDeviceData(input: $input) {
+      xaxis {
+        categories
+      }
+      series {
+        name
+        data
+      }
+    }
+  }
+`;

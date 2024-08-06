@@ -5,14 +5,16 @@ import { Box, Typography, useTheme } from "@mui/material";
 interface PieChartProps {
   width?: number | string;
   height?: number;
+  dataGraph: any;
 }
 
 const OfflinePieChart: React.FC<PieChartProps> = ({
   width = "100%",
   height = 300,
+  dataGraph,
 }) => {
   const theme = useTheme();
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<any>(null);
   const [chart, setChart] = useState<ApexCharts | null>(null);
 
   useEffect(() => {
@@ -32,6 +34,10 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
     styleSheet.type = "text/css";
     styleSheet.innerText = customStyles;
     document.head.appendChild(styleSheet);
+    let sum = dataGraph?.offline?.series?.reduce(
+      (accumulator: any, currentValue: any) => accumulator + currentValue,
+      0
+    );
 
     const options: ApexCharts.ApexOptions = {
       chart: {
@@ -57,14 +63,14 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
               show: true,
               label: "Offline Device",
               formatter: function () {
-                return "110";
+                return sum;
               },
             },
           },
         },
       },
-      series: [44, 66],
-      labels: ["Offline", "Disconnected"],
+      series: dataGraph?.offline?.series || [],
+      labels: dataGraph?.offline?.labels || [],
       tooltip: {
         enabled: true,
         theme: theme.palette.mode, // Use theme mode for tooltip theme
@@ -90,22 +96,22 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
       },
     };
 
-    const chartInstance = new ApexCharts(chartRef.current, options);
-    chartInstance.render();
+    const chartInstance = new ApexCharts(chartRef?.current, options);
+    chartInstance?.render();
     setChart(chartInstance);
 
     return () => {
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme]);
+  }, [height, theme, dataGraph]);
 
   useEffect(() => {
     const handleResize = () => {
       if (chart && chartRef.current) {
         chart.updateOptions({
           chart: {
-            width: chartRef.current.offsetWidth,
+            width: chartRef?.current?.offsetWidth,
           },
         });
       }

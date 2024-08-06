@@ -5,13 +5,24 @@ import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { useTitle } from "../../utils/UseTitle";
+import {
+  alertRowData,
+  lineChartGraphStatus,
+  offlineGraphStatus,
+  onlineGraphStatus,
+  statusDevice,
+} from "./service/Dashboard.service";
+import { openErrorNotification } from "../../helpers/methods";
+import { CustomButton, CustomDialog } from "../../global/components";
+import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
+import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
 import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
-import { gql, useSubscription } from "@apollo/client";
+import { useSubscription } from "@apollo/client";
 
 interface CustomDateRange {
   fromDate: string;
@@ -30,7 +41,7 @@ const Dashboard = () => {
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(10);
   // const [count, setCount] = useState(0);
-  const [offlinePage, setOfflinePage] = useState(1); 
+  const [offlinePage, setOfflinePage] = useState(1);
   const [offlineLimit, setOfflineLimit] = useState(10);
   const [offlineCount, setOfflineCount] = useState<number>(0);
   // const [alertTableData, setAlertTableData] = useState([]);
@@ -45,12 +56,62 @@ const Dashboard = () => {
   // const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
-  // const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
-  // const [openModal, setOpenModal] = useState(false);
-  // const [lastSelectedRange, setLastSelectedRange] = useState({
-  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
-  //   endDate: moment().toISOString(),
-  // });
+  const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
+  const [dataGraph, setGraphData] = useState<any>();
+  const [lastSelectedRange, setLastSelectedRange] = useState({
+    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    endDate: moment().toISOString(),
+  });
+  const [messages, setMessages] = useState<any>();
+  const accountId = "IMZ765352"; //
+  useEffect(() => {
+    // Create a WebSocket connection
+    const ws = new WebSocket("ws://localhost:2580/ws");
+
+    ws.onopen = () => {
+      // Send the account ID to the server
+      ws.send(JSON.stringify(accountId));
+    };
+
+    ws.onmessage = (event) => {
+      // Parse the incoming message and update the state
+      const message = JSON.parse(event.data);
+      setMessages(message);
+    };
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    // Clean up the WebSocket connection when the component unmounts
+    return () => {
+      ws.close();
+    };
+  }, [accountId]);
+
+  useEffect(() => {
+    graphData();
+  }, []);
+
+  const graphData = async () => {
+    try {
+      const [online, offline, chartLine] = await Promise.all([
+        onlineGraphStatus({ input: { accountId: "IMZ113343" } }),
+        offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
+        lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
+      ]);
+      // console.log("Graph data received:", { online, offline, chartLine });
+      setGraphData({
+        online: online?.onlineDeviceGraph,
+        offline: offline?.offlineDeviceGraph,
+        lineChart: chartLine?.lineGraphDeviceData,
+      });
+    } catch (error) {}
+  };
 
   const getDeviceList = () => {
     return (
@@ -100,17 +161,24 @@ const Dashboard = () => {
 
           <CustomTableDashboard
             headers={[
-              { name: "Name", field: "label" },
+              { name: "Name", field: "accountId" },
               { name: "IMEI", field: "imei" },
               { name: "Status", field: "status" },
-              { name: "Last Ping", field: "time" },
+              { name: "Last Ping", field: "connectedTime" },
               { name: "Action", field: "action" },
             ]}
-            rows={statData}
+            rows={messages?.imeiStatus?.map((item: any) => {
+              return {
+                imei: item.imei,
+                status: item.status,
+                accountId: item.accountId,
+                connectedTime: item.connectedTime,
+              };
+            })}
             isRowPerPageEnable={false}
             rowsPerPage={offlineLimit}
             perPageData={offlineLimit}
-            paginationCount={offlineCount}
+            paginationCount={messages?.imeiStatus?.length}
             pageNumber={offlinePage}
             setPage={setOfflinePage}
           />
@@ -118,7 +186,7 @@ const Dashboard = () => {
       </Grid>
     );
   };
-
+  console.log(dataGraph);
   const getDashboardBody = () => {
     return (
       <Grid md={12} xs={12} sx={{ margin: "auto" }}>
@@ -133,12 +201,12 @@ const Dashboard = () => {
           sx={{ margin: "-30px auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
-            <GetAlerts />
+            <GetAlerts data={messages} />
           </Grid>
 
           <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} sm={12} md={12} xl={6} lg={6}>
-              <LineChart height={300} />
+              <LineChart height={300} dataGraph={dataGraph} />
             </Grid>
             <Grid
               container
@@ -152,12 +220,12 @@ const Dashboard = () => {
             >
               <Grid item xs={12} sm={6} md={6}>
                 <Box>
-                  <OnlinePieChart />
+                  <OnlinePieChart dataGraph={dataGraph} />
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Box>
-                  <OfflinePieChart />
+                  <OfflinePieChart dataGraph={dataGraph} />
                 </Box>
               </Grid>
             </Grid>
@@ -171,39 +239,7 @@ const Dashboard = () => {
     );
   };
 
-  const SUBSCRIBE_LOGS = gql`
-    subscription SubscribeLogs($accountId: String!) {
-      subscribeLogs(accountId: $accountId) {
-        accountId
-        imeiStatus {
-          imei
-          status
-          connectedTime
-          disconnectedTime
-        }
-        totalConnectedCount
-        totalDisconnectedCount
-      }
-    }
-  `;
-
-  const { data, loading, error } = useSubscription(SUBSCRIBE_LOGS, {
-    variables: { accountId: "IMZ765352" },
-  });
-
-  useEffect(() => {
-    if (loading) {
-      console.log("Loading...");
-    }
-
-    if (error) {
-      console.error("Error:", error.message);
-    }
-
-    if (data && data.subscribeLogs) {
-      console.log("Live Data:", data.subscribeLogs);
-    }
-  }, [data, loading, error]);
+  console.log(dataGraph);
 
   return (
     <Box
