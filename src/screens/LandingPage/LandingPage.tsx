@@ -1,5 +1,4 @@
 import { useMediaQuery, Box, Grid, useTheme } from "@mui/material";
-import { theme } from "../../utils/styles";
 import landingPageStyles from "./LandingPage.styles";
 import { useAppSelector } from "../../utils/hooks";
 import { selectAuthenticated } from "../../redux/authSlice";
@@ -7,12 +6,8 @@ import history from "../../utils/history";
 import { Location } from "history";
 import strings from "../../global/constants/StringConstants";
 import Login from "./components/Login";
-import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
-import logo from "../../assets/icons/IMZ-logo.png";
-import loginvector from "../../assets/images/login_vector.png";
 import ResetPassword from "./components/ResetPassword";
-import ActivateUser from "./components/ActivateUser";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef } from "react";
 import ROUTEYE_LOGO from "../../assets/images/ROUTEYE_LOGO.png";

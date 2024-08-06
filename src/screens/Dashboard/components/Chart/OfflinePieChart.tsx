@@ -85,6 +85,15 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
           },
         },
       },
+      legend: {
+        show: true,
+        position: "bottom",
+        horizontalAlign: "center",
+        labels: {
+          colors: theme.palette.text.primary,
+          useSeriesColors: false,
+        },
+      },
     };
 
     const chartInstance = new ApexCharts(chartRef?.current, options);

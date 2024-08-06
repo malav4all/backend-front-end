@@ -106,25 +106,31 @@ const AddUser = (props: CustomProps) => {
     }
   };
 
-  const handleSelectAccount = (formFillEvent: SelectChangeEvent<any>) => {
-    const selectedValue = formFillEvent.target.value;
+  const handleValidation = () => {
+    const { isValid, errors }: any = validateAddUserForm(
+      userFormFields,
+      props?.edit
+    );
+    setUserFormFields({ ...errors });
+    return isValid;
+  };
 
+  const handleSelectAccount = (formFillEvent: SelectChangeEvent<any>) => {
     const selectedAccount = accountData.find(
-      (item: any) => item.accountId === selectedValue
+      (account: any) => account.accountName === formFillEvent.target.value
     );
 
-    if (!selectedAccount) {
-      console.error("Selected account not found in accountData");
-      return;
-    }
-
-    setUserFormFields((prevState: any) => ({
-      ...prevState,
-      accountId: {
-        value: selectedValue,
+    setUserFormFields({
+      ...userFormFields,
+      accountName: {
+        value: formFillEvent.target.value,
         error: "",
       },
-    }));
+      accountId: {
+        value: selectedAccount?._id ?? "",
+        error: "",
+      },
+    });
   };
 
   const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
@@ -143,10 +149,18 @@ const AddUser = (props: CustomProps) => {
   };
 
   const handleSelectRole = (formFillEvent: SelectChangeEvent<any>) => {
+    const selectedRole: any = roleData.find(
+      (role: any) => role.name === formFillEvent.target.value
+    );
+
     setUserFormFields({
       ...userFormFields,
-      roleId: {
+      roleName: {
         value: formFillEvent.target.value,
+        error: "",
+      },
+      roleId: {
+        value: selectedRole?._id ?? "",
         error: "",
       },
     });
@@ -157,21 +171,6 @@ const AddUser = (props: CustomProps) => {
       ...userFormFields,
       status: {
         value: formFillEvent.target.value,
-        error: "",
-      },
-    });
-  };
-
-  const handleSelectDeviceGroup = (formFillEvent: SelectChangeEvent<any>) => {
-    const deviceGroup = formFillEvent.target.value;
-    setUserFormFields({
-      ...userFormFields,
-      deviceGroupName: {
-        value: deviceGroup.deviceGroupName,
-        error: "",
-      },
-      deviceGroupID: {
-        value: deviceGroup._id,
         error: "",
       },
     });
@@ -220,11 +219,12 @@ const AddUser = (props: CustomProps) => {
         userName: userFormFields?.userName?.value?.trim(),
         password: userFormFields?.password?.value,
         roleId: userFormFields?.roleId?.value,
+        roleName: userFormFields?.roleName?.value,
         status: userFormFields?.status?.value,
         accountId: userFormFields.accountId.value,
-        industryType: userFormFields.industryType.value,
+        accountName: userFormFields.accountName.value,
       };
-      // if (handleValidation()) {
+
       if (props.edit) {
         const res = await updateUser({
           input: {
@@ -247,7 +247,6 @@ const AddUser = (props: CustomProps) => {
         openSuccessNotification(res?.createUser?.message);
         await props.tableData?.();
       }
-      // }
     } catch (error: any) {
       openErrorNotification(
         isTruthy(error?.message) ? error?.message : notifiers?.GENERIC_ERROR
@@ -395,26 +394,25 @@ const AddUser = (props: CustomProps) => {
               <Select
                 sx={classes.dropDownStyle}
                 id="add_user_roles_dropdown"
-                name="accountId"
-                value={userFormFields.roleId.value}
+                name="roleName"
+                value={userFormFields.roleName.value}
                 onChange={handleSelectRole}
-                disabled={props.edit}
                 renderValue={
-                  userFormFields.roleId.value !== ""
+                  userFormFields.roleName.value !== ""
                     ? undefined
                     : () => "Select a Role"
                 }
                 MenuProps={classes.menuProps}
                 displayEmpty
                 error={
-                  userFormFields.roleId.value.length < 4 &&
-                  userFormFields.roleId.error.length !== 0
+                  userFormFields.roleName.value.length < 4 &&
+                  userFormFields.roleName.error.length !== 0
                 }
               >
                 {roleData.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item._id}
+                    value={item.name}
                     sx={classes.dropDownOptionsStyle}
                   >
                     {item.name}
@@ -492,27 +490,26 @@ const AddUser = (props: CustomProps) => {
               </InputLabel>
               <Select
                 sx={classes.dropDownStyle}
-                id="add_user_roles_dropdown"
-                name="accountId"
-                disabled={props.edit}
-                value={userFormFields.accountId.value}
+                id="add_user_accounts_dropdown"
+                name="accountName"
+                value={userFormFields.accountName.value}
                 onChange={handleSelectAccount}
                 renderValue={
-                  userFormFields.accountId.value !== ""
+                  userFormFields.accountName.value !== ""
                     ? undefined
                     : () => "Select an Account"
                 }
                 MenuProps={classes.menuProps}
                 displayEmpty
                 error={
-                  userFormFields.accountId.value.length < 4 &&
-                  userFormFields.accountId.error.length !== 0
+                  userFormFields.accountName.value.length < 4 &&
+                  userFormFields.accountName.error.length !== 0
                 }
               >
-                {accountData?.map((item: any, index: any) => (
+                {accountData.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item.accountId}
+                    value={item.accountName}
                     sx={classes.dropDownOptionsStyle}
                   >
                     {item.accountName}
@@ -520,63 +517,11 @@ const AddUser = (props: CustomProps) => {
                 ))}
               </Select>
             </Stack>
-
-            {!isTruthy(userFormFields.accountId.value) && (
+            {!isTruthy(userFormFields.accountName.value) && (
               <FormHelperText error sx={classes.errorStyle}>
-                {userFormFields.accountId.error}
+                {userFormFields.accountName.error}
               </FormHelperText>
             )}
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box>
-            <Stack direction="column">
-              <InputLabel
-                sx={{
-                  ...classes.inputLabel,
-                  color: theme.palette.text.primary,
-                }}
-                shrink
-              >
-                Device Group
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Select
-                sx={classes.dropDownStyle}
-                id="add_user_device_group_dropdown"
-                name="deviceGroup"
-                value={userFormFields?.deviceGroupName?.value}
-                onChange={handleSelectDeviceGroup}
-                MenuProps={classes.menuProps}
-                displayEmpty
-                renderValue={() =>
-                  userFormFields?.deviceGroupName?.value ||
-                  "Select Device Group"
-                }
-                error={
-                  !isTruthy(userFormFields?.deviceGroupName?.value) &&
-                  userFormFields?.deviceGroupName?.error
-                }
-              >
-                {deviceGroup.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item.deviceGroupName}
-                  </MenuItem>
-                ))}
-              </Select>
-              {!isTruthy(userFormFields?.deviceGroupName?.value) && (
-                <FormHelperText error sx={classes.errorStyle}>
-                  {userFormFields.deviceGroupName?.error}
-                </FormHelperText>
-              )}
-            </Stack>
           </Box>
         </Grid>
       </Grid>

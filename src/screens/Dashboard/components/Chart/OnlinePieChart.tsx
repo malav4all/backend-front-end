@@ -72,7 +72,7 @@ const OnlinePieChart: React.FC<PieChartProps> = ({
       labels: dataGraph?.online?.labels || [],
       tooltip: {
         enabled: true,
-        theme: theme.palette.mode, // Use theme mode for tooltip theme
+        theme: theme.palette.mode,
         y: {
           formatter: function (value) {
             return `${value} Devices`;
@@ -82,6 +82,15 @@ const OnlinePieChart: React.FC<PieChartProps> = ({
               return `${seriesName}:`;
             },
           },
+        },
+      },
+      legend: {
+        show: true,
+        position: "bottom",
+        horizontalAlign: "center",
+        labels: {
+          colors: theme.palette.text.primary,
+          useSeriesColors: false,
         },
       },
     };

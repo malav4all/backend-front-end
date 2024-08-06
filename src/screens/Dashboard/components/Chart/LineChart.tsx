@@ -47,7 +47,7 @@ const LineChart: React.FC<LineChartProps> = ({
       },
       series: dataGraph?.lineChart?.series || [],
       xaxis: {
-        categories: dataGraph?.lineChart?.series?.xaxis?.categories,
+        categories: dataGraph?.lineChart?.xaxis?.categories,
       },
       yaxis: {
         opposite: isDarkMode,
@@ -68,7 +68,7 @@ const LineChart: React.FC<LineChartProps> = ({
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme]);
+  }, [height, theme, dataGraph?.lineChart]);  
 
   useEffect(() => {
     const handleResize = () => {

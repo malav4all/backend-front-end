@@ -322,6 +322,7 @@ const Trip = () => {
           >
             {getSearchBar()}
           </Stack>
+          <Box></Box>
         </Stack>
       </CustomAppHeader>
       <Box

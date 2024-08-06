@@ -219,7 +219,7 @@ const AppDrawer = (props: CustomProps) => {
                   </Box>
                 </ListItemText>
               ) : (
-                <Tooltip title={data.text} placement="bottom" arrow>
+                <Tooltip title={data.text} placement="right" arrow>
                   <ListItemIcon>
                     {isActiveTab(data.link) ? data.activeIcon : data.icon}
                   </ListItemIcon>
