@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Grid,
   InputAdornment,
   MenuItem,
@@ -15,16 +16,15 @@ import {
   CustomButton,
 } from "../../../../global/components";
 import strings from "../../../../global/constants/StringConstants";
-import {
-  debounceEventHandler,
-} from "../../../../helpers/methods";
+import { debounceEventHandler } from "../../../../helpers/methods";
 import SearchIcon from "@mui/icons-material/Search";
 import { ChangeEvent, useState } from "react";
 import moment from "moment";
 import routesReportStyles from "./TripReport.styles";
 import HereMap from "../../../TripDashboard/components/HereMap";
 import CustomDatePicker from "../../../../global/components/CustomDatePicker/CustomDatePicker";
-
+import { MdFileDownload } from "react-icons/md";
+import { IoCloseCircle } from "react-icons/io5";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -54,10 +54,15 @@ const TripReport = () => {
   const [limit, setLimit] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
+  const [showButtons, setShowButtons] = useState(false);
   const [lastSelectedRange, setLastSelectedRange] = useState({
     startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
+
+  const handleDownloadClick = () => {
+    setShowButtons(!showButtons);
+  };
 
   const handleCloseModel = () => {
     setOpenModal(false);
@@ -361,24 +366,84 @@ const TripReport = () => {
             >
               Trip Records
             </Typography>
-            <Box></Box>
-            <CustomTable
-              headers={[
-                { name: "From", field: "from" },
-                { name: "To", field: "to" },
-                { name: "Duration", field: "duration" },
-                { name: "Status", field: "status" },
-              ]}
-              rows={isSearching ? filterData : tripTableData}
-              paginationCount={count}
-              rowsPerPage={limit}
-              pageNumber={page}
-              perPageData={limit}
-              isRowPerPageEnable={false}
-              setPage={setPage}
-              handlePageChange={handleChangePage}
-              handlePerPageData={handlePerPageData}
-            />
+            <Box display={"flex"} gap={2} mt={5}>
+              <CustomButton label={"Trip Details"} onClick={() => {}} />
+              <CustomButton label={"Alert Details"} onClick={() => {}} />
+            </Box>
+            <Box>
+              <Box
+                display={"flex"}
+                justifyContent={"end"}
+                alignItems={"end"}
+                gap={2}
+              >
+                {showButtons ? (
+                  <Button
+                    sx={{
+                      fontSize: "1rem",
+                      width: "1rem",
+                      height: "2.5rem",
+                      color: "white",
+                      marginTop: "-1rem",
+                      backgroundColor: "#F75151",
+                      "&:hover": {
+                        backgroundColor: "#fd3030",
+                      },
+                    }}
+                    type="button"
+                    onClick={handleDownloadClick}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                      style={{ width: "35px", height: "30px" }}
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </Button>
+                ) : (
+                  <CustomButton
+                    label={"Download"}
+                    onClick={handleDownloadClick}
+                    icon={<MdFileDownload />}
+                  />
+                )}
+
+                {showButtons && (
+                  <Box display={"flex"} justifyContent={"end"} gap={2} mt={2}>
+                    <CustomButton label={"GeoJSON"} onClick={() => {}} />
+                    <CustomButton label={"YML"} onClick={() => {}} />
+                    <CustomButton label={"Download PDF"} onClick={() => {}} />
+                  </Box>
+                )}
+              </Box>
+
+              <CustomTable
+                headers={[
+                  { name: "From", field: "from" },
+                  { name: "To", field: "to" },
+                  { name: "Duration", field: "duration" },
+                  { name: "Status", field: "status" },
+                ]}
+                rows={isSearching ? filterData : tripTableData}
+                paginationCount={count}
+                rowsPerPage={limit}
+                pageNumber={page}
+                perPageData={limit}
+                isRowPerPageEnable={false}
+                setPage={setPage}
+                handlePageChange={handleChangePage}
+                handlePerPageData={handlePerPageData}
+              />
+            </Box>
           </Box>
         </Grid>
       </Grid>
@@ -450,8 +515,6 @@ const TripReport = () => {
       </>
     );
   };
-
-
 
   return (
     <Box

@@ -63,7 +63,7 @@ const dashboardStyles = {
   },
   statsValue: {
     ...regularFont,
-    fontSize: getRelativeFontSize(42),
+    fontSize: getRelativeFontSize(36),
     lineHeight: "1",
     marginTop: "1rem",
   },
