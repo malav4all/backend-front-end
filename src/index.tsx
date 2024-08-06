@@ -18,6 +18,7 @@ import { initReactI18next } from "react-i18next";
 import HttpApi from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import CustomThemeProvider from "./redux/ThemeContext";
+import { liveClient } from "./core-services/live-data/live-data";
 
 i18next
   .use(HttpApi)
@@ -53,21 +54,23 @@ smoothscroll.polyfill();
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <StyledEngineProvider injectFirst>
-      <StylesProvider>
-        <ThemeProvider theme={theme}>
-          <Provider store={store}>
-            <React.StrictMode>
-              <ErrorBoundary>
-                <CustomThemeProvider>
-                  <App />
-                </CustomThemeProvider>
-              </ErrorBoundary>
-            </React.StrictMode>
-          </Provider>
-        </ThemeProvider>
-      </StylesProvider>
-    </StyledEngineProvider>
+    <ApolloProvider client={liveClient}>
+      <StyledEngineProvider injectFirst>
+        <StylesProvider>
+          <ThemeProvider theme={theme}>
+            <Provider store={store}>
+              <React.StrictMode>
+                <ErrorBoundary>
+                  <CustomThemeProvider>
+                    <App />
+                  </CustomThemeProvider>
+                </ErrorBoundary>
+              </React.StrictMode>
+            </Provider>
+          </ThemeProvider>
+        </StylesProvider>
+      </StyledEngineProvider>
+    </ApolloProvider>
   </ApolloProvider>,
   document.getElementById("root")
 );

@@ -27,11 +27,9 @@ import {
   getFormattedStatsCount,
   isTruthy,
   openErrorNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import { MdPassword } from "react-icons/md";
 import {
-  CustomAppHeader,
   CustomDialog,
   CustomInput,
   CustomTable,
@@ -55,9 +53,6 @@ import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import uploadUser from "../../../assets/images/uploadUser.svg";
 import history from "../../../utils/history";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { useLocation } from "react-router-dom";
-import { tabConfig } from "../SettingsHelpers";
 
 const Users = () => {
   const theme = useTheme();
@@ -84,17 +79,12 @@ const Users = () => {
 
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [perPageData, setPerPageData] = useState(10);
-  const location = useLocation();
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [activeCampaigner, setActiveCampaigner] = useState<any>([]);
   const [changePasswordModal, setChangePasswordModal] = useState(false);
   const [imeiListDialogHandler, setImeiListDialogHandler] =
     useState<any>(false);
   const [selectedImeiData, setSelectedImeiData] = useState<any>([]);
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
-
   useEffect(() => {
     if (searchCampaigner === "") {
       setPageNumber(1);
@@ -124,11 +114,6 @@ const Users = () => {
     setPerPageData(event.target.value);
   };
 
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
-  };
-
   const getRedirectionUrl = (_id: any) => {
     return history.push(`/device-group/view/${_id}`);
   };
@@ -144,34 +129,7 @@ const Users = () => {
         firstName: usersData?.firstName,
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
-        roleId: usersData?.roleId,
-        // roleId: usersData?.roleId?.name,
-        deviceGroupName: (
-          <>
-            <Tooltip
-              title="Show Imeis"
-              placement="top"
-              arrow
-              onClick={() => {
-                getRedirectionUrl(usersData?.deviceGroup?._id);
-              }}
-            >
-              <Typography
-                sx={{
-                  fontWeight: 600,
-                  display: "inline-block",
-                  color: "#5F22E2",
-                  fontSize: "13px",
-                  "&:hover": {
-                    borderBottom: "1px solid #5F22E2",
-                  },
-                }}
-              >
-                {usersData?.deviceGroup?.deviceGroupName}
-              </Typography>
-            </Tooltip>
-          </>
-        ),
+        roleName: usersData?.roleName,
         status: (
           <Chip
             label={usersData.status}
@@ -294,7 +252,7 @@ const Users = () => {
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
-      setSearchCampaigner(SearchEvent.target.value.replace(/\s/g, ""));
+      setSearchCampaigner(SearchEvent.target.value);
       setPageNumber(1);
       setPerPageData(10);
     } else {
@@ -463,6 +421,7 @@ const Users = () => {
   ) => {
     setSearchPageNumber(newPage);
   };
+  const handleDownload = async () => {};
 
   const campaignerTable = () => {
     return (
@@ -488,24 +447,13 @@ const Users = () => {
     );
   };
 
-  const SettingsHeader = () => {
-    return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
-        <Box ml={1}>
-        <Typography style={classes.settingsTitle}>Settings / User</Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        >
-        </Stack>
-      </CustomAppHeader>
-    );
-  };
-
   const getUser = () => (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       <Stack
         px={4}
         pt={2}
@@ -548,17 +496,7 @@ const Users = () => {
     </Box>
   );
 
-  return (
-    <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        height: "100%",
-      }}
-    >
-      {SettingsHeader()}
-      {getUser()}
-    </Box>
-  );
+  return getUser();
 };
 
 export default Users;
