@@ -16,7 +16,7 @@ import {
   borderColor,
 } from "../../../utils/styles";
 
-const textColor = "#fffff0"; // Define the fixed text color
+const textColor = "#fffff0"; 
 
 const appDrawerStyles = {
   drawer: {
@@ -131,14 +131,13 @@ const appDrawerStyles = {
       height: "50vh",
     },
     "&::-webkit-scrollbar": {
-      width: "7px",
+      width: "5px",
     },
     "&::-webkit-scrollbar-thumb": {
       borderRadius: "10px",
-      padding: "1rem",
-      backgroundColor: "#5F22E1",
+      backgroundColor: "#888", 
       "&:hover": {
-        backgroundColor: "#5F22E1", 
+        backgroundColor: "#555", 
       },
     },
   },

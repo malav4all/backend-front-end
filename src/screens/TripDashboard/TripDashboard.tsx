@@ -1,7 +1,6 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
-  Chip,
   Grid,
   InputAdornment,
   ListItem,
@@ -21,80 +20,56 @@ import strings from "../../global/constants/StringConstants";
 import history from "../../utils/history";
 import { useTitle } from "../../utils/UseTitle";
 import { CustomButton, CustomInput } from "../../global/components";
-import dummyData from "./TripDashboard.helper";
-import dashboardStyles from "./TripDashboardStyles";
 import HereMap from "./components/HereMap";
 import DashboardHeader from "./components/DashboardHeader";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FlagIcon from "@mui/icons-material/Flag";
+import { ListAllTrips } from "./service/TripDashboard.service";
+import dashboardStyles from "./TripDashboardStyles";
+import dummyData from "./TripDashboard.helper";
+
+interface Trip {
+  tripId: string;
+  name: string;
+  tripData: {
+    vehicleNo: string;
+  }[];
+  startPoint: {
+    name: string;
+  };
+  endPoint: {
+    name: string;
+  };
+  status: string;
+  tripEndDate: string;
+  progress: string;
+}
+
+interface Stats {
+  title: string;
+  value: number;
+  resource: string;
+  redirection: {
+    pathname?: string;
+  };
+}
+
 const TripDashboard = () => {
   const theme = useTheme();
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [tripDashboardData, setTripDashboardData] = useState([{}]);
-  const [searchData, setSearchData] = useState<any>([]);
-  const [selectedTrip, setSelectedTrip] = useState<any>(null);
-  const trips = [
-    {
-      id: 1,
-      name: "Name of Trip 1",
-      tripID: "123123123212",
-      source: "Source 1",
-      destination: "Destination 1",
-    },
-    {
-      id: 2,
-      name: "Name of Trip 2",
-      tripID: "123123123212",
-      source: "Source 2",
-      destination: "Destination 2",
-    },
-    {
-      id: 3,
-      name: "Name of Trip 3",
-      tripID: "123123123212",
-      source: "Source 3",
-      destination: "Destination 3",
-    },
-    {
-      id: 4,
-      name: "Name of Trip 4",
-      tripID: "123123123212",
-      source: "Source 4",
-      destination: "Destination 4",
-    },
-    {
-      id: 5,
-      name: "Name of Trip 5",
-      tripID: "123123123212",
-      source: "Source 5",
-      destination: "Destination 5",
-    },
-    {
-      id: 6,
-      name: "Name of Trip 6",
-      tripID: "123123123212",
-      source: "Source 6",
-      destination: "Destination 6",
-    },
-    {
-      id: 7,
-      name: "Name of Trip 7",
-      tripID: "123123123212",
-      source: "Source 7",
-      destination: "Destination 7",
-    },
-    {
-      id: 8,
-      name: "Name of Trip 8",
-      tripID: "123123123212",
-      source: "Source 8",
-      destination: "Destination 8",
-    },
-  ];
+  const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
+  const [searchData, setSearchData] = useState<string>("");
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalActiveTrips, setTotalActiveTrips] = useState<number>(0);
 
-  const stats = {
+  const stats: Record<string, Stats> = {
     executed: {
-      title: "Total Trips Today",
+      title: "Today's Trips",
       value: 56,
       resource: strings.campaign,
       redirection: {
@@ -102,11 +77,39 @@ const TripDashboard = () => {
       },
     },
     outbounds: {
-      title: "Active Trips",
-      value: 98,
+      title: "Total Active Trips",
+      value: totalActiveTrips,
       resource: strings.campaign,
       redirection: {},
     },
+  };
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const variables = {
+          input: {
+            accountId: "IMZ113343",
+          },
+        };
+        const response = await ListAllTrips(variables);
+        setTrips(response?.tripList?.data);
+        setLoading(false);
+      } catch (err: any) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchTrips();
+  }, []);
+
+  useEffect(() => {
+    getOngoingTrips(trips);
+  }, [trips]);
+
+  const getOngoingTrips = (trips: Trip[]) => {
+    const ongoingTrips = trips.filter((trip) => trip.status === "ongoing");
+    setTotalActiveTrips(ongoingTrips.length);
   };
 
   const getTripList = () => {
@@ -136,12 +139,23 @@ const TripDashboard = () => {
           Trip List
         </Typography>
         <Box my={3}>{getSearchBar()}</Box>
-        <Box sx={{ height: "400px", overflowY: "auto" }}>
-          {console.log(trips)}
+        <Box sx={{ height: "400px", overflowY: "auto", padding: "1rem" }}>
           {trips.map((trip) => (
             <ListItem
-              key={trip.id}
-              sx={{ borderBottom: "1px solid #ddd", cursor: "pointer" }}
+              key={trip.tripId}
+              sx={{
+                border: "1px solid rgba(0, 0, 0, 0.1)",
+                cursor: "pointer",
+                padding: "12px",
+                borderRadius: "8px",
+                marginBottom: "12px",
+                backgroundColor: theme.palette.background.paper,
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  transform: "translateY(-2px)",
+                },
+              }}
               onClick={() => setSelectedTrip(trip)}
             >
               <ListItemText
@@ -149,38 +163,74 @@ const TripDashboard = () => {
                   <Typography
                     sx={{
                       fontFamily: "Geist_Bold",
-                      fontSize: "1rem",
+                      fontSize: "1.2rem",
+                      color: "#333",
+                      marginTop: "-0.5rem",
+                      marginBottom: "0.5rem",
                     }}
                   >
-                    {trip.name}
+                    {trip.tripData[0]?.vehicleNo}
                   </Typography>
                 }
                 secondary={
                   <>
-                    <Typography
+                    <Box
                       sx={{
-                        fontFamily: "Geist_Regular",
-                        fontSize: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        marginTop: "4px",
                       }}
                     >
-                      Trip ID: {trip.tripID}
-                    </Typography>
+                      <LocationOnIcon
+                        sx={{
+                          color: "#00C532",
+                          marginRight: "4px",
+                          fontSize: "1rem",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontFamily: "Geist_Regular",
+                          fontSize: "0.8rem",
+                          color: "#999",
+                        }}
+                      >
+                        Source: {trip.startPoint?.name}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginTop: "2px",
+                      }}
+                    >
+                      <FlagIcon
+                        sx={{
+                          color: "#F75151",
+                          marginRight: "4px",
+                          fontSize: "1rem",
+                        }}
+                      />
+                      <Typography
+                        sx={{
+                          fontFamily: "Geist_Regular",
+                          fontSize: "0.8rem",
+                          color: "#999",
+                        }}
+                      >
+                        Destination: {trip.endPoint?.name}
+                      </Typography>
+                    </Box>
                     <Typography
                       sx={{
-                        fontFamily: "Geist_Light",
+                        fontFamily: "Geist_Bold",
                         fontSize: "0.9rem",
-                        marginTop: "0.5rem",
+                        color: "#333",
+                        marginTop: "12px",
                       }}
                     >
-                      Source: {trip.source}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        fontFamily: "Geist_Light",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      Destination: {trip.destination}
+                      ETA: {trip?.tripEndDate}
                     </Typography>
                   </>
                 }
@@ -195,7 +245,8 @@ const TripDashboard = () => {
   const fetchTripDashboardHandler = async () => {
     try {
       setIsLoading(true);
-      setTripDashboardData(dummyData);
+      // Replace dummyData with actual data fetching logic
+      setTripDashboardData(dummyData as any);
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -206,7 +257,7 @@ const TripDashboard = () => {
   const getStatsCard = () => {
     return (
       <Grid container spacing={2}>
-        {Object.values(stats).map((stat: any) => (
+        {Object.values(stats).map((stat) => (
           <Grid item xs={12} sm={12} md={6} xl={6} lg={6} key={stat.title}>
             <Box
               display="flex"
@@ -225,7 +276,7 @@ const TripDashboard = () => {
               }}
               onClick={() =>
                 isTruthy(stat.redirection)
-                  ? history.push(stat.redirection)
+                  ? history.push(stat.redirection.pathname || "")
                   : null
               }
             >
@@ -268,12 +319,12 @@ const TripDashboard = () => {
               bottom: "20px",
               left: "20px",
               padding: "1rem",
-              backgroundColor: theme.palette.background.paper,
+              backgroundColor: "#ffffffcc", // Semi-transparent white
               border: "1px solid",
               borderColor: theme.palette.divider,
-              borderRadius: "8px",
+              borderRadius: "12px",
               boxShadow:
-                "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                "0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05)",
               zIndex: 10,
               width: "40%",
               minWidth: "385px",
@@ -285,15 +336,20 @@ const TripDashboard = () => {
                 fontFamily: "Geist_Medium",
                 fontSize: "1.2rem",
                 marginBottom: "1rem",
+                color: "#333",
               }}
             >
               {selectedTrip.name}
             </Typography>
             <Typography
               variant="body1"
-              sx={{ fontFamily: "Geist_Light", fontSize: "1rem" }}
+              sx={{
+                fontFamily: "Geist_Light",
+                fontSize: "1rem",
+                color: "#666",
+              }}
             >
-              Trip ID: {selectedTrip.tripID}
+              Trip ID: {selectedTrip?.tripId}
             </Typography>
             <Typography
               variant="body1"
@@ -301,9 +357,10 @@ const TripDashboard = () => {
                 fontFamily: "Geist_Light",
                 fontSize: "1rem",
                 marginTop: "0.5rem",
+                color: "#666",
               }}
             >
-              Source: {selectedTrip.source}
+              Source: {selectedTrip?.startPoint?.name}
             </Typography>
             <Typography
               variant="body1"
@@ -311,9 +368,10 @@ const TripDashboard = () => {
                 fontFamily: "Geist_Light",
                 fontSize: "1rem",
                 marginTop: "0.5rem",
+                color: "#666",
               }}
             >
-              Destination: {selectedTrip.destination}
+              Destination: {selectedTrip?.endPoint?.name}
             </Typography>
             <Box
               sx={{
@@ -324,21 +382,21 @@ const TripDashboard = () => {
               }}
             >
               <CustomButton
-                label={"Request OTP"}
+                label="Unlock"
                 onClick={() => {
-                  // Add your onClick handler here
+                  // Add your onClick
                 }}
               />
               <CustomButton
-                label={"Device Details"}
+                label="Device Details"
                 onClick={() => {
-                  // Add your onClick handler here
+                  // Add your onClick
                 }}
               />
               <CustomButton
-                label={"Trip Details"}
+                label="Trip Details"
                 onClick={() => {
-                  // Add your onClick handler here
+                  // Add your onClick
                 }}
               />
             </Box>
@@ -422,7 +480,7 @@ const TripDashboard = () => {
                 borderLeft: "7px solid #5F22E1",
               }}
             >
-              All Devices Table
+              Trip Map View
             </Typography>
             {getMap()}
           </Box>
@@ -444,7 +502,6 @@ const TripDashboard = () => {
         margin: "auto",
       }}
     >
-      {/* {getDashboardHeader()} */}
       <Box>
         <DashboardHeader />
       </Box>

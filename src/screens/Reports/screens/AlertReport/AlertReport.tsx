@@ -5,12 +5,12 @@ import {
   MenuItem,
   Select,
   Typography,
-  useTheme
+  useTheme,
 } from "@mui/material";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import moment from "moment";
 import alertReportStyles from "./AlertReport.styles";
-import { alertRowData, statusDevice } from "./service/alertReport.service";
+import { alertRowData } from "./service/alertReport.service";
 import {
   CustomButton,
   CustomDialog,
@@ -32,7 +32,7 @@ interface CustomDateRange {
 }
 
 const AlertReport = () => {
-  const theme = useTheme()
+  const theme = useTheme();
   const initialState: any = {
     fromDate: moment().clone().subtract(1, "hour").toISOString(),
     toDate: moment().toISOString(),
@@ -177,7 +177,8 @@ const AlertReport = () => {
           </Typography>
           <Select
             id="campaigns_interval_dropdown"
-            sx={{...classes.dropDownStyle, 
+            sx={{
+              ...classes.dropDownStyle,
               backgroundColor: theme.palette.background.paper,
             }}
             value={selectedRange}
@@ -347,7 +348,7 @@ const AlertReport = () => {
         // closeIcon={true}
         closeButtonVisibility
         // cancelIcon={true}
-        borderRadius="33px"
+        borderRadius="5px"
       />
     );
   };
@@ -458,11 +459,11 @@ const AlertReport = () => {
   };
 
   return (
-    <Box 
-    sx={{
-      backgroundColor: theme.palette.background.default,
-      height: "100%"
-    }}
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        height: "100%",
+      }}
     >
       {getReportHeader()}
       {getReportBody()}

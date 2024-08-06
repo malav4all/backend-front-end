@@ -5,11 +5,13 @@ import { Box, Typography, useTheme } from "@mui/material";
 interface LineChartProps {
   width?: number | string;
   height?: number;
+  dataGraph?: any;
 }
 
 const LineChart: React.FC<LineChartProps> = ({
   width = "100%",
   height = 400,
+  dataGraph,
 }) => {
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
@@ -20,11 +22,11 @@ const LineChart: React.FC<LineChartProps> = ({
 
     const customStyles = `
       .apexcharts-menu {
-        background: ${isDarkMode ? '#060B25' : '#FFFFFF'} !important;
-        color: ${isDarkMode ? '#FFFFFF' : '#000000'} !important;
+        background: ${isDarkMode ? "#060B25" : "#FFFFFF"} !important;
+        color: ${isDarkMode ? "#FFFFFF" : "#000000"} !important;
       }
       .apexcharts-menu-item:hover {
-        background: ${isDarkMode ? '#15152E' : '#E0E0E0'} !important;
+        background: ${isDarkMode ? "#15152E" : "#E0E0E0"} !important;
       }
     `;
     const styleSheet = document.createElement("style");
@@ -43,18 +45,9 @@ const LineChart: React.FC<LineChartProps> = ({
       stroke: {
         curve: "smooth",
       },
-      series: [
-        {
-          name: "series1",
-          data: [31, 40, 28, 51, 42, 109, 100],
-        },
-        {
-          name: "series2",
-          data: [11, 32, 45, 32, 34, 52, 41],
-        },
-      ],
+      series: dataGraph?.lineChart?.series || [],
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        categories: dataGraph?.lineChart?.xaxis?.categories,
       },
       yaxis: {
         opposite: isDarkMode,
@@ -75,7 +68,7 @@ const LineChart: React.FC<LineChartProps> = ({
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme]);
+  }, [height, theme, dataGraph?.lineChart]);  
 
   useEffect(() => {
     const handleResize = () => {

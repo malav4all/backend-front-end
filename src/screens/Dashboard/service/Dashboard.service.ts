@@ -5,6 +5,9 @@ import {
   DEVICE_STATUS,
   FETCH_DASHBOARD_DETAIL,
   FETCH_DEVICE_STATUS,
+  LINE_CHART_DEVICE_GRAPH,
+  OFFLINE_DEVICE_GRAPH,
+  ONLINE_DEVICE_GRAPH,
 } from "./Dashboard.mutation";
 
 export const fetchDashboardDetail = async (): Promise<any> => {
@@ -48,6 +51,45 @@ export const getAllDeviceStatus = async (): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: FETCH_DEVICE_STATUS,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const onlineGraphStatus = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: ONLINE_DEVICE_GRAPH,
+      variables: variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const offlineGraphStatus = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: OFFLINE_DEVICE_GRAPH,
+      variables: variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const lineChartGraphStatus = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: LINE_CHART_DEVICE_GRAPH,
+      variables: variables,
     });
 
     return response.data;

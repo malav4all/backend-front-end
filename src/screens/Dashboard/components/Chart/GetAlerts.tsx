@@ -3,7 +3,7 @@ import { FaBell } from "react-icons/fa6";
 import dashboardStyles from "../../DashboardStyles";
 import { headerColor } from "../../../../utils/styles";
 
-const GetAlerts = () => {
+const GetAlerts = ({ data }: any) => {
   const theme = useTheme();
   const classes = dashboardStyles;
   return (
@@ -51,7 +51,9 @@ const GetAlerts = () => {
               >
                 Total Devices
               </Typography>
-              <Typography sx={classes.statsValue}>1000</Typography>
+              <Typography sx={classes.statsValue}>
+                {data?.imeiStatus?.length}
+              </Typography>
             </Box>
 
             <Box
@@ -104,7 +106,9 @@ const GetAlerts = () => {
               >
                 Online Devices
               </Typography>
-              <Typography sx={classes.statsValue}>800</Typography>
+              <Typography sx={classes.statsValue}>
+                {data?.totalConnectedCount}
+              </Typography>
             </Box>
 
             <Box
@@ -157,7 +161,10 @@ const GetAlerts = () => {
               >
                 Offline Devices
               </Typography>
-              <Typography sx={classes.statsValue}>200</Typography>
+              <Typography sx={classes.statsValue}>
+                {" "}
+                {data?.totalDisconnectedCount}
+              </Typography>
             </Box>
 
             <Box
