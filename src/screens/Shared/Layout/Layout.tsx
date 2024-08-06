@@ -52,6 +52,7 @@ import UserAccess from "../../Trip/UserAccess/UserAccess";
 import AddDevice from "../../AddDevice/AddDevice";
 import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 import TripDashboard from "../../TripDashboard/TripDashboard";
+import Datapush from "../../Settings/DataPush/Datapush";
 import TripReport from "../../Reports/screens/TripReport/TripReport";
 import MapView from "../../MapView/MapView";
 
@@ -345,6 +346,13 @@ const Layout = () => {
             path={"/settings/LocationType"}
             component={LocationType}
             componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Datapush"}
+            component={Datapush}
+            componentName={strings.DATAPUSH}
           />
           <PrivateRoute
             exact

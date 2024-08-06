@@ -277,6 +277,7 @@ export class StringConstants {
   USER_ACCESS = "USER ACCESS";
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
+  DATAPUSH = "DATA PUSH";
 }
 
 let strings = new StringConstants();

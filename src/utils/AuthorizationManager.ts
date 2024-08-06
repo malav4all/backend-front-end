@@ -206,6 +206,13 @@ const ListOfMenus = () =>
           link: "/settings/Account",
           pageName: strings.ACCOUNT,
         },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "DataPush",
+          link: "/settings/Datapush",
+          pageName: strings.ACCOUNT,
+        },
       ],
     },
     {
