@@ -63,10 +63,11 @@ const Dashboard = () => {
     endDate: moment().toISOString(),
   });
   const [messages, setMessages] = useState<any>();
-  const accountId = "IMZ765352"; //
+  const accountId = "IMZ113343";
+
   useEffect(() => {
     // Create a WebSocket connection
-    const ws = new WebSocket("ws://localhost:2580/ws");
+    const ws = new WebSocket("ws://103.20.214.201:2580/ws");
 
     ws.onopen = () => {
       // Send the account ID to the server
@@ -104,7 +105,6 @@ const Dashboard = () => {
         offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
         lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
       ]);
-      // console.log("Graph data received:", { online, offline, chartLine });
       setGraphData({
         online: online?.onlineDeviceGraph,
         offline: offline?.offlineDeviceGraph,
@@ -186,7 +186,7 @@ const Dashboard = () => {
       </Grid>
     );
   };
-  console.log(dataGraph);
+
   const getDashboardBody = () => {
     return (
       <Grid md={12} xs={12} sx={{ margin: "auto" }}>
@@ -238,8 +238,6 @@ const Dashboard = () => {
       </Grid>
     );
   };
-
-  console.log(dataGraph);
 
   return (
     <Box
