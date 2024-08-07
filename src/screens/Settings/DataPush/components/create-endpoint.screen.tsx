@@ -119,7 +119,6 @@ const CreateEndpointForm: React.FC<{
     }));
   };
 
-  console.log({ formValues });
   const fetchAllEndPoints = async () => {
     try {
       const endpointsData = await getEndpoints(

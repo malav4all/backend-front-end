@@ -31,7 +31,6 @@ import { useParams } from "react-router-dom";
 
 function Builder({ form }: { form: any }) {
   const { id } = useParams<{ id: any }>();
-  // console.log({ id });
   const { setElements, setSelectedElement, elements } = useDesigner();
   const [isReady, setIsReady] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
@@ -53,9 +52,7 @@ function Builder({ form }: { form: any }) {
   const sensors = useSensors(mouseSensor, touchSensor);
 
   useEffect(() => {
-    console.log("ueseffect");
     if (isReady) return;
-    // console.log(form.content, "form.content");
     // const elements = JSON.parse(form.content);
     setElements(elements);
     setSelectedElement(null);

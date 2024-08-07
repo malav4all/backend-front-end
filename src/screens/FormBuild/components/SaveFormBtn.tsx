@@ -10,7 +10,6 @@ import { useHistory } from "react-router-dom";
 function SaveFormBtn({ id }: { id: any }) {
   const history = useHistory();
   const { elements }: any = useDesigner();
-  console.log({ elements });
   const [loading, setLoading] = useState(false);
 
   const updateFormContent = async () => {
@@ -18,7 +17,6 @@ function SaveFormBtn({ id }: { id: any }) {
       setLoading(true);
       // const JsonElements = JSON.stringify(elements);
       // const payload = JSON.parse(JsonElements);
-      // console.log({ payload });
       await UpdateForm({
         input: {
           accountId: "IMZ113343",

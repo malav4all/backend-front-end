@@ -115,7 +115,6 @@ const AddDeviceGroup = (props: CustomProps) => {
         await props.tableData?.();
       }
     } catch (error: any) {
-      console.error("Error:", error);
       openErrorNotification(
         isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
       );

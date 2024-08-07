@@ -100,9 +100,9 @@ const refreshToken = async () => {
     }>({
       mutation: REFRESH_TOKEN,
     });
-    console.log("2");
+
     const accessToken = refreshResolverResponse.data?.refreshToken.accessToken;
-    console.log(accessToken);
+
     // store.dispatch(updateTokens(accessToken));
     return accessToken;
   } catch (err) {

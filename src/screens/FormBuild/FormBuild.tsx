@@ -39,10 +39,6 @@ const FormBuilder: React.FC = () => {
           limit: 10,
         },
       });
-      console.log(
-        "response.fetchFormBuilder.data",
-        response.fetchFormBuilder.data
-      );
       setForms(response.fetchFormBuilder.data);
       setLoading(false);
     };
@@ -67,7 +63,6 @@ const FormBuilder: React.FC = () => {
   }
 
   function FormCard({ form }: { form: any }) {
-    console.log({ form });
     return (
       <Card>
         <CardHeader>

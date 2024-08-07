@@ -8,7 +8,6 @@ function useDesigner() {
   if (!context) {
     throw new Error("useDesigner must be used within a DesignerContext");
   }
-  console.log({ context });
   return context as {
     elements: FormElementInstance[];
     setElements: React.Dispatch<React.SetStateAction<FormElementInstance[]>>;

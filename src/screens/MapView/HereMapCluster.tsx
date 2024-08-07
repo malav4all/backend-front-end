@@ -31,7 +31,6 @@ const HereMapCluster: React.FC = () => {
       const dataPoints = airports.map(
         (item) => new H.clustering.DataPoint(item.latitude, item.longitude)
       );
-      console.log("Data Points: ", dataPoints); 
 
       const clusteredDataProvider = new H.clustering.Provider(dataPoints, {
         clusteringOptions: {

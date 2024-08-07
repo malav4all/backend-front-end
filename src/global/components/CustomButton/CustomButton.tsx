@@ -28,7 +28,6 @@ const CustomButton = (props: CustomProps) => {
   };
 
   const classes = customButtonStyles;
-  console.log({ classes });
   const buttonType = getCustomCss();
   const appliedClass = {
     ...classes.btnStyle,

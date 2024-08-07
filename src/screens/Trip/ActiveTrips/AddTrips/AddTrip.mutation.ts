@@ -46,3 +46,34 @@ export const FETCH_GEOZONE = gql`
     }
   }
 `;
+
+export const FETCH_ENTITY = gql`
+  mutation ($input: EntitesTypeInput!) {
+    fetchEntityByTripTypeAndType(input: $input) {
+      success
+      message
+      paginatorInfo {
+        count
+      }
+      data {
+        _id
+        createdBy
+        aadharCardNo
+        gstIn
+        contactPhone
+        contactEmail
+        contactName
+        pinCode
+        district
+        area
+        state
+        city
+        address
+        type
+        name
+        tripTypeList
+        accountId
+      }
+    }
+  }
+`;

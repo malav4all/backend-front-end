@@ -1,21 +1,26 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
-  Divider,
   Grid,
   Stack,
   Step,
   StepLabel,
   Stepper,
   Typography,
-  InputLabel,
-  MenuItem,
-  TextField,
   Select,
+  MenuItem,
   useTheme,
+  TextField,
+  Divider,
 } from "@mui/material";
-import { CustomButton, CustomInput } from "../../../../global/components"; // Adjust the import path as needed
+import { CustomButton, CustomInput } from "../../../../global/components";
+import {
+  fetchDeviceList,
+  fetchEntityByTripTypeAndType,
+} from "./AddTripService";
+import { GetForms } from "../../../FormBuild/formBuilder.service"; // Adjust the import path as needed
+import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
 import strings from "../../../../global/constants/StringConstants";
-import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   alertConfigurationFormInitialState,
   transitTypeFormInitialState,
@@ -27,22 +32,13 @@ import {
   validateTripInformationForm,
 } from "./AddTripFormValidation";
 import addTripStyles from "./AddTrips.styles";
-import {
-  primaryColorPurple,
-  primaryInactiveTabBgColor,
-} from "../../../../utils/styles";
-import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
-import { store } from "../../../../utils/store";
-import notifiers from "../../../../global/constants/NotificationConstants";
 import TransitTypeForm from "./TransitTypeForm/TransitTypeForm";
-import { useHistory } from "react-router-dom";
-
 import TripInformationForm from "./TripInformationForm/TripInformationForm";
 import AlertConfigurationForm from "./AlertConfigurationForm/AlertConfigurationForm";
-import { fetchDeviceList } from "./AddTripService";
-import { GetForms } from "../../../FormBuild/formBuilder.service";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useHistory } from "react-router-dom";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import notifiers from "../../../../global/constants/NotificationConstants";
 import urls from "../../../../global/constants/UrlConstants";
 
 const steps = ["Transit Type", "Trip Information", "Alert Detail"];
@@ -71,6 +67,10 @@ const AddTrip = (props: any) => {
     fetchFormbuilderForm();
   }, []);
 
+  useEffect(() => {
+    updateEntityFieldOptions(dynamicForm);
+  }, [transitTypeForm]);
+
   const fetchImeiData = async () => {
     try {
       const res = await fetchDeviceList();
@@ -96,6 +96,42 @@ const AddTrip = (props: any) => {
       ]);
     } catch (error: any) {
       openErrorNotification(error.message);
+    }
+  };
+
+  const updateEntityFieldOptions = async (forms: any) => {
+    if (!forms) return;
+
+    const entityFields = forms.flatMap((form: any) =>
+      form.content.filter((field: any) => field.type === "EntityField")
+    );
+
+    const tripType = transitTypeForm.transitType.value;
+
+    if (tripType) {
+      for (const field of entityFields) {
+        const { entityType } = field.extraAttributes;
+        try {
+          const res = await fetchEntityByTripTypeAndType({
+            input: {
+              accountId: "IMZ113343",
+              tripTypeList: [tripType],
+              type: entityType,
+              page: -1,
+              limit: 10000,
+            },
+          });
+          field.extraAttributes.options =
+            res.fetchEntityByTripTypeAndType.data.map((entity: any) => ({
+              label: entity.name,
+              value: entity._id,
+            }));
+        } catch (error: any) {
+          openErrorNotification(error.message);
+        }
+      }
+      // Update the dynamicForm state to trigger a re-render with the new options
+      setDynamicForm([...forms]);
     }
   };
 

@@ -118,7 +118,6 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
   };
 
   const handleApplyCharts = () => {
-    console.log("Selected Charts:", selectedCharts);
     setDialogOpen(false);
     // Handle the selected charts here
   };

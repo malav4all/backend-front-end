@@ -5,7 +5,6 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 export const getEndpoints = async (projectId: any, apiKey: any) => {
   const url = `${API_BASE_URL}/projects/${projectId}/endpoints`;
   try {
-    console.log(url);
     const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${apiKey}`,

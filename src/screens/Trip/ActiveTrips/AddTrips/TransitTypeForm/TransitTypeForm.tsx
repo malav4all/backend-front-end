@@ -57,7 +57,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
     }
   };
 
-  const handleSelectChange = (event: SelectChangeEvent<any>, setState: any) => {
+  const handleSelectChange = (event: SelectChangeEvent<any>) => {
     const { name, value } = event.target;
     setTransitTypeForm((prevFields: any) => ({
       ...prevFields,
