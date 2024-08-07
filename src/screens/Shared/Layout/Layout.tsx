@@ -46,7 +46,6 @@ import LocationType from "../../Settings/LocationType/LocationType";
 import Entity from "../../Trip/Entity/Entity";
 import EntityType from "../../Trip/EntityType/EntityType";
 import TripType from "../../Trip/TripType/TripType";
-import UserAccess from "../../Trip/UserAccess/UserAccess";
 import AddDevice from "../../AddDevice/AddDevice";
 import DeviceTransfer from "../../DeviceTransfer/DeviceTransfer";
 import TripDashboard from "../../TripDashboard/TripDashboard";
@@ -59,6 +58,7 @@ import AddTrip from "../../Trip/ActiveTrips/AddTrips/AddTrip";
 import ViewTrip from "../../Trip/ActiveTrips/ViewTrip/ViewTrip";
 import Trips from "../../Trip/ActiveTrips/Trips";
 import urls from "../../../global/constants/UrlConstants";
+import TripAccess from "../../Trip/UserAccess/UserAccess";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -404,8 +404,8 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/user-access"}
-            component={UserAccess}
+            path={"/trip-access"}
+            component={TripAccess}
             componentName={strings.TRIPT_TYPE}
           />
           <PrivateRoute

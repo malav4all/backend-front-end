@@ -48,7 +48,7 @@ export const entityTableHeader = [
     field: "aadharCardNo",
   },
   {
-    name: "Entered By",
+    name: "Created By",
     field: "createdBy",
   },
 ];

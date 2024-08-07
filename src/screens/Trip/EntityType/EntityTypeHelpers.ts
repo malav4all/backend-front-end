@@ -8,7 +8,7 @@ export const entityTypeTableHeader = [
     field: "description",
   },
   {
-    name: "EnteredBy",
+    name: "Created By",
     field: "createdBy",
   },
 ];

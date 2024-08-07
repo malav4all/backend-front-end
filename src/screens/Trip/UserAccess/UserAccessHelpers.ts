@@ -1,22 +1,22 @@
 export const userAccessTableHeader = [
   {
-    name: "UserAccess Name",
+    name: "User Name",
     field: "userId",
   },
-  {
-    name: "Imei",
-    field: "devicesImei",
-  },
+  // {
+  //   name: "Imei",
+  //   field: "devicesImei",
+  // },
   {
     name: "Enitites",
     field: "entites",
   },
+  // {
+  //   name: "Device Group",
+  //   field: "deviceGroup",
+  // },
   {
-    name: "Device Group",
-    field: "deviceGroup",
-  },
-  {
-    name: "Entered by",
+    name: "Created By",
     field: "createdBy",
   },
 ];
