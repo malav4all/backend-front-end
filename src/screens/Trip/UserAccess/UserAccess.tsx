@@ -38,7 +38,7 @@ import AddUserAccess from "./component/AddUserAccess";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
-const UserAccess = () => {
+const TripAccess = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -225,7 +225,7 @@ const UserAccess = () => {
     return (
       <CustomButton
         id="profile_submit_button"
-        label="Add User Access"
+        label="Add Trip Access"
         customClasses={{ width: "160px" }}
         onClick={() => setAddUserAccessDialogHandler(true)}
       />
@@ -245,7 +245,7 @@ const UserAccess = () => {
     return (
       <CustomInput
         id="role_mgmt_search_field"
-        placeHolder="Search User Access Name"
+        placeHolder="Search Trip Access Name"
         name="Role"
         onChange={debounceEventHandler(handleSearchOnChange, 2000)}
         InputProps={{
@@ -263,7 +263,7 @@ const UserAccess = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>User Access</Typography>
+          <Typography style={classes.settingsTitle}>Trip Access</Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
@@ -346,4 +346,4 @@ const UserAccess = () => {
   );
 };
 
-export default UserAccess;
+export default TripAccess;
