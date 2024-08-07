@@ -52,7 +52,7 @@ const GetAlerts = ({ data }: any) => {
                 Total Devices
               </Typography>
               <Typography sx={classes.statsValue}>
-                {data?.imeiStatus?.length}
+                {data?.totalDeviceCount}
               </Typography>
             </Box>
 
@@ -106,9 +106,7 @@ const GetAlerts = ({ data }: any) => {
               >
                 Online Devices
               </Typography>
-              <Typography sx={classes.statsValue}>
-                {data?.totalConnectedCount}
-              </Typography>
+              <Typography sx={classes.statsValue}>{data?.online}</Typography>
             </Box>
 
             <Box
@@ -161,10 +159,7 @@ const GetAlerts = ({ data }: any) => {
               >
                 Offline Devices
               </Typography>
-              <Typography sx={classes.statsValue}>
-                {" "}
-                {data?.totalDisconnectedCount}
-              </Typography>
+              <Typography sx={classes.statsValue}> {data?.offline}</Typography>
             </Box>
 
             <Box

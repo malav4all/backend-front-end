@@ -2,6 +2,7 @@ import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/graphql/service-response";
 import {
   ALERT_TABLE_DATA,
+  DEVICE_DASHBOARD_ONLINE_OFFLINE_COUNT,
   DEVICE_STATUS,
   FETCH_DASHBOARD_DETAIL,
   FETCH_DEVICE_STATUS,
@@ -89,6 +90,21 @@ export const lineChartGraphStatus = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: LINE_CHART_DEVICE_GRAPH,
+      variables: variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const dashboardGraphOnlineOrOffline = async (
+  variables: any
+): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: DEVICE_DASHBOARD_ONLINE_OFFLINE_COUNT,
       variables: variables,
     });
 

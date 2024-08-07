@@ -81,6 +81,12 @@ export const ALERTS_SUBSCRIPTION = gql`
   }
 `;
 
+export const DEVICE_DATA = gql`
+  subscription ($accountId: String!, $imeis: [String!]) {
+    track(accountId: $accountId, imeis: $imeis)
+  }
+`;
+
 export const ONLINE_DEVICE_GRAPH = gql`
   mutation ($input: DeviceOnboardingAccountIdInput!) {
     onlineDeviceGraph(input: $input) {
@@ -108,6 +114,24 @@ export const LINE_CHART_DEVICE_GRAPH = gql`
       series {
         name
         data
+      }
+    }
+  }
+`;
+
+export const DEVICE_DASHBOARD_ONLINE_OFFLINE_COUNT = gql`
+  mutation ($input: DeviceOnboardingAccountIdInput!) {
+    getOnlineOfflineCount(input: $input) {
+      totalDeviceCount
+      online
+      offline
+      data {
+        name
+        imei
+        status
+        lastPing
+        latitude
+        longitude
       }
     }
   }

@@ -22,11 +22,11 @@ interface AccessToken {
 }
 
 const httpLink = new HttpLink({
-  uri: `http://localhost:8081/graphql`,
+  uri: `http://localhost:9090/graphql`,
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:8081/subscriptions`,
+  uri: `ws://localhost:9090/subscriptions`,
   options: {
     reconnect: true,
   },
@@ -92,17 +92,15 @@ const errorLink = onError(
   }
 );
 
-console.log('here in live data.......')
-
 const refreshToken = async () => {
   try {
-    console.log("1")
+    console.log("1");
     const refreshResolverResponse = await liveClient.mutate<{
       refreshToken: AccessToken;
     }>({
       mutation: REFRESH_TOKEN,
     });
-    console.log("2")
+    console.log("2");
     const accessToken = refreshResolverResponse.data?.refreshToken.accessToken;
     console.log(accessToken);
     // store.dispatch(updateTokens(accessToken));

@@ -7,6 +7,7 @@ import strings from "../../global/constants/StringConstants";
 import { useTitle } from "../../utils/UseTitle";
 import {
   alertRowData,
+  dashboardGraphOnlineOrOffline,
   lineChartGraphStatus,
   offlineGraphStatus,
   onlineGraphStatus,
@@ -23,6 +24,7 @@ import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
 import { useSubscription } from "@apollo/client";
+import { DEVICE_DATA } from "./service/Dashboard.mutation";
 
 interface CustomDateRange {
   fromDate: string;
@@ -66,49 +68,23 @@ const Dashboard = () => {
   const accountId = "IMZ113343";
 
   useEffect(() => {
-    // Create a WebSocket connection
-    const ws = new WebSocket("ws://103.20.214.201:2580/ws");
-
-    ws.onopen = () => {
-      // Send the account ID to the server
-      ws.send(JSON.stringify(accountId));
-    };
-
-    ws.onmessage = (event) => {
-      // Parse the incoming message and update the state
-      const message = JSON.parse(event.data);
-      setMessages(message);
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-    };
-
-    ws.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    // Clean up the WebSocket connection when the component unmounts
-    return () => {
-      ws.close();
-    };
-  }, [accountId]);
-
-  useEffect(() => {
     graphData();
   }, []);
 
   const graphData = async () => {
     try {
-      const [online, offline, chartLine] = await Promise.all([
-        onlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-        offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-        lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
-      ]);
+      const [online, offline, chartLine, deviceDashboardData] =
+        await Promise.all([
+          onlineGraphStatus({ input: { accountId: "IMZ113343" } }),
+          offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
+          lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
+          dashboardGraphOnlineOrOffline({ input: { accountId: "IMZ113343" } }),
+        ]);
       setGraphData({
         online: online?.onlineDeviceGraph,
         offline: offline?.offlineDeviceGraph,
         lineChart: chartLine?.lineGraphDeviceData,
+        deviceDashboardData: deviceDashboardData?.getOnlineOfflineCount,
       });
     } catch (error) {}
   };
@@ -167,18 +143,18 @@ const Dashboard = () => {
               { name: "Last Ping", field: "connectedTime" },
               { name: "Action", field: "action" },
             ]}
-            rows={messages?.imeiStatus?.map((item: any) => {
+            rows={dataGraph?.deviceDashboardData?.data?.map((item: any) => {
               return {
                 imei: item.imei,
                 status: item.status,
-                accountId: item.accountId,
-                connectedTime: item.connectedTime,
+                accountId: item.name,
+                connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
               };
             })}
             isRowPerPageEnable={false}
             rowsPerPage={offlineLimit}
             perPageData={offlineLimit}
-            paginationCount={messages?.imeiStatus?.length}
+            paginationCount={dataGraph?.deviceDashboardData?.data?.length}
             pageNumber={offlinePage}
             setPage={setOfflinePage}
           />
@@ -201,7 +177,7 @@ const Dashboard = () => {
           sx={{ margin: "-30px auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
-            <GetAlerts data={messages} />
+            <GetAlerts data={dataGraph?.deviceDashboardData} />
           </Grid>
 
           <Grid container item xs={12} spacing={2}>
