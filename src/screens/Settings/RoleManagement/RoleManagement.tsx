@@ -233,7 +233,7 @@ export const RoleManagement = () => {
                 id="role_mgmt_create_button"
                 label="Create Role"
                 onClick={handleRoleCreator}
-                icon={<AddIcon />}
+                startIcon={<AddIcon />}
                 customClasses={{
                   width: "150px",
                 }}

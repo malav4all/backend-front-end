@@ -279,6 +279,15 @@ export class StringConstants {
   DEVICE_TRANSFER = "DEVICE TRANSFER";
   DATAPUSH = "DATA PUSH";
   FORM_BUILD = "FORM BUILD";
+  ADD_TRIPS = "ADD TRIPS";
+  VIEW_TRIP = "VIEW TRIP";
+  TRIPS = "Trips";
+  Cancel = "Cancel";
+  Previous = "Previous";
+  Save = "Save";
+  Next = "Next";
+  DATE_FORMAT = "MMM DD YYYY";
+  Edit = "Edit";
 }
 
 let strings = new StringConstants();

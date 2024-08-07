@@ -24,7 +24,7 @@ import { GetForms } from "./formBuilder.service";
 import moment from "moment";
 import formBuilderStyles from "./FormBuild.service";
 
-const FormBuild: React.FC = () => {
+const FormBuilder: React.FC = () => {
   const theme = useTheme();
   const classes = formBuilderStyles;
   const [forms, setForms] = useState<any[]>([]);
@@ -168,4 +168,4 @@ const FormBuild: React.FC = () => {
   );
 };
 
-export default FormBuild;
+export default FormBuilder;

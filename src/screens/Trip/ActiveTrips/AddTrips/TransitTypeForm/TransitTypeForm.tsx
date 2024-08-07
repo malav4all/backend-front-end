@@ -8,25 +8,22 @@ import {
   Grid,
   SelectChangeEvent,
 } from "@mui/material";
-import useStyles from "./AddTrip.styles";
 import { fetchTripTypeTableHandler } from "../../../TripType/service/TripType.service";
 import { openErrorNotification } from "../../../../../helpers/methods";
 import { fetchRoutes } from "../../../../Routes/service/routes.service";
+import transitTypeStyles from "./TransitTypeForm.styles";
 
 interface TransitTypeProps {
-  tripFromFields: any;
-  handleSelectChange: (
-    event: SelectChangeEvent<any>,
-    child: React.ReactNode
-  ) => void;
+  setTransitTypeForm: any;
+  transitTypeForm: any;
 }
 
-const TransitType: React.FC<TransitTypeProps> = ({
-  tripFromFields,
-  handleSelectChange,
+const TransitTypeForm: React.FC<TransitTypeProps> = ({
+  transitTypeForm,
+  setTransitTypeForm,
 }) => {
-  const classes = useStyles();
-  const [tripTypeData, setTripTypeDate] = useState([]);
+  const classes = transitTypeStyles();
+  const [tripTypeData, setTripTypeData] = useState([]);
   const [routesTableData, setRoutesTableData] = useState([]);
 
   useEffect(() => {
@@ -39,7 +36,7 @@ const TransitType: React.FC<TransitTypeProps> = ({
       const res = await fetchTripTypeTableHandler({
         input: { accountId: "IMZ113343", page: -1, limit: 1000000 },
       });
-      setTripTypeDate(res.tripTypeList.data);
+      setTripTypeData(res.tripTypeList.data);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -59,41 +56,57 @@ const TransitType: React.FC<TransitTypeProps> = ({
       openErrorNotification(error.message);
     }
   };
+
+  const handleSelectChange = (event: SelectChangeEvent<any>, setState: any) => {
+    const { name, value } = event.target;
+    setTransitTypeForm((prevFields: any) => ({
+      ...prevFields,
+      [name]: {
+        ...prevFields[name as keyof typeof prevFields],
+        value,
+        error: "",
+      },
+    }));
+  };
+
   return (
-    <>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+    <Grid container spacing={2} padding={5}>
+      <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
         <Box>
           <Stack direction="column">
             <InputLabel className={classes.inputLabel} shrink>
               Transit Type
+              <Box ml={0.4} color={"red"}>
+                *
+              </Box>
             </InputLabel>
             <Select
               className={classes.dropDownStyle}
               id="add_user_status_dropdown"
               name="transitType"
-              value={tripFromFields?.transitType?.value || ""}
+              value={transitTypeForm?.transitType?.value || ""}
               onChange={handleSelectChange}
               displayEmpty
               renderValue={() =>
-                tripFromFields?.transitType?.value !== ""
-                  ? tripFromFields?.transitType?.value
+                transitTypeForm?.transitType?.value !== ""
+                  ? transitTypeForm?.transitType?.value
                   : "Select Transit Type"
               }
             >
-              {tripTypeData.map((item: any, index: any) => (
+              {tripTypeData?.map((item: any, index: any) => (
                 <MenuItem
                   key={index}
-                  value={item.tripName}
+                  value={item?.tripName}
                   className={classes.dropDownOptionsStyle}
                 >
-                  {item.tripName}
+                  {item?.tripName}
                 </MenuItem>
               ))}
             </Select>
           </Stack>
         </Box>
       </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12} xl={12} mt={2}>
+      <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
         <Box>
           <Stack direction="column">
             <InputLabel className={classes.inputLabel} shrink>
@@ -103,30 +116,30 @@ const TransitType: React.FC<TransitTypeProps> = ({
               className={classes.dropDownStyle}
               id="add_user_status_dropdown"
               name="routeId"
-              value={tripFromFields?.routeId?.value || ""}
+              value={transitTypeForm?.routeId?.value || ""}
               onChange={handleSelectChange}
               displayEmpty
               renderValue={() =>
-                tripFromFields?.routeId?.value !== ""
-                  ? tripFromFields?.routeId?.value
+                transitTypeForm?.routeId?.value !== ""
+                  ? transitTypeForm?.routeId?.value
                   : "Select Trip Route"
               }
             >
-              {routesTableData.map((item: any, index: any) => (
+              {routesTableData?.map((item: any, index: any) => (
                 <MenuItem
                   key={index}
-                  value={item.routeId}
+                  value={item?.routeId}
                   className={classes.dropDownOptionsStyle}
                 >
-                  {item.routeId} - {item.routeName}
+                  {item?.routeId} - {item?.routeName}
                 </MenuItem>
               ))}
             </Select>
           </Stack>
         </Box>
       </Grid>
-    </>
+    </Grid>
   );
 };
 
-export default TransitType;
+export default TransitTypeForm;

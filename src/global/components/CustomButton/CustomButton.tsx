@@ -1,41 +1,56 @@
-import { Box, Button, SxProps } from "@mui/material";
+import { Box, Button, SxProps, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import customButtonStyles from "./CustomButton.styles";
-import clsx from "clsx";
+import { primaryColorBlack } from "../../../utils/styles";
 
 interface CustomProps {
   id?: string;
-  label?: string | JSX.Element;
+  label?: string;
   onClick: Function;
   loading?: boolean;
   customClasses?: any;
-  icon?: JSX.Element;
+  buttonType?: string;
+  startIcon?: JSX.Element;
+  endIcon?: JSX.Element;
   disabled?: boolean;
 }
 
 const CustomButton = (props: CustomProps) => {
+  const getCustomCss = () => {
+    switch (props.buttonType) {
+      case "primaryBtn":
+        return classes.primaryBtn;
+      case "secondaryBtn":
+        return classes.secondaryBtn;
+      default:
+        return {};
+    }
+  };
+
   const classes = customButtonStyles;
-  const appliedClass = props.customClasses;
-
+  console.log({ classes });
+  const buttonType = getCustomCss();
+  const appliedClass = {
+    ...classes.btnStyle,
+    ...buttonType,
+    ...(props.customClasses ?? {}),
+  };
   const processing = props.loading ? props.loading : false;
-  const disabled = props.disabled ? props.disabled : false;
-
   return (
     <Button
       {...(props.id && { id: props.id })}
-      startIcon={props.icon}
-      sx={
-        props.customClasses
-          ? [classes.btnStyle, props.customClasses]
-          : classes.btnStyle
-      }
-      onClick={(event: any) => props.onClick(event)}
-      disabled={processing || disabled}
+      startIcon={props.startIcon}
+      endIcon={props.endIcon}
+      sx={[appliedClass]}
+      onClick={(event) => props.onClick(event)}
+      disabled={props.loading ?? props.disabled}
     >
       {processing ? (
-        <CircularProgress sx={classes.loadingStyle} />
+        <Box sx={classes.loading}>
+          <CircularProgress size={20} sx={{ color: primaryColorBlack }} />
+        </Box>
       ) : (
-        props.label
+        <Typography variant="button">{props.label}</Typography>
       )}
     </Button>
   );

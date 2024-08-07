@@ -557,7 +557,7 @@ const Trackplay = () => {
               color: stop ? "#333" : "white",
             }}
             onClick={handleClick}
-            icon={
+            startIcon={
               stop ? (
                 <Box
                   sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
