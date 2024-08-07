@@ -5,6 +5,21 @@ export const ADD_FORM_BUILDER = gql`
     addFormBuilder(input: $input) {
       success
       message
+      data {
+        formId
+      }
+    }
+  }
+`;
+
+export const UPDATE_FORM_BUILDER = gql`
+  mutation ($input: UpdateFormBuilderInput!) {
+    updateFormBuilder(input: $input) {
+      success
+      message
+      data {
+        formId
+      }
     }
   }
 `;
@@ -15,16 +30,14 @@ export const FETCH_FORM_BUILDER = gql`
       success
       message
       data {
+        formId
         accountId
-        formTitle
-        fields {
-          id
-          label
-          required
-          type
-        }
+        name
+        description
+        content
         createdBy
-        isFormEnable
+        updatedBy
+        published
       }
     }
   }

@@ -39,7 +39,6 @@ import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
 import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
 import DeviceModule from "../../Inventory/DeviceModule/DeviceModule";
-import FormBuilderPage from "../../FormBuilder/FormBuilderPage";
 import Users from "../../Settings/Users/Users";
 import Industry from "../../Settings/Industry/Industry";
 import CustomerModule from "../../Settings/CustomerModule/CustomerModule";
@@ -55,7 +54,8 @@ import TripDashboard from "../../TripDashboard/TripDashboard";
 import Datapush from "../../Settings/DataPush/Datapush";
 import TripReport from "../../Reports/screens/TripReport/TripReport";
 import MapView from "../../MapView/MapView";
-
+import FormBuild from "../../FormBuild/FormBuild";
+import Builder from "../../FormBuild/components/Builder";
 const Layout = () => {
   const classes = layoutStyles;
   const [isLoading, setIsLoading] = useState(false);
@@ -264,9 +264,16 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/form-builder"}
-            component={FormBuilderPage}
-            componentName={strings.FORM_BUILDER}
+            path={"/form-build"}
+            component={FormBuild}
+            componentName={strings.FORM_BUILD}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={`/builder/:id`}
+            component={Builder}
+            componentName={"BUILDER"}
           />
           <PrivateRoute
             exact

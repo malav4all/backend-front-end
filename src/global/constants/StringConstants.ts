@@ -78,7 +78,7 @@ export class StringConstants {
   // authManager
   DASHBOARD = "Dashboard";
   TRIPDASHBOARD = "TripDashboard";
-  MAPVIEW= "MapView"
+  MAPVIEW = "MapView";
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
   GROUPS = "Campaign Groups";
@@ -278,6 +278,7 @@ export class StringConstants {
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
   DATAPUSH = "DATA PUSH";
+  FORM_BUILD = "FORM BUILD";
 }
 
 let strings = new StringConstants();

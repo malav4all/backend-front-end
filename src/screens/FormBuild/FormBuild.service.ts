@@ -1,4 +1,11 @@
-import { boldFont, inputLabelRequiredColor, primaryHeadingColor, regularFont, semiBoldFont, theme } from "../../utils/styles";
+import {
+  boldFont,
+  inputLabelRequiredColor,
+  primaryHeadingColor,
+  regularFont,
+  semiBoldFont,
+  theme,
+} from "../../utils/styles";
 
 const formBuilderStyles = {
   mainCardHeading: {
@@ -34,9 +41,23 @@ const formBuilderStyles = {
     fontSize: "16px",
   },
 
-  
-
-  
+  mainCardHeading1: {
+    fontSize: "2rem",
+    fontWeight: "bold",
+    color: theme.palette.primary.main,
+  },
+  createFormButton: {
+    height: "190px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    borderStyle: "dashed",
+    borderColor: theme.palette.primary.main,
+    "&:hover": {
+      borderColor: theme.palette.primary.dark,
+    },
+  },
 };
 
 export default formBuilderStyles;
