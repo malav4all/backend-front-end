@@ -32,7 +32,7 @@ import notifiers from "../../../../../global/constants/NotificationConstants";
 import CustomLoader from "../../../../../global/components/CustomLoader/CustomLoader";
 import { CustomButton } from "../../../../../global/components";
 import AlertConfiguration from "./AlertConfiguration";
-import { fetchFormBuilder } from "../../../../FormBuilder/service/form-builder.service";
+import { GetForms } from "../../../../FormBuild/formBuilder.service";
 
 const TransitType = lazy(() => import("./TransitType"));
 const TripInformation = lazy(() => import("./TripInformation"));
@@ -184,7 +184,7 @@ const AddTrip: React.FC<CustomProps> = (props) => {
 
   const fetchFormbuilderForm = async () => {
     try {
-      const res = await fetchFormBuilder({
+      const res = await GetForms({
         input: {
           accountId: "IMZ113343",
           page: -1,
