@@ -22,7 +22,7 @@ const tripStyles = {
   mainCardHeading: {
     ...boldFont,
     fontFamily: "Geist_Medium",
-    fontSize: "2rem",
+    fontSize: "0.5rem",
     margin: "16px 0 0 0",
     width: "100%",
     color: primaryHeadingColor,
@@ -53,7 +53,60 @@ const tripStyles = {
       color: "red",
     },
   },
-
+  tableWrapper: {
+    marginTop: 2,
+    overflow: "auto",
+    [`@media screen and (max-width: ${1370}px)`]: {
+      marginTop: 0,
+    },
+    "&::-webkit-scrollbar": {
+      width: "10",
+      display: "none",
+    },
+  },
+  headerBox: {
+    background: "#FFFFFF",
+    [theme.breakpoints.down("sm")]: {},
+  },
+  mainBox: {
+    padding: "20px 30px",
+    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
+    display: "flex",
+    justifyContent: "space-between",
+    alignContent: "center",
+  },
+  outerTabBox: {
+    borderBottom: "none",
+    marginTop: "10px",
+    [`@media screen and (max-width: ${1390}px)`]: {
+      marginTop: "0px",
+    },
+  },
+  tripText: {
+    ...boldFont,
+    [`@media screen and (max-width: ${1390}px)`]: {
+      fontSize: "2rem",
+    },
+  },
+  inputWrapper: {
+    [theme.breakpoints.down("md")]: {
+      marginTop: "8px",
+    },
+  },
+  addBox: {
+    background: "#4F31BC",
+    width: "32px",
+    height: "32px",
+    borderRadius: "10px",
+    color: "#FFFFF",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    [`@media screen and (max-width: ${1390}px)`]: {
+      width: "25px",
+      height: "25px",
+    },
+  },
 };
 
 export default tripStyles;

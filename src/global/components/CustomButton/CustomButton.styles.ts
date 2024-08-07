@@ -5,6 +5,8 @@ import {
   customButtonStyle,
   disabledBackgroundColor,
   mediumFont,
+  primaryColorPurple,
+  primaryColorWhite,
   regularFont,
 } from "../../../utils/styles";
 import { RiFontSize } from "react-icons/ri";
@@ -31,6 +33,25 @@ const customButtonStyles = {
   },
   disabled: {
     color: disabledBackgroundColor,
+  },
+  loading: {
+    ...centerItemFlex,
+    color: primaryColorPurple,
+  },
+  primaryBtn: {
+    color: primaryColorWhite,
+    background: primaryColorPurple,
+    borderColor: primaryColorPurple,
+    "&:hover": {
+      background: primaryColorPurple,
+    },
+  },
+  secondaryBtn: {
+    background: primaryColorWhite,
+    color: "#828282",
+    "&:hover": {
+      background: primaryColorWhite,
+    },
   },
 };
 

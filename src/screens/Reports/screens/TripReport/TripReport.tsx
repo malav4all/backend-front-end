@@ -413,7 +413,7 @@ const TripReport = () => {
                   <CustomButton
                     label={"Download"}
                     onClick={handleDownloadClick}
-                    icon={<MdFileDownload />}
+                    startIcon={<MdFileDownload />}
                   />
                 )}
 

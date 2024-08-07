@@ -34,7 +34,6 @@ import AssetAssingment from "../../Settings/AssertAssingment/AssetAssingment";
 import AlertConfig from "../../AlertConfig/AlertConfig";
 import DeviceGroup from "../../DeviceGroup/DeviceGroup";
 import ViewDeviceGroupList from "../../DeviceGroup/components/ViewDeviceGroupList/ViewDeviceGroupList";
-import Trip from "../../Trip/ActiveTrips/Trip";
 import ArchivedTrips from "../../Trip/ArchivedTrips/ArchivedTrips";
 import DeviceHistory from "../../Inventory/DeviceHistory/DeviceHistory";
 import DeviceOnboarding from "../../Inventory/DeviceOnboarding/DeviceOnboarding";
@@ -54,8 +53,13 @@ import TripDashboard from "../../TripDashboard/TripDashboard";
 import Datapush from "../../Settings/DataPush/Datapush";
 import TripReport from "../../Reports/screens/TripReport/TripReport";
 import MapView from "../../MapView/MapView";
-import FormBuild from "../../FormBuild/FormBuild";
+import FormBuilder from "../../FormBuild/FormBuild";
 import Builder from "../../FormBuild/components/Builder";
+import AddTrip from "../../Trip/ActiveTrips/AddTrips/AddTrip";
+import ViewTrip from "../../Trip/ActiveTrips/ViewTrip/ViewTrip";
+import Trips from "../../Trip/ActiveTrips/Trips";
+import urls from "../../../global/constants/UrlConstants";
+
 const Layout = () => {
   const classes = layoutStyles;
   const [isLoading, setIsLoading] = useState(false);
@@ -250,9 +254,24 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/active-trips"}
-            component={Trip}
-            componentName={strings.ACTIVE_TRIPS}
+            componentName={strings.TRIPS}
+            path={urls.tripsViewPath}
+            component={Trips}
+          />
+
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            componentName={strings.TRIPS}
+            path={[urls.addTripViewPath, `${urls.editTripViewPath}`]}
+            component={AddTrip}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            componentName={strings.TRIPS}
+            path={`${urls.viewTripViewPath}/:id`}
+            component={ViewTrip}
           />
           <PrivateRoute
             exact
@@ -264,9 +283,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/form-build"}
-            component={FormBuild}
-            componentName={strings.FORM_BUILD}
+            path={"/form-builder"}
+            component={FormBuilder}
+            componentName={strings.FORM_BUILDER}
           />
           <PrivateRoute
             exact

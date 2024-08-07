@@ -42,6 +42,10 @@ const activeMenuBackgroundColor = "#f1edff";
 const cardBorderColor = "#f0f5f5";
 const warningColor = "red";
 const primaryBorderColor = "#E7E7E7";
+const primaryColorPurple = "#6842EF";
+const primaryColorBlack = "#202730";
+const primaryColorWhite = "#FFFFFF";
+const primaryInactiveTabBgColor = "#F9F9F9";
 const mainContainer: CSSProperties = {
   margin: "20px",
 };
@@ -97,7 +101,6 @@ const blackFont: CSSProperties = {
 const ultraBlackFont: CSSProperties = {
   fontFamily: "Geist_UltraBlack",
 };
-
 
 const theme = createTheme({
   typography: {
@@ -180,7 +183,7 @@ const pinkThemedMenuItems: CSSProperties = {
     "&:hover,&:focus": { backgroundColor: headerColor },
   },
   "&:hover": { backgroundColor: headerColor },
-  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)",  },
+  "&:focus": { backgroundColor: "rgba(187, 0, 112, 0.1)" },
 };
 
 const CustomInput = withStyles((theme: Theme) =>
@@ -325,4 +328,8 @@ export {
   cardBorderColor,
   primaryBorderColor,
   activeMenuBackgroundColor,
+  primaryColorPurple,
+  primaryColorBlack,
+  primaryColorWhite,
+  primaryInactiveTabBgColor,
 };

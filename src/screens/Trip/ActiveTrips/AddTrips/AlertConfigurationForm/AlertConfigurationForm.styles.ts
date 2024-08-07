@@ -1,4 +1,9 @@
 import { makeStyles } from "@mui/styles";
+import {
+  boldFont,
+  getRelativeFontSize,
+  inputLabelRequiredColor,
+} from "../../../../../utils/styles";
 import { Theme } from "@mui/material/styles";
 
 const TripStyles = makeStyles((theme: Theme) => ({
@@ -7,6 +12,11 @@ const TripStyles = makeStyles((theme: Theme) => ({
     fontSize: "1.5rem",
     textAlign: "center",
   },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: theme.spacing(2),
+  },
   centerItemFlex: {
     display: "flex",
     justifyContent: "center",
@@ -14,12 +24,9 @@ const TripStyles = makeStyles((theme: Theme) => ({
   dialogFooter: {
     display: "flex",
     gap: "10px",
-    justifyContent: "center",
+    justifyContent: "space-between",
     width: "100%",
-    margin: "20px",
-    "& button": {
-      width: "120px",
-    },
+    margin: "20px 0",
   },
   dropDownOptionsStyle: {
     color: theme.palette.text.primary,
@@ -81,6 +88,28 @@ const TripStyles = makeStyles((theme: Theme) => ({
         borderColor: "#E7E7E7",
       },
     },
+  },
+  inputLabelStyle: {
+    display: "flex",
+    color: theme.palette.text.primary,
+    fontSize: getRelativeFontSize(6),
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
+  starColor: {
+    color: inputLabelRequiredColor,
   },
 }));
 
