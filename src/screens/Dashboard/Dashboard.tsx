@@ -24,7 +24,7 @@ import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
 import { useSubscription } from "@apollo/client";
-import { DEVICE_DATA } from "./service/Dashboard.mutation";
+import { ALERT_DEVICE_DATA, DEVICE_DATA } from "./service/Dashboard.mutation";
 import { AiOutlineRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -72,6 +72,10 @@ const Dashboard = () => {
   const { data } = useSubscription(DEVICE_DATA, {
     variables: { accountId, imeis: [] },
   });
+
+  // const { data } = useSubscription(ALERT_DEVICE_DATA, {
+  //   variables: { accountId, imeis: [] },
+  // });
 
   useEffect(() => {
     console.log(data);

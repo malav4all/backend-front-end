@@ -20,6 +20,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import CustomThemeProvider from "./redux/ThemeContext";
 import { liveClient } from "./core-services/live-data/live-data";
 import { alertClient } from "./core-services/alert/alert";
+import { LiveClientProvider } from "./liveClientContext";
+import { AlertClientProvider } from "./alertClientContext";
 
 i18next
   .use(HttpApi)
@@ -55,8 +57,8 @@ smoothscroll.polyfill();
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <ApolloProvider client={liveClient}>
-      <ApolloProvider client={alertClient}>
+    <AlertClientProvider>
+      <LiveClientProvider>
         <StyledEngineProvider injectFirst>
           <StylesProvider>
             <ThemeProvider theme={theme}>
@@ -72,8 +74,8 @@ ReactDOM.render(
             </ThemeProvider>
           </StylesProvider>
         </StyledEngineProvider>
-      </ApolloProvider>
-    </ApolloProvider>
+      </LiveClientProvider>
+    </AlertClientProvider>
   </ApolloProvider>,
   document.getElementById("root")
 );

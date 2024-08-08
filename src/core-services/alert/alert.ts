@@ -22,11 +22,11 @@ interface AccessToken {
 }
 
 const httpLink = new HttpLink({
-  uri: `http://103.20.214.201:6001/graphql`,
+  uri: `http://103.20.214.201:6600/graphql`,
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://103.20.214.201:6001/subscriptions`,
+  uri: `ws://103.20.214.201:6600/subscriptions`,
   options: {
     reconnect: true,
   },
