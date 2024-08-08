@@ -2,11 +2,14 @@ import {
   Avatar,
   Box,
   Button,
+  IconButton,
   InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Menu,
+  MenuItem,
   Tooltip,
   Typography,
   useTheme,
@@ -37,9 +40,9 @@ import geozoneStyle from "./Geozone.styles";
 import { fetchLocationType } from "../Settings/LocationType/service/location-type.service";
 import { geoZoneInsertField, validateGeoZoneForm } from "./Geozone.helper";
 import { headerColor, primaryHeaderColor } from "../../utils/styles";
-
+import { HiDotsVertical } from "react-icons/hi";
 const Geozone = () => {
-  const classes = geozoneStyle;
+  // const classes = geozoneStyle();
   const theme = useTheme();
   const [selectedRowData, setSelectedRowData] = useState<any>();
   const [isOpen, setOpenModal] = useState<boolean>(false);
@@ -59,21 +62,18 @@ const Geozone = () => {
   const [formField, setFormField] = useState<any>(geoZoneInsertField());
   const [searchLocationText, setSearchLocationText] = useState<string>("");
   const [viewGeozone, setViewGeozone] = useState<any>();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
-  // const fetchLocationTypeHandler = async () => {
-  //   try {
-  //     const res = await fetchLocationType({
-  //       input: {
-  //         page: -1,
-  //         limit: 0,
-  //       },
-  //     });
-  //     setLocationType(res.fetchLocationType.data);
-  //   } catch (error: any) {
-  //     openErrorNotification(error.message);
-  //   }
-  // };
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, item: any) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedItem(item);
+  };
 
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItem(null);
+  };
   const handleCircleButtonClick = () => {
     setIsCircleActive(!isCircleActive);
     setPointCheck(false);
@@ -251,7 +251,6 @@ const Geozone = () => {
 
   useEffect(() => {
     fetchGeozone();
-    // fetchLocationTypeHandler();
   }, []);
 
   const fetchGeozone = async () => {
@@ -310,7 +309,6 @@ const Geozone = () => {
         },
         finalAddress: formField?.address?.value,
       };
-      // if (handleValidation()) {
       if (edit) {
         const res = await updateGeozone({
           input: {
@@ -333,7 +331,6 @@ const Geozone = () => {
       mapCheck.removeObjects(mapCheck.getObjects());
       setFormField(geoZoneInsertField());
       await fetchGeozone();
-      // }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -434,7 +431,6 @@ const Geozone = () => {
           clearTimeout(resizingTimeout);
         }
 
-        // Set new timeout to check if resizing is complete
         resizingTimeout = setTimeout(() => {
           setOpenModal(true);
         }, 500);
@@ -588,7 +584,7 @@ const Geozone = () => {
     marker = new window.H.map.Marker(center);
     map.addObject(marker);
     map.setCenter(center);
-    map.setZoom(17);
+    map.setZoom(13);
   };
 
   const renderCircleToMap = (map: any) => {
@@ -596,7 +592,7 @@ const Geozone = () => {
       lat: selectedRowData.geoCodeData?.geometry?.coordinates[0],
       lng: selectedRowData.geoCodeData?.geometry?.coordinates[1],
     });
-    map.setZoom(14);
+    map.setZoom(13);
     var circle = new window.H.map.Circle(
       {
         lat: selectedRowData.geoCodeData?.geometry?.coordinates[0],
@@ -619,25 +615,20 @@ const Geozone = () => {
     );
 
     var circleGroup = new window.H.map.Group({
-      volatility: true, // mark the group as volatile for smooth dragging of all it's objects
+      volatility: true,
       objects: [circle, circleOutline],
     });
 
     var circleTimeout: any;
 
-    // ensure that the objects can receive drag events
     circle.draggable = true;
     circleOutline.draggable = true;
 
-    // extract first point of the circle outline polyline's LineString and
-    // push it to the end, so the outline has a closed geometry
     circleOutline
       .getGeometry()
       .pushPoint(circleOutline.getGeometry().extractPoint(0));
 
-    // add group with circle and it's outline (polyline)
     map.addObject(circleGroup);
-    // event listener for circle group to show outline (polyline) if moved in with mouse (or touched on touch devices)
     circleGroup.addEventListener(
       "pointerenter",
       function (evt: any) {
@@ -650,13 +641,10 @@ const Geozone = () => {
           clearTimeout(circleTimeout);
           circleTimeout = null;
         }
-        // show outline
         circleOutline.setStyle(newStyle);
       },
       true
     );
-    // event listener for circle group to hide outline if moved out with mouse (or released finger on touch devices)
-    // the outline is hidden on touch devices after specific timeout
     circleGroup.addEventListener(
       "pointerleave",
       function (evt: any) {
@@ -673,7 +661,6 @@ const Geozone = () => {
       },
       true
     );
-    // event listener for circle group to change the cursor if mouse position is over the outline polyline (resizing is allowed)
     circleGroup.addEventListener(
       "pointermove",
       function (evt: any) {
@@ -686,7 +673,6 @@ const Geozone = () => {
       true
     );
 
-    // event listener for circle group to resize the geo circle object if dragging over outline polyline
     circleGroup.addEventListener(
       "drag",
       function (evt: any) {
@@ -695,18 +681,14 @@ const Geozone = () => {
             .getCenter()
             .distance(map.screenToGeo(pointer.viewportX, pointer.viewportY));
 
-        // if resizing is alloved, set the circle's radius
         if (evt.target instanceof window.H.map.Polyline) {
           circle.setRadius(distanceFromCenterInMeters);
 
-          // use circle's updated geometry for outline polyline
           var outlineLinestring = circle.getGeometry().getExterior();
 
-          // extract first point of the outline LineString and push it to the end, so the outline has a closed geometry
           outlineLinestring.pushPoint(outlineLinestring.extractPoint(0));
           circleOutline.setGeometry(outlineLinestring);
 
-          // prevent event from bubling, so map doesn't receive this event and doesn't pan
           evt.stopPropagation();
           setFormField({
             ...formField,
@@ -721,7 +703,6 @@ const Geozone = () => {
             clearTimeout(resizingTimeout);
           }
 
-          // Set new timeout to check if resizing is complete
           resizingTimeout = setTimeout(() => {
             setOpenModal(true);
           }, 500);
@@ -809,126 +790,47 @@ const Geozone = () => {
   };
 
   return (
-    <>
+    <Box display="flex" height="100vh">
       <Box
-        component={"div"}
-        id="map"
-        style={{ width: "100%", height: "100%", position: "relative" }}
-      >
-        <Box
-          style={{
-            position: "absolute",
-            top: "42%",
-            left: "2vw",
-            zIndex: 1,
-            backgroundColor: theme.palette.background.paper,
-            padding: "0.5rem",
-            borderRadius: "0.2rem",
-            boxShadow:
-              theme.palette.mode === "dark"
-                ? "rgba(255, 255, 255, 0.1) 0px 2px 8px 0px"
-                : "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-          }}
-        >
-          <Box
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              width: "40px",
-              padding: "0.5rem 0rem",
-              borderRadius: "0.2rem",
-              overflow: "hidden",
-              gap: "0.5 rem",
-            }}
-          >
-            <Button
-              onClick={handleCircleButtonClick}
-              style={{
-                backgroundColor: isCircleActive
-                  ? "#E3D7FC"
-                  : theme.palette.background.paper,
-                marginRight: "0.3rem",
-                marginLeft: "-12px",
-              }}
-            >
-              <Tooltip title="Create Circle" placement="right" arrow>
-                <DrawIcon sx={{ color: primaryHeaderColor }} />
-              </Tooltip>
-            </Button>
-
-            <Button
-              onClick={toggleGeozonesVisibility}
-              style={{
-                backgroundColor: geozonesVisible
-                  ? "#E3D7FC"
-                  : theme.palette.background.paper,
-                marginLeft: "-12px",
-              }}
-            >
-              {geozonesVisible ? (
-                <Tooltip title="Hide Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon sx={{ color: primaryHeaderColor }} />
-                </Tooltip>
-              ) : (
-                <Tooltip title="Show Geofence View" placement="right" arrow>
-                  <RemoveRedEyeIcon sx={{ color: primaryHeaderColor }} />
-                </Tooltip>
-              )}
-            </Button>
-
-            <Button
-              onClick={() => {
-                setPointCheck(!pointCheck);
-                setIsCircleActive(false);
-                circles.forEach(({ circleGroup, circleMarker }) => {
-                  if (mapCheck) {
-                    mapCheck.removeObject(circleGroup);
-                    mapCheck.removeObject(circleMarker);
-                  }
-                });
-                setCircles([]);
-                if (pointCheck === true) {
-                  mapCheck.getObjects().forEach((object: any) => {
-                    if (object !== circleGroup) {
-                      mapCheck.removeObject(object);
-                    }
-                  });
-                }
-              }}
-              style={{
-                backgroundColor: pointCheck
-                  ? "#E3D7FC"
-                  : theme.palette.background.paper,
-                marginLeft: "-12px",
-              }}
-            >
-              <Tooltip title="Create Location Point" placement="right" arrow>
-                <PinDropIcon sx={{ color: primaryHeaderColor }} />
-              </Tooltip>
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-
-      <Box
-        style={{
-          position: "absolute",
-          top: 25,
-          right: "25px",
-          zIndex: 0,
-          padding: "0.7rem",
+        sx={{
+          width: "20%",
+          minWidth: "300px",
           backgroundColor: theme.palette.background.paper,
-          boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
-          borderRadius: "0.3rem",
+          borderRight: `1px solid ${theme.palette.divider}`,
+          padding: "1rem",
         }}
       >
-        <Box sx={classes.searchStyles}>
-          <CustomInput
-            placeHolder="Search Geozone"
-            id="users_search_field"
-            onChange={(e: any) => {
-              setSearchText(e.target.value);
+        <Box
+          sx={{
+            padding: "2rem 1.5rem",
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: "8px",
+            border: "1px solid",
+            borderColor: theme.palette.divider,
+            color: theme.palette.text.primary,
+            marginBottom: "1rem",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontFamily: "Geist_semibold",
+              fontSize: "1.1rem",
+              marginBottom: "1rem",
+              padding: "0.2rem 0.8rem",
+              borderRadius: "5px",
+              borderLeft: "7px solid",
+              borderLeftColor: "#855BDE",
             }}
+          >
+            Create Geofence
+          </Typography>
+
+          <CustomInput
+            placeHolder="Search Location"
+            id="search_location"
+            onChange={(e: any) => setSearchLocationText(e.target.value)}
+            onKeyPress={handleKeyPress}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -937,29 +839,125 @@ const Geozone = () => {
               ),
               style: { color: theme.palette.text.primary },
             }}
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-            }}
+            sx={{ marginBottom: "2rem", width: "100%" }}
           />
-        </Box>
 
-        <PerfectScrollbar>
           <Box
             sx={{
-              height: "auto",
-              maxHeight: "300px",
-              padding: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "1rem",
             }}
           >
-            <List
-              sx={{
-                width: "100%",
-                maxWidth: 360,
-                backgroundColor: theme.palette.background.paper,
-                color: theme.palette.text.primary,
-              }}
+            <Tooltip title="Create Circle" placement="top">
+              <Button
+                onClick={handleCircleButtonClick}
+                sx={{
+                  backgroundColor: isCircleActive
+                    ? "#E3D7FC"
+                    : theme.palette.background.paper,
+                  marginRight: "0.5rem",
+                  padding: "0.5rem",
+                  minWidth: "auto",
+                }}
+              >
+                <DrawIcon sx={{ color: primaryHeaderColor }} />
+              </Button>
+            </Tooltip>
+            <Tooltip
+              title={
+                geozonesVisible ? "Hide Geofence View" : "Show Geofence View"
+              }
+              placement="top"
             >
+              <Button
+                onClick={toggleGeozonesVisibility}
+                sx={{
+                  backgroundColor: geozonesVisible
+                    ? "#E3D7FC"
+                    : theme.palette.background.paper,
+                  marginRight: "0.5rem",
+                  padding: "0.5rem",
+                  minWidth: "auto",
+                }}
+              >
+                <RemoveRedEyeIcon sx={{ color: primaryHeaderColor }} />
+              </Button>
+            </Tooltip>
+            <Tooltip title="Create Location Point" placement="top">
+              <Button
+                onClick={() => {
+                  setPointCheck(!pointCheck);
+                  setIsCircleActive(false);
+                  circles.forEach(({ circleGroup, circleMarker }) => {
+                    if (mapCheck) {
+                      mapCheck.removeObject(circleGroup);
+                      mapCheck.removeObject(circleMarker);
+                    }
+                  });
+                  setCircles([]);
+                  if (pointCheck === true) {
+                    mapCheck.getObjects().forEach((object: any) => {
+                      if (object !== circleGroup) {
+                        mapCheck.removeObject(object);
+                      }
+                    });
+                  }
+                }}
+                sx={{
+                  backgroundColor: pointCheck
+                    ? "#E3D7FC"
+                    : theme.palette.background.paper,
+                  padding: "0.5rem",
+                  minWidth: "auto",
+                }}
+              >
+                <PinDropIcon sx={{ color: primaryHeaderColor }} />
+              </Button>
+            </Tooltip>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            padding: "2rem 1.5rem",
+            backgroundColor: theme.palette.background.paper,
+            borderRadius: "8px",
+            border: "1px solid",
+            borderColor: theme.palette.divider,
+            color: theme.palette.text.primary,
+            marginBottom: "1rem",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              fontFamily: "Geist_semibold",
+              fontSize: "1.1rem",
+              marginBottom: "1rem",
+              padding: "0.2rem 0.8rem",
+              borderRadius: "5px",
+              borderLeft: "7px solid",
+              borderLeftColor: "#855BDE",
+            }}
+          >
+            Geozone List
+          </Typography>
+          <CustomInput
+            placeHolder="Search Geozone"
+            id="search_geozone"
+            onChange={(e: any) => setSearchText(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon sx={{ color: theme.palette.text.primary }} />
+                </InputAdornment>
+              ),
+              style: { color: theme.palette.text.primary },
+            }}
+            sx={{ marginBottom: "1rem", width: "100%" }}
+          />
+          <PerfectScrollbar style={{ maxHeight: "500px" }}>
+            <List>
               {geozoneData
                 .filter((item: any) => {
                   if (searchText.trim() !== "") {
@@ -971,17 +969,22 @@ const Geozone = () => {
                     return true;
                   }
                 })
-                .map((item: any, index) => (
+                .map((item: any) => (
                   <ListItem
                     key={item._id}
                     sx={{
                       backgroundColor: theme.palette.background.paper,
-                      color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <ListItemAvatar
-                      style={{ cursor: "pointer" }}
+                    <Box
+                      sx={{
+                        cursor: "pointer",
+                        display: "flex",
+                        marginY: "1rem",
+                      }}
                       onClick={() => {
                         setViewGeozone({
                           isViewGeozone: true,
@@ -989,20 +992,13 @@ const Geozone = () => {
                         });
                       }}
                     >
-                      <Avatar sx={{ backgroundColor: "#e3d7fc" }}>
-                        <LocationOnIcon sx={{ color: "#855BDE" }} />
-                      </Avatar>
-                    </ListItemAvatar>
-
-                    <ListItemText
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      <Box>
-                        <ListItemText>
+                      <ListItemAvatar>
+                        <Avatar sx={{ backgroundColor: "#e3d7fc" }}>
+                          <LocationOnIcon sx={{ color: "#855BDE" }} />
+                        </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
                           <Typography
                             sx={{
                               color: theme.palette.text.primary,
@@ -1011,84 +1007,54 @@ const Geozone = () => {
                           >
                             {item.name}
                           </Typography>
-                        </ListItemText>
-                        <ListItemText>
+                        }
+                        secondary={
                           <Typography
                             sx={{
                               color: theme.palette.text.secondary,
                               fontSize: "13px",
                             }}
                           >
-                            {item.description}
+                            {item.locationType}
                           </Typography>
-                        </ListItemText>
-                      </Box>
-                    </ListItemText>
-                    <ListItemAvatar>
-                      <EditIcon
-                        sx={{ color: theme.palette.primary.main }}
-                        style={{
-                          cursor: "pointer",
-                        }}
+                        }
+                      />
+                    </Box>
+
+                    <IconButton
+                      onClick={(event) => handleMenuClick(event, item)}
+                    >
+                      <HiDotsVertical />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl) && selectedItem === item}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem
                         onClick={() => {
+                          handleMenuClose();
                           setOpenModal(true);
                           setFormField(geoZoneInsertField(item));
                           setSelectedRowData(item);
                           setEdit(true);
                         }}
-                      />
-                    </ListItemAvatar>
+                      >
+                        <EditIcon sx={{ marginRight: "0.5rem" }} />
+                        Edit
+                      </MenuItem>
+                    </Menu>
                   </ListItem>
                 ))}
             </List>
-          </Box>
-        </PerfectScrollbar>
-      </Box>
-
-      <Box
-        style={{
-          position: "absolute",
-          top: 25,
-          left: "320px",
-          zIndex: 0,
-          padding: "0.5rem",
-          borderRadius: "0.3rem",
-        }}
-      >
-        <Box
-          sx={{
-            margin: "5px 5px",
-            width: "350px",
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: "5px",
-          }}
-        >
-          <CustomInput
-            placeHolder="Search Location"
-            id="users_search_field"
-            onKeyPress={handleKeyPress}
-            onChange={(e: any) => {
-              setSearchLocationText(e.target.value);
-            }}
-            sx={{
-              backgroundColor: theme.palette.background.paper,
-              // color: theme.palette.text.primary,
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon sx={{ color: theme.palette.text.primary }} />
-                </InputAdornment>
-              ),
-              style: { color: theme.palette.text.primary },
-            }}
-          />
+          </PerfectScrollbar>
         </Box>
       </Box>
 
+      <Box id="map" sx={{ width: "80%", height: "100vh" }}></Box>
       {createGeozoneModal()}
       <CustomLoader isLoading={loading} />
-    </>
+    </Box>
   );
 };
 

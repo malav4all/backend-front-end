@@ -187,7 +187,7 @@ const Trips = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Active Trips
+          Manage Trips
         </Typography>
       </Box>
     );
@@ -210,7 +210,7 @@ const Trips = () => {
       <Box sx={classes.headerBox}>
         <Box sx={classes.mainBox}>
           <Typography variant="h4" sx={classes.tripText}>
-            Active Trips
+            Manage Trips
           </Typography>
           <Stack
             sx={classes.outerTabBox}

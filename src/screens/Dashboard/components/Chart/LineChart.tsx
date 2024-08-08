@@ -68,7 +68,7 @@ const LineChart: React.FC<LineChartProps> = ({
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme, dataGraph?.lineChart]);  
+  }, [height, theme, dataGraph?.lineChart]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -106,8 +106,8 @@ const LineChart: React.FC<LineChartProps> = ({
       <Typography
         variant="h5"
         sx={{
-          fontFamily: "Geist_Light",
-          fontSize: "1.5rem",
+          fontFamily: "Geist_semibold",
+          fontSize: "1.1rem",
           marginBottom: "0.5rem",
           padding: "0.2rem 0.8rem",
           borderRadius: "5px",

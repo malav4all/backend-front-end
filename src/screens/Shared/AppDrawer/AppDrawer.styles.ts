@@ -16,10 +16,11 @@ import {
   borderColor,
 } from "../../../utils/styles";
 
-const textColor = "#fffff0"; 
+const textColor = "#fffff0";
 
 const appDrawerStyles = {
   drawer: {
+    position: "relative",
     display: "flex",
     gap: "1rem",
     height: "100vh",
@@ -120,7 +121,7 @@ const appDrawerStyles = {
     color: textColor,
   },
   subMenuItems: {
-    borderLeft: "4px solid",
+    paddingRight: "4px",
   },
   closedDrawerSubMenuItem: { paddingLeft: "5px", margin: "4px 0" },
   menuOptionsHeight: {
@@ -135,9 +136,9 @@ const appDrawerStyles = {
     },
     "&::-webkit-scrollbar-thumb": {
       borderRadius: "10px",
-      backgroundColor: "#888", 
+      backgroundColor: "#888",
       "&:hover": {
-        backgroundColor: "#555", 
+        backgroundColor: "#555",
       },
     },
   },
@@ -154,7 +155,28 @@ const appDrawerStyles = {
     fontWeight: "400",
     color: textColor,
   },
+  submenu: {
+    position: "absolute",
+    left: "100%",
+    top: 0,
+    zIndex: 1000,
+  },
+  submenuItems: {
+    fontSize: "0.9rem", 
+    paddingLeft: "0.8rem",
+    marginBottom: "-5px",
+  },
+  activeDot: {
+    height: "8px",
+    width: "8px",
+    borderRadius: "50%",
+    backgroundColor: "#fff", 
+    display: "inline-block",
+    marginLeft: "12px",
+  },
+
   menuOption: {
+    position: "relative",
     display: "flex",
     textDecoration: "none",
     ...ultraBlackFont,
@@ -196,7 +218,7 @@ const appDrawerStyles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    color: textColor,
+    color: "#fffff0",
   },
   logoBox: {
     display: "flex",
