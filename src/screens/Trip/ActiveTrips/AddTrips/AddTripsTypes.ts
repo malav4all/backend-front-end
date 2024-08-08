@@ -41,17 +41,19 @@ export const tripInformationFormInitialState = (prevState?: any) => ({
 });
 
 export const alertConfigurationFormInitialState = (prevState?: any) => ({
-  alertTypes: {
-    value: prevState?.alertTypes ?? [],
-    error: "",
-  },
-  getAlerts: {
-    value: prevState?.getAlerts ?? [],
-    error: "",
-  },
-  alertDetails: {
-    SMS: prevState?.alertDetails?.SMS ?? "",
-    WhatsApp: prevState?.alertDetails?.WhatsApp ?? "",
-    Email: prevState?.alertDetails?.Email ?? "",
+  subscribedAlerts: prevState?.subscribedAlerts ?? [],
+  alertMedium: {
+    sms: {
+      contact: prevState?.alertMedium?.sms?.contact ?? "",
+      isEnable: prevState?.alertMedium?.sms?.isEnable ?? false,
+    },
+    whatsapp: {
+      contact: prevState?.alertMedium?.whatsapp?.contact ?? "",
+      isEnable: prevState?.alertMedium?.whatsapp?.isEnable ?? false,
+    },
+    email: {
+      contact: prevState?.alertMedium?.email?.contact ?? "",
+      isEnable: prevState?.alertMedium?.email?.isEnable ?? false,
+    },
   },
 });

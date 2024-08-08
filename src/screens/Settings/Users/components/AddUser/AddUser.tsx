@@ -12,6 +12,8 @@ import {
   InputAdornment,
   IconButton,
   useTheme,
+  Autocomplete,
+  Checkbox,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -44,8 +46,13 @@ import { store } from "../../../../../utils/store";
 import notifiers from "../../../../../global/constants/NotificationConstants";
 import hidePasswordIcon from "../../../../../assets/images/Hide.svg";
 import showPasswordIcon from "../../../../../assets/images/Show.svg";
-import { fetchDeviceGroup } from "../../../../DeviceGroup/service/DeviceGroup.service";
-import { headerColor } from "../../../../../utils/styles";
+import {
+  fetchDeviceGroup,
+  fetchDeviceList,
+} from "../../../../DeviceGroup/service/DeviceGroup.service";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+
 interface CustomProps {
   openAddUserDialog: boolean;
   handleCloseAddUserDialog: Function;
@@ -59,6 +66,9 @@ interface CustomProps {
   setEdit?: any;
 }
 
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
+
 const AddUser = (props: CustomProps) => {
   const classes = usersStyles;
   const theme = useTheme();
@@ -69,11 +79,26 @@ const AddUser = (props: CustomProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [deviceGroup, setDeviceGroup] = useState<any>([]);
   const [accountData, setAccountData] = useState<any>([]);
+  const [deviceGroupValue, setDeviceGroupValue] = useState({});
   const [roleData, setRoleData] = useState([]);
+  const [imeiData, setImeiData] = useState<any>([]);
+  const [selectedImeis, setSelectedImeis] = useState<any>([]);
+
   useEffect(() => {
     props.setEdit?.(false);
     setUserFormFields(insertUserField());
   }, [props?.openAddUserDialog]);
+
+  const fetchImeiData = async () => {
+    try {
+      const res = await fetchDeviceList({
+        input: { accountId: userFormFields?.deviceGroupAccountId?.value },
+      });
+      setImeiData(res?.getImeiList?.imeiList);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
 
   useEffect(() => {
     if (props?.edit && props?.selectedUserRowData) {
@@ -83,15 +108,23 @@ const AddUser = (props: CustomProps) => {
   }, [props?.selectedUserRowData]);
 
   useEffect(() => {
-    fetchDeviceGroupData();
     fetchAccountData();
     fetchRoleData();
   }, []);
+
+  useEffect(() => {
+    if (userFormFields?.deviceGroupAccountId?.value) {
+      fetchDeviceGroupData();
+      fetchImeiData();
+    }
+  }, [userFormFields?.deviceGroupAccountId?.value]);
+
   const fetchDeviceGroupData = async () => {
     try {
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
+          accountId: userFormFields?.deviceGroupAccountId?.value,
           page: -1,
           limit: 10,
         },
@@ -130,6 +163,10 @@ const AddUser = (props: CustomProps) => {
         value: selectedAccount?._id ?? "",
         error: "",
       },
+      deviceGroupAccountId: {
+        value: selectedAccount?.accountId ?? "",
+        error: "",
+      },
     });
   };
 
@@ -138,6 +175,20 @@ const AddUser = (props: CustomProps) => {
       ...userFormFields,
       [formFillEvent?.target?.name]: {
         ...userFormFields[formFillEvent?.target?.name],
+        value: formFillEvent?.target?.value,
+        error: "",
+      },
+    });
+  };
+
+  const handleDeviceGroup = (formFillEvent: any) => {
+    const selectedAccount = deviceGroup.find(
+      (account: any) => account.deviceGroupName === formFillEvent.target.value
+    );
+    setDeviceGroupValue(selectedAccount);
+    setUserFormFields({
+      ...userFormFields,
+      deviceGroupName: {
         value: formFillEvent?.target?.value,
         error: "",
       },
@@ -223,6 +274,8 @@ const AddUser = (props: CustomProps) => {
         status: userFormFields?.status?.value,
         accountId: userFormFields.accountId.value,
         accountName: userFormFields.accountName.value,
+        deviceGroup: deviceGroupValue,
+        imeiList: userFormFields?.imeiList?.value,
       };
 
       if (props.edit) {
@@ -259,6 +312,44 @@ const AddUser = (props: CustomProps) => {
   ) => {
     setShowPassword(!showPassword);
     event.preventDefault();
+  };
+
+  const handleSelectAll = (event: any) => {
+    if (event.target.checked) {
+      setSelectedImeis(imeiData);
+      setUserFormFields({
+        ...userFormFields,
+        imeiList: {
+          value: imeiData,
+          error: "",
+        },
+      });
+    } else {
+      setSelectedImeis([]);
+      setUserFormFields({
+        ...userFormFields,
+        imeiList: {
+          value: [],
+          error: "",
+        },
+      });
+    }
+  };
+
+  const isOptionSelected = (option: any) => {
+    return selectedImeis?.includes(option);
+  };
+
+  const handleChange = (event: any, value: any) => {
+    const filteredValues = value.filter((v: any) => v !== "Select All");
+    setSelectedImeis(filteredValues);
+    setUserFormFields({
+      ...userFormFields,
+      imeiList: {
+        value: filteredValues,
+        error: "",
+      },
+    });
   };
 
   const addUserDialogBody = () => {
@@ -522,6 +613,124 @@ const AddUser = (props: CustomProps) => {
                 {userFormFields.accountName.error}
               </FormHelperText>
             )}
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <Stack direction="column">
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
+                Device Group
+                <Box ml={0.4} sx={classes.star}>
+                  *
+                </Box>
+              </InputLabel>
+              <Select
+                sx={classes.dropDownStyle}
+                id="add_user_device_group_dropdown"
+                name="deviceGroup"
+                value={userFormFields?.deviceGroupName?.value}
+                onChange={(e) => handleDeviceGroup(e)}
+                MenuProps={classes.menuProps}
+                displayEmpty
+                renderValue={() =>
+                  userFormFields?.deviceGroupName?.value ||
+                  "Select Device Group"
+                }
+                error={
+                  !isTruthy(userFormFields?.deviceGroupName?.value) &&
+                  userFormFields?.deviceGroupName?.error
+                }
+              >
+                {deviceGroup.map((item: any, index: any) => (
+                  <MenuItem
+                    key={index}
+                    value={item.deviceGroupName}
+                    sx={classes.dropDownOptionsStyle}
+                  >
+                    {item.deviceGroupName}
+                  </MenuItem>
+                ))}
+              </Select>
+              {!isTruthy(userFormFields?.deviceGroupName?.value) && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.deviceGroupName?.error}
+                </FormHelperText>
+              )}
+            </Stack>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box>
+            <InputLabel
+              sx={{ ...classes.inputLabel, color: theme.palette.text.primary }}
+              shrink
+            >
+              Imei List
+              <Box ml={0.4} sx={classes.star}>
+                *
+              </Box>
+            </InputLabel>
+            <Autocomplete
+              multiple
+              id="checkboxes-tags-demo"
+              options={["Select All", ...imeiData]}
+              disableCloseOnSelect
+              getOptionLabel={(option) =>
+                typeof option === "string" ? option : option
+              }
+              value={selectedImeis}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+              }}
+              onChange={handleChange}
+              placeholder="Enter Device Group Name"
+              renderOption={(props, option, { selected }) => {
+                if (option === "Select All") {
+                  return (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selectedImeis.length === imeiData.length}
+                        indeterminate={
+                          selectedImeis.length > 0 &&
+                          selectedImeis.length < imeiData.length
+                        }
+                        onChange={handleSelectAll}
+                      />
+                      Select All
+                    </li>
+                  );
+                }
+                return (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={isOptionSelected(option)}
+                    />
+                    {option}
+                  </li>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
+                />
+              )}
+            />
           </Box>
         </Grid>
       </Grid>

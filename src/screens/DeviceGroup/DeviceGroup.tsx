@@ -27,8 +27,10 @@ import {
   isTruthy,
   openErrorNotification,
 } from "../../helpers/methods";
+
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
+
 import deviceGroupStyles from "./DeviceGroup.styles";
 import {
   fetchDeviceGroup,
@@ -39,7 +41,7 @@ import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import EditIcon from "@mui/icons-material/Edit";
 import history from "../../utils/history";
-import { store } from "../../utils/store";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -173,11 +175,10 @@ const DeviceGroup = () => {
 
   const getDeviceGroupData = async () => {
     try {
-      const tenantId = store.getState().auth.tenantId;
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
-          accountId: tenantId,
+          accountId: "IMZ113343",
           page: page,
           limit: rowsPerPage,
         },
@@ -195,11 +196,9 @@ const DeviceGroup = () => {
 
   const getSearchData = async () => {
     try {
-      const tenantId = store.getState().auth.tenantId;
       setIsLoading(true);
       const res = await searchDeviceGroup({
         input: {
-          accountId: tenantId,
           search: searchDeviceGroups,
           page: 1,
           limit: 10,
@@ -223,7 +222,6 @@ const DeviceGroup = () => {
       setSearchDeviceGroups("");
     }
   };
-
   const editDeviceGroup = React.useCallback(
     (rowdata: any) => {
       setAddDeviceGroupDialogHandler(true);
@@ -232,7 +230,6 @@ const DeviceGroup = () => {
     },
     [edit]
   );
-
   const closeAddDeviceGroupDialogHandler = () => {
     setAddDeviceGroupDialogHandler(false);
     setSelectedDeviceGroupRowData(null);

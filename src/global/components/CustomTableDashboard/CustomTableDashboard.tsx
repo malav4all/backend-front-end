@@ -12,12 +12,13 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Pagination,
 } from "@mui/material";
-import Pagination from "@mui/material/Pagination";
 import CustomButton from "../CustomButton/CustomButton";
 import customTableDashboardStyles from "./customTableDashboard.styles";
 import paginationStyles from "../CustomTable/Pagination.styles";
 import usePagination from "../CustomTable/Pagination";
+import { SxProps, Theme } from "@mui/system";
 
 interface CustomProps {
   headers: any[];
@@ -102,18 +103,20 @@ const CustomTableDashboard = (props: CustomProps) => {
         <TableRow>
           {props.headers.slice(0, 2).map((column, index) => (
             <TableCell
-              sx={{
-                ...classes.tableHeaderCell,
-                borderTop: "none !important",
-                borderLeft: "none !important",
-                borderRight: "none !important",
-                borderBottomColor: theme.palette.divider + "!important",
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-                position: "sticky",
-                left: 0,
-                zIndex: 1,
-              }}
+              sx={
+                {
+                  ...classes.tableHeaderCell,
+                  borderTop: "none !important" as string,
+                  borderLeft: "none !important" as string,
+                  borderRight: "none !important" as string,
+                  borderBottomColor: theme.palette.divider + "!important",
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.text.primary,
+                  position: "sticky",
+                  left: 0,
+                  zIndex: 1,
+                } as SxProps<Theme>
+              }
               align={column["align"]}
               key={index}
             >
@@ -122,15 +125,17 @@ const CustomTableDashboard = (props: CustomProps) => {
           ))}
           {props.headers.slice(2).map((column, index) => (
             <TableCell
-              sx={{
-                ...classes.tableHeaderCell,
-                borderTop: "none !important",
-                borderLeft: "none !important",
-                borderRight: "none !important",
-                borderBottomColor: theme.palette.divider + "!important",
-                backgroundColor: theme.palette.tableHeader,
-                color: theme.palette.text.primary,
-              }}
+              sx={
+                {
+                  ...classes.tableHeaderCell,
+                  borderTop: "none !important" as string,
+                  borderLeft: "none !important" as string,
+                  borderRight: "none !important" as string,
+                  borderBottomColor: theme.palette.divider + "!important",
+                  backgroundColor: theme.palette.tableHeader,
+                  color: theme.palette.text.primary,
+                } as SxProps<Theme>
+              }
               align={column["align"]}
               key={index + 2}
             >
@@ -236,7 +241,11 @@ const CustomTableDashboard = (props: CustomProps) => {
                   sx={classes.perPageDropdown}
                 >
                   {rowPerPageData.map((items) => (
-                    <MenuItem sx={classes.optionStyle} value={items}>
+                    <MenuItem
+                      sx={classes.optionStyle}
+                      value={items}
+                      key={items}
+                    >
                       {items}
                     </MenuItem>
                   ))}

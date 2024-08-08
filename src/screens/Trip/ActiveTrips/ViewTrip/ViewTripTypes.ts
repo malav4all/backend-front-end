@@ -15,10 +15,11 @@ export const tripInformationFormInitialState = () => ({
   status: "",
   remarks: "",
   tripData: [],
+  vehicleNumber: "",
 });
 
 export const alertConfigurationFormInitialState = () => ({
-  alertTypes: [],
+  subscribedAlerts: [],
   alertMedium: {
     sms: {
       contact: "",

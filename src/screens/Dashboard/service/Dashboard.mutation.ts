@@ -87,6 +87,12 @@ export const DEVICE_DATA = gql`
   }
 `;
 
+export const ALERT_DEVICE_DATA = gql`
+  subscription ($accountId: String!, $imeis: [String!]) {
+    alert(accountId: $accountId, imeis: $imeis)
+  }
+`;
+
 export const ONLINE_DEVICE_GRAPH = gql`
   mutation ($input: DeviceOnboardingAccountIdInput!) {
     onlineDeviceGraph(input: $input) {

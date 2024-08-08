@@ -1,4 +1,4 @@
-import { Box, Button, SxProps, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import customButtonStyles from "./CustomButton.styles";
 import { primaryColorBlack } from "../../../utils/styles";
@@ -49,7 +49,9 @@ const CustomButton = (props: CustomProps) => {
           <CircularProgress size={20} sx={{ color: primaryColorBlack }} />
         </Box>
       ) : (
-        <Typography variant="button">{props.label}</Typography>
+        <Typography variant="button" sx={{ color: "white" }}>
+          {props.label}
+        </Typography>
       )}
     </Button>
   );

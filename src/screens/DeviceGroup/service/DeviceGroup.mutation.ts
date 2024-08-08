@@ -20,6 +20,7 @@ export const FETCH_DEVICE_GROUP = gql`
       data {
         _id
         deviceGroupName
+        imeiData
         createdBy
       }
     }
@@ -52,13 +53,12 @@ export const SEARCH_DEVICE_GROUP = gql`
   }
 `;
 
-export const GET_ALL_DEVICE = gql`
-  mutation {
-    getAllDeviceList {
-      imei
-      labelName
-      _id
-      createdBy
+export const GET_ALL_IMEI_LIST = gql`
+  mutation ($input: DeviceOnboardingAccountIdInput!) {
+    getImeiList(input: $input) {
+      success
+      imeiList
+      message
     }
   }
 `;

@@ -820,7 +820,7 @@ const Routes = () => {
               setIsHideForm(!isHideForm);
             }}
             customClasses={{
-              width: "150px",
+              width: "160px",
             }}
           />
         ) : (

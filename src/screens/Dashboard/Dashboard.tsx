@@ -24,8 +24,10 @@ import GetAlerts from "./components/Chart/GetAlerts";
 import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
 import { useSubscription } from "@apollo/client";
-import { DEVICE_DATA } from "./service/Dashboard.mutation";
-
+import { ALERT_DEVICE_DATA, DEVICE_DATA } from "./service/Dashboard.mutation";
+import { AiOutlineRight } from "react-icons/ai";
+import { Link } from "react-router-dom";
+import { FaMapLocationDot } from "react-icons/fa6";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -66,6 +68,18 @@ const Dashboard = () => {
   });
   const [messages, setMessages] = useState<any>();
   const accountId = "IMZ113343";
+
+  const { data } = useSubscription(DEVICE_DATA, {
+    variables: { accountId, imeis: [] },
+  });
+
+  // const { data } = useSubscription(ALERT_DEVICE_DATA, {
+  //   variables: { accountId, imeis: [] },
+  // });
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
     graphData();
@@ -123,8 +137,8 @@ const Dashboard = () => {
           <Typography
             variant="h5"
             sx={{
-              fontFamily: "Geist_Light",
-              fontSize: "1.5rem",
+              fontFamily: "Geist_semibold",
+              fontSize: "1.1rem",
               marginBottom: "0.5rem",
               padding: "0.2rem 0.8rem",
               borderRadius: "5px",
@@ -137,11 +151,11 @@ const Dashboard = () => {
 
           <CustomTableDashboard
             headers={[
-              { name: "Name", field: "accountId" },
+              { name: "NAME", field: "accountId" },
               { name: "IMEI", field: "imei" },
-              { name: "Status", field: "status" },
-              { name: "Last Ping", field: "connectedTime" },
-              { name: "Action", field: "action" },
+              { name: "STATUS", field: "status" },
+              { name: "LAST PING", field: "connectedTime" },
+              { name: "ACTION", field: "action" },
             ]}
             rows={dataGraph?.deviceDashboardData?.data?.map((item: any) => {
               return {
@@ -149,6 +163,18 @@ const Dashboard = () => {
                 status: item.status,
                 accountId: item.name,
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
+                action: (
+                  <Link to="/map-view">
+                    <FaMapLocationDot
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "1.4rem",
+                        color: "#5F22E2",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                  </Link>
+                ),
               };
             })}
             isRowPerPageEnable={false}

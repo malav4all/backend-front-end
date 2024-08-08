@@ -24,6 +24,8 @@ import strings from "../../../global/constants/StringConstants";
 import { getAddressDetailsByPincode } from "../service/geozone.service";
 import _ from "lodash";
 import InputMask from "react-input-mask";
+import { fetchLocationType } from "../../Settings/LocationType/service/location-type.service";
+import { store } from "../../../utils/store";
 
 interface GeoZoneProps {
   isOpenModal: boolean;
@@ -44,7 +46,10 @@ const CreateGeoZone = ({
   const classes = geozoneStyle;
   const theme = useTheme();
   const [zipCodeDate, setZipCodeData] = useState([]);
-
+  const [data, setData] = useState([]);
+  const [count, setCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const fetchZipCodeHandler = async (value: any) => {
     try {
       const res = await getAddressDetailsByPincode(value);
@@ -64,6 +69,22 @@ const CreateGeoZone = ({
 
   const handleCancelUpdateModal = () => {
     handleUpdateDialogClose();
+  };
+
+  const fetchLocationTypeHandler = async () => {
+    try {
+      const res = await fetchLocationType({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page,
+          limit,
+        },
+      });
+      setData(res.fetchLocationType.data);
+      setCount(res.fetchLocationType.paginatorInfo.count);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const modalHeader = () => {
@@ -130,6 +151,7 @@ const CreateGeoZone = ({
       </Grid>
     );
   };
+
   const getFormattedNumbers = (value: string) => {
     const matches = value.match(/\d+/g);
     let number = "";
@@ -143,6 +165,7 @@ const CreateGeoZone = ({
     }
     return { number: number, maskedNumber: value };
   };
+
   const handleMaskInputChange = (event: React.ChangeEvent<any>) => {
     const response = getFormattedNumbers(event.target.value);
     setFormField({
@@ -191,7 +214,7 @@ const CreateGeoZone = ({
                   formField.locationType?.error
                 }
               >
-                {[{ type: "Malav" }].map((item: any, index: number) => (
+                {data.map((item: any, index: number) => (
                   <MenuItem
                     key={index}
                     value={item.type}
@@ -444,39 +467,6 @@ const CreateGeoZone = ({
             </FormHelperText>
           )}
         </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-          <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
-            <Box display={"flex"}>
-              <Typography sx={classes.label}>Description </Typography>
-              <Typography sx={classes.star}>*</Typography>
-            </Box>
-            <TextField
-              multiline
-              minRows={2}
-              inputProps={{ maxLength: 300 }}
-              sx={{
-                ...classes.testAreaStyle,
-                backgroundColor: theme.palette.background.paper,
-                color: theme.palette.text.primary,
-                borderRadius: "5px",
-              }}
-              name="description"
-              id="comment"
-              placeholder="Enter Description"
-              value={formField?.description?.value}
-              error={
-                !isTruthy(formField?.description?.value) &&
-                formField?.description?.error
-              }
-              onChange={handleOnChange}
-            />
-            {!isTruthy(formField?.description?.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {formField?.description?.error}
-              </FormHelperText>
-            )}
-          </Box>
-        </Grid>
       </Grid>
     );
   };
@@ -496,6 +486,10 @@ const CreateGeoZone = ({
       />
     );
   };
+
+  useEffect(() => {
+    fetchLocationTypeHandler();
+  }, []);
 
   return <Box>{geoZone()}</Box>;
 };

@@ -20,13 +20,13 @@ const ViewTrip = () => {
   const [loader, setLoader] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
-    transitTypeFormInitialState
+    transitTypeFormInitialState()
   );
   const [tripInformationForm, setTripInformationForm] = useState<any>(
-    tripInformationFormInitialState
+    tripInformationFormInitialState()
   );
   const [alertConfigurationForm, setAlertConfigurationForm] = useState<any>(
-    alertConfigurationFormInitialState
+    alertConfigurationFormInitialState()
   );
 
   useEffect(() => {
@@ -216,10 +216,24 @@ const ViewTrip = () => {
         status: response?.status,
         tripData: response?.tripData,
         vehicleNumber: response?.vehicleNumber,
+        tripName: response?.tripName,
       });
       setAlertConfigurationForm({
-        alertMedium: response?.alertConfig?.alertMedium,
-        alertTypes: response?.alertConfig?.subscribedAlerts,
+        subscribedAlerts: response?.alertConfig?.subscribedAlerts,
+        alertMedium: {
+          sms: {
+            contact: response?.alertConfig?.alertMedium?.sms?.contact,
+            isEnable: response?.alertConfig?.alertMedium?.sms?.isEnable,
+          },
+          whatsapp: {
+            contact: response?.alertConfig?.alertMedium?.whatsapp?.contact,
+            isEnable: response?.alertConfig?.alertMedium?.whatsapp?.isEnable,
+          },
+          email: {
+            contact: response?.alertConfig?.alertMedium?.email?.contact,
+            isEnable: response?.alertConfig?.alertMedium?.email?.isEnable,
+          },
+        },
       });
       setLoader(false);
     } catch (error: any) {

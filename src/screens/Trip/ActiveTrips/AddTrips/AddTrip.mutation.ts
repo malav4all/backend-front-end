@@ -1,11 +1,21 @@
 import { gql } from "@apollo/client";
 export const GET_ALL_DEVICE = gql`
-  mutation {
-    getAllDeviceList {
-      imei
-      labelName
-      _id
-      createdBy
+  mutation ($input: DeviceOnboardingFetchInput!) {
+    fetchDeviceOnboardingListWithLocation(input: $input) {
+      paginatorInfo {
+        count
+      }
+      success
+      message
+      data {
+        _id
+        createdBy
+        businessModel
+        deviceOnboardingIMEINumber
+        deviceOnboardingSimNo
+        accountId
+        location
+      }
     }
   }
 `;
@@ -74,6 +84,14 @@ export const FETCH_ENTITY = gql`
         tripTypeList
         accountId
       }
+    }
+  }
+`;
+export const CREATE_TRIP = gql`
+  mutation ($input: CreateTripInput!) {
+    createTrip(input: $input) {
+      success
+      message
     }
   }
 `;

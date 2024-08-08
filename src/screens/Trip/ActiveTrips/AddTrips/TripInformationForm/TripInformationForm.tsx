@@ -1,38 +1,39 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
-  Autocomplete,
   Box,
-  Checkbox,
   Grid,
+  Stack,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Stack,
   TextField,
   useTheme,
+  Autocomplete,
+  Checkbox,
 } from "@mui/material";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { CustomInput } from "../../../../../global/components";
 import {
   isTruthy,
   openErrorNotification,
 } from "../../../../../helpers/methods";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-
-import transitTypeStyles from "../../AddTrips/TransitTypeForm/TransitTypeForm.styles";
-import { ChangeEvent, useEffect, useState } from "react";
+import { fetchDeviceList, fetchGeozoneHandler } from "../AddTripService";
 import { store } from "../../../../../utils/store";
 import strings from "../../../../../global/constants/StringConstants";
-import { fetchGeozoneHandler } from "../AddTripService";
+import transitTypeStyles from "../../AddTrips/TransitTypeForm/TransitTypeForm.styles";
 
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+
 interface TripInformationProps {
   tripInformationForm: any;
   setTripInformationForm: Function;
 }
+
 const TripInformationForm: React.FC<TripInformationProps> = ({
   tripInformationForm,
   setTripInformationForm,
@@ -40,18 +41,10 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
   const theme = useTheme();
   const classes = transitTypeStyles();
   const [locationTypeData, setLocationTypeData] = useState<any>();
+  const [imeiOptions, setImeiOptions] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setpage] = useState(1);
+  const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-
-  const imeiList = [
-    { imei: "87632847623874", locationId: "LN551803" },
-    { imei: "98765432109876", locationId: "LN123456" },
-    { imei: "12345678901234", locationId: "LN654321" },
-    { imei: "23456789012345", locationId: "LN789012" },
-    { imei: "34567890123456", locationId: "LN890123" },
-  ];
 
   useEffect(() => {
     fetchGeozone();
@@ -69,6 +62,22 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       });
       setLocationTypeData(res?.listGeozone?.data);
       setLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchImeiData = async (locationId: string) => {
+    try {
+      const res = await fetchDeviceList({
+        input: {
+          accountId: store?.getState()?.auth?.tenantId,
+          location: locationId,
+          page,
+          limit,
+        },
+      });
+      setImeiOptions(res?.fetchDeviceOnboardingListWithLocation?.data || []);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -101,16 +110,37 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       (item: any) => item?.locationId === value
     );
 
-    setTripInformationForm((prevFields: any) => ({
-      ...prevFields,
-      [name]: {
-        value, // Store locationId here
-        label: selectedItem
-          ? `${selectedItem?.name} - ${selectedItem?.locationId}`
-          : "", // Store the display text here
-        error: "",
-      },
-    }));
+    if (selectedItem) {
+      const formattedPoint = {
+        _id: selectedItem?._id,
+        createdBy: selectedItem?.createdBy,
+        finalAddress: selectedItem?.finalAddress,
+        geoCodeData: selectedItem?.geoCodeData,
+        address: selectedItem?.address,
+        mobileNumber: selectedItem?.mobileNumber,
+        locationType: selectedItem?.locationType,
+        description: selectedItem?.description,
+        name: selectedItem?.name,
+        accountId: selectedItem?.accountId,
+        locationId: selectedItem?.locationId,
+        createdAt: selectedItem?.createdAt,
+        updatedAt: selectedItem?.updatedAt,
+      };
+
+      setTripInformationForm((prevFields: any) => ({
+        ...prevFields,
+        [name]: {
+          value: formattedPoint?.locationId,
+          label: `${formattedPoint?.name} - ${formattedPoint?.locationId}`,
+          data: formattedPoint,
+          error: "",
+        },
+      }));
+
+      if (name === "startPoint") {
+        fetchImeiData(selectedItem._id); // Fetch IMEI data based on the selected start point
+      }
+    }
   };
 
   const handleTripDateChange = (field: string, date: Date | null) => {
@@ -121,8 +151,8 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       };
 
       // Validate date fields
-      if (field === "tripEndDate" && date && prevFields.tripEndDate.value) {
-        if (date > prevFields.tripEndDate.value) {
+      if (field === "tripEndDate" && date && prevFields?.tripEndDate.value) {
+        if (date > prevFields?.tripEndDate.value) {
           updatedFields.tripEndDate.error =
             "Trip End Date & Time cannot be before Trip Start Date & Time";
         } else {
@@ -130,8 +160,8 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
         }
       }
 
-      if (field === "tripEndDate" && date && prevFields.tripEndDate.value) {
-        if (date < prevFields.tripEndDate.value) {
+      if (field === "tripEndDate" && date && prevFields?.tripEndDate.value) {
+        if (date < prevFields?.tripEndDate?.value) {
           updatedFields.tripEndDate.error =
             "Trip End Date & Time cannot be before Trip Start Date & Time";
         } else {
@@ -317,10 +347,13 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           <Autocomplete
             multiple
             id="imei"
-            options={imeiList}
+            options={imeiOptions}
             disableCloseOnSelect
-            getOptionLabel={(option: any) => option.imei}
-            isOptionEqualToValue={(option, value) => option.imei === value.imei}
+            getOptionLabel={(option: any) => option?.deviceOnboardingIMEINumber}
+            isOptionEqualToValue={(option, value) =>
+              option?.deviceOnboardingIMEINumber ===
+              value?.deviceOnboardingIMEINumber
+            }
             renderOption={(props: any, option: any, { selected }: any) => (
               <li {...props}>
                 <Checkbox
@@ -329,20 +362,26 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                   style={{ marginRight: 8 }}
                   checked={selected}
                 />
-                {option.imei}
+                {option?.deviceOnboardingIMEINumber}
               </li>
             )}
             onChange={(event, newValue) => {
               setTripInformationForm((prevFields: any) => ({
                 ...prevFields,
                 imeiNumber: {
-                  ...prevFields.imeiNumber,
-                  value: newValue,
+                  ...prevFields?.imeiNumber,
+                  value: newValue.map(
+                    (item: any) => item?.deviceOnboardingIMEINumber
+                  ),
                   error: "",
                 },
               }));
             }}
-            value={tripInformationForm.imeiNumber?.value || []} // Ensure selected values are set correctly
+            value={imeiOptions?.filter((option: any) =>
+              tripInformationForm?.imeiNumber?.value?.includes(
+                option?.deviceOnboardingIMEINumber
+              )
+            )}
             renderInput={(params) => (
               <TextField {...params} placeholder="Select IMEIs" />
             )}
@@ -376,8 +415,8 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           name="remarks"
           label="Remarks"
           onChange={handleFormDataChange}
-          value={tripInformationForm.remarks?.value}
-          error={tripInformationForm.remarks?.error}
+          value={tripInformationForm?.remarks?.value}
+          error={tripInformationForm?.remarks?.error}
           propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           sx={{
             input: {

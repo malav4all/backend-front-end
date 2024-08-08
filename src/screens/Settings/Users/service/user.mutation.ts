@@ -12,6 +12,7 @@ export const FETCH_ACCOUNT = gql`
       data {
         _id
         accountName
+        accountId
       }
     }
   }
