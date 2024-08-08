@@ -85,7 +85,6 @@ body {
 .MuiTableRow-head th {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
-  font-size: 13px;
   border-top: 1px solid #E9ECEF;
   border-bottom: 1px solid #E9ECEF;
 } 

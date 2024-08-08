@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Collapse,
   List,
@@ -10,8 +10,9 @@ import {
   useMediaQuery,
   Switch,
   FormControlLabel,
+  Paper,
+  Box,
 } from "@mui/material";
-import { Box } from "@mui/system";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -96,11 +97,12 @@ const AppDrawer = (props: CustomProps) => {
   const [optionItems, setOptionItems] = useState<any[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<number | null>(null); // New state for managing hover index
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
   const { toggleTheme, darkMode } = useThemeContext(); // Use the context
+  const submenuRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     generateAppDrawer();
@@ -110,12 +112,12 @@ const AppDrawer = (props: CustomProps) => {
     setActiveIndexFromUrl();
   }, [optionItems, pathname]);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
+  const handleMouseEnter = (index: number) => {
+    setIsHovered(index);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(false);
+    setIsHovered(null);
   };
 
   const setActiveIndexFromUrl = () => {
@@ -124,6 +126,7 @@ const AppDrawer = (props: CustomProps) => {
     );
     setActiveIndex(activeIndexFromUrl);
   };
+
   const generateAppDrawer = () => {
     setOptionItems(GenerateMenu());
   };
@@ -167,6 +170,7 @@ const AppDrawer = (props: CustomProps) => {
       <Collapse in={parentIndex === activeIndex}>
         {subMenuOptions.map((data: any, index: number) => (
           <Box
+            key={index}
             component={"div"}
             sx={[
               index + 1 === subMenuOptions.length && {
@@ -178,6 +182,7 @@ const AppDrawer = (props: CustomProps) => {
                     ...classes.menuOption,
                     backgroundColor: "#5F22E1",
                   },
+              classes.submenuItems, // Apply submenu item styles
             ]}
           >
             <ListItem
@@ -203,17 +208,13 @@ const AppDrawer = (props: CustomProps) => {
                       sx={{
                         ...classes.navBarLabel,
                         ...classes.listItemTextBox,
-                        marginLeft: "35px",
+                        marginLeft: "2rem", // Add indentation to submenu items
+                        fontSize: "0.875rem", // Reduced font size for submenu items
                       }}
                     >
-                      <Typography sx={classes.navBarLabel}>
-                        {data.text}
-                      </Typography>
-                    </Typography>
-                    <Typography>
-                      {" "}
+                      <span>{data.text}</span>
                       {isActiveTab(data.link) && (
-                        <Box sx={classes.activeIcon}></Box>
+                        <span style={classes.activeDot}></span>
                       )}
                     </Typography>
                   </Box>
@@ -233,6 +234,7 @@ const AppDrawer = (props: CustomProps) => {
   };
 
   const getArrowIcon = (index: number) => {
+    if (!isDrawerOpen) return null;
     return activeIndex === index ? (
       <KeyboardArrowUpIcon />
     ) : (
@@ -253,6 +255,10 @@ const AppDrawer = (props: CustomProps) => {
               ? classes.selectedMenuOption
               : classes.menuOption,
           ]}
+          onMouseEnter={() => handleMouseEnter(index)}
+          onMouseLeave={handleMouseLeave}
+          position="relative"
+          ref={(el: HTMLDivElement | null) => (submenuRefs.current[index] = el)}
         >
           <ListItem
             sx={[
@@ -267,7 +273,7 @@ const AppDrawer = (props: CustomProps) => {
           >
             <Tooltip
               title={isDrawerOpen ? "" : option.text}
-              placement="bottom"
+              placement="right"
               arrow
             >
               <Box sx={classes.listItemIconBox}>
@@ -311,8 +317,48 @@ const AppDrawer = (props: CustomProps) => {
             )}
           </ListItem>
         </Box>
+        {option.subMenu &&
+          isHovered === index &&
+          renderSubmenuItemsHover(option.subMenu, index)}
         {option.subMenu && renderSubmenuItems(option.subMenu, index)}
       </React.Fragment>
+    );
+  };
+
+  const renderSubmenuItemsHover = (
+    subMenuOptions: any[],
+    parentIndex: number
+  ) => {
+    if (!subMenuOptions || isDrawerOpen) return null;
+
+    const parentElement = submenuRefs.current[parentIndex];
+    const boundingRect = parentElement?.getBoundingClientRect();
+
+    return (
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          left: boundingRect ? boundingRect.width : 50, // Adjust based on your layout
+          top: boundingRect ? boundingRect.top : parentIndex * 48 + 10, // Adjust based on your layout and item height
+          zIndex: 1000,
+          backgroundColor: "#060B25", // Match the sidebar background
+          color: "#fffff0", // Ensure text color matches your theme
+        }}
+      >
+        {subMenuOptions.map((data: any, index: number) => (
+          <ListItem
+            key={index}
+            id="app_drawer_sub_menu_link"
+            sx={{
+              padding: "8px 16px",
+            }}
+            onClick={() => handleRedirection(data)}
+          >
+            <ListItemText primary={data.text} />
+          </ListItem>
+        ))}
+      </Paper>
     );
   };
 
@@ -328,11 +374,7 @@ const AppDrawer = (props: CustomProps) => {
 
   const getAppLogo = () => {
     return (
-      <Box
-        sx={classes.logoBox}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <Box sx={classes.logoBox}>
         {!isDrawerOpen && isDesktop ? (
           <Box
             sx={{
@@ -437,21 +479,35 @@ const AppDrawer = (props: CustomProps) => {
         p={2}
         borderRadius="10px"
       >
-        <Box sx={{ color: "#fffff0" }}>Mode:</Box>
-        <FormControlLabel
-          sx={{
-            margin: "-0.5rem",
-          }}
-          control={
-            <MaterialUISwitch
-              checked={darkMode}
-              onChange={toggleTheme}
-              name="darkMode"
-              color="default"
+        {isDrawerOpen ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "no-wrap",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            p={2}
+          >
+            <Box sx={{ color: "#fffff0" }}>Mode:</Box>
+            <FormControlLabel
+              sx={{
+                margin: "-0.5rem",
+              }}
+              control={
+                <MaterialUISwitch
+                  checked={darkMode}
+                  onChange={toggleTheme}
+                  name="darkMode"
+                  color="default"
+                />
+              }
+              label=""
             />
-          }
-          label=""
-        />
+          </Box>
+        ) : (
+          ""
+        )}
       </Box>
     );
   };
