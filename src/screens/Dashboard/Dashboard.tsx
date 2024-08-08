@@ -67,6 +67,14 @@ const Dashboard = () => {
   const [messages, setMessages] = useState<any>();
   const accountId = "IMZ113343";
 
+  const { data } = useSubscription(DEVICE_DATA, {
+    variables: { accountId, imeis: [] },
+  });
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   useEffect(() => {
     graphData();
   }, []);

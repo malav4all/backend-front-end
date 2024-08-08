@@ -22,11 +22,11 @@ interface AccessToken {
 }
 
 const httpLink = new HttpLink({
-  uri: `http://103.20.214.201:7080/graphql`,
+  uri: `http://103.20.214.201:6001/graphql`,
 });
 
 const wsLink = new WebSocketLink({
-  uri: `ws://103.20.214.201:7080/subscriptions`,
+  uri: `ws://103.20.214.201:6001/subscriptions`,
   options: {
     reconnect: true,
   },
@@ -95,7 +95,7 @@ const errorLink = onError(
 const refreshToken = async () => {
   try {
     console.log("1");
-    const refreshResolverResponse = await liveClient.mutate<{
+    const refreshResolverResponse = await alertClient.mutate<{
       refreshToken: AccessToken;
     }>({
       mutation: REFRESH_TOKEN,
@@ -110,7 +110,7 @@ const refreshToken = async () => {
   }
 };
 
-export const liveClient = new ApolloClient({
+export const alertClient = new ApolloClient({
   link: from([link, errorLink]),
   cache: new InMemoryCache(),
 });
