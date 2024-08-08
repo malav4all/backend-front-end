@@ -12,6 +12,7 @@ import { fetchTripTypeTableHandler } from "../../../TripType/service/TripType.se
 import { openErrorNotification } from "../../../../../helpers/methods";
 import { fetchRoutes } from "../../../../Routes/service/routes.service";
 import transitTypeStyles from "./TransitTypeForm.styles";
+import { store } from "../../../../../utils/store";
 
 interface TransitTypeProps {
   setTransitTypeForm: any;
@@ -24,7 +25,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
 }) => {
   const classes = transitTypeStyles();
   const [tripTypeData, setTripTypeData] = useState([]);
-  const [routesTableData, setRoutesTableData] = useState([]);
+  const [routesTableData, setRoutesTableData] = useState<any>([]);
 
   useEffect(() => {
     fetchTableTripType();
@@ -57,18 +58,48 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
     }
   };
 
-  const handleSelectChange = (event: SelectChangeEvent<any>, setState: any) => {
-    const { name, value } = event.target;
-    setTransitTypeForm((prevFields: any) => ({
-      ...prevFields,
-      [name]: {
-        ...prevFields[name as keyof typeof prevFields],
-        value,
-        error: "",
-      },
-    }));
-  };
+  const handleSelectChange = async (event: SelectChangeEvent<any>) => {
+    const { name, value } = event?.target;
 
+    if (name === "routeId") {
+      const selectedRoute = routesTableData?.find(
+        (route: any) => route?.routeId === value
+      );
+      if (selectedRoute) {
+        const formattedRoute = {
+          _id: selectedRoute?._id,
+          totalDuration: selectedRoute?.totalDuration,
+          totalDistance: selectedRoute?.totalDistance,
+          createdBy: selectedRoute?.createdBy,
+          routesData: selectedRoute?.routeDetails.map(
+            (detail: any) => detail?._id
+          ),
+          routeName: selectedRoute?.routeName,
+          routeId: selectedRoute?.routeId,
+          accountId: store?.getState()?.auth?.tenantId,
+        };
+
+        setTransitTypeForm((prevFields: any) => ({
+          ...prevFields,
+          routeId: {
+            ...prevFields.routeId,
+            value,
+            error: "",
+          },
+          route: formattedRoute,
+        }));
+      }
+    } else {
+      setTransitTypeForm((prevFields: any) => ({
+        ...prevFields,
+        [name]: {
+          ...prevFields[name as keyof typeof prevFields],
+          value,
+          error: "",
+        },
+      }));
+    }
+  };
   return (
     <Grid container spacing={2} padding={5}>
       <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>

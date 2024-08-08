@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Box, Paper, Typography, Button } from "@mui/material";
 import {
   DndContext,
@@ -211,7 +211,7 @@ const DesignerElementWrapper = ({
       borderRadius={1}
       border={1}
       borderColor="divider"
-      p={2}
+      // p={2}
       onMouseEnter={() => setMouseIsOver(true)}
       onMouseLeave={() => setMouseIsOver(false)}
       onClick={(e) => {

@@ -25,6 +25,9 @@ import {
 } from "../FormElements";
 import useDesigner from "../useDesigner";
 import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import { fetchEntityTypeTableHandler } from "../../../Trip/EntityType/service/EntityType.service";
+import { store } from "../../../../utils/store";
+import { openErrorNotification } from "../../../../helpers/methods";
 
 const type: ElementsType = "EntityField";
 
@@ -34,6 +37,7 @@ const extraAttributes = {
   required: false,
   placeHolder: "Value here...",
   options: [],
+  entityType: "",
 };
 
 const propertiesSchema = z.object({
@@ -42,6 +46,7 @@ const propertiesSchema = z.object({
   required: z.boolean().default(false),
   placeHolder: z.string().max(50),
   options: z.array(z.string()).default([]),
+  entityType: z.string().default(""),
 });
 
 export const EntityFieldFormElement: FormElement = {
@@ -73,6 +78,41 @@ export const EntityFieldFormElement: FormElement = {
 
 type CustomInstance = FormElementInstance & {
   extraAttributes: typeof extraAttributes;
+};
+
+const useFetchEntityTypes = () => {
+  const [entityTypes, setEntityTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTableEntityType = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchEntityTypeTableHandler({
+          input: {
+            accountId: store.getState().auth.tenantId,
+            page: -1,
+            limit: 1000,
+          },
+        });
+        const finalData = res?.fetchEntityType?.data?.map((item: any) => ({
+          accountId: item.accountId,
+          name: item.name,
+          description: item.description,
+          createdBy: item.createdBy,
+        }));
+        setEntityTypes(finalData);
+        setLoading(false);
+      } catch (error: any) {
+        openErrorNotification(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchTableEntityType();
+  }, []);
+
+  return { entityTypes, loading };
 };
 
 function DesignerComponent({
@@ -114,13 +154,13 @@ function FormComponent({
   const element = elementInstance as CustomInstance;
   const [value, setValue] = useState(defaultValue || "");
   const [error, setError] = useState(false);
+  const { entityTypes, loading } = useFetchEntityTypes();
 
   useEffect(() => {
     setError(isInvalid === true);
   }, [isInvalid]);
 
-  const { label, required, placeHolder, helperText, options } =
-    element.extraAttributes;
+  const { label, required, placeHolder, helperText } = element.extraAttributes;
 
   return (
     <Box display="flex" flexDirection="column" gap={2} width="100%">
@@ -143,9 +183,9 @@ function FormComponent({
           <MenuItem value="">
             <em>{placeHolder}</em>
           </MenuItem>
-          {options.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {entityTypes.map((entity: any) => (
+            <MenuItem key={entity.name} value={entity.name}>
+              {entity.name}
             </MenuItem>
           ))}
         </Select>
@@ -163,6 +203,7 @@ function PropertiesComponent({
 }) {
   const element = elementInstance as CustomInstance;
   const { updateElement, setSelectedElement } = useDesigner();
+  const { entityTypes } = useFetchEntityTypes();
   const form = useForm<propertiesFormSchemaType>({
     resolver: zodResolver(propertiesSchema),
     mode: "onSubmit",
@@ -172,6 +213,7 @@ function PropertiesComponent({
       required: element.extraAttributes.required,
       placeHolder: element.extraAttributes.placeHolder,
       options: element.extraAttributes.options,
+      entityType: element.extraAttributes.entityType,
     },
   });
 
@@ -180,7 +222,8 @@ function PropertiesComponent({
   }, [element, form]);
 
   function applyChanges(values: propertiesFormSchemaType) {
-    const { label, helperText, placeHolder, required, options } = values;
+    const { label, helperText, placeHolder, required, options, entityType } =
+      values;
     updateElement(element.id, {
       ...element,
       extraAttributes: {
@@ -189,6 +232,7 @@ function PropertiesComponent({
         placeHolder,
         required,
         options,
+        entityType,
       },
     });
 
@@ -235,6 +279,27 @@ function PropertiesComponent({
               {...field}
               onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
             />
+          </Box>
+        )}
+      />
+      <Controller
+        name="entityType"
+        control={form.control}
+        render={({ field }) => (
+          <Box display="flex" flexDirection="column" gap={1}>
+            <Typography>Entity Type</Typography>
+            <FormControl variant="outlined" fullWidth>
+              <Select {...field}>
+                <MenuItem value="">
+                  <em>Select Entity Type</em>
+                </MenuItem>
+                {entityTypes.map((entity: any) => (
+                  <MenuItem key={entity.name} value={entity.name}>
+                    {entity.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         )}
       />

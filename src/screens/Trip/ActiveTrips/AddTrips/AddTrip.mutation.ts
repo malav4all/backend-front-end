@@ -1,11 +1,21 @@
 import { gql } from "@apollo/client";
 export const GET_ALL_DEVICE = gql`
-  mutation {
-    getAllDeviceList {
-      imei
-      labelName
-      _id
-      createdBy
+  mutation ($input: DeviceOnboardingFetchInput!) {
+    fetchDeviceOnboardingListWithLocation(input: $input) {
+      paginatorInfo {
+        count
+      }
+      success
+      message
+      data {
+        _id
+        createdBy
+        businessModel
+        deviceOnboardingIMEINumber
+        deviceOnboardingSimNo
+        accountId
+        location
+      }
     }
   }
 `;
@@ -43,6 +53,45 @@ export const FETCH_GEOZONE = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const FETCH_ENTITY = gql`
+  mutation ($input: EntitesTypeInput!) {
+    fetchEntityByTripTypeAndType(input: $input) {
+      success
+      message
+      paginatorInfo {
+        count
+      }
+      data {
+        _id
+        createdBy
+        aadharCardNo
+        gstIn
+        contactPhone
+        contactEmail
+        contactName
+        pinCode
+        district
+        area
+        state
+        city
+        address
+        type
+        name
+        tripTypeList
+        accountId
+      }
+    }
+  }
+`;
+export const CREATE_TRIP = gql`
+  mutation ($input: CreateTripInput!) {
+    createTrip(input: $input) {
+      success
+      message
     }
   }
 `;

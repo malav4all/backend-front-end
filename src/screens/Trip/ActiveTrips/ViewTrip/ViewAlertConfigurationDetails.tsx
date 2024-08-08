@@ -37,19 +37,19 @@ const ViewAlertConfigurationDetails = (props: CustomProps) => {
           <Typography variant="body2" sx={classes.workStatus}>
             SMS:
             <Typography variant="body2" ml={1}>
-              {props?.alertConfigurationForm?.alertMedium?.sms?.contact}
+              {props?.alertConfigurationForm?.alertMedium?.sms?.value}
             </Typography>
           </Typography>
           <Typography variant="body2" sx={classes.workStatus}>
             WhatsApp:
             <Typography variant="body2" ml={1}>
-              {props.alertConfigurationForm?.alertMedium?.whatsapp?.contact}
+              {props.alertConfigurationForm?.alertMedium?.whatsapp?.value}
             </Typography>
           </Typography>
           <Typography variant="body2" sx={classes.workStatus}>
             Email:
             <Typography variant="body2" ml={1}>
-              {props.alertConfigurationForm?.alertMedium?.email?.contact}
+              {props.alertConfigurationForm?.alertMedium?.email?.value}
             </Typography>
           </Typography>
         </CardContent>

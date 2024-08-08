@@ -8,7 +8,7 @@ import {
   Stack,
 } from "@mui/material";
 import useStyles from "../TransitTypeForm/TransitTypeForm.styles";
-import { SelectChangeEvent, SvgIcon } from "@mui/material";
+import { SvgIcon } from "@mui/material";
 import { CustomInput } from "../../../../../global/components";
 
 export const LockIcon = (props: any) => (
@@ -25,13 +25,13 @@ export const UnlockIcon = (props: any) => (
 
 export const GeozoneInIcon = (props: any) => (
   <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm1-12h-2v6h6v-2h-4z" />
+    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm1-12h-2v6h6v-2h-4z" />
   </SvgIcon>
 );
 
 export const GeozoneOutIcon = (props: any) => (
   <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-12h2v6h-6v-2h4z" />
+    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm-1-12h2v6h-6v-2h4z" />
   </SvgIcon>
 );
 
@@ -49,7 +49,7 @@ export const TripEndedIcon = (props: any) => (
 
 export const TamperAlertIcon = (props: any) => (
   <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm-1-10h2v-2h-2zm0 4h2v-2h-2z" />
+    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm-1-10h2v-2h-2zm0 4h2v-2h-2z" />
   </SvgIcon>
 );
 
@@ -116,38 +116,33 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
     { name: "Email", icon: <EmailIcon /> },
   ];
 
-  const [alertDetails, setAlertDetails] = useState<{ [key: string]: string }>({
-    SMS: "",
-    WhatsApp: "",
-    Email: "",
-  });
-
   const handleAlertDetailsChange = (event: any) => {
     const { name, value } = event.target;
-    setAlertDetails((prevState) => ({ ...prevState, [name]: value }));
-    handleFormDataChange({
-      target: { name: `getAlerts.${name}`, value },
-    } as React.ChangeEvent<HTMLInputElement>);
+    setAlertConfigurationForm((prevFields: any) => ({
+      ...prevFields,
+      alertMedium: {
+        ...prevFields?.alertMedium,
+        [name.toLowerCase()]: {
+          ...prevFields?.alertMedium[name?.toLowerCase()],
+          contact: value,
+        },
+      },
+    }));
   };
 
   useEffect(() => {
-    if (
-      alertConfigurationForm?.alertTypes &&
-      alertConfigurationForm?.alertTypes?.value
-    ) {
+    if (alertConfigurationForm?.subscribedAlerts) {
       const updatedAlertTypes = new Set([
-        ...alertConfigurationForm?.alertTypes?.value,
+        ...alertConfigurationForm?.subscribedAlerts,
         ...defaultAlertTypes,
       ]);
-      alertConfigurationForm.alertTypes.value = Array.from(updatedAlertTypes);
+      alertConfigurationForm.subscribedAlerts = Array.from(updatedAlertTypes);
     }
-  }, [alertConfigurationForm?.alertTypes]);
+  }, [alertConfigurationForm?.subscribedAlerts]);
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event?.target;
     setAlertConfigurationForm((prevFields: any) => {
-      let updatedField;
-
       if (
         [
           "lock",
@@ -161,33 +156,26 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           "low battery",
         ]?.includes(name)
       ) {
-        // Update alertTypes
-        updatedField = checked
-          ? [...(prevFields?.alertTypes?.value || []), name]
-          : prevFields?.alertTypes?.value.filter(
+        const updatedField = checked
+          ? [...(prevFields?.subscribedAlerts || []), name]
+          : prevFields?.subscribedAlerts?.filter(
               (type: string) => type !== name
             );
         return {
           ...prevFields,
-          alertTypes: {
-            ...prevFields?.alertTypes,
-            value: updatedField,
-            error: "",
-          },
+          subscribedAlerts: updatedField,
         };
       } else if (["SMS", "WhatsApp", "Email"].includes(name)) {
-        updatedField = checked
-          ? [...(prevFields?.getAlerts?.value || []), name]
-          : prevFields?.getAlerts?.value?.filter(
-              (type: string) => type !== name
-            );
+        const updatedField = {
+          ...prevFields?.alertMedium,
+          [name.toLowerCase()]: {
+            ...prevFields?.alertMedium[name?.toLowerCase()],
+            isEnable: checked,
+          },
+        };
         return {
           ...prevFields,
-          getAlerts: {
-            ...prevFields?.getAlerts,
-            value: updatedField,
-            error: "",
-          },
+          alertMedium: updatedField,
         };
       }
 
@@ -211,8 +199,8 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                 control={
                   <Checkbox
                     checked={
-                      alertConfigurationForm?.alertTypes?.value.includes(
-                        alert.name
+                      alertConfigurationForm?.subscribedAlerts?.includes(
+                        alert?.name
                       ) || defaultAlertTypes?.includes(alert?.name)
                     }
                     onChange={handleCheckboxChange}
@@ -247,9 +235,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                   control={
                     <Checkbox
                       checked={
-                        alertConfigurationForm?.getAlerts?.value.includes(
-                          option?.name
-                        ) || false
+                        alertConfigurationForm?.alertMedium?.[
+                          option.name?.toLowerCase()
+                        ]?.isEnable || false
                       }
                       onChange={handleCheckboxChange}
                       name={option?.name}
@@ -262,9 +250,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                     </Box>
                   }
                 />
-                {alertConfigurationForm?.getAlerts?.value.includes(
-                  option?.name
-                ) && (
+                {alertConfigurationForm?.alertMedium?.[
+                  option?.name.toLowerCase()
+                ]?.isEnable && (
                   <Box
                     sx={{
                       flexGrow: 1,
@@ -274,10 +262,13 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                   >
                     <CustomInput
                       name={option?.name}
-                      value={alertDetails[option?.name]}
+                      value={
+                        alertConfigurationForm?.alertMedium?.[
+                          option?.name.toLowerCase()
+                        ]?.contact
+                      }
                       onChange={handleAlertDetailsChange}
                       placeHolder={`Enter ${option?.name} details`}
-                      // fullWidth
                     />
                   </Box>
                 )}

@@ -37,6 +37,7 @@ export const FETCH_ENTITTES = gql`
       data {
         _id
         accountId
+        tripTypeList
         name
         type
         address
