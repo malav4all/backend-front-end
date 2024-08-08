@@ -77,9 +77,9 @@ const Dashboard = () => {
   //   variables: { accountId, imeis: [] },
   // });
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   useEffect(() => {
     graphData();
@@ -169,7 +169,7 @@ const Dashboard = () => {
                       style={{
                         cursor: "pointer",
                         fontSize: "1.4rem",
-                        color: "#5F22E2",
+                        color: "#7c58cb",
                         marginLeft: "1rem",
                       }}
                     />

@@ -3,8 +3,14 @@ import { airports } from "./dummy";
 
 const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
 
+declare global {
+  interface Window {
+    H: any;
+  }
+}
 const HereMapCluster: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const currentBubbleRef = useRef<H.ui.InfoBubble | null>(null);
 
   useEffect(() => {
     const initializeMap = async () => {
@@ -49,10 +55,21 @@ const HereMapCluster: React.FC = () => {
       );
       map.addLayer(clusteringLayer);
 
+      const clearCurrentBubble = () => {
+        if (currentBubbleRef.current) {
+          ui.removeBubble(currentBubbleRef.current);
+          currentBubbleRef.current = null;
+        }
+      };
+
       clusteredDataProvider.addEventListener("tap", (event: any) => {
         const target = event.target;
 
-        if (target instanceof H.map.Marker) {
+        if (
+          target instanceof H.map.Marker &&
+          target.getData() &&
+          !target.getClusteredData()
+        ) {
           const data = target.getData();
           console.log("Data1: ", data);
 
@@ -68,43 +85,21 @@ const HereMapCluster: React.FC = () => {
       data.contact || "No contact available"
     }</p>
     <p class="mt-2 text-sm text-gray-600"><strong>Latitude:</strong> ${
-      data?.dm?.data?.latitude || "No latitude available"
+      data.latitude || "No latitude available"
     }</p>
     <p class="mt-2 text-sm text-gray-600"><strong>Longitude:</strong> ${
-      data?.dm?.data?.longitude || "No longitude available"
+      data.longitude || "No longitude available"
     }</p>
   </div>
 `;
+
+          clearCurrentBubble();
 
           const bubble = new H.ui.InfoBubble(target.getGeometry(), {
             content: bubbleContent,
           });
           ui.addBubble(bubble);
-        }
-      });
-
-      clusteringLayer.addEventListener("tap", (event: any) => {
-        const target = event.target;
-        if (target instanceof H.map.Marker) {
-          const data = target.getData();
-          if (data) {
-            console.log("Data2: ", data);
-
-            const bubbleContent = `
-              <div style="font-family: Arial, sans-serif; line-height: 1.5;">
-                <h3 style="margin: 0;">${data.name}</h3>
-                <p style="margin: 0;">Address: ${data.address}</p>
-                <p style="margin: 0;">Contact: ${data.contact}</p>
-                <p style="margin: 0;">Rating: ${data.rating} ★</p>
-                <p style="margin: 0;">Latitude: ${data.latitude}</p>
-                <p style="margin: 0;">Longitude: ${data.longitude}</p>
-              </div>
-            `;
-            const bubble = new H.ui.InfoBubble(target.getGeometry(), {
-              content: bubbleContent,
-            });
-            ui.addBubble(bubble);
-          }
+          currentBubbleRef.current = bubble;
         }
       });
     };

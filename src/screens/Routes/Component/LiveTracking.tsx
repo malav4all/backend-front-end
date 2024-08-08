@@ -1,10 +1,12 @@
 import { useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { COORDINATES_SUBSCRIPTION } from "../service/routes.mutation";
+import { DEVICE_DATA } from "../../Dashboard/service/Dashboard.mutation";
+import moment from "moment";
 
 const ViewLiveTracking = () => {
   const [map, setMap] = useState<any>(null);
   const [currentMarker, setCurrentMarker] = useState<any>(null);
+  const [trackData, setTrackData] = useState<any>(null);
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -35,47 +37,99 @@ const ViewLiveTracking = () => {
     };
   }, []);
 
-  const { data } = useSubscription(COORDINATES_SUBSCRIPTION, {
-    variables: { topic: "track/864180068905939" },
+  const { data } = useSubscription(DEVICE_DATA, {
+    variables: { topicType: "track", accountId: "IMZ113343", imeis: [] },
   });
 
   useEffect(() => {
-    if (data && data.coordinatesUpdated) {
-      const { lat, lng, direction } = data.coordinatesUpdated;
-      const domIconElement = document.createElement("div");
-      domIconElement.style.margin = "-20px 0 0 -20px";
+    if (data?.track) {
+      try {
+        const trackJson = JSON.parse(data.track);
+        setTrackData(trackJson);
 
-      domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
-      <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-        fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-    </svg>`;
+        const { longitude, latitude, bearing } = trackJson;
+        const domIconElement = document.createElement("div");
+        domIconElement.style.margin = "-20px 0 0 -20px";
 
-      if (currentMarker) {
-        map.removeObject(currentMarker);
-      }
+        domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
+          <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
+            fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+        </svg>`;
 
-      const newMarker = new window.H.map.DomMarker(
-        { lat, lng },
-        {
-          icon: new window.H.map.DomIcon(domIconElement, {
-            onAttach: function (
-              clonedElement: any,
-              domIcon: any,
-              domMarker: any
-            ) {
-              const clonedContent =
-                clonedElement.getElementsByTagName("svg")[0];
-              clonedContent.style.transform = "rotate(" + direction + "deg)";
-            },
-          }),
+        if (currentMarker) {
+          map.removeObject(currentMarker);
         }
-      );
-      setCurrentMarker(newMarker);
-      map.addObject(newMarker);
+
+        const newMarker = new window.H.map.DomMarker(
+          { lat: latitude, lng: longitude },
+          {
+            icon: new window.H.map.DomIcon(domIconElement, {
+              onAttach: function (
+                clonedElement: any,
+                domIcon: any,
+                domMarker: any
+              ) {
+                const clonedContent =
+                  clonedElement.getElementsByTagName("svg")[0];
+                clonedContent.style.transform = "rotate(" + bearing + "deg)";
+              },
+            }),
+          }
+        );
+        setCurrentMarker(newMarker);
+        map.addObject(newMarker);
+      } catch (error) {
+        console.error("Error parsing JSON string:", error);
+      }
     }
   }, [data]);
 
-  return <div id="map" style={{ width: "100%", height: "100%" }}></div>;
+  return (
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <div id="map" style={{ width: "100%", height: "80%" }}></div>
+      {trackData && (
+        <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t shadow-lg flex">
+          <div className="flex-1 p-2">
+            <p className="text-sm font-semibold">{trackData.imei}</p>
+            <p className="text-xs">Model: Padlock</p>
+            <p className="text-xs">ID: 23476</p>
+            <p className="text-xs">
+              Date/Time:{" "}
+              {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
+            </p>
+            <p className="text-xs text-red-500">Status: STOP</p>
+          </div>
+          <div className="flex-1 p-2">
+            <p className="text-sm font-semibold">
+              <span className="mr-2">📶</span>Signal Level: 100%
+            </p>
+            <p className="text-sm">Status: STOP</p>
+            <p className="text-sm">Speed: 0 km/h</p>
+            <p className="text-sm">Direction: 0°</p>
+          </div>
+          <div className="flex-1 p-2">
+            <p className="text-sm font-semibold">Location</p>
+            <p className="text-sm">Latitude: 26.415274</p>
+            <p className="text-sm">Longitude: 80.109796</p>
+            <p className="text-sm">
+              Address: Kanpur Road, Fatehpur Roshanai, Kanpur Nagar, Uttar
+              Pradesh, India
+            </p>
+          </div>
+          <div className="flex-1 p-2">
+            <p className="text-sm font-semibold">Engine</p>
+            <p className="text-sm">Ignition: Off</p>
+            <p className="text-sm">Fuel Level: Fuel</p>
+          </div>
+          <div className="flex-1 p-2">
+            <p className="text-sm font-semibold">Power Supply</p>
+            <p className="text-sm">Battery Level: NA</p>
+            <p className="text-sm">Board Voltage: NA</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default ViewLiveTracking;

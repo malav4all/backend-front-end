@@ -153,7 +153,7 @@ const DeviceGroup = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading }}>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
           Device Group
         </Typography>
       </Box>

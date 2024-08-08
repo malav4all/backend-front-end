@@ -24,7 +24,11 @@ import Trackplay from "../../Trackplay/Trackplay";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import { useSubscription } from "@apollo/client";
-import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
+import {
+  ALERT_DEVICE_DATA,
+  ALERTS_SUBSCRIPTION,
+  DEVICE_DATA,
+} from "../../Dashboard/service/Dashboard.mutation";
 import { openErrorAlertNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
@@ -84,13 +88,14 @@ const Layout = () => {
     }
   };
 
-  const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
-    variables: { topic: "alerts/#" },
+  const { data } = useSubscription(DEVICE_DATA, {
+    variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
   });
 
   useEffect(() => {
-    if (data?.alertUpdated?.message) {
-      openErrorAlertNotification(data?.alertUpdated?.message);
+    if (data?.track) {
+      const trackJson = JSON.parse(data.track);
+      openErrorAlertNotification(trackJson?.alert);
     }
   }, [data]);
 
@@ -99,6 +104,8 @@ const Layout = () => {
     onIdle: handleOnIdle,
     debounce: 500,
   });
+
+  console.log(data);
 
   const getContent = () => {
     return (

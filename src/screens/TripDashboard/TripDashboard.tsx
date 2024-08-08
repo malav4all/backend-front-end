@@ -115,6 +115,8 @@ const TripDashboard = () => {
     setTotalActiveTrips(ongoingTrips.length);
   };
 
+  console.log(trips);
+
   const getTripList = () => {
     return (
       <Box
@@ -278,10 +280,6 @@ const TripDashboard = () => {
     const year = String(date.getUTCFullYear()).slice(-2);
     const hours = String(date.getUTCHours()).padStart(2, "0");
     const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-
-    const dateIcon = "📅";
-    const timeIcon = "⏰";
-
     return (
       <span
         style={{
@@ -301,7 +299,7 @@ const TripDashboard = () => {
           <MdDateRange style={{ fontSize: "1.2rem" }} />{" "}
           <span>
             {" "}
-            {day} {month} {year}
+            {day}/ {month}/ {year}
           </span>
         </span>
 

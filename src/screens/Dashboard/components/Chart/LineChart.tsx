@@ -41,6 +41,9 @@ const LineChart: React.FC<LineChartProps> = ({
         height: height,
         background: theme.palette.background.paper,
         foreColor: theme.palette.text.primary,
+        toolbar: {
+          show: false,
+        },
       },
       stroke: {
         curve: "smooth",

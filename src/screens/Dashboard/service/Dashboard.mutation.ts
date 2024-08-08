@@ -82,8 +82,8 @@ export const ALERTS_SUBSCRIPTION = gql`
 `;
 
 export const DEVICE_DATA = gql`
-  subscription ($accountId: String!, $imeis: [String!]) {
-    track(accountId: $accountId, imeis: $imeis)
+ subscription ($accountId: String!, $imeis: [String!], $topicType: String!) {
+    track(accountId: $accountId, imeis: $imeis, topicType: $topicType)
   }
 `;
 
