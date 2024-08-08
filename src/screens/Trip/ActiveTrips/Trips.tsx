@@ -35,6 +35,8 @@ import { fetchTrips, searchTrip } from "./TripServices";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import urls from "../../../global/constants/UrlConstants";
+import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
+import { store } from "../../../utils/store";
 
 const Trips = () => {
   const theme = useTheme();
@@ -47,14 +49,67 @@ const Trips = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [searchTrips, setSearchTrips] = useState<any>("");
   const [tripData, setTripData] = useState<any>([]);
+  const [tabValue, setTabValue] = useState(strings.Created); // Initial tab state
+
+  // New states for counts
+  const [createdCount, setCreatedCount] = useState<number | null>(null);
+  const [startedCount, setStartedCount] = useState<number | null>(null);
+  const [endedCount, setEndedCount] = useState<number | null>(null);
+  const [closedCount, setClosedCount] = useState<number | null>(null);
+
+  const tabs = [
+    {
+      label: strings.Created,
+      count: createdCount,
+    },
+    {
+      label: strings.Started,
+      count: startedCount,
+    },
+    {
+      label: strings.Ended,
+      count: endedCount,
+    },
+    {
+      label: strings.Closed,
+      count: closedCount,
+    },
+  ];
 
   useEffect(() => {
     if (searchTrips) {
-      getSearchData();
+      getSearchData(tabValue, searchTrips);
     } else {
-      getTripData();
+      getTripData(tabValue, page);
     }
-  }, [searchTrips, page, rowsPerPage, searchPageNumber]);
+  }, [searchTrips, page, rowsPerPage, tabValue]);
+
+  const getSearchData = async (tab: string, search: string) => {
+    try {
+      setIsLoading(true);
+      const res = await searchTrip({
+        input: {
+          search,
+          page: 1,
+          limit: 10,
+          status: tab.toLowerCase(), // Assume API expects status as lowercase string
+        },
+      });
+      tableRender(res?.searchTrip?.data);
+      setCount(res?.searchTrip?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (newValue: string) => {
+    setTabValue(newValue);
+    setPage(1);
+    setRowsPerPage(10);
+    setSearchTrips("");
+  };
 
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -71,10 +126,33 @@ const Trips = () => {
       setSearchTrips("");
     }
   };
+
+  const getTripData = async (tab: string, page: number) => {
+    try {
+      setIsLoading(true);
+      const res = await fetchTrips({
+        input: {
+          page,
+          limit: rowsPerPage,
+          accountId: store.getState().auth.tenantId,
+          status: tab.toLowerCase(), // Assume API expects status as lowercase string
+        },
+      });
+      tableRender(res?.tripList?.data);
+      setCount(res?.tripList?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+      );
+      setIsLoading(false);
+    }
+  };
+
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Device Group"
+        placeHolder="Search Trips"
         id="trip_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -89,46 +167,6 @@ const Trips = () => {
         }}
       />
     );
-  };
-
-  const getTripData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetchTrips({
-        input: {
-          page: page,
-          limit: rowsPerPage,
-          accountId: "IMZ113343",
-        },
-      });
-      tableRender(res?.tripList?.data);
-      setCount(res?.tripList?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(
-        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
-      );
-      setIsLoading(false);
-    }
-  };
-
-  const getSearchData = async () => {
-    try {
-      setIsLoading(true);
-      const res = await searchTrip({
-        input: {
-          search: searchTrips,
-          page: 1,
-          limit: 10,
-        },
-      });
-      // tableRender(dummyData);
-      setCount(res?.searchTrip?.paginatorInfo?.count);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
-    }
   };
 
   const getRedirectionUrl = (id: string) => {
@@ -223,6 +261,11 @@ const Trips = () => {
             }}
             alignItems={{ lg: "center", sm: "center" }}
           >
+            <CustomTabs
+              changeValue={handleChange}
+              selected={tabValue}
+              tabConfig={tabs}
+            />
             <Stack direction="row" spacing={1} sx={classes.inputWrapper}>
               <Box>{getSearchBar()}</Box>
               <Stack direction="row" justifyContent="center">
@@ -247,9 +290,7 @@ const Trips = () => {
               headers={tripTableHeader}
               rows={tripData}
               size={[5]}
-              handlePageChange={
-                searchTrips ? handleSearchChangePage : handleChangePage
-              }
+              handlePageChange={handleChangePage}
               handleRowsPerPage={handlePerPageData}
               paginationCount={count}
               pageNumber={page}

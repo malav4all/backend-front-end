@@ -290,6 +290,10 @@ export class StringConstants {
   Next = "Next";
   DATE_FORMAT = "MMM DD YYYY";
   Edit = "Edit";
+  Created = "Created";
+  Started = "Started";
+  Ended = "Ended";
+  Closed = "Closed";
 }
 
 let strings = new StringConstants();
