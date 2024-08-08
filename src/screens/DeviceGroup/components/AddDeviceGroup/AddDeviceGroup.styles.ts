@@ -36,7 +36,7 @@ const addDeviceGroupStyles = {
   },
   inputLabel: {
     display: "flex",
-    
+
     fontSize: getRelativeFontSize(7),
     fontColor: theme.palette.common.black + " !important",
     variant: "standard",
