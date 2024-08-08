@@ -1,7 +1,9 @@
 import { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
+  Button,
   Grid,
+  IconButton,
   InputAdornment,
   ListItem,
   ListItemText,
@@ -27,7 +29,9 @@ import FlagIcon from "@mui/icons-material/Flag";
 import { ListAllTrips } from "./service/TripDashboard.service";
 import dashboardStyles from "./TripDashboardStyles";
 import dummyData from "./TripDashboard.helper";
-
+import { BsFillUnlockFill } from "react-icons/bs";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { MdDateRange } from "react-icons/md";
 interface Trip {
   tripId: string;
   name: string;
@@ -61,7 +65,6 @@ const TripDashboard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
   const [searchData, setSearchData] = useState<string>("");
-  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -128,8 +131,8 @@ const TripDashboard = () => {
         <Typography
           variant="h5"
           sx={{
-            fontFamily: "Geist_Light",
-            fontSize: "1.5rem",
+            fontFamily: "Geist_semibold",
+            fontSize: "1.1rem",
             marginBottom: "0.5rem",
             padding: "0.2rem 0.8rem",
             borderRadius: "5px",
@@ -139,24 +142,25 @@ const TripDashboard = () => {
           Trip List
         </Typography>
         <Box my={3}>{getSearchBar()}</Box>
-        <Box sx={{ height: "400px", overflowY: "auto", padding: "1rem" }}>
+        <Box sx={{ height: "75vh", overflowY: "auto", padding: "1rem" }}>
           {trips.map((trip) => (
             <ListItem
               key={trip.tripId}
               sx={{
-                border: "1px solid rgba(0, 0, 0, 0.1)",
+                border: "1px solid",
+                borderColor: theme.palette.divider,
                 cursor: "pointer",
                 padding: "12px",
                 borderRadius: "8px",
-                marginBottom: "12px",
+                marginBottom: "19px",
                 backgroundColor: theme.palette.background.paper,
                 transition: "all 0.3s ease",
+                alignItems: "end",
                 "&:hover": {
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                   transform: "translateY(-2px)",
                 },
               }}
-              onClick={() => setSelectedTrip(trip)}
             >
               <ListItemText
                 primary={
@@ -164,7 +168,7 @@ const TripDashboard = () => {
                     sx={{
                       fontFamily: "Geist_Bold",
                       fontSize: "1.2rem",
-                      color: "#333",
+                      color: theme.palette.text.primary,
                       marginTop: "-0.5rem",
                       marginBottom: "0.5rem",
                     }}
@@ -226,14 +230,26 @@ const TripDashboard = () => {
                       sx={{
                         fontFamily: "Geist_Bold",
                         fontSize: "0.9rem",
-                        color: "#333",
+                        color: theme.palette.text.primary,
                         marginTop: "12px",
                       }}
                     >
-                      ETA: {trip?.tripEndDate}
+                      ETA: {formatDate(trip?.tripEndDate)}
                     </Typography>
                   </>
                 }
+              />
+
+              <CustomButton
+                label="Unlock"
+                startIcon={<BsFillUnlockFill />}
+                onClick={() => {}}
+                customClasses={{
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  marginLeft: "auto",
+                  textTransform: "none",
+                }}
               />
             </ListItem>
           ))}
@@ -254,9 +270,61 @@ const TripDashboard = () => {
     }
   };
 
+  function formatDate(dateString: any) {
+    const date = new Date(dateString);
+
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const year = String(date.getUTCFullYear()).slice(-2);
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+    const dateIcon = "📅";
+    const timeIcon = "⏰";
+
+    return (
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "2rem",
+        }}
+      >
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.4rem",
+          }}
+        >
+          <MdDateRange style={{ fontSize: "1.2rem" }} />{" "}
+          <span>
+            {" "}
+            {day} {month} {year}
+          </span>
+        </span>
+
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.4rem",
+          }}
+        >
+          <MdAccessTimeFilled style={{ fontSize: "1.2rem" }} />
+          <span>
+            {hours}:{minutes}
+          </span>
+        </span>
+      </span>
+    );
+  }
+
   const getStatsCard = () => {
     return (
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         {Object.values(stats).map((stat) => (
           <Grid item xs={12} sm={12} md={6} xl={6} lg={6} key={stat.title}>
             <Box
@@ -266,19 +334,18 @@ const TripDashboard = () => {
               component={"div"}
               id="dashboard_stats"
               sx={{
-                padding: "2rem 1.5rem",
+                padding: "1rem 2rem",
                 backgroundColor: theme.palette.background.paper,
                 border: "1px solid",
                 borderColor: theme.palette.divider,
                 borderRadius: "8px",
                 boxShadow:
                   "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
+                minHeight: "100px",
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "1rem",
               }}
-              onClick={() =>
-                isTruthy(stat.redirection)
-                  ? history.push(stat.redirection.pathname || "")
-                  : null
-              }
             >
               <Box
                 sx={{
@@ -294,12 +361,14 @@ const TripDashboard = () => {
                   sx={{
                     fontFamily: "Geist_Medium",
                     color: theme.palette.text.primary,
-                    fontSize: "18px",
+                    fontSize: "16px",
                   }}
                 >
                   {stat.title}
                 </Typography>
-                <Typography sx={classes.statsValue}>{stat.value}</Typography>
+                <Typography sx={{ fontSize: "32px", fontWeight: 700 }}>
+                  {stat.value}
+                </Typography>
               </Box>
             </Box>
           </Grid>
@@ -310,98 +379,8 @@ const TripDashboard = () => {
 
   const getMap = () => {
     return (
-      <Box sx={{ position: "relative", height: "670px" }}>
+      <Box sx={{ position: "relative", height: "640px" }}>
         <HereMap />
-        {selectedTrip && (
-          <Paper
-            sx={{
-              position: "absolute",
-              bottom: "20px",
-              left: "20px",
-              padding: "1rem",
-              backgroundColor: "#ffffffcc", // Semi-transparent white
-              border: "1px solid",
-              borderColor: theme.palette.divider,
-              borderRadius: "12px",
-              boxShadow:
-                "0 10px 30px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05)",
-              zIndex: 10,
-              width: "40%",
-              minWidth: "385px",
-            }}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                fontFamily: "Geist_Medium",
-                fontSize: "1.2rem",
-                marginBottom: "1rem",
-                color: "#333",
-              }}
-            >
-              {selectedTrip.name}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "Geist_Light",
-                fontSize: "1rem",
-                color: "#666",
-              }}
-            >
-              Trip ID: {selectedTrip?.tripId}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "Geist_Light",
-                fontSize: "1rem",
-                marginTop: "0.5rem",
-                color: "#666",
-              }}
-            >
-              Source: {selectedTrip?.startPoint?.name}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontFamily: "Geist_Light",
-                fontSize: "1rem",
-                marginTop: "0.5rem",
-                color: "#666",
-              }}
-            >
-              Destination: {selectedTrip?.endPoint?.name}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "1rem",
-                width: "100%",
-              }}
-            >
-              <CustomButton
-                label="Unlock"
-                onClick={() => {
-                  // Add your onClick
-                }}
-              />
-              <CustomButton
-                label="Device Details"
-                onClick={() => {
-                  // Add your onClick
-                }}
-              />
-              <CustomButton
-                label="Trip Details"
-                onClick={() => {
-                  // Add your onClick
-                }}
-              />
-            </Box>
-          </Paper>
-        )}
       </Box>
     );
   };
@@ -450,14 +429,15 @@ const TripDashboard = () => {
         <Grid item xs={12} sm={12} md={12} lg={4}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {getStatsCard()}
-            </Grid>
-            <Grid item xs={12}>
               {getTripList()}
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item xs={12} sm={12} md={12} lg={8}>
+          <Grid item xs={12}>
+            {getStatsCard()}
+          </Grid>
           <Box
             sx={{
               padding: "2rem 1.5rem",
@@ -472,9 +452,9 @@ const TripDashboard = () => {
             <Typography
               variant="h5"
               sx={{
-                fontFamily: "Geist_Light",
-                fontSize: "1.5rem",
-                marginBottom: "0.5rem",
+                fontFamily: "Geist_semibold",
+                fontSize: "1.1rem",
+                marginBottom: "1rem",
                 padding: "0.2rem 0.8rem",
                 borderRadius: "5px",
                 borderLeft: "7px solid #5F22E1",
@@ -482,6 +462,7 @@ const TripDashboard = () => {
             >
               Trip Map View
             </Typography>
+
             {getMap()}
           </Box>
         </Grid>
@@ -502,9 +483,6 @@ const TripDashboard = () => {
         margin: "auto",
       }}
     >
-      <Box>
-        <DashboardHeader />
-      </Box>
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>

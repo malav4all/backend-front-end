@@ -142,8 +142,8 @@ const OfflinePieChart: React.FC<PieChartProps> = ({
       <Typography
         variant="h5"
         sx={{
-          fontFamily: "Geist_Light",
-          fontSize: "1.5rem",
+          fontFamily: "Geist_semibold",
+          fontSize: "1.1rem",
           marginBottom: "0.5rem",
           padding: "0.2rem 0.8rem",
           borderRadius: "5px",

@@ -118,6 +118,8 @@ const LocationType = () => {
     }
   };
 
+  console.log({ data });
+
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchLocation(SearchEvent.target.value.replace(/\s/g, ""));

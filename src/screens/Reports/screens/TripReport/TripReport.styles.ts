@@ -8,7 +8,7 @@ import {
   pureWhiteColor,
   pinkThemedMenuItems,
   headerColor,
-} from "../../../../utils/styles"
+} from "../../../../utils/styles";
 
 const routesReportStyles = {
   header: {
@@ -19,7 +19,17 @@ const routesReportStyles = {
     paddingBottom: "64px",
     paddingTop: "35px",
   },
-
+  tableWrapper: {
+    marginTop: 2,
+    overflow: "auto",
+    [`@media screen and (max-width: ${1370}px)`]: {
+      marginTop: 0,
+    },
+    "&::-webkit-scrollbar": {
+      width: "10",
+      display: "none",
+    },
+  },
   heading: {
     fontFamily: "Geist_Medium",
     color: primaryHeadingColor,
@@ -42,6 +52,6 @@ const routesReportStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-}
+};
 
-export default routesReportStyles
+export default routesReportStyles;

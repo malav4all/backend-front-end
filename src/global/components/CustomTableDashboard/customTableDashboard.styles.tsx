@@ -11,6 +11,7 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -36,8 +37,9 @@ const customTableDashboardStyles = {
   },
 
   tableHeaderCell: {
-    ...regularFont,
-    fontSize: '14px',
+    ...semiBoldFont,
+    fontSize: "15px",
+    textTransform: "capitalize !important",
     border: "none",
     padding: "12px 18px",
     textAlign: "left",
@@ -53,7 +55,7 @@ const customTableDashboardStyles = {
     textAlign: "left",
     backgroundColor: "white",
     minWidth: "110px",
-    padding: "7px 3px",
+    padding: "7px 10px",
   },
 
   tableRow: {

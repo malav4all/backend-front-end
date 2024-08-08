@@ -92,7 +92,7 @@ const DeviceModule = () => {
     return (
       <Box>
         <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Device Module
+          Device List
         </Typography>
       </Box>
     );

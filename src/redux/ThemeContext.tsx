@@ -34,7 +34,7 @@ const CustomThemeProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const storedTheme = localStorage.getItem("darkMode");
-    return storedTheme ? JSON.parse(storedTheme) : false;
+    return storedTheme ? JSON.parse(storedTheme) : true;
   });
 
   useEffect(() => {
