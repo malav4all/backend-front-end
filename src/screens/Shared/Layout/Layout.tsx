@@ -89,24 +89,22 @@ const Layout = () => {
     }
   };
 
-  const { data } = useSubscription(DEVICE_DATA, {
-    variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
-  });
+  // const { data } = useSubscription(DEVICE_DATA, {
+  //   variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
+  // });
 
-  useEffect(() => {
-    if (data?.track) {
-      const trackJson = JSON.parse(data.track);
-      openErrorAlertNotification(trackJson?.alert);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.track) {
+  //     const trackJson = JSON.parse(data.track);
+  //     openErrorAlertNotification(trackJson?.alert);
+  //   }
+  // }, [data]);
 
   const { getLastActiveTime } = useIdleTimer({
     timeout: 15 * 1000 * 60,
     onIdle: handleOnIdle,
     debounce: 500,
   });
-
-  console.log(data);
 
   const getContent = () => {
     return (
