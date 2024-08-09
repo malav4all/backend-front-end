@@ -24,6 +24,7 @@ import { getDistance } from "geolib";
 import { time } from "console";
 import distanceReportStyles from "./DistanceReport.styles";
 import { getDistanceReport } from "./service/distance.service";
+import { store } from "../../../../utils/store";
 interface CustomProps {
   isFromRoutesReport: boolean;
 }
@@ -55,12 +56,13 @@ const DistanceReport = (props: CustomProps) => {
       setIsLoading(true);
       const res = await getDistanceReport({
         input: {
+          accountId: store.getState().auth.tenantId,
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
         },
       });
 
-      const data = tableRender(res.fetchDistanceReport);
+      const data = tableRender(res.getDistanceReportData);
 
       setRoutesTableData(data);
       setIsLoading(false);

@@ -24,7 +24,11 @@ import Trackplay from "../../Trackplay/Trackplay";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import { useSubscription } from "@apollo/client";
-import { ALERTS_SUBSCRIPTION } from "../../Dashboard/service/Dashboard.mutation";
+import {
+  ALERT_DEVICE_DATA,
+  ALERTS_SUBSCRIPTION,
+  DEVICE_DATA,
+} from "../../Dashboard/service/Dashboard.mutation";
 import { openErrorAlertNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
@@ -59,6 +63,7 @@ import ViewTrip from "../../Trip/ActiveTrips/ViewTrip/ViewTrip";
 import Trips from "../../Trip/ActiveTrips/Trips";
 import urls from "../../../global/constants/UrlConstants";
 import TripAccess from "../../Trip/UserAccess/UserAccess";
+import DeviceList from "../../DeviceList/DeviceList";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -84,21 +89,24 @@ const Layout = () => {
     }
   };
 
-  const { data } = useSubscription(ALERTS_SUBSCRIPTION, {
-    variables: { topic: "alerts/#" },
-  });
+  // const { data } = useSubscription(DEVICE_DATA, {
+  //   variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
+  // });
 
-  useEffect(() => {
-    if (data?.alertUpdated?.message) {
-      openErrorAlertNotification(data?.alertUpdated?.message);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.track) {
+  //     const trackJson = JSON.parse(data.track);
+  //     openErrorAlertNotification(trackJson?.alert);
+  //   }
+  // }, [data]);
 
   const { getLastActiveTime } = useIdleTimer({
     timeout: 15 * 1000 * 60,
     onIdle: handleOnIdle,
     debounce: 500,
   });
+
+  // console.log(data);
 
   const getContent = () => {
     return (
@@ -145,6 +153,13 @@ const Layout = () => {
             path={"/location"}
             component={Geozone}
             componentName={strings.LOCATION}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-list"}
+            component={DeviceList}
+            componentName={strings.DEVICE_LIST}
           />
           <PrivateRoute
             exact
@@ -312,7 +327,7 @@ const Layout = () => {
             exact
             isLoggedIn={isAuthenticated}
             path={"/device-list"}
-            component={DeviceModule}
+            component={DeviceOnboarding}
             componentName={strings.DEVICE_LIST}
           />
           <PrivateRoute
@@ -336,7 +351,7 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/device-onboarding"}
             component={DeviceOnboarding}
-            componentName={strings.ARCHIVED_TRIPS}
+            componentName={strings.DEVICE_ONBOARDING}
           />
           <PrivateRoute
             exact

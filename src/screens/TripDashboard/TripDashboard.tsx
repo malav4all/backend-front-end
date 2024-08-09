@@ -5,6 +5,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  LinearProgress,
   ListItem,
   ListItemText,
   Paper,
@@ -32,6 +33,7 @@ import dummyData from "./TripDashboard.helper";
 import { BsFillUnlockFill } from "react-icons/bs";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
+import { primaryColorPurple } from "../../utils/styles";
 interface Trip {
   tripId: string;
   name: string;
@@ -60,9 +62,9 @@ interface Stats {
 
 const TripDashboard = () => {
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
   const [searchData, setSearchData] = useState<string>("");
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -87,6 +89,8 @@ const TripDashboard = () => {
     },
   };
 
+  console.log(trips);
+
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -97,10 +101,10 @@ const TripDashboard = () => {
         };
         const response = await ListAllTrips(variables);
         setTrips(response?.tripList?.data);
-        setLoading(false);
       } catch (err: any) {
         setError(err.message);
-        setLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTrips();
@@ -114,6 +118,8 @@ const TripDashboard = () => {
     const ongoingTrips = trips.filter((trip) => trip.status === "ongoing");
     setTotalActiveTrips(ongoingTrips.length);
   };
+
+  console.log(trips);
 
   const getTripList = () => {
     return (
@@ -143,131 +149,191 @@ const TripDashboard = () => {
         </Typography>
         <Box my={3}>{getSearchBar()}</Box>
         <Box sx={{ height: "75vh", overflowY: "auto", padding: "1rem" }}>
-          {trips.map((trip) => (
-            <ListItem
-              key={trip.tripId}
-              sx={{
-                border: "1px solid",
-                borderColor: theme.palette.divider,
-                cursor: "pointer",
-                padding: "12px",
-                borderRadius: "8px",
-                marginBottom: "19px",
-                backgroundColor: theme.palette.background.paper,
-                transition: "all 0.3s ease",
-                alignItems: "end",
-                "&:hover": {
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                  transform: "translateY(-2px)",
-                },
-              }}
-            >
-              <ListItemText
-                primary={
-                  <Typography
-                    sx={{
-                      fontFamily: "Geist_Bold",
-                      fontSize: "1.2rem",
-                      color: theme.palette.text.primary,
-                      marginTop: "-0.5rem",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    {trip.tripData[0]?.vehicleNo}
-                  </Typography>
-                }
-                secondary={
-                  <>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "4px",
-                      }}
-                    >
-                      <LocationOnIcon
-                        sx={{
-                          color: "#00C532",
-                          marginRight: "4px",
-                          fontSize: "1rem",
-                        }}
-                      />
-                      <Typography
-                        sx={{
-                          fontFamily: "Geist_Regular",
-                          fontSize: "0.8rem",
-                          color: "#999",
-                        }}
-                      >
-                        Source: {trip.startPoint?.name}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: "2px",
-                      }}
-                    >
-                      <FlagIcon
-                        sx={{
-                          color: "#F75151",
-                          marginRight: "4px",
-                          fontSize: "1rem",
-                        }}
-                      />
-                      <Typography
-                        sx={{
-                          fontFamily: "Geist_Regular",
-                          fontSize: "0.8rem",
-                          color: "#999",
-                        }}
-                      >
-                        Destination: {trip.endPoint?.name}
-                      </Typography>
-                    </Box>
+          {trips.map((trip) => {
+            const progress = 80;
+
+            return (
+              <ListItem
+                key={trip.tripId}
+                sx={{
+                  border: "1px solid",
+                  borderColor: theme.palette.divider,
+                  cursor: "pointer",
+                  padding: "16px",
+                  borderRadius: "12px",
+                  marginBottom: "20px",
+                  backgroundColor: theme.palette.background.paper,
+                  transition: "all 0.3s ease",
+                  alignItems: "flex-start",
+                  "&:hover": {
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    transform: "translateY(-4px)",
+                  },
+                }}
+              >
+                <ListItemText
+                  primary={
                     <Typography
                       sx={{
                         fontFamily: "Geist_Bold",
-                        fontSize: "0.9rem",
+                        fontSize: "1.3rem",
                         color: theme.palette.text.primary,
-                        marginTop: "12px",
+                        marginBottom: "0.8rem",
                       }}
                     >
-                      ETA: {formatDate(trip?.tripEndDate)}
+                      {trip.tripData[0]?.vehicleNo}
                     </Typography>
-                  </>
-                }
-              />
+                  }
+                  secondary={
+                    <>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <LocationOnIcon
+                          sx={{
+                            color: "#00C532",
+                            marginRight: "8px",
+                            fontSize: "1.2rem",
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontFamily: "Geist_Regular",
+                            fontSize: "0.9rem",
+                            color: "#777",
+                          }}
+                        >
+                          Source: {trip.startPoint?.name}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <FlagIcon
+                          sx={{
+                            color: "#F75151",
+                            marginRight: "8px",
+                            fontSize: "1.2rem",
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            fontFamily: "Geist_Regular",
+                            fontSize: "0.9rem",
+                            color: "#777",
+                          }}
+                        >
+                          Destination: {trip.endPoint?.name}
+                        </Typography>
+                      </Box>
+                      <Typography
+                        sx={{
+                          fontFamily: "Geist_Bold",
+                          fontSize: "1rem",
+                          color: theme.palette.text.primary,
+                          marginBottom: "12px",
+                        }}
+                      >
+                        ETA: {formatDate(trip?.tripEndDate)}
+                      </Typography>
 
-              <CustomButton
-                label="Unlock"
-                startIcon={<BsFillUnlockFill />}
-                onClick={() => {}}
-                customClasses={{
-                  padding: "6px 12px",
-                  borderRadius: "8px",
-                  marginLeft: "auto",
-                  textTransform: "none",
-                }}
-              />
-            </ListItem>
-          ))}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: "8px",
+                        }}
+                      >
+                        <LinearProgress
+                          variant="determinate"
+                          value={progress}
+                          sx={{
+                            borderRadius: "6px",
+                            height: "18px",
+                            backgroundColor: "#ffffff",
+                            flexGrow: 1,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            marginLeft: "8px",
+                            fontFamily: "Geist_Regular",
+                            fontSize: "0.9rem",
+                            color: theme.palette.text.secondary,
+                          }}
+                        >
+                          {Math.round(progress)}%
+                        </Typography>
+                      </Box>
+                    </>
+                  }
+                />
+
+                {/* {
+            switch(trip.status) {
+  case: "ended":
+    <CustomButton
+    label="Unlock"
+    startIcon={<BsFillUnlockFill />}
+    onClick={() => {}}
+    customClasses={{
+      padding: "8px 16px",
+      borderRadius: "8px",
+      textTransform: "none",
+      backgroundColor: primaryColorPurple,
+      color: "#fff",
+    }}
+  />
+    break;
+  case: "create":
+    <CustomButton
+    label="Create"
+    startIcon={<BsFillUnlockFill />}
+    onClick={() => {}}
+    customClasses={{
+      padding: "8px 16px",
+      borderRadius: "8px",
+      textTransform: "none",
+      backgroundColor: primaryColorPurple,
+      color: "#fff",
+    }}
+  />
+    break;
+  default:
+    case: "started":
+    <CustomButton
+    label="Started"
+    startIcon={<BsFillUnlockFill />}
+    onClick={() => {}}
+    customClasses={{
+      padding: "8px 16px",
+      borderRadius: "8px",
+      textTransform: "none",
+      backgroundColor: primaryColorPurple,
+      color: "#fff",
+    }}
+  />
+}
+} */}
+                {/* {trip.status === "ended" ? (
+                  
+                ) : (
+                  <></>
+                )} */}
+              </ListItem>
+            );
+          })}
         </Box>
       </Box>
     );
-  };
-
-  const fetchTripDashboardHandler = async () => {
-    try {
-      setIsLoading(true);
-      // Replace dummyData with actual data fetching logic
-      setTripDashboardData(dummyData as any);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
   };
 
   function formatDate(dateString: any) {
@@ -278,10 +344,6 @@ const TripDashboard = () => {
     const year = String(date.getUTCFullYear()).slice(-2);
     const hours = String(date.getUTCHours()).padStart(2, "0");
     const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-
-    const dateIcon = "📅";
-    const timeIcon = "⏰";
-
     return (
       <span
         style={{
@@ -301,7 +363,7 @@ const TripDashboard = () => {
           <MdDateRange style={{ fontSize: "1.2rem" }} />{" "}
           <span>
             {" "}
-            {day} {month} {year}
+            {day}/ {month}/ {year}
           </span>
         </span>
 
@@ -469,10 +531,6 @@ const TripDashboard = () => {
       </Grid>
     );
   };
-
-  useEffect(() => {
-    fetchTripDashboardHandler();
-  }, []);
 
   return (
     <Box

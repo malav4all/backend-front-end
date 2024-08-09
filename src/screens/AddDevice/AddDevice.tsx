@@ -5,6 +5,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
@@ -42,6 +43,7 @@ import ExportCSV from "../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 
 const AddDevice = () => {
+  const theme = useTheme();
   const [formField, setFormField] = useState<any>({
     imei: {
       value: "",
@@ -292,18 +294,45 @@ const AddDevice = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        width: "100%",
+        height: "auto",
+        margin: "auto",
+      }}
+    >
       <CustomAppHeader
         className={{
           backgroundColor: headerColor,
-          padding: "50px 20px 50px 18px",
+          padding: "10px 20px 15px 18px",
         }}
       >
-        <Grid container xs={12} md={12} lg={12} xl={12} alignItems="center">
-          <Grid item xs={12} sm={12} md={6} lg={4} xl={2}>
+        <Stack
+          px={4}
+          pt={2}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
+          <Typography
+            sx={{
+              fontSize: getRelativeFontSize(6),
+              ...boldFont,
+              color: primaryHeadingColor,
+            }}
+          >
             {getHeader()}
-          </Grid>
-        </Grid>
+          </Typography>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {getSearchBar()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
       <Box
         sx={{
@@ -364,7 +393,7 @@ const AddDevice = () => {
         />
       </Box>
       {uploadAssetGroupModal()}
-    </>
+    </Box>
   );
 };
 

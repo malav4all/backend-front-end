@@ -9,6 +9,7 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -32,13 +33,14 @@ const customTableStyles = {
   },
 
   tableHeaderCell: {
-    ...regularFont,
+    ...semiBoldFont,
     fontSize: "14px",
     border: "none",
     padding: "12px 18px",
     backgroundColor: "#F5F7F9",
     borderLeft: "none !important",
     borderRight: "none !important",
+    textTransform: "uppercase",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -48,7 +50,7 @@ const customTableStyles = {
   tableCell: {
     ...regularFont,
     fontSize: "14px",
-    padding: "0.5rem 0.4rem",
+    padding: "0.5rem 0.7rem",
     textAlign: "left",
     backgroundColor: "white",
     borderTop: "none !important",

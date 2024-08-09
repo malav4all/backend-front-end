@@ -8,11 +8,12 @@ interface LineChartProps {
   dataGraph?: any;
 }
 
-const LineChart: React.FC<LineChartProps> = ({
+const BatteryLineChart: React.FC<LineChartProps> = ({
   width = "100%",
-  height = 400,
+  height = 200,
   dataGraph,
 }) => {
+  console.log({ dataGraph });
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<ApexCharts | null>(null);
@@ -47,10 +48,15 @@ const LineChart: React.FC<LineChartProps> = ({
       },
       stroke: {
         curve: "smooth",
+        width: 1.5,
       },
-      series: dataGraph?.lineChart?.series || [],
+      colors: ["#00E396"],
+      dataLabels: {
+        enabled: false,
+      },
+      series: dataGraph?.series || [],
       xaxis: {
-        categories: dataGraph?.lineChart?.xaxis?.categories,
+        categories: dataGraph?.xaxis?.categories,
       },
       yaxis: {
         opposite: isDarkMode,
@@ -71,7 +77,7 @@ const LineChart: React.FC<LineChartProps> = ({
       chartInstance.destroy();
       document.head.removeChild(styleSheet);
     };
-  }, [height, theme, dataGraph?.lineChart]);
+  }, [height, theme, dataGraph]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -96,7 +102,7 @@ const LineChart: React.FC<LineChartProps> = ({
   return (
     <Box
       sx={{
-        padding: "2rem 1.5rem",
+        padding: "0.2rem",
         backgroundColor: theme.palette.background.paper,
         borderRadius: "8px",
         boxShadow:
@@ -110,7 +116,7 @@ const LineChart: React.FC<LineChartProps> = ({
         variant="h5"
         sx={{
           fontFamily: "Geist_semibold",
-          fontSize: "1.1rem",
+          fontSize: "0.9rem",
           marginBottom: "0.5rem",
           padding: "0.2rem 0.8rem",
           borderRadius: "5px",
@@ -118,11 +124,11 @@ const LineChart: React.FC<LineChartProps> = ({
           borderLeftColor: "#855BDE",
         }}
       >
-        Line Data
+        Battery (Past 24 Hours)
       </Typography>
       <Box ref={chartRef} sx={{ height: height, width: "100%" }} />
     </Box>
   );
 };
 
-export default LineChart;
+export default BatteryLineChart;

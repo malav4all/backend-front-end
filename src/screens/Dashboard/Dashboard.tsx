@@ -41,6 +41,7 @@ const Dashboard = () => {
 
   useTitle(strings.DashboardTitle);
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // const classes = dashboardStyles;
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(10);
@@ -58,7 +59,6 @@ const Dashboard = () => {
   //   endDate: moment().toISOString(),
   // });
   // const [selectedRange, setSelectedRange] = useState("Past 30m");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
   const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
   const [dataGraph, setGraphData] = useState<any>();
@@ -69,13 +69,9 @@ const Dashboard = () => {
   const [messages, setMessages] = useState<any>();
   const accountId = "IMZ113343";
 
-  const { data } = useSubscription(DEVICE_DATA, {
+  const { data } = useSubscription(ALERT_DEVICE_DATA, {
     variables: { accountId, imeis: [] },
   });
-
-  // const { data } = useSubscription(ALERT_DEVICE_DATA, {
-  //   variables: { accountId, imeis: [] },
-  // });
 
   useEffect(() => {
     console.log(data);
@@ -100,7 +96,10 @@ const Dashboard = () => {
         lineChart: chartLine?.lineGraphDeviceData,
         deviceDashboardData: deviceDashboardData?.getOnlineOfflineCount,
       });
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getDeviceList = () => {
@@ -151,7 +150,8 @@ const Dashboard = () => {
 
           <CustomTableDashboard
             headers={[
-              { name: "NAME", field: "accountId" },
+              { name: "AccountId", field: "accountId" },
+              { name: "NAME", field: "name" },
               { name: "IMEI", field: "imei" },
               { name: "STATUS", field: "status" },
               { name: "LAST PING", field: "connectedTime" },
@@ -159,22 +159,31 @@ const Dashboard = () => {
             ]}
             rows={dataGraph?.deviceDashboardData?.data?.map((item: any) => {
               return {
+                accountId: item.accountId,
                 imei: item.imei,
                 status: item.status,
-                accountId: item.name,
+                name: item.name,
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
-                action: (
-                  <Link to="/map-view">
-                    <FaMapLocationDot
-                      style={{
-                        cursor: "pointer",
-                        fontSize: "1.4rem",
-                        color: "#5F22E2",
-                        marginLeft: "1rem",
+                action:
+                  item.status === "offline" ? (
+                    <span></span>
+                  ) : (
+                    <Link
+                      to={{
+                        pathname: "/live-tracking",
+                        state: { imei: item.imei, status: item.status },
                       }}
-                    />
-                  </Link>
-                ),
+                    >
+                      <FaMapLocationDot
+                        style={{
+                          cursor: "pointer",
+                          fontSize: "1.4rem",
+                          color: "#7c58cb",
+                          marginLeft: "1rem",
+                        }}
+                      />
+                    </Link>
+                  ),
               };
             })}
             isRowPerPageEnable={false}
@@ -251,7 +260,7 @@ const Dashboard = () => {
       }}
     >
       <Box>
-        <DashboardHeader />
+        <DashboardHeader refresh={graphData} />
       </Box>
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
