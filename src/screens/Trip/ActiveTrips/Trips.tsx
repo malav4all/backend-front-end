@@ -1,27 +1,20 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   InputAdornment,
   Stack,
-  Tooltip,
   Typography,
   useTheme,
+  Tooltip,
 } from "@mui/material";
 import tripStyles from "./Trips.styles";
 import { useHistory } from "react-router-dom";
-import { ChangeEvent, useEffect, useState } from "react";
 import {
   CustomAppHeader,
   CustomButton,
   CustomInput,
   CustomTable,
 } from "../../../global/components";
-import {
-  boldFont,
-  BootstrapInput,
-  getRelativeFontSize,
-  headerColor,
-  primaryHeadingColor,
-} from "../../../utils/styles";
 import {
   debounceEventHandler,
   isTruthy,
@@ -31,12 +24,13 @@ import strings from "../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import { tripTableHeader } from "./AddTrips/AddTripFormValidation";
-import { fetchTrips, searchTrip } from "./TripServices";
+import { fetchTripMetrics, fetchTrips, searchTrip } from "./TripServices";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import urls from "../../../global/constants/UrlConstants";
 import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
 import { store } from "../../../utils/store";
+import { headerColor } from "../../../utils/styles";
 
 const Trips = () => {
   const theme = useTheme();
@@ -49,31 +43,19 @@ const Trips = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [searchTrips, setSearchTrips] = useState<any>("");
   const [tripData, setTripData] = useState<any>([]);
-  const [tabValue, setTabValue] = useState(strings.Created); // Initial tab state
+  const [tabValue, setTabValue] = useState(strings.Created);
 
-  // New states for counts
+  // States for trip counts
   const [createdCount, setCreatedCount] = useState<number | null>(null);
   const [startedCount, setStartedCount] = useState<number | null>(null);
   const [endedCount, setEndedCount] = useState<number | null>(null);
   const [closedCount, setClosedCount] = useState<number | null>(null);
 
   const tabs = [
-    {
-      label: strings.Created,
-      count: createdCount,
-    },
-    {
-      label: strings.Started,
-      count: startedCount,
-    },
-    {
-      label: strings.Ended,
-      count: endedCount,
-    },
-    {
-      label: strings.Closed,
-      count: closedCount,
-    },
+    { label: strings.Created, count: createdCount },
+    { label: strings.Started, count: startedCount },
+    { label: strings.Ended, count: endedCount },
+    { label: strings.Closed, count: closedCount },
   ];
 
   useEffect(() => {
@@ -81,8 +63,44 @@ const Trips = () => {
       getSearchData(tabValue, searchTrips);
     } else {
       getTripData(tabValue, page);
+      getTripMetrics();
     }
   }, [searchTrips, page, rowsPerPage, tabValue]);
+
+  // useEffect(() => {
+  //   getTripMetrics();
+  // }, []);
+
+  const getTripMetrics = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchTripMetrics({
+        input: { accountId: store.getState().auth.tenantId },
+      });
+
+      const metrics = res?.data?.getTripStatusMetrics || [];
+
+      setCreatedCount(
+        metrics.find((metric: any) => metric.status === "created")?.count || 0
+      );
+      setStartedCount(
+        metrics.find((metric: any) => metric.status === "started")?.count || 0
+      );
+      setEndedCount(
+        metrics.find((metric: any) => metric.status === "ended")?.count || 0
+      );
+      setClosedCount(
+        metrics.find((metric: any) => metric.status === "closed")?.count || 0
+      );
+
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(
+        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
+      );
+      setIsLoading(false);
+    }
+  };
 
   const getSearchData = async (tab: string, search: string) => {
     try {
@@ -92,7 +110,7 @@ const Trips = () => {
           search,
           page: 1,
           limit: 10,
-          status: tab.toLowerCase(), // Assume API expects status as lowercase string
+          status: tab.toLowerCase(),
         },
       });
       tableRender(res?.searchTrip?.data);
@@ -117,6 +135,7 @@ const Trips = () => {
   ) => {
     setSearchPageNumber(newPage);
   };
+
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchTrips(SearchEvent.target.value.trim());
@@ -135,7 +154,7 @@ const Trips = () => {
           page,
           limit: rowsPerPage,
           accountId: store.getState().auth.tenantId,
-          status: tab.toLowerCase(), // Assume API expects status as lowercase string
+          status: tab.toLowerCase(),
         },
       });
       tableRender(res?.tripList?.data);
@@ -148,7 +167,6 @@ const Trips = () => {
       setIsLoading(false);
     }
   };
-
   const getSearchBar = () => {
     return (
       <CustomInput
@@ -174,61 +192,46 @@ const Trips = () => {
   };
 
   const tableRender = (tableData: any) => {
-    const data = tableData?.map((item: any, index: number) => {
-      return {
-        key: item.key,
-        imeiNumber: item?.tripData[0].imei,
-        totalDistance: item.route.totalDistance,
-        totalDuration: item.route.totalDuration,
-        tripStartDate: item.tripStartDate,
-        tripEndDate: item.tripEndDate,
-        createdBy: item.createdBy,
-        tripId: (
-          <Box
-            sx={{ fontWeight: "bold", cursor: "pointer" }}
-            onClick={() => getRedirectionUrl(item?.tripId)}
-          >
-            {item?.tripId}
-          </Box>
-        ),
-        action: (
-          <Tooltip
-            title="Edit"
-            onClick={() => {
-              // editTrip(item);
+    const data = tableData?.map((item: any, index: number) => ({
+      key: item._id,
+      imeiNumber: item?.tripData[0].imei,
+      totalDistance: item.route.totalDistance,
+      totalDuration: item.route.totalDuration,
+      tripStartDate: item.tripStartDate,
+      tripEndDate: item.tripEndDate,
+      createdBy: item.createdBy,
+      tripId: (
+        <Box
+          sx={{ fontWeight: "bold", cursor: "pointer" }}
+          onClick={() => getRedirectionUrl(item?.tripId)}
+        >
+          {item?.tripId}
+        </Box>
+      ),
+      action: (
+        <Tooltip
+          title="Edit"
+          onClick={() => {
+            // editTrip(item);
+          }}
+          sx={{ color: theme.palette.text.primary }}
+        >
+          <PiPencilSimpleBold
+            style={{
+              margin: "0px 8px -7px 0px",
+              cursor: "pointer",
+              color: headerColor,
+              fontSize: "17px",
             }}
-            sx={{
-              color: theme.palette.text.primary,
-            }}
-          >
-            <PiPencilSimpleBold
-              style={{
-                margin: "0px 8px -7px 0px",
-                cursor: "pointer",
-                color: headerColor,
-                fontSize: "17px",
-              }}
-            />
-          </Tooltip>
-        ),
-      };
-    });
+          />
+        </Tooltip>
+      ),
+    }));
     setTripData([...data]);
   };
 
   const handleAdd = () => {
-    history.push({
-      pathname: urls.addTripViewPath,
-    });
-  };
-  const getHeader = () => {
-    return (
-      <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
-          Manage Trips
-        </Typography>
-      </Box>
-    );
+    history.push({ pathname: urls.addTripViewPath });
   };
 
   const handlePerPageData = (event: any) => {
@@ -243,67 +246,62 @@ const Trips = () => {
   ) => {
     setPage(newPage);
   };
-  const getTripPage = () => {
-    return (
-      <Box sx={classes.headerBox}>
-        <Box sx={classes.mainBox}>
-          <Typography variant="h4" sx={classes.tripText}>
-            Manage Trips
-          </Typography>
-          <Stack
-            sx={classes.outerTabBox}
-            direction={{ lg: "row", md: "row", sm: "row", xs: "column" }}
-            justifyContent={{
-              lg: "space-between",
-              md: "space-between",
-              sm: "space-between",
-              xs: "flex-start",
-            }}
-            alignItems={{ lg: "center", sm: "center" }}
-          >
-            <CustomTabs
-              changeValue={handleChange}
-              selected={tabValue}
-              tabConfig={tabs}
-            />
-            <Stack direction="row" spacing={1} sx={classes.inputWrapper}>
-              <Box>{getSearchBar()}</Box>
-              <Stack direction="row" justifyContent="center">
-                <CustomButton
-                  label={"Add Trip"}
-                  onClick={handleAdd}
-                  buttonType="primaryBtn"
-                  // customClasses={{
-                  //   width: "150px",
-                  //   backgroud: "#ffffff",
-                  // }}
-                />
-              </Stack>
+
+  const getTripPage = () => (
+    <Box sx={{ background: "#060B25", height: "100vh" }}>
+      <Box sx={classes.mainBox}>
+        <Typography variant="h4" sx={classes.tripText}>
+          Manage Trips
+        </Typography>
+        <Stack
+          sx={classes.outerTabBox}
+          direction={{ lg: "row", md: "row", sm: "row", xs: "column" }}
+          justifyContent={{
+            lg: "space-between",
+            md: "space-between",
+            sm: "space-between",
+            xs: "flex-start",
+          }}
+          alignItems={{ lg: "center", sm: "center" }}
+        >
+          <CustomTabs
+            changeValue={handleChange}
+            selected={tabValue}
+            tabConfig={tabs}
+          />
+          <Stack direction="row" spacing={1} sx={classes.inputWrapper}>
+            <Box>{getSearchBar()}</Box>
+            <Stack direction="row" justifyContent="center">
+              <CustomButton
+                label={"Add Trip"}
+                onClick={handleAdd}
+                buttonType="primaryBtn"
+              />
             </Stack>
           </Stack>
-        </Box>
-        <Box px={2} sx={classes.tableWrapper}>
-          {isLoading ? (
-            <CustomLoader />
-          ) : (
-            <CustomTable
-              headers={tripTableHeader}
-              rows={tripData}
-              size={[5]}
-              handlePageChange={handleChangePage}
-              handleRowsPerPage={handlePerPageData}
-              paginationCount={count}
-              pageNumber={page}
-              setPage={setPage}
-              handlePerPageData={handlePerPageData}
-              perPageData={rowsPerPage}
-              rowsPerPage={rowsPerPage}
-            />
-          )}
-        </Box>
+        </Stack>
       </Box>
-    );
-  };
+      <Box px={2} sx={classes.tableWrapper}>
+        {isLoading ? (
+          <CustomLoader />
+        ) : (
+          <CustomTable
+            headers={tripTableHeader}
+            rows={tripData}
+            size={[5]}
+            handlePageChange={handleChangePage}
+            handleRowsPerPage={handlePerPageData}
+            paginationCount={count}
+            pageNumber={page}
+            setPage={setPage}
+            handlePerPageData={handlePerPageData}
+            perPageData={rowsPerPage}
+            rowsPerPage={rowsPerPage}
+          />
+        )}
+      </Box>
+    </Box>
+  );
 
   return getTripPage();
 };

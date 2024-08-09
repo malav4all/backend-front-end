@@ -328,7 +328,7 @@ const AddTrip = (props: any) => {
     try {
       const insertTripBody = {
         accountId: store?.getState()?.auth?.tenantId,
-        status: "ongoing",
+
         primaryAccount: store?.getState()?.auth?.tenantId,
         accessAccount: ["account1", "account2"],
         tripStartDate: new Date(
@@ -388,11 +388,13 @@ const AddTrip = (props: any) => {
         const res = await createTrip({
           input: {
             ...insertTripBody,
+            status: "started",
             createdBy: store?.getState()?.auth?.userName,
           },
         });
         // props?.handleCloseAddTripForm();
         openSuccessNotification(res?.createTrip?.message);
+        history.goBack();
         await props?.tableData?.();
       }
       // }
@@ -485,18 +487,30 @@ const AddTrip = (props: any) => {
                   label={strings.Cancel}
                   buttonType="secondaryBtn"
                   onClick={handleCancel}
+                  customClasses={{
+                    background: "blue",
+                    "&:hover": {
+                      background: "blue",
+                    },
+                  }}
                 />
               ) : (
                 <CustomButton
                   label={strings.Previous}
                   buttonType="secondaryBtn"
                   onClick={handleBack}
+                  customClasses={{
+                    background: "blue",
+                    "&:hover": {
+                      background: "blue",
+                    },
+                  }}
                 />
               )}
               {activeStep === dynamicSteps.length - 1 ? (
                 <CustomButton
                   buttonType="primaryBtn"
-                  label={strings.Save}
+                  label={"Trip Start"}
                   onClick={() => insertTripDetails()}
                 />
               ) : (

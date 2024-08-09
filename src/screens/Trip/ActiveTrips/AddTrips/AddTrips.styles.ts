@@ -8,9 +8,10 @@ import {
 
 const addTripStyles = {
   headerBox: {
-    background: "#FFFFFF",
+    background: "#060B25",
+    height: "100vh",
     [theme.breakpoints.down("md")]: {
-      height: "210px",
+      height: "100vh",
     },
   },
   mainBox: {

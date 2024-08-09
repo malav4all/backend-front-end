@@ -71,7 +71,7 @@ const TripDashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [totalActiveTrips, setTotalActiveTrips] = useState<number>(0);
-
+  const [lockStatus, setLockStatus] = useState("Unlock");
   const stats: Record<string, Stats> = {
     executed: {
       title: "Today's Trips",

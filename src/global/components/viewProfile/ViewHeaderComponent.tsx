@@ -1,4 +1,11 @@
-import { Avatar, Box, Grid, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import strings from "../../../global/constants/StringConstants";
 import history from "../../../utils/history";
 
@@ -6,7 +13,7 @@ import { CustomButton } from "../../../global/components";
 import { ReactComponent as EditIcon } from "../../../assets/icons/Edit.svg";
 import viewHeaderComponentStyle from "./viewHeaderComponentStyle";
 import urls from "../../constants/UrlConstants";
-
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 interface CustomProps {
   showEditButton?: boolean;
   hideAssignTask?: boolean;
@@ -37,6 +44,12 @@ const ViewHeaderComponent = (props: CustomProps) => {
   const getHeaderDetails = () => (
     <Grid container sx={classes.headerBox}>
       <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+        <IconButton>
+          <KeyboardBackspaceIcon
+            style={{ color: "#828282" }}
+            onClick={() => history.goBack()}
+          />
+        </IconButton>
         <Box sx={classes.mainBox}>
           {props?.tripInformationForm &&
             props?.alertConfigurationForm &&
