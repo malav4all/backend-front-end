@@ -4,6 +4,7 @@ import {
   theme,
   primaryHeadingColor,
   getRelativeFontSize,
+  regularFont,
 } from "../../utils/styles";
 
 const deviceGroupStyles = (theme: Theme) => ({
@@ -24,12 +25,12 @@ const deviceGroupStyles = (theme: Theme) => ({
     },
   },
   mainCardHeading: {
-    ...boldFont,
+    ...regularFont,
     fontFamily: "Geist_Medium",
-    fontSize: "24px",
+    fontSize: "2rem",
     margin: "16px 0 0 0",
     width: "100%",
-    color: theme.palette.primary.contrastText,
+    color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(5),
       marginBottom: theme.spacing(1),

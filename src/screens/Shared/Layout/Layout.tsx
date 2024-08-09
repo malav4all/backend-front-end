@@ -319,7 +319,7 @@ const Layout = () => {
             exact
             isLoggedIn={isAuthenticated}
             path={"/device-list"}
-            component={DeviceModule}
+            component={DeviceOnboarding}
             componentName={strings.DEVICE_LIST}
           />
           <PrivateRoute
@@ -343,7 +343,7 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/device-onboarding"}
             component={DeviceOnboarding}
-            componentName={strings.ARCHIVED_TRIPS}
+            componentName={strings.DEVICE_ONBOARDING}
           />
           <PrivateRoute
             exact

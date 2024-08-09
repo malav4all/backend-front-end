@@ -2,7 +2,10 @@ import { useSubscription } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { DEVICE_DATA } from "../../Dashboard/service/Dashboard.mutation";
 import moment from "moment";
-
+import { FaLock } from "react-icons/fa";
+import { LiaSignalSolid } from "react-icons/lia";
+import { FaMapPin } from "react-icons/fa";
+import { FaCarBattery } from "react-icons/fa6";
 const ViewLiveTracking = () => {
   const [map, setMap] = useState<any>(null);
   const [currentMarker, setCurrentMarker] = useState<any>(null);
@@ -41,10 +44,17 @@ const ViewLiveTracking = () => {
   }, []);
 
   const { data } = useSubscription(DEVICE_DATA, {
-    variables: { topicType: "track", accountId: "IMZ113343", imeis: [] },
+    variables: {
+      topicType: "track",
+      accountId: "IMZ113343",
+      imeis: ["688056086137"],
+    },
   });
 
-  const getReverseGeocodingData = async (latitude: number, longitude: number) => {
+  const getReverseGeocodingData = async (
+    latitude: number,
+    longitude: number
+  ) => {
     const url = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&lang=en-US&apikey=${apiKey}`;
 
     try {
@@ -74,7 +84,7 @@ const ViewLiveTracking = () => {
         const trackJson = JSON.parse(data.track);
         setTrackData(trackJson);
 
-        const { longitude, latitude, bearing } = trackJson;
+        const { longitude, latitude, bearing, imei } = trackJson;
 
         // Fetch address for the current location
         getReverseGeocodingData(latitude, longitude).then(setAddress);
@@ -113,56 +123,115 @@ const ViewLiveTracking = () => {
       }
     }
   }, [data]);
-
+  console.log(trackData);
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id="map" style={{ width: "100%", height: "80%" }}></div>
       {trackData && (
         <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t shadow-lg flex">
           <div className="flex-1 p-2">
-            <span>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.2rem",
+              }}
+            >
+              <FaLock style={{ display: "inline" }} />
               <p className="text-sm font-semibold">{trackData.imei}</p>
             </span>
             <p className="text-xs">
-              Connection:{" "}
-              {trackData?.statusBitDefinition?.connection ? (
+              Connection:
+              {!trackData?.statusBitDefinition?.connection ? (
                 <span>true</span>
               ) : (
                 <span>false</span>
-              )}{" "}
+              )}
             </p>
-            <p className="text-xs">ID: 23476</p>
+            <p className="text-xs">
+              Last Updated: {moment(trackData.dateTime).fromNow()}
+            </p>
             <p className="text-xs">
               Date/Time:{" "}
               {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
             </p>
-            <p className="text-xs text-red-500">Status: STOP</p>
+            <p className="text-xs text-red-500">Status:</p>
           </div>
           <div className="flex-1 p-2">
-            <span>
-              <p className="text-sm font-semibold">{trackData.imei}</p>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.2rem",
+              }}
+            >
+              <LiaSignalSolid style={{ display: "inline" }} />
+              <p className="text-sm font-semibold">Network</p>
             </span>
             <p className="text-sm">
               Network: {trackData.statusBitDefinition.network}
             </p>
             <p className="text-sm">Speed: 0 km/h</p>
-            <p className="text-sm">Direction: 0°</p>
+            <p className="text-sm">Bearing: 0°</p>
           </div>
           <div className="flex-1 p-2">
-            <p className="text-sm font-semibold">Location</p>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.2rem",
+              }}
+            >
+              <FaMapPin style={{ display: "inline" }} />
+              <p className="text-sm font-semibold">Location</p>
+            </span>
             <p className="text-sm">Latitude: {trackData.latitude}</p>
             <p className="text-sm">Longitude: {trackData.longitude}</p>
             <p className="text-sm">Address: {address}</p>
           </div>
 
           <div className="flex-1 p-2">
-            <p className="text-sm font-semibold">Engine</p>
-            <p className="text-sm">Ignition: Off</p>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.2rem",
+              }}
+            >
+              <FaCarBattery style={{ display: "inline" }} />
+              <p className="text-sm font-semibold">Ignition</p>
+            </span>
+            <p className="text-sm">
+              Ignition:{" "}
+              {!trackData?.statusBitDefinition?.ignitionOn ? (
+                <span>true</span>
+              ) : (
+                <span>false</span>
+              )}
+            </p>
           </div>
           <div className="flex-1 p-2">
-            <p className="text-sm font-semibold">Power Supply</p>
-            <p className="text-sm">Battery Level: {trackData.Additional}</p>
-            <p className="text-sm">Board Voltage: NA</p>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.2rem",
+              }}
+            >
+              <FaCarBattery style={{ display: "inline" }} />
+              <p className="text-sm font-semibold">Battery</p>
+            </span>
+            <p className="text-sm">
+              Battery Level: {trackData["Additional Data"][1].batteryPercentage}
+            </p>
+            <p className="text-sm">
+              {`Battery Voltage: ${trackData["Additional Data"][1].batteryVoltage} V`}
+            </p>
           </div>
         </div>
       )}

@@ -132,11 +132,15 @@ const DeviceOnboardingStyle = {
     ...boldFont,
   },
   mainCardHeading: {
-    ...boldFont,
-    fontSize: getRelativeFontSize(10),
+    ...regularFont,
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    margin: "16px 0 0 0",
+    width: "100%",
     color: primaryHeadingColor,
     [theme.breakpoints.down("md")]: {
-      marginTop: theme.spacing(3),
+      marginTop: theme.spacing(5),
+      marginBottom: theme.spacing(1),
     },
   },
   select: {

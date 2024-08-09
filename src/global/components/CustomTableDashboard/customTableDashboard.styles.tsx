@@ -1,4 +1,3 @@
-import { BorderBottomOutlined, BorderTop } from "@mui/icons-material";
 import {
   boldFont,
   borderColor,
@@ -21,27 +20,28 @@ const customTableDashboardStyles = {
     borderSpacing: "0px",
     borderTopRadius: "5px",
     borderBottomRadius: "5px",
-    borderTop: "none",
     width: "100%",
-    marginTop: "2rem",
+    mt: 2,
     [theme.breakpoints.down("xl")]: {
       overflow: "auto",
     },
   },
 
   tableBody: {
-    maxHeight: "500px",
-    overflowY: "scroll",
-    maxwidth: "100%",
-    borderTop: "none",
+    maxHeight: "700px",
+    maxWidth: "100%",
+    overflowY: "auto",
   },
 
   tableHeaderCell: {
-    ...semiBoldFont,
-    fontSize: "15px",
-    textTransform: "capitalize !important",
+    ...regularFont,
+    fontSize: "14px",
     border: "none",
     padding: "12px 18px",
+    backgroundColor: "#F5F7F9",
+    borderLeft: "none !important",
+    borderRight: "none !important",
+    textTransform: "uppercase",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -50,54 +50,53 @@ const customTableDashboardStyles = {
 
   tableCell: {
     ...regularFont,
-    border: "none",
     fontSize: "14px",
+    padding: "0.5rem 0.7rem",
     textAlign: "left",
     backgroundColor: "white",
-    minWidth: "110px",
-    padding: "7px 10px",
+    borderTop: "none !important",
+    borderLeft: "none !important",
+    borderRight: "none !important",
+    borderBottom: "none",
   },
 
   tableRow: {
     borderLeft: "none",
     borderRight: "none",
+    borderBottom: "1px solid !important",
+    borderBottomColor: theme.palette.divider + "!important",
   },
 
   checkBoxStyle: {
     paddingRight: "50px",
   },
-
   selectAllCheckbox: {
     color: "white",
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
-
   checkbox: {
     "&.Mui-checked": {
       color: pinkDarkColor,
     },
   },
-
   mediumFonts: {
     ...regularFont,
     fontSize: getRelativeFontSize(5),
   },
-
   regularFonts: {
     ...regularFont,
-    fontSize: getRelativeFontSize(1),
+    fontSize: "13px",
   },
-
   perPageDropdown: {
-    height: "30px",
-    borderRadius: "6px",
+    height: "25px",
+    borderRadius: "5px",
     cursor: "pointer",
     marginLeft: "5px",
+    fontSize: "13px",
     ...purpleThemedSelectComponent,
   },
-
   optionStyle: {
     ...regularFont,
     ...pinkThemedMenuItems,

@@ -39,6 +39,7 @@ const customTableStyles = {
     backgroundColor: "#F5F7F9",
     borderLeft: "none !important",
     borderRight: "none !important",
+    textTransform: "uppercase",
     textAlign: "left",
     "& .MuiTableSortLabel-icon": {
       display: "none",
@@ -48,7 +49,7 @@ const customTableStyles = {
   tableCell: {
     ...regularFont,
     fontSize: "14px",
-    padding: "0.5rem 0.4rem",
+    padding: "0.5rem 0.7rem",
     textAlign: "left",
     backgroundColor: "white",
     borderTop: "none !important",

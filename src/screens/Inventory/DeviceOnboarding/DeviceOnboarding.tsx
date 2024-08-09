@@ -35,6 +35,7 @@ import { store } from "../../../utils/store";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import ExportCSV from "../../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
+import { useLocation } from "react-router-dom";
 
 const DeviceOnboarding = () => {
   const classes = DeviceOnboardingStyle;
@@ -50,7 +51,9 @@ const DeviceOnboarding = () => {
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [tableData, setTableData] = useState<any>([]);
   const [uploadAsset, setUploadAsset] = useState(false);
-
+  const location = useLocation();
+  const title =
+    location.pathname === "/device-list" ? "Device List" : "Device Onboarding";
   useEffect(() => {
     fetchDeviceOnboardingData();
   }, [pageNumber, perPageData]);
@@ -169,7 +172,7 @@ const DeviceOnboarding = () => {
         label={"Onboard Device"}
         onClick={() => setAddUserDialogHandler(true)}
         customClasses={{
-          width: "150px",
+          width: "170px",
         }}
       />
     );
@@ -235,16 +238,14 @@ const DeviceOnboarding = () => {
             color: primaryHeadingColor,
             fontWeight: "bold",
           }}
-        >
-          Device Onboarding
-        </Typography>
+        ></Typography>
 
         <Stack
           direction={{ sm: "row", xs: "column" }}
           alignItems={{ sm: "center" }}
           spacing={1}
         >
-          {getSearchBar()}
+          {/* {getSearchBar()} */}
           <CustomButton
             id="groups_download_template_button"
             label="Download&nbsp;Template"
@@ -253,7 +254,7 @@ const DeviceOnboarding = () => {
               "deviceassignment"
             )}
             customClasses={{
-              width: "170px",
+              width: "200px",
             }}
           />
           <CustomButton
@@ -261,6 +262,9 @@ const DeviceOnboarding = () => {
             label="Upload Bulk Device"
             onClick={() => {
               setUploadAsset(true);
+            }}
+            customClasses={{
+              width: "200px",
             }}
           />
           {addUserButton()}
@@ -282,13 +286,20 @@ const DeviceOnboarding = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={classes.mainCardHeading}>Device Onboarding</Typography>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+          {title}
+        </Typography>
       </Box>
     );
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+      }}
+    >
       <CustomAppHeader
         className={{
           backgroundColor: headerColor,
@@ -297,7 +308,7 @@ const DeviceOnboarding = () => {
       >
         <Stack
           px={4}
-          pt={4}
+          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -311,6 +322,14 @@ const DeviceOnboarding = () => {
           >
             {getHeader()}
           </Typography>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {getSearchBar()}
+          </Stack>
         </Stack>
       </CustomAppHeader>
 
@@ -328,7 +347,7 @@ const DeviceOnboarding = () => {
       </Grid>
 
       <CustomLoader isLoading={isLoading} />
-    </>
+    </Box>
   );
 };
 export default React.memo(DeviceOnboarding);
