@@ -85,7 +85,7 @@ const DeviceList = () => {
       });
       openSuccessNotification(res?.updateDeviceOnboarding?.message);
       await fetchDeviceOnboardingData();
-      formField("");
+      setFormField("");
       setAddUserDialogHandler(false);
       setSelectedRowData({});
     } catch (error: any) {

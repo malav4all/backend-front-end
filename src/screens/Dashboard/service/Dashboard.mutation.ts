@@ -13,21 +13,18 @@ export const FETCH_DASHBOARD_DETAIL = gql`
 `;
 
 export const ALERT_TABLE_DATA = gql`
-  mutation ($input: AlertInputType!) {
+  mutation ($input: AlertReportInputType!) {
     getAlertData(input: $input) {
-      paginatorInfo {
-        count
-      }
-      data {
-        lat
-        lng
-        mode
-        source
-        event
-        imei
-        label
-        message
+      totalCount
+      rowData {
+        latitude
         time
+        event
+        accountId
+        alertMessage
+        latitude
+        longitude
+        imei
       }
     }
   }
@@ -82,7 +79,7 @@ export const ALERTS_SUBSCRIPTION = gql`
 `;
 
 export const DEVICE_DATA = gql`
- subscription ($accountId: String!, $imeis: [String!], $topicType: String!) {
+  subscription ($accountId: String!, $imeis: [String!], $topicType: String!) {
     track(accountId: $accountId, imeis: $imeis, topicType: $topicType)
   }
 `;
