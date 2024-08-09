@@ -130,6 +130,7 @@ export const DEVICE_DASHBOARD_ONLINE_OFFLINE_COUNT = gql`
       offline
       data {
         name
+        accountId
         imei
         status
         lastPing

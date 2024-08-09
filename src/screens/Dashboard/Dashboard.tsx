@@ -151,7 +151,8 @@ const Dashboard = () => {
 
           <CustomTableDashboard
             headers={[
-              { name: "NAME", field: "accountId" },
+              { name: "AccountId", field: "accountId" },
+              { name: "NAME", field: "name" },
               { name: "IMEI", field: "imei" },
               { name: "STATUS", field: "status" },
               { name: "LAST PING", field: "connectedTime" },
@@ -159,9 +160,10 @@ const Dashboard = () => {
             ]}
             rows={dataGraph?.deviceDashboardData?.data?.map((item: any) => {
               return {
+                accountId: item.accountId,
                 imei: item.imei,
                 status: item.status,
-                accountId: item.name,
+                name: item.name,
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
                 action: (
                   <Link to="/live-tracking">
