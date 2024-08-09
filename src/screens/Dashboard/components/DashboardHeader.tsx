@@ -29,19 +29,12 @@ import { MdAddchart } from "react-icons/md";
 import CustomDialog from "../../../global/components/CustomDialog/CustomDialog"; // Import CustomDialog
 import { IoReloadOutline } from "react-icons/io5";
 interface HeaderProps {
-  local_varaiable: any;
+  refresh: any;
 }
-
-const deviceGroups = [
-  { label: "Group 1" },
-  { label: "Group 2" },
-  { label: "Group 3" },
-  { label: "Group 4" },
-];
 
 const chartOptions = ["Pie Chart", "Bar Chart", "Line Chart", "Area Chart"];
 
-const Header: FC<HeaderProps> = ({ local_varaiable }) => {
+const Header: FC<HeaderProps> = ({ refresh }) => {
   const theme = useTheme();
   const classes = dashboardStyles;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -88,9 +81,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
       text2: "This is Temper Alert Message",
     },
   ]);
-  const [selectedDeviceGroup, setSelectedDeviceGroup] = useState<string | null>(
-    null
-  );
+
   const [selectedCharts, setSelectedCharts] = useState<string[]>([]);
 
   const handleToggleDropdown = (event: React.MouseEvent<HTMLElement>) => {
@@ -102,7 +93,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
   };
 
   const handleDialogOpen = () => {
-    setDialogOpen(true);
+    refresh();
   };
 
   const handleDialogClose = () => {
@@ -255,7 +246,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
               </Menu>
 
               <IconButton onClick={handleDialogOpen}>
-                <IoReloadOutline  />
+                <IoReloadOutline />
               </IconButton>
             </Grid>
           </Grid>

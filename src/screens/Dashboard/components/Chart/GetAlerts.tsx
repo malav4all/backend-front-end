@@ -2,7 +2,9 @@ import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { FaBell } from "react-icons/fa6";
 import dashboardStyles from "../../DashboardStyles";
 import { headerColor } from "../../../../utils/styles";
-
+import { IoLockClosed } from "react-icons/io5";
+import { PiPlugsConnectedBold } from "react-icons/pi";
+import { TbPlugConnected } from "react-icons/tb";
 const GetAlerts = ({ data }: any) => {
   const theme = useTheme();
   const classes = dashboardStyles;
@@ -58,14 +60,14 @@ const GetAlerts = ({ data }: any) => {
 
             <Box
               sx={{
-                fontSize: "1rem",
+                fontSize: "2rem",
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
                 backgroundColor: headerColor,
               }}
             >
-              <FaBell />
+              <IoLockClosed />
             </Box>
           </Box>
         </Grid>
@@ -111,14 +113,14 @@ const GetAlerts = ({ data }: any) => {
 
             <Box
               sx={{
-                fontSize: "1rem",
+                fontSize: "2rem",
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
                 backgroundColor: headerColor,
               }}
             >
-              <FaBell />
+              <PiPlugsConnectedBold />
             </Box>
           </Box>
         </Grid>
@@ -164,14 +166,14 @@ const GetAlerts = ({ data }: any) => {
 
             <Box
               sx={{
-                fontSize: "1rem",
+                fontSize: "2rem",
                 color: "white",
                 padding: "0.7rem",
                 borderRadius: "5px",
                 backgroundColor: headerColor,
               }}
             >
-              <FaBell />
+              <TbPlugConnected />
             </Box>
           </Box>
         </Grid>

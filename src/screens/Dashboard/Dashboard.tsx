@@ -69,17 +69,13 @@ const Dashboard = () => {
   const [messages, setMessages] = useState<any>();
   const accountId = "IMZ113343";
 
-  const { data } = useSubscription(DEVICE_DATA, {
+  const { data } = useSubscription(ALERT_DEVICE_DATA, {
     variables: { accountId, imeis: [] },
   });
 
-  // const { data } = useSubscription(ALERT_DEVICE_DATA, {
-  //   variables: { accountId, imeis: [] },
-  // });
-
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
     graphData();
@@ -264,7 +260,7 @@ const Dashboard = () => {
       }}
     >
       <Box>
-        <DashboardHeader />
+        <DashboardHeader refresh={graphData} />
       </Box>
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />

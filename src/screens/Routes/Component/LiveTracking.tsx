@@ -7,6 +7,10 @@ import { LiaSignalSolid } from "react-icons/lia";
 import { FaMapPin } from "react-icons/fa";
 import { FaCarBattery } from "react-icons/fa6";
 import { useLocation } from "react-router-dom";
+import SpeedLineChart from "./SpeedLineGraph";
+import { batteryGraphData, speedGraphData } from "../service/routes.service";
+import BatteryLineChart from "./BatteryLineGraph";
+import { Box } from "@mui/material";
 
 interface LocationState {
   imei: string;
@@ -19,6 +23,7 @@ const ViewLiveTracking = () => {
   const [trackData, setTrackData] = useState<any>(null);
   const [address, setAddress] = useState<string>("Loading...");
   const location = useLocation();
+  const [graphData, setGraphData] = useState<any>();
   console.log("location State:", location.state);
 
   const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
@@ -135,121 +140,168 @@ const ViewLiveTracking = () => {
     }
   }, [data]);
 
-  console.log(trackData);
+  useEffect(() => {
+    graphDataHandler();
+  }, []);
+
+  const graphDataHandler = async () => {
+    try {
+      const [online, offline] = await Promise.all([
+        speedGraphData({
+          input: { accountId: "IMZ113343", imei: "688056086137" },
+        }),
+        batteryGraphData({
+          input: { accountId: "IMZ113343", imei: "688056086137" },
+        }),
+      ]);
+      console.log(online, offline);
+      setGraphData({
+        online: online?.speedGraphData,
+        offline: offline?.batteryGraphDataData,
+      });
+    } catch (error) {}
+  };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <div id="map" style={{ width: "100%", height: "80%" }}></div>
-      {trackData && (
-        <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t shadow-lg flex">
-          <div className="flex-1 p-2">
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.2rem",
-              }}
-            >
-              <FaLock style={{ display: "inline" }} />
-              <p className="text-sm font-semibold">{trackData.imei}</p>
-            </span>
-            <p className="text-sm">
-              Connection:
-              {!trackData?.statusBitDefinition?.connection ? (
-                <span>true</span>
-              ) : (
-                <span>false</span>
-              )}
-            </p>
-            <p className="text-sm">
-              Last Updated: {moment(trackData.dateTime).fromNow()}
-            </p>
-            <p className="text-sm">
-              Date/Time:{" "}
-              {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
-            </p>
-            <p className="text-sm text-green-500">Status: {status}</p>
-          </div>
-          <div className="flex-1 p-2">
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.2rem",
-              }}
-            >
-              <LiaSignalSolid style={{ display: "inline" }} />
-              <p className="text-sm font-semibold">Network</p>
-            </span>
-            Network
-            <p className="text-sm">Speed: {trackData.speed} km/h</p>
-            <p className="text-sm">
-              Satellites: {trackData["Additional Data"][3].satellites}
-            </p>
-            <p className="text-sm">Bearing: 0°</p>
-          </div>
-          <div className="flex-1 p-2">
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.2rem",
-              }}
-            >
-              <FaMapPin style={{ display: "inline" }} />
-              <p className="text-sm font-semibold">Location</p>
-            </span>
-            <p className="text-sm">Latitude: {trackData.latitude}</p>
-            <p className="text-sm">Longitude: {trackData.longitude}</p>
-            <p className="text-sm">Address: {address}</p>
-          </div>
-
-          <div className="flex-1 p-2">
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.2rem",
-              }}
-            >
-              <FaCarBattery style={{ display: "inline" }} />
-              <p className="text-sm font-semibold">Ignition</p>
-            </span>
-            <p className="text-sm">
-              Ignition:{" "}
-              {!trackData?.statusBitDefinition?.ignitionOn ? (
-                <span>true</span>
-              ) : (
-                <span>false</span>
-              )}
-            </p>
-          </div>
-          <div className="flex-1 p-2">
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                marginBottom: "0.2rem",
-              }}
-            >
-              <FaCarBattery style={{ display: "inline" }} />
-              <p className="text-sm font-semibold">Battery</p>
-            </span>
-            <p className="text-sm">
-              Battery Level: {trackData["Additional Data"][1].batteryPercentage}
-            </p>
-            <p className="text-sm">
-              {`Battery Voltage: ${trackData["Additional Data"][1].batteryVoltage} V`}
-            </p>
-          </div>
+    <>
+      <Box style={{ position: "relative", height: "100vh" }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "20%",
+            left: "0.5%", 
+            zIndex: 1000,
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+          }}
+        >
+          <SpeedLineChart dataGraph={graphData?.online} />
         </div>
-      )}
-    </div>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%", 
+            left: "0.5%", 
+            zIndex: 1000,
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+          }}
+        >
+          <BatteryLineChart dataGraph={graphData?.offline} />
+        </div>
+        <div style={{ position: "relative", width: "100%", height: "100%" }}>
+          <div id="map" style={{ width: "100%", height: "80%" }}></div>
+          {trackData && (
+            <div className="absolute bottom-0 left-0 w-full p-4 bg-white border-t shadow-lg flex">
+              <div className="flex-1 p-2">
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.2rem",
+                  }}
+                >
+                  <FaLock style={{ display: "inline" }} />
+                  <p className="text-sm font-semibold">{trackData.imei}</p>
+                </span>
+                <p className="text-sm">
+                  Connection:
+                  {!trackData?.statusBitDefinition?.connection ? (
+                    <span>true</span>
+                  ) : (
+                    <span>false</span>
+                  )}
+                </p>
+                <p className="text-sm">
+                  Last Updated: {moment(trackData.dateTime).fromNow()}
+                </p>
+                <p className="text-sm">
+                  Date/Time:{" "}
+                  {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
+                </p>
+                <p className="text-sm text-green-500">Status: {status}</p>
+              </div>
+              <div className="flex-1 p-2">
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.2rem",
+                  }}
+                >
+                  <LiaSignalSolid style={{ display: "inline" }} />
+                  <p className="text-sm font-semibold">Network</p>
+                </span>
+                Network
+                <p className="text-sm">Speed: {trackData.speed} km/h</p>
+                <p className="text-sm">
+                  Satellites: {trackData["Additional Data"][3].satellites}
+                </p>
+                <p className="text-sm">Bearing: 0°</p>
+              </div>
+              <div className="flex-1 p-2">
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.2rem",
+                  }}
+                >
+                  <FaMapPin style={{ display: "inline" }} />
+                  <p className="text-sm font-semibold">Location</p>
+                </span>
+                <p className="text-sm">Latitude: {trackData.latitude}</p>
+                <p className="text-sm">Longitude: {trackData.longitude}</p>
+                <p className="text-sm">Address: {address}</p>
+              </div>
+
+              <div className="flex-1 p-2">
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.2rem",
+                  }}
+                >
+                  <FaCarBattery style={{ display: "inline" }} />
+                  <p className="text-sm font-semibold">Ignition</p>
+                </span>
+                <p className="text-sm">
+                  Ignition:{" "}
+                  {!trackData?.statusBitDefinition?.ignitionOn ? (
+                    <span>true</span>
+                  ) : (
+                    <span>false</span>
+                  )}
+                </p>
+              </div>
+              <div className="flex-1 p-2">
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    marginBottom: "0.2rem",
+                  }}
+                >
+                  <FaCarBattery style={{ display: "inline" }} />
+                  <p className="text-sm font-semibold">Battery</p>
+                </span>
+                <p className="text-sm">
+                  Battery Level:{" "}
+                  {trackData["Additional Data"][1].batteryPercentage}
+                </p>
+                <p className="text-sm">
+                  {`Battery Voltage: ${trackData["Additional Data"][1].batteryVoltage} V`}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </Box>
+    </>
   );
 };
 
