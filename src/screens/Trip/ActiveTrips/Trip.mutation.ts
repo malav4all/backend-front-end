@@ -52,3 +52,39 @@ export const SEARCH_DEVICE_GROUP = gql`
     }
   }
 `;
+
+export const FETCH_TRIP_METRICS = gql`
+  mutation ($input: TripInput!) {
+    getTripStatusMetrics(input: $input) {
+      status
+      count
+    }
+  }
+`;
+
+export const FETCH_TRIP_BY_ID = gql`
+  mutation ($input: TripIDInput!) {
+    fetchTripById(input: $input) {
+      data {
+        _id
+        metaData
+        endPoint
+        startPoint
+        tripData {
+          imei
+          vehicleNo
+          tripDate
+          remarks
+        }
+        route
+        alertConfig
+        tripEndDate
+        tripStartDate
+        primaryAccount
+        status
+        tripId
+        accountId
+      }
+    }
+  }
+`;

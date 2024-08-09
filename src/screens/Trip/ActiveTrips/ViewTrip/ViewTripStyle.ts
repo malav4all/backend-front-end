@@ -12,6 +12,7 @@ const viewTripStyle = {
     padding: "30px",
     display: "flex",
     flexDirection: "column",
+    background: "#060B25",
     [`@media screen and (max-width: ${1390}px)`]: {
       padding: "10px 30px",
     },

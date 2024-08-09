@@ -32,6 +32,7 @@ import dummyData from "./TripDashboard.helper";
 import { BsFillUnlockFill } from "react-icons/bs";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
+import axios from "axios";
 interface Trip {
   tripId: string;
   name: string;
@@ -69,7 +70,7 @@ const TripDashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [totalActiveTrips, setTotalActiveTrips] = useState<number>(0);
-
+  const [lockStatus, setLockStatus] = useState("Unlock");
   const stats: Record<string, Stats> = {
     executed: {
       title: "Today's Trips",
@@ -113,6 +114,48 @@ const TripDashboard = () => {
   const getOngoingTrips = (trips: Trip[]) => {
     const ongoingTrips = trips.filter((trip) => trip.status === "ongoing");
     setTotalActiveTrips(ongoingTrips.length);
+  };
+
+  // export const createEndpoint = async (
+  //   projectId: any,
+  //   payload: any,
+  //   apiKey: any
+  // ) => {
+  //   const url = `${API_BASE_URL}/projects/${projectId}/endpoints`;
+  //   try {
+  //     const response = await axios.post(url, payload, {
+  //       headers: {
+  //         Authorization: `Bearer ${apiKey}`,
+  //       },
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+
+  const unlockTrip = async (imei: string) => {
+    try {
+      console.log("caled");
+      const payload = {
+        imei: "688056086137",
+      };
+      const url = "http://103.20.214.201:5030/send-command";
+      const response = await axios.post(url, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        setLockStatus("lock");
+        openErrorNotification("Lock successfully unlocked!");
+      } else {
+        openErrorNotification("Failed to unlock the lock.");
+      }
+    } catch (error: any) {
+      openErrorNotification(
+        error.message || "An error occurred while unlocking."
+      );
+    }
   };
 
   const getTripList = () => {
@@ -241,9 +284,9 @@ const TripDashboard = () => {
               />
 
               <CustomButton
-                label="Unlock"
+                label={lockStatus}
                 startIcon={<BsFillUnlockFill />}
-                onClick={() => {}}
+                onClick={unlockTrip}
                 customClasses={{
                   padding: "6px 12px",
                   borderRadius: "8px",

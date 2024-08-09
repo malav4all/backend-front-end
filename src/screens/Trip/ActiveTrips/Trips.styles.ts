@@ -56,6 +56,7 @@ const tripStyles = {
   tableWrapper: {
     marginTop: 2,
     overflow: "auto",
+    background: "#060B25",
     [`@media screen and (max-width: ${1370}px)`]: {
       marginTop: 0,
     },
@@ -64,10 +65,10 @@ const tripStyles = {
       display: "none",
     },
   },
-  headerBox: {
-    background: "#FFFFFF",
-    [theme.breakpoints.down("sm")]: {},
-  },
+  // headerBox: {
+  //   background: "#060B25",
+  //   [theme.breakpoints.down("sm")]: {},
+  // },
   mainBox: {
     padding: "20px 30px",
     boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
