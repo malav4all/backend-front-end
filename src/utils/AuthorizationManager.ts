@@ -114,13 +114,13 @@ const ListOfMenus = () =>
       accessWithoutAnyResource: true,
       accessToResource: [],
       subMenu: [
-        {
-          icon: assetSvg("#dbdbdb"),
-          activeIcon: assetSvg(pinkDarkColor),
-          text: "Form Builder",
-          link: `${"/device-form-builder"}`,
-          pageName: strings.DEVICE_FORM_BUILDER,
-        },
+        // {
+        //   icon: assetSvg("#dbdbdb"),
+        //   activeIcon: assetSvg(pinkDarkColor),
+        //   text: "Form Builder",
+        //   link: `${"/device-form-builder"}`,
+        //   pageName: strings.DEVICE_FORM_BUILDER,
+        // },
         {
           icon: assetSvg("#dbdbdb"),
           activeIcon: assetSvg(pinkDarkColor),
@@ -313,7 +313,7 @@ const ListOfMenus = () =>
           text: "Trip Access",
           link: `${"/trip-access"}`,
           pageName: strings.TRIP_ACCESS,
-        },        
+        },
       ],
     },
     {

@@ -63,6 +63,7 @@ import ViewTrip from "../../Trip/ActiveTrips/ViewTrip/ViewTrip";
 import Trips from "../../Trip/ActiveTrips/Trips";
 import urls from "../../../global/constants/UrlConstants";
 import TripAccess from "../../Trip/UserAccess/UserAccess";
+import DeviceList from "../../DeviceList/DeviceList";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -152,6 +153,13 @@ const Layout = () => {
             path={"/location"}
             component={Geozone}
             componentName={strings.LOCATION}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/device-list"}
+            component={DeviceList}
+            componentName={strings.DEVICE_LIST}
           />
           <PrivateRoute
             exact
