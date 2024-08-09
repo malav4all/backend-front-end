@@ -62,11 +62,11 @@ const AlertConfig = () => {
   const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
   const [edit, setEdit] = useState(false);
 
-  useEffect(() => {
-    if (searchAlertConfig) {
-      searchDetailTable();
-    } else getUsersDetailTable();
-  }, [searchAlertConfig, pageNumber, rowsPerPage]);
+  // useEffect(() => {
+  //   if (searchAlertConfig) {
+  //     searchDetailTable();
+  //   } else getUsersDetailTable();
+  // }, [searchAlertConfig, pageNumber, rowsPerPage]);
 
   const getHeader = () => {
     return (
@@ -175,14 +175,14 @@ const AlertConfig = () => {
         deviceGroupName: (
           <>
             <Tooltip
-              title="Show Imei List"
+              title={usersData?.alertConfig?.alertImeiGroup.forEach((item:any)=> item)}
               placement="top"
               arrow
-              onClick={() => {
-                getRedirectionUrl(
-                  usersData?.alertConfig?.alertImeiGroup?.deviceGroupId
-                );
-              }}
+              // onClick={() => {
+              //   getRedirectionUrl(
+              //     usersData?.alertConfig?.alertImeiGroup?.deviceGroupId
+              //   );
+              // }}
             >
               <Typography
                 sx={{

@@ -25,6 +25,35 @@ export const deviceOnboardingTableHeader = [
   },
 ];
 
+export const deviceListTable = [
+  {
+    name: "AccountId",
+    field: "accountId",
+  },
+  {
+    name: "Device Name",
+    field: "deviceName",
+  },
+  {
+    name: "Device Account",
+    field: "deviceOnboardingAccount",
+  },
+  {
+    name: "Device Onboarding Sim",
+    field: "deviceOnboardingSimNo",
+  },
+
+  {
+    name: "Device IMEI No",
+    field: "deviceOnboardingIMEINumber",
+  },
+  {
+    name: "Action",
+    field: "action",
+    align: "center",
+  },
+];
+
 export const deviceOnboardingTableHeaderTenant = [
   {
     name: "Device Type",

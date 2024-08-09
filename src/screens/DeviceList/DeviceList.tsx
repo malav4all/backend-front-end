@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import DeviceOnboardingStyle from "./DeviceOnboarding.styles";
 import {
   Box,
   Grid,
@@ -9,35 +8,39 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
 import {
   CustomAppHeader,
-  CustomButton,
   CustomInput,
   CustomTable,
-} from "../../../global/components";
-import {
-  debounceEventHandler,
-  openErrorNotification,
-} from "../../../helpers/methods";
-import strings from "../../../global/constants/StringConstants";
+} from "../../global/components";
+import strings from "../../global/constants/StringConstants";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   boldFont,
   getRelativeFontSize,
   headerColor,
   primaryHeadingColor,
-} from "../../../utils/styles";
+} from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { deviceOnboardingTableHeader } from "./DeviceOnboarding.helpers";
-import AddDeviceOnboarding from "./Component/AddDeviceOnboading";
-import { fetchDeviceOnboardingTableHandler } from "./service/DeviceOnboarding.service";
-import EditIcon from "@mui/icons-material/Edit";
-import { store } from "../../../utils/store";
-import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import ExportCSV from "../../../global/components/ExportCSV";
-import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
-import { useLocation } from "react-router-dom";
+import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
+import { store } from "../../utils/store";
+import {
+  debounceEventHandler,
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../helpers/methods";
+import {
+  deviceListTable,
+  deviceOnboardingTableHeader,
+} from "../Inventory/DeviceOnboarding/DeviceOnboarding.helpers";
+import DeviceNameModal from "./Component/DevicenNameModal";
+import {
+  fetchDeviceList,
+  updateDeviceName,
+} from "./service/devicelist.service";
 
-const DeviceOnboarding = () => {
+const DeviceList = () => {
   const classes = DeviceOnboardingStyle;
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,10 +53,9 @@ const DeviceOnboarding = () => {
   const [perPageData, setPerPageData] = useState(10);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [tableData, setTableData] = useState<any>([]);
-  const [uploadAsset, setUploadAsset] = useState(false);
-  const location = useLocation();
-  const title =
-    location.pathname === "/device-list" ? "Device List" : "Device Onboarding";
+  const [formField, setFormField] = useState<any>();
+  const title = "Device List";
+
   useEffect(() => {
     fetchDeviceOnboardingData();
   }, [pageNumber, perPageData]);
@@ -64,10 +66,31 @@ const DeviceOnboarding = () => {
   ) => {
     setPageNumber(newPage);
   };
+
   const handlePerPageData = (event: any) => {
     setPageNumber(1);
     setSearchPageNumber(1);
     setPerPageData(event.target.value);
+  };
+
+  const updateDeviceNameHandler = async () => {
+    try {
+      const res = await updateDeviceName({
+        input: {
+          _id: selectedRowData._id,
+          ...selectedRowData,
+          deviceName: formField,
+          updatedBy: store.getState().auth.userName,
+        },
+      });
+      openSuccessNotification(res?.updateDeviceOnboarding?.message);
+      await fetchDeviceOnboardingData();
+      setFormField("");
+      setAddUserDialogHandler(false);
+      setSelectedRowData({});
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
   };
 
   const tableDataRender = (tableValue: string[]) => {
@@ -80,6 +103,7 @@ const DeviceOnboarding = () => {
           ?.map((val: any) => val)
           ?.join("-"),
         deviceOnboardingIMEINumber: item.deviceOnboardingIMEINumber,
+        deviceName: item.deviceName,
         action: (
           <>
             <Tooltip
@@ -98,16 +122,19 @@ const DeviceOnboarding = () => {
     });
     return data;
   };
-  const uploadAssetModalClose = () => {
-    setUploadAsset(false);
-  };
 
-  const uploadAssetGroupModal = () => {
+  const updateDeviceModalName = () => {
     return (
-      <UploadAssetGroup
-        showDialog={uploadAsset}
-        handleDialogClose={uploadAssetModalClose}
-        getAssetAssingmentDetailTable={() => {}}
+      <DeviceNameModal
+        open={addUserDialogHandler}
+        handleClose={() => {
+          setAddUserDialogHandler(false);
+        }}
+        formField={formField}
+        handleSave={updateDeviceNameHandler}
+        onChangeHandler={(e) => {
+          setFormField(e.target?.value);
+        }}
       />
     );
   };
@@ -115,7 +142,7 @@ const DeviceOnboarding = () => {
   const fetchDeviceOnboardingData = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchDeviceOnboardingTableHandler({
+      const res = await fetchDeviceList({
         input: {
           accountId: store.getState().auth.tenantId,
           page: pageNumber,
@@ -165,36 +192,6 @@ const DeviceOnboarding = () => {
     );
   };
 
-  const addUserButton = () => {
-    return (
-      <CustomButton
-        id="users_add_button"
-        label={"Onboard Device"}
-        onClick={() => setAddUserDialogHandler(true)}
-        customClasses={{
-          width: "170px",
-        }}
-      />
-    );
-  };
-
-  const addDeviceDialogBox = () => {
-    return (
-      <AddDeviceOnboarding
-        openAddUserDialog={addUserDialogHandler}
-        handleCloseAddUserDialog={closeAddUserDialogHandler}
-        isLoading={isLoading}
-        tableData={fetchDeviceOnboardingData}
-        selectedRowData={selectedRowData}
-        edit={edit}
-      />
-    );
-  };
-
-  const closeAddUserDialogHandler = () => {
-    setAddUserDialogHandler(false);
-  };
-
   const handleSearchChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -206,7 +203,7 @@ const DeviceOnboarding = () => {
     return (
       <Box id="users_display_table" sx={classes.campaignerTable}>
         <CustomTable
-          headers={deviceOnboardingTableHeader}
+          headers={deviceListTable}
           rows={tableData}
           paginationCount={count}
           handlePageChange={
@@ -239,36 +236,6 @@ const DeviceOnboarding = () => {
             fontWeight: "bold",
           }}
         ></Typography>
-
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          {/* {getSearchBar()} */}
-          <CustomButton
-            id="groups_download_template_button"
-            label="Download&nbsp;Template"
-            onClick={ExportCSV(
-              ["imei,accountId,simno,businessmodel,location"],
-              "deviceassignment"
-            )}
-            customClasses={{
-              width: "200px",
-            }}
-          />
-          <CustomButton
-            id="groups_download_template_button"
-            label="Upload Bulk Device"
-            onClick={() => {
-              setUploadAsset(true);
-            }}
-            customClasses={{
-              width: "200px",
-            }}
-          />
-          {addUserButton()}
-        </Stack>
       </Stack>
 
       <Box
@@ -278,7 +245,6 @@ const DeviceOnboarding = () => {
         }}
       >
         {campaignerTable()}
-        {addDeviceDialogBox()}
       </Box>
     </Box>
   );
@@ -343,11 +309,11 @@ const DeviceOnboarding = () => {
         sx={classes.mainSection}
       >
         {getDeviceOnboarding()}
-        {uploadAssetGroupModal()}
+        {updateDeviceModalName()}
       </Grid>
 
       <CustomLoader isLoading={isLoading} />
     </Box>
   );
 };
-export default React.memo(DeviceOnboarding);
+export default React.memo(DeviceList);

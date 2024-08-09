@@ -87,12 +87,19 @@ const DeviceGroup = () => {
         deviceGroupName: (
           <>
             <Tooltip
-              title="Show Imei List"
+              title={item?.deviceGroupName?.imeiData?.map(
+                (imei: any, index: any) => (
+                  <span key={index}>
+                    {imei}
+                    <br />
+                  </span>
+                )
+              )}
               placement="top"
               arrow
-              onClick={() => {
-                getRedirectionUrl(item?._id);
-              }}
+              // onClick={() => {
+              //   getRedirectionUrl(item?._id);
+              // }}
               sx={{
                 color: theme.palette.text.primary,
               }}
@@ -121,6 +128,17 @@ const DeviceGroup = () => {
             }}
           >
             {item?.createdBy}
+          </Typography>
+        ),
+        imei: (
+          <Typography
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+          >
+            {item?.imeiData?.map((imei: any, index: any) => (
+              <span key={index}>{imei},</span>
+            ))}
           </Typography>
         ),
         action: (
@@ -153,7 +171,7 @@ const DeviceGroup = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading }}>
+        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
           Device Group
         </Typography>
       </Box>

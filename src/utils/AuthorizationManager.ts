@@ -114,13 +114,13 @@ const ListOfMenus = () =>
       accessWithoutAnyResource: true,
       accessToResource: [],
       subMenu: [
-        {
-          icon: assetSvg("#dbdbdb"),
-          activeIcon: assetSvg(pinkDarkColor),
-          text: "Form Builder",
-          link: `${"/device-form-builder"}`,
-          pageName: strings.DEVICE_FORM_BUILDER,
-        },
+        // {
+        //   icon: assetSvg("#dbdbdb"),
+        //   activeIcon: assetSvg(pinkDarkColor),
+        //   text: "Form Builder",
+        //   link: `${"/device-form-builder"}`,
+        //   pageName: strings.DEVICE_FORM_BUILDER,
+        // },
         {
           icon: assetSvg("#dbdbdb"),
           activeIcon: assetSvg(pinkDarkColor),
@@ -148,17 +148,17 @@ const ListOfMenus = () =>
     //   accessToResource: [],
     //   subMenu: [],
     // },
-    {
-      icon: deviceGroupIcon("#dbdbdb"),
-      activeIcon: deviceGroupIcon(pinkDarkColor),
-      text: "Device Group",
-      link: `${"/device-group"}`,
-      pageName: strings.DEVICE_GROUP,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
-    },
+    // {
+    //   icon: deviceGroupIcon("#dbdbdb"),
+    //   activeIcon: deviceGroupIcon(pinkDarkColor),
+    //   text: "Device Group",
+    //   link: `${"/device-group"}`,
+    //   pageName: strings.DEVICE_GROUP,
+    //   visibleInSidebar: true,
+    //   accessWithoutAnyResource: true,
+    //   accessToResource: [],
+    //   subMenu: [],
+    // },
 
     {
       icon: routesIcon("#dbdbdb"),
@@ -313,7 +313,14 @@ const ListOfMenus = () =>
           text: "Trip Access",
           link: `${"/trip-access"}`,
           pageName: strings.TRIP_ACCESS,
-        },        
+        },
+        {
+          icon: geoZoneSvg("#dbdbdb"),
+          activeIcon: geoZoneSvg(pinkDarkColor),
+          text: "Trip Form Builder",
+          link: `${"/form-builder"}`,
+          pageName: strings.FORM_BUILDER,
+        },
       ],
     },
     {
@@ -340,13 +347,13 @@ const ListOfMenus = () =>
           link: `${"/device-module"}`,
           pageName: strings.DEVICE_MODULE,
         },
-        {
-          icon: getInventoryIcon("#dbdbdb"),
-          activeIcon: getInventoryIcon(pinkDarkColor),
-          text: "Device History",
-          link: `${"/device-history"}`,
-          pageName: strings.DEVICE_HISTORY,
-        },
+        // {
+        //   icon: getInventoryIcon("#dbdbdb"),
+        //   activeIcon: getInventoryIcon(pinkDarkColor),
+        //   text: "Device History",
+        //   link: `${"/device-history"}`,
+        //   pageName: strings.DEVICE_HISTORY,
+        // },
         {
           icon: getInventoryIcon("#dbdbdb"),
           activeIcon: getInventoryIcon(pinkDarkColor),
@@ -362,17 +369,6 @@ const ListOfMenus = () =>
           pageName: strings.DEVICE_TRANSFER,
         },
       ],
-    },
-    {
-      icon: getFromBuilderIcon("#dbdbdb"),
-      activeIcon: getFromBuilderIcon(pinkDarkColor),
-      text: "Form Builder",
-      link: `${"/form-builder"}`,
-      pageName: strings.FORM_BUILDER,
-      visibleInSidebar: true,
-      accessWithoutAnyResource: true,
-      accessToResource: [],
-      subMenu: [],
     },
   ] as any;
 

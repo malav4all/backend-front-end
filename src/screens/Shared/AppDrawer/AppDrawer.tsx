@@ -132,6 +132,9 @@ const AppDrawer = (props: CustomProps) => {
   };
 
   const handleSubmenuToggle = (index: number, option: any) => {
+    if (!isDrawerOpen) {
+      return;
+    }
     setActiveIndex(
       activeIndex === index && isTruthy(option.subMenu) ? -1 : index
     );
@@ -158,6 +161,7 @@ const AppDrawer = (props: CustomProps) => {
   };
 
   const listItemClickHandler = (option: any, index: number) => {
+    setIsDrawerOpen(true);
     handleSubmenuToggle(index, option);
     if (!isSubMenuItemActive(option)) {
       handleRedirection(option);
@@ -317,48 +321,8 @@ const AppDrawer = (props: CustomProps) => {
             )}
           </ListItem>
         </Box>
-        {option.subMenu &&
-          isHovered === index &&
-          renderSubmenuItemsHover(option.subMenu, index)}
         {option.subMenu && renderSubmenuItems(option.subMenu, index)}
       </React.Fragment>
-    );
-  };
-
-  const renderSubmenuItemsHover = (
-    subMenuOptions: any[],
-    parentIndex: number
-  ) => {
-    if (!subMenuOptions || isDrawerOpen) return null;
-
-    const parentElement = submenuRefs.current[parentIndex];
-    const boundingRect = parentElement?.getBoundingClientRect();
-
-    return (
-      <Paper
-        elevation={3}
-        sx={{
-          position: "absolute",
-          left: boundingRect ? boundingRect.width : 50, // Adjust based on your layout
-          top: boundingRect ? boundingRect.top : parentIndex * 48 + 10, // Adjust based on your layout and item height
-          zIndex: 1000,
-          backgroundColor: "#060B25", // Match the sidebar background
-          color: "#fffff0", // Ensure text color matches your theme
-        }}
-      >
-        {subMenuOptions.map((data: any, index: number) => (
-          <ListItem
-            key={index}
-            id="app_drawer_sub_menu_link"
-            sx={{
-              padding: "8px 16px",
-            }}
-            onClick={() => handleRedirection(data)}
-          >
-            <ListItemText primary={data.text} />
-          </ListItem>
-        ))}
-      </Paper>
     );
   };
 
@@ -519,6 +483,7 @@ const AppDrawer = (props: CustomProps) => {
           sx={[
             isDrawerOpen ? classes.drawerHide : classes.drawer,
             classes.drawerContainerBox,
+            { zIndex: 13000 },
           ]}
         >
           <Box sx={classes.drawerWidth}>
@@ -558,3 +523,4 @@ const AppDrawer = (props: CustomProps) => {
 };
 
 export default AppDrawer;
+  

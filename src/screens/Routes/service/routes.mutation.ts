@@ -82,3 +82,31 @@ export const SEARCH_ROUTES = gql`
     }
   }
 `;
+
+export const SPEED_GRAPH = gql`
+  mutation ($input: GetBatteryPercentageGraphInput!) {
+    speedGraphData(input: $input) {
+      xaxis {
+        categories
+      }
+      series {
+        name
+        data
+      }
+    }
+  }
+`;
+
+export const BATTERY_GRAPH = gql`
+  mutation ($input: GetBatteryPercentageGraphInput!) {
+    batteryGraphDataData(input: $input) {
+      xaxis {
+        categories
+      }
+      series {
+        name
+        data
+      }
+    }
+  }
+`;

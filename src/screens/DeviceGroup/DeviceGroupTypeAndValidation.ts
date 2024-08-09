@@ -6,6 +6,10 @@ export const deviceGroupTableHeader = [
     field: "deviceGroupName",
   },
   {
+    name: "IMEI Number",
+    field: "imei",
+  },
+  {
     name: "Created By",
     field: "createdBy",
   },

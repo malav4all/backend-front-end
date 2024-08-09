@@ -6,11 +6,16 @@ import {
   InputAdornment,
   MenuItem,
   Select,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { CustomInput, CustomTable } from "../../../../global/components";
+import {
+  CustomInput,
+  CustomPaper,
+  CustomTable,
+} from "../../../../global/components";
 import moment from "moment";
 import {
   debounceEventHandler,
@@ -24,6 +29,13 @@ import { getDistance } from "geolib";
 import { time } from "console";
 import distanceReportStyles from "./DistanceReport.styles";
 import { getDistanceReport } from "./service/distance.service";
+import { store } from "../../../../utils/store";
+import {
+  disabledBackgroundColor,
+  primaryHeaderColor,
+} from "../../../../utils/styles";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import history from "../../../../utils/history";
 interface CustomProps {
   isFromRoutesReport: boolean;
 }
@@ -55,12 +67,13 @@ const DistanceReport = (props: CustomProps) => {
       setIsLoading(true);
       const res = await getDistanceReport({
         input: {
+          accountId: store.getState().auth.tenantId,
           startDate: dateFilter.startDate,
           endDate: dateFilter.endDate,
         },
       });
 
-      const data = tableRender(res.fetchDistanceReport);
+      const data = tableRender(res.getDistanceReportData);
 
       setRoutesTableData(data);
       setIsLoading(false);
@@ -153,6 +166,36 @@ const DistanceReport = (props: CustomProps) => {
         imei: item.imei,
         distance: formattedDistance,
         duration: calculateApproxTime(formattedDistance),
+        action: (
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography>{"View Routes"}</Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
+              },
+            }}
+          >
+            <VisibilityIcon
+              key={item._id}
+              style={{ color: primaryHeaderColor, cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: "/trackplay",
+                });
+              }}
+            />
+          </Tooltip>
+        ),
       };
     });
 
@@ -431,6 +474,7 @@ const DistanceReport = (props: CustomProps) => {
                 { name: "IMEI", field: "imei" },
                 { name: "Total Distance (Approx)", field: "distance" },
                 { name: "Total Duration (Approx)", field: "duration" },
+                { name: "Action", field: "action" },
               ]}
               rows={isSearching ? filterData : routesTableData}
               size={[5]}

@@ -8,7 +8,12 @@ import DeviceSimHistoryTable from "./DeviceSimHistoryTable";
 import { openErrorNotification } from "../../../helpers/methods";
 import { CustomAppHeader, CustomTable } from "../../../global/components";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import { boldFont, headerColor, primaryHeadingColor, getRelativeFontSize } from "../../../utils/styles";
+import {
+  boldFont,
+  headerColor,
+  primaryHeadingColor,
+  getRelativeFontSize,
+} from "../../../utils/styles";
 
 const DeviceHistory = () => {
   const classes = DeviceHistoryStyles;
@@ -31,7 +36,7 @@ const DeviceHistory = () => {
       </Box>
     );
   };
-  
+
   const handlePerPageData = (event: any) => {
     setRowsPerPage(event.target.value);
   };
@@ -107,7 +112,14 @@ const DeviceHistory = () => {
     );
   };
   return (
-    <>
+    <Box
+      sx={{
+        // backgroundColor: theme.palette.background.default,
+        width: "100%",
+        height: "100vh",
+        margin: "auto",
+      }}
+    >
       <CustomAppHeader
         className={{
           backgroundColor: headerColor,
@@ -149,7 +161,7 @@ const DeviceHistory = () => {
       </Box>
       <DeviceSimHistoryTable />
       <CustomLoader isLoading={isLoading} />
-    </>
+    </Box>
   );
 };
 

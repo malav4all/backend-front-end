@@ -25,6 +25,7 @@ import {
 import strings from "../../../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
 import CustomDatePicker from "../../../../global/components/CustomDatePicker/CustomDatePicker";
+import { store } from "../../../../utils/store";
 
 interface CustomDateRange {
   fromDate: string;
@@ -63,27 +64,29 @@ const AlertReport = () => {
         try {
           const res = await alertRowData({
             input: {
+              accountId: store.getState().auth.tenantId,
               startDate: dateFilter.startDate,
               endDate: dateFilter.endDate,
               page,
               limit,
             },
           });
-          const alertTableDataValue = res?.getAlertData?.data?.map(
+
+          const alertTableDataValue = res?.getAlertData?.rowData?.map(
             (item: any) => {
               return {
+                accountId: item.accountId,
                 imei: item.imei,
-                label: item.label,
-                mode: item.mode,
                 event: item.event,
-                message: item.message,
-                source: item.source,
+                message: item.alertMessage,
+                latitude: item.latitude,
+                longitude: item.longitude,
                 time: moment(item.time).fromNow(),
               };
             }
           );
           setAlertTableData(alertTableDataValue);
-          setCount(res?.getAlertData?.paginatorInfo?.count);
+          setCount(res?.getAlertData.totalCount);
         } catch (error: any) {
           openErrorNotification(error.message);
         }
@@ -135,6 +138,9 @@ const AlertReport = () => {
     if (event.target.value !== "Custom") {
       setLastSelectedRange({ startDate, endDate });
     }
+
+    console.log({ startDate });
+    console.log({ endDate });
 
     setDateFilter({
       startDate: startDate,
@@ -192,6 +198,9 @@ const AlertReport = () => {
             </MenuItem>
             <MenuItem value="Past 3h" sx={classes.optionStyle}>
               Past 3h
+            </MenuItem>
+            <MenuItem value="Past 6h" sx={classes.optionStyle}>
+              Past 6h
             </MenuItem>
             <MenuItem value="Past 12h" sx={classes.optionStyle}>
               Past 12h
@@ -434,12 +443,12 @@ const AlertReport = () => {
           <Grid item xs={12} sm={12} md={12} xl={12} lg={12}>
             <CustomTable
               headers={[
-                { name: "NAME", field: "label" },
+                { name: "Account", field: "accountId" },
                 { name: "IMEI", field: "imei" },
                 { name: "Event", field: "event" },
-                { name: "Mode", field: "mode" },
-                { name: "Source", field: "source" },
                 { name: "Message", field: "message" },
+                { name: "Latitude", field: "latitude" },
+                { name: "Longitude", field: "longitude" },
                 { name: "Time", field: "time" },
               ]}
               rows={isSearching ? filterData : alertTableData}
