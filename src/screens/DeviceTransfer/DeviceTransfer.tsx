@@ -450,7 +450,18 @@ const DeviceTransfer = () => {
     </Box>
   );
 
-  return getDeviceTransfer();
+  return (
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        width: "100%",
+        height: "100vh",
+        margin: "auto",
+      }}
+    >
+      {getDeviceTransfer()}
+    </Box>
+  );
 };
 
 export default DeviceTransfer;

@@ -298,7 +298,7 @@ const AddDevice = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         width: "100%",
-        height: "auto",
+        height: "100vh",
         margin: "auto",
       }}
     >

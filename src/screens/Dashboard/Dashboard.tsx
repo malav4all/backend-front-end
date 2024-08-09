@@ -66,16 +66,6 @@ const Dashboard = () => {
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
   });
-  const [messages, setMessages] = useState<any>();
-  const accountId = "IMZ113343";
-
-  const { data } = useSubscription(ALERT_DEVICE_DATA, {
-    variables: { accountId, imeis: [] },
-  });
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   useEffect(() => {
     graphData();

@@ -29,7 +29,10 @@ import {
   ALERTS_SUBSCRIPTION,
   DEVICE_DATA,
 } from "../../Dashboard/service/Dashboard.mutation";
-import { openErrorAlertNotification } from "../../../helpers/methods";
+import {
+  openErrorAlertNotification,
+  openWarningNotification,
+} from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import UpcomingRoutes from "../../Routes/screens/UpcomingRoutes/UpcomingRoutes";
@@ -89,16 +92,21 @@ const Layout = () => {
     }
   };
 
-  // const { data } = useSubscription(DEVICE_DATA, {
-  //   variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
-  // });
+  const { data } = useSubscription(DEVICE_DATA, {
+    variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
+  });
 
-  // useEffect(() => {
-  //   if (data?.track) {
-  //     const trackJson = JSON.parse(data.track);
-  //     openErrorAlertNotification(trackJson?.alert);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data?.track) {
+      const trackJson = JSON.parse(data.track);
+      openWarningNotification(
+        `${trackJson?.alert}`,
+        trackJson?.parsedData?.name
+      );
+
+      console.log(trackJson);
+    }
+  }, [data]);
 
   const { getLastActiveTime } = useIdleTimer({
     timeout: 15 * 1000 * 60,

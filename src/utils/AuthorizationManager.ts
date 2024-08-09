@@ -347,13 +347,13 @@ const ListOfMenus = () =>
           link: `${"/device-module"}`,
           pageName: strings.DEVICE_MODULE,
         },
-        {
-          icon: getInventoryIcon("#dbdbdb"),
-          activeIcon: getInventoryIcon(pinkDarkColor),
-          text: "Device History",
-          link: `${"/device-history"}`,
-          pageName: strings.DEVICE_HISTORY,
-        },
+        // {
+        //   icon: getInventoryIcon("#dbdbdb"),
+        //   activeIcon: getInventoryIcon(pinkDarkColor),
+        //   text: "Device History",
+        //   link: `${"/device-history"}`,
+        //   pageName: strings.DEVICE_HISTORY,
+        // },
         {
           icon: getInventoryIcon("#dbdbdb"),
           activeIcon: getInventoryIcon(pinkDarkColor),
