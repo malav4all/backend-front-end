@@ -60,9 +60,9 @@ interface Stats {
 
 const TripDashboard = () => {
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   useTitle(strings.DashboardTitle);
   const classes = dashboardStyles;
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
   const [searchData, setSearchData] = useState<string>("");
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -97,10 +97,10 @@ const TripDashboard = () => {
         };
         const response = await ListAllTrips(variables);
         setTrips(response?.tripList?.data);
-        setLoading(false);
       } catch (err: any) {
         setError(err.message);
-        setLoading(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTrips();
@@ -258,18 +258,6 @@ const TripDashboard = () => {
         </Box>
       </Box>
     );
-  };
-
-  const fetchTripDashboardHandler = async () => {
-    try {
-      setIsLoading(true);
-      // Replace dummyData with actual data fetching logic
-      setTripDashboardData(dummyData as any);
-      setIsLoading(false);
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
   };
 
   function formatDate(dateString: any) {
@@ -467,10 +455,6 @@ const TripDashboard = () => {
       </Grid>
     );
   };
-
-  useEffect(() => {
-    fetchTripDashboardHandler();
-  }, []);
 
   return (
     <Box

@@ -6,13 +6,24 @@ import { FaLock } from "react-icons/fa";
 import { LiaSignalSolid } from "react-icons/lia";
 import { FaMapPin } from "react-icons/fa";
 import { FaCarBattery } from "react-icons/fa6";
+import { useLocation } from "react-router-dom";
+
+interface LocationState {
+  imei: string;
+  status: string;
+}
+
 const ViewLiveTracking = () => {
   const [map, setMap] = useState<any>(null);
   const [currentMarker, setCurrentMarker] = useState<any>(null);
   const [trackData, setTrackData] = useState<any>(null);
   const [address, setAddress] = useState<string>("Loading...");
+  const location = useLocation();
+  console.log("location State:", location.state);
 
   const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
+
+  const { imei, status } = location.state as LocationState;
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -47,7 +58,7 @@ const ViewLiveTracking = () => {
     variables: {
       topicType: "track",
       accountId: "IMZ113343",
-      imeis: ["688056086137"],
+      imeis: [imei],
     },
   });
 
@@ -123,7 +134,9 @@ const ViewLiveTracking = () => {
       }
     }
   }, [data]);
+
   console.log(trackData);
+
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
       <div id="map" style={{ width: "100%", height: "80%" }}></div>
@@ -141,7 +154,7 @@ const ViewLiveTracking = () => {
               <FaLock style={{ display: "inline" }} />
               <p className="text-sm font-semibold">{trackData.imei}</p>
             </span>
-            <p className="text-xs">
+            <p className="text-sm">
               Connection:
               {!trackData?.statusBitDefinition?.connection ? (
                 <span>true</span>
@@ -149,14 +162,14 @@ const ViewLiveTracking = () => {
                 <span>false</span>
               )}
             </p>
-            <p className="text-xs">
+            <p className="text-sm">
               Last Updated: {moment(trackData.dateTime).fromNow()}
             </p>
-            <p className="text-xs">
+            <p className="text-sm">
               Date/Time:{" "}
               {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
             </p>
-            <p className="text-xs text-red-500">Status:</p>
+            <p className="text-sm text-green-500">Status: {status}</p>
           </div>
           <div className="flex-1 p-2">
             <span
@@ -170,10 +183,11 @@ const ViewLiveTracking = () => {
               <LiaSignalSolid style={{ display: "inline" }} />
               <p className="text-sm font-semibold">Network</p>
             </span>
+            Network
+            <p className="text-sm">Speed: {trackData.speed} km/h</p>
             <p className="text-sm">
-              Network: {trackData.statusBitDefinition.network}
+              Satellites: {trackData["Additional Data"][3].satellites}
             </p>
-            <p className="text-sm">Speed: 0 km/h</p>
             <p className="text-sm">Bearing: 0°</p>
           </div>
           <div className="flex-1 p-2">

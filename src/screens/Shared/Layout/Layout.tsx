@@ -106,6 +106,8 @@ const Layout = () => {
     debounce: 500,
   });
 
+  // console.log(data);
+
   const getContent = () => {
     return (
       <Box sx={classes.content}>

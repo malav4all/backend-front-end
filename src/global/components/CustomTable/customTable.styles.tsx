@@ -9,6 +9,7 @@ import {
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   regularFont,
+  semiBoldFont,
   theme,
 } from "../../../utils/styles";
 
@@ -32,7 +33,7 @@ const customTableStyles = {
   },
 
   tableHeaderCell: {
-    ...regularFont,
+    ...semiBoldFont,
     fontSize: "14px",
     border: "none",
     padding: "12px 18px",

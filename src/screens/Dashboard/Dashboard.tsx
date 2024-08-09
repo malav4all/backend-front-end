@@ -41,6 +41,7 @@ const Dashboard = () => {
 
   useTitle(strings.DashboardTitle);
   const theme = useTheme();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // const classes = dashboardStyles;
   // const [page, setPage] = useState(1);
   // const [limit, setLimit] = useState(10);
@@ -58,7 +59,6 @@ const Dashboard = () => {
   //   endDate: moment().toISOString(),
   // });
   // const [selectedRange, setSelectedRange] = useState("Past 30m");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [statData, setStatData] = useState<any>([]);
   const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
   const [dataGraph, setGraphData] = useState<any>();
@@ -100,7 +100,10 @@ const Dashboard = () => {
         lineChart: chartLine?.lineGraphDeviceData,
         deviceDashboardData: deviceDashboardData?.getOnlineOfflineCount,
       });
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const getDeviceList = () => {
@@ -165,18 +168,26 @@ const Dashboard = () => {
                 status: item.status,
                 name: item.name,
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
-                action: (
-                  <Link to="/live-tracking">
-                    <FaMapLocationDot
-                      style={{
-                        cursor: "pointer",
-                        fontSize: "1.4rem",
-                        color: "#7c58cb",
-                        marginLeft: "1rem",
+                action:
+                  item.status === "offline" ? (
+                    <span></span>
+                  ) : (
+                    <Link
+                      to={{
+                        pathname: "/live-tracking",
+                        state: { imei: item.imei, status: item.status },
                       }}
-                    />
-                  </Link>
-                ),
+                    >
+                      <FaMapLocationDot
+                        style={{
+                          cursor: "pointer",
+                          fontSize: "1.4rem",
+                          color: "#7c58cb",
+                          marginLeft: "1rem",
+                        }}
+                      />
+                    </Link>
+                  ),
               };
             })}
             isRowPerPageEnable={false}

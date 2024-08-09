@@ -27,7 +27,7 @@ import history from "../../../utils/history";
 import dashboardStyles from "../DashboardStyles";
 import { MdAddchart } from "react-icons/md";
 import CustomDialog from "../../../global/components/CustomDialog/CustomDialog"; // Import CustomDialog
-
+import { IoReloadOutline } from "react-icons/io5";
 interface HeaderProps {
   local_varaiable: any;
 }
@@ -194,30 +194,6 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
                 gap: 1,
               }}
             >
-              <Box sx={{ marginRight: "1rem" }}>
-                <Autocomplete
-                  sx={{
-                    ...classes.emailDropDownStyle,
-                    backgroundColor: theme.palette.background.paper,
-                    color: theme.palette.text.primary,
-                    borderRadius: "5px",
-                    width: "300px",
-                  }}
-                  value={selectedDeviceGroup}
-                  onChange={(event, newValue) =>
-                    setSelectedDeviceGroup(newValue)
-                  }
-                  options={deviceGroups.map((group) => group.label)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Device Group Filter"
-                      variant="outlined"
-                    />
-                  )}
-                />
-              </Box>
-
               <IconButton
                 onClick={handleToggleDropdown}
                 aria-controls="notifications-menu"
@@ -279,7 +255,7 @@ const Header: FC<HeaderProps> = ({ local_varaiable }) => {
               </Menu>
 
               <IconButton onClick={handleDialogOpen}>
-                <MdAddchart />
+                <IoReloadOutline  />
               </IconButton>
             </Grid>
           </Grid>
