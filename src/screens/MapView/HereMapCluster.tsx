@@ -3,18 +3,13 @@ import { airports } from "./dummy";
 
 const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
 
-declare global {
-  interface Window {
-    H: any;
-  }
-}
 const HereMapCluster: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const currentBubbleRef = useRef<H.ui.InfoBubble | null>(null);
+  const currentBubbleRef = useRef(null);
 
   useEffect(() => {
     const initializeMap = async () => {
-      const H = (window as any).H;
+      const H = window.H;
 
       if (!H) {
         console.error("HERE Maps API not loaded");
@@ -62,44 +57,64 @@ const HereMapCluster: React.FC = () => {
         }
       };
 
-      clusteredDataProvider.addEventListener("tap", (event: any) => {
+      const getReverseGeocodingData = async (latitude: number, longitude: number) => {
+        const url = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&lang=en-US&apikey=${apiKey}`;
+
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("Reverse Geocoding Data: ", data);
+
+          if (data.items && data.items.length > 0) {
+            const address = data.items[0].address.label;
+            return address;
+          } else {
+            console.log("No address found for the given coordinates.");
+            return "No address available";
+          }
+        } catch (error) {
+          console.error("Error during reverse geocoding: ", error);
+          return "No address available";
+        }
+      };
+
+      clusteredDataProvider.addEventListener("tap", async (event: any) => {
         const target = event.target;
 
-        if (
-          target instanceof H.map.Marker &&
-          target.getData() &&
-          !target.getClusteredData()
-        ) {
+        // Ensure target is a marker and not a cluster
+        if (target instanceof H.map.Marker && !target.getData().getClusteredData) {
           const data = target.getData();
-          console.log("Data1: ", data);
+          if (!data.Jq) {
+            console.log("Marker Data: ", data);
 
-          const bubbleContent = `
-  <div class="font-sans leading-relaxed p-4 w-64">
-    <h3 class="m-0 text-lg text-gray-800 font-semibold">${
-      data.name || "No name available"
-    }</h3>
-    <p class="mt-2 text-sm text-gray-600"><strong>Address:</strong> ${
-      data.address || "No address available"
-    }</p>
-    <p class="mt-2 text-sm text-gray-600"><strong>Contact:</strong> ${
-      data.contact || "No contact available"
-    }</p>
-    <p class="mt-2 text-sm text-gray-600"><strong>Latitude:</strong> ${
-      data.latitude || "No latitude available"
-    }</p>
-    <p class="mt-2 text-sm text-gray-600"><strong>Longitude:</strong> ${
-      data.longitude || "No longitude available"
-    }</p>
-  </div>
-`;
+            const address = await getReverseGeocodingData(data.dm.data.latitude, data.dm.data.longitude);
 
-          clearCurrentBubble();
+            const bubbleContent = `
+              <div class="font-sans leading-relaxed p-4 w-64">
+                <h3 class="m-0 text-lg text-gray-800 font-semibold">${data.name || "6232512668984"
+              }</h3>
+                <p class="mt-2 text-sm text-gray-600"><strong>Address:</strong> ${address}</p>
+              }</p>
+                <p class="mt-2 text-sm text-gray-600"><strong>Latitude:</strong> ${data?.dm?.data?.latitude || "No latitude available"
+              }</p>
+                <p class="mt-2 text-sm text-gray-600"><strong>Longitude:</strong> ${data?.dm?.data?.longitude || "No longitude available"
+              }</p>
+              </div>
+            `;
 
-          const bubble = new H.ui.InfoBubble(target.getGeometry(), {
-            content: bubbleContent,
-          });
-          ui.addBubble(bubble);
-          currentBubbleRef.current = bubble;
+            clearCurrentBubble();
+
+            const bubble = new H.ui.InfoBubble(target.getGeometry(), {
+              content: bubbleContent,
+            });
+            ui.addBubble(bubble);
+            currentBubbleRef.current = bubble;
+          }
+        } else {
+          console.log("Cluster clicked, no popup will be shown.");
         }
       });
     };
