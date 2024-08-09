@@ -108,45 +108,45 @@ const AddFilter = (props: CustomProps) => {
     alertDataInput.event === "unlocked" ||
     alertDataInput.event === "other";
 
-  useEffect(() => {
-    fetchLocationTypeHandler();
-    fetchImeiData();
-    getDeviceGroupData();
-  }, []);
+  // useEffect(() => {
+  //   fetchLocationTypeHandler();
+  //   fetchImeiData();
+  //   getDeviceGroupData();
+  // }, []);
 
-  useEffect(() => {
-    props.setEdit?.(false);
-    setUserFormFields(insertUserField());
-    setDeviceGroupInput("");
-    setDeviceName([]);
-    setAlertData([]);
-    setSelectedImeis([]);
-    setDeviceGroupId("");
-    setDeviceGroupFromFields({
-      imeiList: [],
-    });
-  }, [props?.openAddUserDialog]);
+  // useEffect(() => {
+  //   props.setEdit?.(false);
+  //   setUserFormFields(insertUserField());
+  //   setDeviceGroupInput("");
+  //   setDeviceName([]);
+  //   setAlertData([]);
+  //   setSelectedImeis([]);
+  //   setDeviceGroupId("");
+  //   setDeviceGroupFromFields({
+  //     imeiList: [],
+  //   });
+  // }, [props?.openAddUserDialog]);
 
-  useEffect(() => {
-    if (props?.edit && props?.selectedUserRowData) {
-      props.setEdit?.(true);
-      setDeviceGroupInput(
-        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
-      );
-      setDeviceName(props?.selectedUserRowData?.alertConfig?.userSelectedImei);
-      setAlertData(props?.selectedUserRowData?.alertConfig?.alertData);
-      setSelectedImeis(
-        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.imei
-      );
-      setDeviceGroupFromFields({
-        imeiList: props?.selectedUserRowData?.alertConfig?.userSelectedImei,
-      });
-      setDeviceGroupId(
-        props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupId
-      );
-      setUserFormFields(insertUserField(props?.selectedUserRowData));
-    }
-  }, [props?.selectedUserRowData, props.edit]);
+  // useEffect(() => {
+  //   if (props?.edit && props?.selectedUserRowData) {
+  //     props.setEdit?.(true);
+  //     setDeviceGroupInput(
+  //       props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupName
+  //     );
+  //     setDeviceName(props?.selectedUserRowData?.alertConfig?.userSelectedImei);
+  //     setAlertData(props?.selectedUserRowData?.alertConfig?.alertData);
+  //     setSelectedImeis(
+  //       props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.imei
+  //     );
+  //     setDeviceGroupFromFields({
+  //       imeiList: props?.selectedUserRowData?.alertConfig?.userSelectedImei,
+  //     });
+  //     setDeviceGroupId(
+  //       props?.selectedUserRowData?.alertConfig?.alertImeiGroup?.deviceGroupId
+  //     );
+  //     setUserFormFields(insertUserField(props?.selectedUserRowData));
+  //   }
+  // }, [props?.selectedUserRowData, props.edit]);
 
   const handleFormDataChange = (
     formFillEvent: React.ChangeEvent<HTMLInputElement>
