@@ -164,7 +164,7 @@ const Dashboard = () => {
                 accountId: item.name,
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
                 action: (
-                  <Link to="/map-view">
+                  <Link to="/live-tracking">
                     <FaMapLocationDot
                       style={{
                         cursor: "pointer",
