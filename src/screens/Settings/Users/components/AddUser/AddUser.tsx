@@ -125,7 +125,6 @@ const AddUser = (props: CustomProps) => {
     }
   }, [userFormFields?.deviceGroupAccountId?.value]);
 
-
   const fetchDeviceGroupData = async () => {
     try {
       setIsLoading(true);
@@ -146,15 +145,6 @@ const AddUser = (props: CustomProps) => {
     }
   };
 
-  const handleValidation = () => {
-    const { isValid, errors }: any = validateAddUserForm(
-      userFormFields,
-      props?.edit
-    );
-    setUserFormFields({ ...errors });
-    return isValid;
-  };
-
   const handleSelectAccount = (formFillEvent: SelectChangeEvent<any>) => {
     const selectedAccount = accountData.find(
       (account: any) => account.accountName === formFillEvent.target.value
@@ -167,7 +157,7 @@ const AddUser = (props: CustomProps) => {
         error: "",
       },
       accountId: {
-        value: selectedAccount?._id ?? "",
+        value: selectedAccount?.accountId ?? "",
         error: "",
       },
       deviceGroupAccountId: {
@@ -293,7 +283,7 @@ const AddUser = (props: CustomProps) => {
           input: {
             _id: props?.selectedUserRowData?._id,
             ...insertUserBody,
-            createdBy: store.getState().auth.userName,
+            updatedBy: store.getState().auth.userName,
           },
         });
         props.handleCloseAddUserDialog(false);
@@ -323,17 +313,6 @@ const AddUser = (props: CustomProps) => {
     setShowPassword(!showPassword);
     event.preventDefault();
   };
-
-  const handleSwitchChange = (event: { target: { checked: any } }) => {
-    setUserFormFields((prevFields: any) => ({
-      ...prevFields,
-      isAccountAdmin: event.target.checked,
-      isSuperAdmin: event.target.checked,
-    }));
-  };
-  // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setIsAccountAdmin(event.target.checked);
-  // };
 
   const handleSelectAll = (event: any) => {
     if (event.target.checked) {
@@ -475,18 +454,6 @@ const AddUser = (props: CustomProps) => {
             />
           </Grid>
         )}
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <CustomInput
-            required
-            id="add_user_allowed_email_field"
-            placeHolder="Created By"
-            name="createdBy"
-            disabled={true}
-            label="Created By"
-            value={userFormFields?.createdBy?.value}
-          />
-        </Grid>
 
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
