@@ -10,8 +10,9 @@ export const FETCH_TRIP_LIST = gql`
       data {
         tripData {
           vehicleNo
+          imei
         }
-        startPoint 
+        startPoint
         endPoint
         tripEndDate
         status

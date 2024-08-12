@@ -17,6 +17,7 @@ import {
   debounceEventHandler,
   isTruthy,
   openErrorNotification,
+  openSuccessNotification,
 } from "../../helpers/methods";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
@@ -35,11 +36,14 @@ import { MdAccessTimeFilled } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { primaryColorPurple } from "../../utils/styles";
 import { store } from "../../utils/store";
+import axios from "axios";
+import { updateTripStatus } from "../Trip/ActiveTrips/TripServices";
 interface Trip {
   tripId: string;
   name: string;
   tripData: {
     vehicleNo: string;
+    imei: any;
   }[];
   startPoint: {
     name: string;
@@ -114,19 +118,48 @@ const TripDashboard = () => {
     getOngoingTrips(trips);
   }, [trips]);
 
+  const unlockTrip = async (trip: Trip) => {
+    try {
+      const response = await axios.post(
+        "http://103.20.214.201:5030/send-command",
+        {
+          imei: trip.tripData[0]["imei"][0],
+          // imei: "688055894978",
+        }
+      );
+
+      if (response?.data?.statusCode === 200) {
+        openSuccessNotification("Lock successfully unlocked!");
+        await updateTripStatus({
+          input: {
+            accountId: store.getState().auth.tenantId,
+            tripId: trip.tripId,
+            status: "ended",
+          },
+        });
+      } else {
+        openErrorNotification("Failed to unlock the lock.");
+      }
+    } catch (error: any) {
+      openErrorNotification(
+        error.message || "An error occurred while unlocking."
+      );
+    }
+  };
+
   const getOngoingTrips = (trips: Trip[]) => {
     const ongoingTrips = trips.filter((trip) => trip.status === "ongoing");
     setTotalActiveTrips(ongoingTrips.length);
   };
 
-  const buttonRender = (status: string) => {
+  const buttonRender = (status: string, trip: Trip) => {
     switch (status) {
       case "started":
         return (
           <CustomButton
             label="Ended"
             startIcon={<BsFillUnlockFill />}
-            onClick={() => {}}
+            onClick={() => unlockTrip(trip)}
             customClasses={{
               padding: "8px 16px",
               borderRadius: "8px",
@@ -183,7 +216,7 @@ const TripDashboard = () => {
         </Typography>
         <Box my={3}>{getSearchBar()}</Box>
         <Box sx={{ height: "75vh", overflowY: "auto", padding: "1rem" }}>
-          {trips.map((trip) => {
+          {trips?.map((trip) => {
             const progress = 80;
 
             return (
@@ -310,8 +343,7 @@ const TripDashboard = () => {
                     </>
                   }
                 />
-
-                {buttonRender(trip.status)}
+                {buttonRender(trip.status, trip)}
               </ListItem>
             );
           })}

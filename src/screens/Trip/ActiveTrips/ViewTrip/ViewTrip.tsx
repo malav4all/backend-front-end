@@ -7,7 +7,11 @@ import ViewTransitTypeDetails from "./ViewTransitTypeDetails";
 import ViewHeaderComponent from "../../../../global/components/viewProfile/ViewHeaderComponent";
 import viewTripStyle from "./ViewTripStyle";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
-import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
+import {
+  isTruthy,
+  openErrorNotification,
+  openSuccessNotification,
+} from "../../../../helpers/methods";
 import {
   alertConfigurationFormInitialState,
   transitTypeFormInitialState,
@@ -15,11 +19,12 @@ import {
 } from "./ViewTripTypes";
 import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
-import { fetchTripbyId } from "../TripServices";
+import { fetchTripbyId, updateTripStatus } from "../TripServices";
 import notifiers from "../../../../global/constants/NotificationConstants";
 import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
-
+import { useHistory } from "react-router-dom";
 const ViewTrip = () => {
+  const history = useHistory();
   const classes = viewTripStyle;
   const { id } = useParams<{ id: string }>();
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
@@ -98,6 +103,26 @@ const ViewTrip = () => {
     }
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    try {
+      const accountId = store.getState().auth.tenantId;
+      const tripId = tripInformationForm?.tripId;
+
+      const response = await updateTripStatus({
+        input: { accountId, tripId, status: newStatus },
+      });
+
+      if (response?.data?.updateTripStatus?.success === 1) {
+        openSuccessNotification(`Trip status updated to ${newStatus}`);
+        history.goBack();
+      } else {
+        openErrorNotification("Failed to update trip status.");
+      }
+    } catch (error: any) {
+      openErrorNotification("Error updating trip status: " + error.message);
+    }
+  };
+
   const getGeneralTabData = () => (
     <Grid container sx={classes.mainBox} spacing={2}>
       <Grid item xl={12} lg={12} sm={12} xs={12}>
@@ -163,6 +188,7 @@ const ViewTrip = () => {
                 transitTypeForm={transitTypeForm}
                 dynamicForm={dynamicForm}
                 personId={id}
+                onStatusChange={handleStatusChange}
               />
             </Grid>
           </Grid>
