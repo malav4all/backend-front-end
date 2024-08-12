@@ -40,6 +40,7 @@ import AddFilter from "./Component/AddFilter";
 import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
 import history from "../../utils/history";
+import { store } from "../../utils/store";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
@@ -62,11 +63,11 @@ const AlertConfig = () => {
   const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
   const [edit, setEdit] = useState(false);
 
-  // useEffect(() => {
-  //   if (searchAlertConfig) {
-  //     searchDetailTable();
-  //   } else getUsersDetailTable();
-  // }, [searchAlertConfig, pageNumber, rowsPerPage]);
+  useEffect(() => {
+    if (searchAlertConfig) {
+      searchDetailTable();
+    } else getUsersDetailTable();
+  }, [searchAlertConfig, pageNumber, rowsPerPage]);
 
   const getHeader = () => {
     return (
@@ -113,6 +114,7 @@ const AlertConfig = () => {
       setIsLoading(true);
       const res = await searchAlertRecord({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchAlertConfig,
           page: pageNumber,
           limit: perPageData,
@@ -134,6 +136,7 @@ const AlertConfig = () => {
       setIsLoading(true);
       const res = await listAlertRecord({
         input: {
+          accountId: store.getState().auth.tenantId,
           page: pageNumber,
           limit: perPageData,
         },
@@ -175,7 +178,9 @@ const AlertConfig = () => {
         deviceGroupName: (
           <>
             <Tooltip
-              title={usersData?.alertConfig?.alertImeiGroup.forEach((item:any)=> item)}
+              title={usersData?.alertConfig?.alertImeiGroup.forEach(
+                (item: any) => item
+              )}
               placement="top"
               arrow
               // onClick={() => {
