@@ -14,6 +14,9 @@ import {
   useTheme,
   Autocomplete,
   Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import {
@@ -52,6 +55,7 @@ import {
 } from "../../../../DeviceGroup/service/DeviceGroup.service";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { error } from "console";
 
 interface CustomProps {
   openAddUserDialog: boolean;
@@ -83,6 +87,8 @@ const AddUser = (props: CustomProps) => {
   const [roleData, setRoleData] = useState([]);
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
+  const [isAccountAdmin, setIsAccountAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     props.setEdit?.(false);
@@ -118,6 +124,7 @@ const AddUser = (props: CustomProps) => {
       fetchImeiData();
     }
   }, [userFormFields?.deviceGroupAccountId?.value]);
+
 
   const fetchDeviceGroupData = async () => {
     try {
@@ -277,6 +284,8 @@ const AddUser = (props: CustomProps) => {
         accountName: userFormFields.accountName.value,
         deviceGroup: deviceGroupValue,
         imeiList: userFormFields?.imeiList?.value,
+        isAccountAdmin: userFormFields?.isAccountAdmin?.value,
+        isSuperAdmin: userFormFields?.isSuperAdmin?.value,
       };
 
       if (props.edit) {
@@ -314,6 +323,17 @@ const AddUser = (props: CustomProps) => {
     setShowPassword(!showPassword);
     event.preventDefault();
   };
+
+  const handleSwitchChange = (event: { target: { checked: any } }) => {
+    setUserFormFields((prevFields: any) => ({
+      ...prevFields,
+      isAccountAdmin: event.target.checked,
+      isSuperAdmin: event.target.checked,
+    }));
+  };
+  // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setIsAccountAdmin(event.target.checked);
+  // };
 
   const handleSelectAll = (event: any) => {
     if (event.target.checked) {
@@ -616,6 +636,7 @@ const AddUser = (props: CustomProps) => {
             )}
           </Box>
         </Grid>
+
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Box>
             <Stack direction="column">
@@ -736,6 +757,90 @@ const AddUser = (props: CustomProps) => {
                 />
               )}
             />
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box
+            sx={{ textAlign: "end", display: "flex", justifyContent: "start" }}
+          >
+            <FormGroup
+              sx={{
+                textAlign: "end",
+                display: "flex",
+                justifyContent: "start",
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={userFormFields.isAccountAdmin.value}
+                    onChange={(event: any) =>
+                      setUserFormFields((prevFields: any) => ({
+                        ...prevFields,
+                        isAccountAdmin: {
+                          value: event.target.checked,
+                          error: "",
+                        },
+                      }))
+                    }
+                    color="warning"
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label="Account Admin"
+                labelPlacement="start"
+                sx={{
+                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
+                  alignItems: "start", // Center the label and switch horizontally
+                }}
+              />
+            </FormGroup>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+          <Box
+            sx={{
+              textAlign: "end",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "staar",
+            }}
+          >
+            <FormGroup
+              sx={{
+                textAlign: "end",
+                flexDirection: "column",
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={userFormFields.isSuperAdmin.value}
+                    onChange={(event: any) =>
+                      setUserFormFields((prevFields: any) => ({
+                        ...prevFields,
+                        isSuperAdmin: {
+                          value: event.target.checked,
+                          error: "",
+                        },
+                      }))
+                    }
+                    color="warning"
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                }
+                label="Super Admin"
+                labelPlacement="top" // Place the label on top
+                sx={{
+                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
+                  alignItems: "start", // Center the label and switch horizontally
+                }}
+              />
+            </FormGroup>
           </Box>
         </Grid>
       </Grid>
