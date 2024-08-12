@@ -25,6 +25,13 @@ export const deviceOnboardingTableHeader = [
   },
 ];
 
+export const tripTypeTableHeader = [
+  { name: "Imei", field: "deviceOnboardingIMEINumber" },
+  { name: "accountId", field: "location" },
+  { name: "Sim No", field: "deviceOnboardingSimNo" },
+  { name: "Business Model", field: "businessmodel" },
+  { name: "Entered By", field: "createdBy" },
+];
 export const deviceListTable = [
   {
     name: "AccountId",

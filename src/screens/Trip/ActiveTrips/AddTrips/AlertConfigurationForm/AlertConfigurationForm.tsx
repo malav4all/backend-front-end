@@ -116,6 +116,16 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
     { name: "Email", icon: <EmailIcon /> },
   ];
 
+  useEffect(() => {
+    if (alertConfigurationForm?.subscribedAlerts) {
+      const updatedAlertTypes = new Set([
+        ...alertConfigurationForm?.subscribedAlerts,
+        ...defaultAlertTypes,
+      ]);
+      alertConfigurationForm.subscribedAlerts = Array.from(updatedAlertTypes);
+    }
+  }, [alertConfigurationForm?.subscribedAlerts]);
+
   const handleAlertDetailsChange = (event: any) => {
     const { name, value } = event.target;
     setAlertConfigurationForm((prevFields: any) => ({
@@ -129,16 +139,6 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
       },
     }));
   };
-
-  useEffect(() => {
-    if (alertConfigurationForm?.subscribedAlerts) {
-      const updatedAlertTypes = new Set([
-        ...alertConfigurationForm?.subscribedAlerts,
-        ...defaultAlertTypes,
-      ]);
-      alertConfigurationForm.subscribedAlerts = Array.from(updatedAlertTypes);
-    }
-  }, [alertConfigurationForm?.subscribedAlerts]);
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event?.target;

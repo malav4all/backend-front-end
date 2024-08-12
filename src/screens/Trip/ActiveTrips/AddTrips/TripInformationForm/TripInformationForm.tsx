@@ -20,8 +20,14 @@ import { CustomInput } from "../../../../../global/components";
 import {
   isTruthy,
   openErrorNotification,
+  openInfoNotification,
+  openSuccessNotification,
 } from "../../../../../helpers/methods";
-import { fetchDeviceList, fetchGeozoneHandler } from "../AddTripService";
+import {
+  checkBattery,
+  fetchDeviceList,
+  fetchGeozoneHandler,
+} from "../AddTripService";
 import { store } from "../../../../../utils/store";
 import strings from "../../../../../global/constants/StringConstants";
 import transitTypeStyles from "../../AddTrips/TransitTypeForm/TransitTypeForm.styles";
@@ -31,12 +37,14 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 
 interface TripInformationProps {
   tripInformationForm: any;
+  transitTypeForm: any;
   setTripInformationForm: Function;
 }
 
 const TripInformationForm: React.FC<TripInformationProps> = ({
   tripInformationForm,
   setTripInformationForm,
+  transitTypeForm,
 }) => {
   const theme = useTheme();
   const classes = transitTypeStyles();
@@ -45,6 +53,26 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+
+  useEffect(() => {
+    if (transitTypeForm?.startPoint && transitTypeForm?.endPoint) {
+      setTripInformationForm((prevFields: any) => ({
+        ...prevFields,
+        startPoint: {
+          value: transitTypeForm?.startPoint?.locationId,
+          label: `${transitTypeForm?.startPoint?.name} - ${transitTypeForm?.startPoint?.locationId}`,
+          data: transitTypeForm?.startPoint,
+          error: "",
+        },
+        endPoint: {
+          value: transitTypeForm?.endPoint?.locationId,
+          label: `${transitTypeForm?.endPoint?.name} - ${transitTypeForm?.endPoint?.locationId}`,
+          data: transitTypeForm?.endPoint,
+          error: "",
+        },
+      }));
+    }
+  }, [transitTypeForm]);
 
   useEffect(() => {
     fetchGeozone();
@@ -173,6 +201,45 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
     });
   };
 
+  const checkBatteryForTrip = async (imei: string) => {
+    const accountId = transitTypeForm?.accountId;
+    const threshold = transitTypeForm?.minBatteryPercentage;
+    try {
+      const response = await checkBattery({
+        input: {
+          accountId,
+          imei: imei,
+          threshold,
+        },
+      });
+
+      if (response.checkBattery.success) {
+        openSuccessNotification(response?.checkBattery?.message);
+      } else {
+        openInfoNotification(response?.checkBattery?.message);
+      }
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+  const handleImeiChange = (event: any, newValue: any) => {
+    const selectedImei = newValue.map(
+      (item: any) => item?.deviceOnboardingIMEINumber
+    );
+
+    setTripInformationForm((prevFields: any) => ({
+      ...prevFields,
+      imeiNumber: {
+        ...prevFields?.imeiNumber,
+        value: selectedImei,
+        error: "",
+      },
+    }));
+    selectedImei?.forEach((imei: string) => {
+      checkBatteryForTrip(imei);
+    });
+  };
+
   return (
     <Grid container spacing={2} padding={5}>
       <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
@@ -188,6 +255,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               value={tripInformationForm?.startPoint?.value || ""}
               onChange={handleStartEndPointChange}
               displayEmpty
+              disabled={!!transitTypeForm?.startPoint}
               renderValue={(selected) =>
                 selected
                   ? tripInformationForm?.startPoint?.label
@@ -222,6 +290,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               value={tripInformationForm?.endPoint?.value || ""}
               onChange={handleStartEndPointChange}
               displayEmpty
+              disabled={!!transitTypeForm?.endPoint} // Disable if auto-populated
               renderValue={(selected) =>
                 selected
                   ? tripInformationForm?.endPoint?.label
@@ -365,18 +434,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                 {option?.deviceOnboardingIMEINumber}
               </li>
             )}
-            onChange={(event, newValue) => {
-              setTripInformationForm((prevFields: any) => ({
-                ...prevFields,
-                imeiNumber: {
-                  ...prevFields?.imeiNumber,
-                  value: newValue.map(
-                    (item: any) => item?.deviceOnboardingIMEINumber
-                  ),
-                  error: "",
-                },
-              }));
-            }}
+            onChange={handleImeiChange}
             value={imeiOptions?.filter((option: any) =>
               tripInformationForm?.imeiNumber?.value?.includes(
                 option?.deviceOnboardingIMEINumber

@@ -5,6 +5,7 @@ import {
   FETCH_TRIP_METRICS,
   GET_ALL_TRIPS,
   SEARCH_DEVICE_GROUP,
+  TRIP_STATUS_CHANGE,
 } from "./Trip.mutation";
 
 export const fetchTrips = async (variables: any): Promise<any> => {
@@ -53,6 +54,19 @@ export const fetchTripbyId = async (variables: any): Promise<any> => {
     });
 
     return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const updateTripStatus = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: TRIP_STATUS_CHANGE,
+      variables,
+    });
+
+    return response;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }
