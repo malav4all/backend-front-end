@@ -28,6 +28,7 @@ import { ALERT_DEVICE_DATA, DEVICE_DATA } from "./service/Dashboard.mutation";
 import { AiOutlineRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { store } from "../../utils/store";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -75,10 +76,18 @@ const Dashboard = () => {
     try {
       const [online, offline, chartLine, deviceDashboardData] =
         await Promise.all([
-          onlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-          offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-          lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
-          dashboardGraphOnlineOrOffline({ input: { accountId: "IMZ113343" } }),
+          onlineGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          offlineGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          lineChartGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          dashboardGraphOnlineOrOffline({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
         ]);
       setGraphData({
         online: online?.onlineDeviceGraph,

@@ -199,7 +199,7 @@ const AddFilter = (props: CustomProps) => {
   const fetchImeiData = async () => {
     try {
       const res = await await fetchDeviceList({
-        input: { accountId: "IMZ113343" },
+        input: { accountId: store.getState().auth.tenantId },
       });
       setImeiData(res?.getImeiList?.imeiList);
       setImeiUser(res?.getImeiList?.imeiList);

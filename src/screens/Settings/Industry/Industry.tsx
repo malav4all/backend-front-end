@@ -123,16 +123,6 @@ const Industry = () => {
           name: item.name,
           code: item?.code?.map((val: any) => val).join(","),
           description: item.description,
-          file: (
-            <>
-              <img
-                src={`http://localhost:3000/${item.file}`}
-                alt=""
-                width="30"
-                height="30"
-              />
-            </>
-          ),
         };
       });
       setTableData(finalData);
@@ -182,7 +172,6 @@ const Industry = () => {
         name: industryFormData.name.value,
         code: industryFormData.code.value,
         description: industryFormData.description.value,
-        file,
       };
       setIsLoading(true);
       if (handleValidation()) {
@@ -285,14 +274,15 @@ const Industry = () => {
     return (
       <CustomAppHeader className={classes.headerBackgroundColor}>
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Settings / Industry</Typography>
+          <Typography style={classes.settingsTitle}>
+            Settings / Industry
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

@@ -11,6 +11,7 @@ import SpeedLineChart from "./SpeedLineGraph";
 import { batteryGraphData, speedGraphData } from "../service/routes.service";
 import BatteryLineChart from "./BatteryLineGraph";
 import { Box } from "@mui/material";
+import { store } from "../../../utils/store";
 
 interface LocationState {
   imei: string;
@@ -62,7 +63,7 @@ const ViewLiveTracking = () => {
   const { data } = useSubscription(DEVICE_DATA, {
     variables: {
       topicType: "track",
-      accountId: "IMZ113343",
+      accountId: store.getState().auth.tenantId,
       imeis: [imei],
     },
   });
@@ -148,13 +149,19 @@ const ViewLiveTracking = () => {
     try {
       const [online, offline] = await Promise.all([
         speedGraphData({
-          input: { accountId: "IMZ113343", imei: "688056086137" },
+          input: {
+            accountId: store.getState().auth.tenantId,
+            imei: imei,
+          },
         }),
         batteryGraphData({
-          input: { accountId: "IMZ113343", imei: "688056086137" },
+          input: {
+            accountId: store.getState().auth.tenantId,
+            imei: imei,
+          },
         }),
       ]);
-      console.log(online, offline);
+
       setGraphData({
         online: online?.speedGraphData,
         offline: offline?.batteryGraphDataData,
@@ -169,9 +176,9 @@ const ViewLiveTracking = () => {
           style={{
             position: "absolute",
             top: "20%",
-            left: "0.5%", 
+            left: "0.5%",
             zIndex: 1000,
-            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}
         >
           <SpeedLineChart dataGraph={graphData?.online} />
@@ -179,10 +186,10 @@ const ViewLiveTracking = () => {
         <div
           style={{
             position: "absolute",
-            top: "50%", 
-            left: "0.5%", 
+            top: "50%",
+            left: "0.5%",
             zIndex: 1000,
-            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}
         >
           <BatteryLineChart dataGraph={graphData?.offline} />

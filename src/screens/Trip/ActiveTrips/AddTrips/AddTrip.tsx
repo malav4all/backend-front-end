@@ -78,7 +78,7 @@ const AddTrip = (props: any) => {
     try {
       const res = await GetForms({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 10000,
         },

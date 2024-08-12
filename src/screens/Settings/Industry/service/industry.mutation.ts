@@ -39,7 +39,6 @@ export const FETCH_INDUSTRY = gql`
         name
         code
         description
-        file
       }
     }
   }

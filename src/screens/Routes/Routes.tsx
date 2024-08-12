@@ -196,7 +196,7 @@ const Routes = () => {
       const { totalDistance, totalDuration } = await calculateDistance();
       const res = await createRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           routeName: formField?.routeName?.value,
           routesData: finalLocationIds,
           createdBy: store.getState()?.auth?.userName,
@@ -338,7 +338,7 @@ const Routes = () => {
       setIsLoading(true);
       const res = await fetchRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page,
           limit: 10,
         },
@@ -357,7 +357,7 @@ const Routes = () => {
     try {
       const res = await fetchGeozoneHandler({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 0,
         },
