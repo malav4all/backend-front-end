@@ -93,6 +93,14 @@ export const insertUserField = (data?: any) => {
       value: data?.status ?? "Active",
       error: "",
     },
+    isAccountAdmin: {
+      value: false,
+      error: "",
+    },
+    isSuperAdmin: {
+      value: false,
+      error: "",
+    },
   } as any;
 };
 
