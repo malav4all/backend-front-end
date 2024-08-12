@@ -95,7 +95,11 @@ const TripType = () => {
     try {
       setIsLoading(true);
       const res = await fetchTripTypeTableHandler({
-        input: { accountId: "IMZ113343", page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
       const finalData = res?.tripTypeList?.data?.map((item: any) => {
         return {

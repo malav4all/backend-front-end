@@ -35,7 +35,11 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
   const fetchTableTripType = async () => {
     try {
       const res = await fetchTripTypeTableHandler({
-        input: { accountId: "IMZ113343", page: -1, limit: 1000000 },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: -1,
+          limit: 1000000,
+        },
       });
       setTripTypeData(res.tripTypeList.data);
     } catch (error: any) {
@@ -47,7 +51,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
     try {
       const res = await fetchRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 10000,
         },
@@ -71,7 +75,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
           totalDuration: selectedRoute?.totalDuration,
           totalDistance: selectedRoute?.totalDistance,
           createdBy: selectedRoute?.createdBy,
-          routesData: selectedRoute?.routeDetails.map(
+          routesData: selectedRoute?.routeDetails?.map(
             (detail: any) => detail?._id
           ),
           routeName: selectedRoute?.routeName,
@@ -82,7 +86,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
         setTransitTypeForm((prevFields: any) => ({
           ...prevFields,
           routeId: {
-            ...prevFields.routeId,
+            ...prevFields?.routeId,
             value,
             error: "",
           },
@@ -145,7 +149,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
             </InputLabel>
             <Select
               className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
+              id="routeId"
               name="routeId"
               value={transitTypeForm?.routeId?.value || ""}
               onChange={handleSelectChange}

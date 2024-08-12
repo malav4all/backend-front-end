@@ -35,3 +35,18 @@ export const alertConfigurationFormInitialState = () => ({
     },
   },
 });
+
+export const dynamicFormInitialState = (prevState?: any) => {
+  return (
+    prevState?.map((form: any) => ({
+      ...form,
+      content: form?.content?.map((field: any) => ({
+        ...field,
+        extraAttributes: {
+          ...field?.extraAttributes,
+          value: field?.extraAttributes?.value ?? "", // Ensure that value is properly initialized
+        },
+      })),
+    })) || []
+  );
+};

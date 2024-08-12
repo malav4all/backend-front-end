@@ -13,11 +13,10 @@ import {
   TextField,
   Divider,
 } from "@mui/material";
-import { CustomButton, CustomInput } from "../../../../global/components";
+import { CustomButton } from "../../../../global/components";
 import { createTrip, fetchEntityByTripTypeAndType } from "./AddTripService";
 import { GetForms } from "../../../FormBuild/formBuilder.service"; // Adjust the import path as needed
 import {
-  isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../../../helpers/methods";
@@ -42,6 +41,8 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import notifiers from "../../../../global/constants/NotificationConstants";
 import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
+import DynamicForm from "./DynamicForm/DynamicForm";
+import { dynamicFormInitialState } from "../ViewTrip/ViewTripTypes";
 
 const steps = ["Transit Type", "Trip Information", "Alert Detail"];
 
@@ -50,7 +51,7 @@ const AddTrip = (props: any) => {
   const history = useHistory();
   const theme = useTheme();
   const redirectionState: any = props.location?.state;
-  const [dynamicForm, setDynamicForm] = useState<any>(null);
+  const [formData, setFormData] = useState({});
   const [dynamicSteps, setDynamicSteps] = useState<string[]>(steps);
   const [activeStep, setActiveStep] = useState(0);
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
@@ -62,71 +63,108 @@ const AddTrip = (props: any) => {
   const [alertConfigurationForm, setAlertConfigurationForm] = useState<any>(
     alertConfigurationFormInitialState(redirectionState?.alertConfigurationForm)
   );
+  const [dynamicForm, setDynamicForm] = useState<any>(
+    dynamicFormInitialState(redirectionState?.dynamicForm)
+  );
 
-  console.log({ transitTypeForm });
-  console.log({ tripInformationForm });
-  console.log({ alertConfigurationForm });
   useEffect(() => {
-    fetchFormbuilderForm();
+    fetchDataAndSetOptions();
   }, []);
 
-  useEffect(() => {
-    updateEntityFieldOptions(dynamicForm);
-  }, [transitTypeForm]);
-
-  const fetchFormbuilderForm = async () => {
+  const fetchDataAndSetOptions = async () => {
     try {
       const res = await GetForms({
         input: {
-          accountId: "IMZ113343",
+          accountId: store?.getState()?.auth?.tenantId,
           page: -1,
           limit: 10000,
         },
       });
-      setDynamicForm(res?.fetchFormBuilder?.data);
+
+      const forms = res?.fetchFormBuilder?.data;
+      setDynamicForm(forms);
+
+      if (forms) {
+        const entityFields = forms?.flatMap((form: any) =>
+          form?.content?.filter((field: any) => field?.type === "EntityField")
+        );
+
+        const tripType = transitTypeForm?.transitType?.value;
+
+        if (tripType) {
+          for (const field of entityFields) {
+            if (field?.extraAttributes && field?.extraAttributes.entityType) {
+              const { entityType } = field?.extraAttributes;
+              try {
+                const res = await fetchEntityByTripTypeAndType({
+                  input: {
+                    accountId: store?.getState()?.auth?.tenantId,
+                    tripTypeList: [tripType],
+                    type: entityType,
+                    page: -1,
+                    limit: 10000,
+                  },
+                });
+
+                if (res?.fetchEntityByTripTypeAndType?.data) {
+                  field.extraAttributes.options =
+                    res.fetchEntityByTripTypeAndType.data.map(
+                      (entity: any) => ({
+                        label: entity?.name,
+                        value: entity?._id,
+                      })
+                    );
+                }
+              } catch (error: any) {
+                openErrorNotification(error.message);
+              }
+            }
+          }
+        }
+      }
+
       setDynamicSteps((prevSteps) => [
         ...prevSteps,
-        ...res.fetchFormBuilder?.data?.map((item: any) => item.name),
+        ...forms.map((item: any) => item.name),
       ]);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const updateEntityFieldOptions = async (forms: any) => {
-    if (!forms) return;
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
 
-    const entityFields = forms?.flatMap((form: any) =>
-      form?.content?.filter((field: any) => field?.type === "EntityField")
+    setDynamicForm((prevForm: any) =>
+      prevForm.map((form: any) => ({
+        ...form,
+        content: form.content.map((field: any) => {
+          if (field.extraAttributes.label === name) {
+            return {
+              ...field,
+              extraAttributes: {
+                ...field.extraAttributes,
+                value: value,
+              },
+            };
+          }
+          return field;
+        }),
+      }))
     );
+  };
 
-    const tripType = transitTypeForm?.transitType?.value;
-
-    if (tripType) {
-      for (const field of entityFields) {
-        const { entityType } = field?.extraAttributes;
-        try {
-          const res = await fetchEntityByTripTypeAndType({
-            input: {
-              accountId: store?.getState()?.auth?.tenantId,
-              tripTypeList: [tripType],
-              type: entityType,
-              page: -1,
-              limit: 10000,
-            },
-          });
-          field.extraAttributes.options =
-            res?.fetchEntityByTripTypeAndType?.data?.map((entity: any) => ({
-              label: entity?.name,
-              value: entity?._id,
-            }));
-        } catch (error: any) {
-          openErrorNotification(error.message);
-        }
-      }
-      // Update the dynamicForm state to trigger a re-render with the new options
-      setDynamicForm([...forms]);
-    }
+  const prepareDynamicFormPayload = (dynamicForm: any) => {
+    return dynamicForm.map((form: any) => ({
+      ...form,
+      content: form.content.map((field: any) => ({
+        ...field,
+        extraAttributes: {
+          ...field.extraAttributes,
+          value: field.extraAttributes.value || "", // Ensure the value is set correctly
+        },
+      })),
+    }));
   };
 
   const getContent = (step: number) => {
@@ -157,131 +195,13 @@ const AddTrip = (props: any) => {
         );
       default:
         return (
-          <Grid container spacing={2} padding={5}>
-            {dynamicForm?.map((form: any, index: any) =>
-              step === steps?.length + index ? (
-                <React.Fragment key={index}>
-                  {renderDynamicFormFields(form)}
-                </React.Fragment>
-              ) : null
-            )}
-          </Grid>
+          <DynamicForm
+            dynamicForm={dynamicForm}
+            handleInputChange={handleInputChange}
+            formData={formData}
+          />
         );
     }
-  };
-
-  const renderDynamicFormFields = (form: any) => {
-    return form?.content?.map((field: any) => (
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        md={6}
-        lg={6}
-        xl={6}
-        key={field.id}
-        sx={{ marginBottom: "16px" }}
-      >
-        <Box display="flex" alignItems="center" mb={1}>
-          <Typography
-            variant="h6"
-            sx={{
-              display: "flex",
-              fontSize: "18px",
-              color: theme.palette.text.primary,
-              fontWeight: 600,
-            }}
-          >
-            {field?.extraAttributes.label}
-          </Typography>
-          {field?.extraAttributes.required && (
-            <Typography color="error" ml={0.5}>
-              *
-            </Typography>
-          )}
-        </Box>
-        {field?.type === "TextField" && (
-          <CustomInput
-            // required={field?.extraAttributes?.required}
-            placeHolder={field?.extraAttributes?.placeHolder}
-            name={field?.extraAttributes?.label}
-            onChange={(e: any) =>
-              handleFormDataChange(e as ChangeEvent<HTMLInputElement>, () => {})
-            }
-            value={""}
-          />
-        )}
-        {field?.type === "NumberField" && (
-          <CustomInput
-            type="number"
-            // required={field?.extraAttributes?.required}
-            placeHolder={field?.extraAttributes?.placeHolder}
-            name={field?.extraAttributes?.label}
-            onChange={(e: any) =>
-              handleFormDataChange(e as ChangeEvent<HTMLInputElement>, () => {})
-            }
-            value={""}
-          />
-        )}
-        {field?.type === "TextAreaField" && (
-          <TextField
-            multiline
-            rows={field?.extraAttributes?.rows}
-            // required={field?.extraAttributes?.required}
-            placeholder={field?.extraAttributes?.placeHolder}
-            name={field?.extraAttributes?.label}
-            onChange={(e) =>
-              handleFormDataChange(e as ChangeEvent<HTMLInputElement>, () => {})
-            }
-            value={""}
-            fullWidth
-          />
-        )}
-        {(field?.type === "SelectField" ||
-          field?.type === "TripField" ||
-          field?.type === "EntityField") && (
-          <Select
-            // required={field?.extraAttributes?.required}
-            name={field?.extraAttributes?.label}
-            value={""} // You can set the value from the state if available
-            onChange={(e) =>
-              handleFormDataChange(e as ChangeEvent<HTMLInputElement>, () => {})
-            }
-            displayEmpty
-            fullWidth
-          >
-            {field?.extraAttributes?.options?.map((option: any, index: any) => (
-              <MenuItem key={index} value={option?.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
-        {field?.type === "DateField" && (
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateTimePicker
-              value={null} // You can set the value from the state if available
-              // onChange={(date) =>
-              //   // handleDateChange(field.extraAttributes.label, date)
-              // }
-              slotProps={{
-                textField: {
-                  placeholder: field?.extraAttributes?.placeHolder,
-                  required: field?.extraAttributes?.required,
-                  fullWidth: true,
-                },
-              }}
-            />
-          </LocalizationProvider>
-        )}
-        <Typography
-          variant="caption"
-          sx={{ marginTop: "4px", display: "block" }}
-        >
-          {field?.extraAttributes?.helperText}
-        </Typography>
-      </Grid>
-    ));
   };
 
   const handleFormDataChange = (
@@ -299,24 +219,13 @@ const AddTrip = (props: any) => {
     }));
   };
 
-  const handleDateChange = (name: string, date: Date | null) => {
-    // setState((prevFields: any) => ({
-    //   ...prevFields,
-    //   [name]: {
-    //     ...prevFields[name as keyof typeof prevFields],
-    //     value: date,
-    //     error: "",
-    //   },
-    // }));
-  };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleNext = () => {
     if (activeStep === dynamicSteps.length - 1) {
-      // insertTripDetails();
+      insertTripDetails();
     } else {
       // if (handleValidation()) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -326,9 +235,10 @@ const AddTrip = (props: any) => {
 
   const insertTripDetails = async () => {
     try {
+      const dynamicFormPayload = prepareDynamicFormPayload(dynamicForm);
+      console.log({ dynamicFormPayload });
       const insertTripBody = {
         accountId: store?.getState()?.auth?.tenantId,
-
         primaryAccount: store?.getState()?.auth?.tenantId,
         accessAccount: ["account1", "account2"],
         tripStartDate: new Date(
@@ -365,9 +275,10 @@ const AddTrip = (props: any) => {
         },
         startPoint: tripInformationForm?.startPoint?.data,
         endPoint: tripInformationForm?.endPoint?.data,
-        metaData: {},
-        createdBy: "user_id",
-        updatedBy: "user_id",
+        metaData: {
+          dynamicForm: dynamicFormPayload,
+        },
+        createdBy: store.getState().auth.userName,
       };
 
       console.log({ insertTripBody });
@@ -380,11 +291,9 @@ const AddTrip = (props: any) => {
         //     createdBy: store.getState().auth.userName,
         //   },
         // });
-        // props?.handleCloseAddTripForm();
         // openSuccessNotification(res?.updateTrip?.message);
         await props?.tableData?.();
       } else {
-        console.log("add");
         const res = await createTrip({
           input: {
             ...insertTripBody,
@@ -392,16 +301,13 @@ const AddTrip = (props: any) => {
             createdBy: store?.getState()?.auth?.userName,
           },
         });
-        // props?.handleCloseAddTripForm();
         openSuccessNotification(res?.createTrip?.message);
         history.goBack();
         await props?.tableData?.();
       }
       // }
     } catch (error: any) {
-      openErrorNotification(
-        isTruthy(error?.message) ? error.message : notifiers.GENERIC_ERROR
-      );
+      openErrorNotification(error?.message || notifiers.GENERIC_ERROR);
     }
   };
 

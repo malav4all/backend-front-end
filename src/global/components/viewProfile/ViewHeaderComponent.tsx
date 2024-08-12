@@ -21,6 +21,7 @@ interface CustomProps {
   tripInformationForm?: any;
   alertConfigurationForm?: any;
   transitTypeForm?: any;
+  dynamicForm?: any;
   personId?: string;
   tabValue?: string;
 }
@@ -36,6 +37,7 @@ const ViewHeaderComponent = (props: CustomProps) => {
         tripInformationForm: props.tripInformationForm,
         alertConfigurationForm: props.alertConfigurationForm,
         transitTypeForm: props.transitTypeForm,
+        dynamicForm: props.dynamicForm,
         personId: props.personId,
       },
     });

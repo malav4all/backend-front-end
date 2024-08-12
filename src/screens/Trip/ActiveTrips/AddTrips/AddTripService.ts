@@ -43,7 +43,7 @@ export const fetchEntityByTripTypeAndType = async (
       variables,
     });
 
-    return response.data;
+    return response?.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }

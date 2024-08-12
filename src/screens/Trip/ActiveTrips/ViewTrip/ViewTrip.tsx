@@ -10,6 +10,7 @@ import CustomLoader from "../../../../global/components/CustomLoader/CustomLoade
 import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
 import {
   alertConfigurationFormInitialState,
+  dynamicFormInitialState,
   transitTypeFormInitialState,
   tripInformationFormInitialState,
 } from "./ViewTripTypes";
@@ -31,6 +32,7 @@ const ViewTrip = () => {
   const [alertConfigurationForm, setAlertConfigurationForm] = useState<any>(
     alertConfigurationFormInitialState()
   );
+  const [dynamicForm, setDynamicForm] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     getTrip();
@@ -85,9 +87,9 @@ const ViewTrip = () => {
       setTransitTypeForm({
         transitType: tripData?.route?.routeName || "",
         vehicleType: tripData?.tripData[0]?.vehicleNo || "",
-        routeId: tripData?.route.routeId,
+        routeId: tripData?.route?.routeId,
       });
-
+      setDynamicForm(tripData?.metaData?.dynamicForm || []);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -100,6 +102,7 @@ const ViewTrip = () => {
   console.log({ transitTypeForm });
   console.log({ tripInformationForm });
   console.log({ alertConfigurationForm });
+  console.log({ dynamicForm });
   const getGeneralTabData = () => (
     <Grid container sx={classes.mainBox} spacing={2}>
       <Grid item xl={12} lg={12} sm={12} xs={12}>
@@ -117,10 +120,33 @@ const ViewTrip = () => {
           <Grid item xl={3} lg={3} sm={12} xs={12}>
             <ViewTransitTypeDetails transitTypeForm={transitTypeForm} />
           </Grid>
+          <Grid item xl={3} lg={3} sm={12} xs={12}>
+            {renderDynamicFormContent()}
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
   );
+
+  const renderDynamicFormContent = () => {
+    return dynamicForm?.map((form: any, index: any) => (
+      <Card key={index} sx={classes.card}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            {form?.name}
+          </Typography>
+          {form?.content?.map((field: any) => (
+            <Box key={field.id} sx={{ marginBottom: "8px" }}>
+              <Typography variant="subtitle2">
+                {field?.extraAttributes?.label}:{" "}
+                <strong>{field?.extraAttributes?.value || "N/A"}</strong>
+              </Typography>
+            </Box>
+          ))}
+        </CardContent>
+      </Card>
+    ));
+  };
 
   const getTripDetails = () => (
     <>
@@ -137,6 +163,7 @@ const ViewTrip = () => {
                 tripInformationForm={tripInformationForm}
                 alertConfigurationForm={alertConfigurationForm}
                 transitTypeForm={transitTypeForm}
+                dynamicForm={dynamicForm}
                 personId={id}
               />
             </Grid>

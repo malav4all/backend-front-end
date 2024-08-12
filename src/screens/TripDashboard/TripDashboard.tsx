@@ -34,6 +34,7 @@ import { BsFillUnlockFill } from "react-icons/bs";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { MdDateRange } from "react-icons/md";
 import { primaryColorPurple } from "../../utils/styles";
+import { store } from "../../utils/store";
 interface Trip {
   tripId: string;
   name: string;
@@ -96,7 +97,7 @@ const TripDashboard = () => {
       try {
         const variables = {
           input: {
-            accountId: "IMZ113343",
+            accountId: store.getState().auth.tenantId,
           },
         };
         const response = await ListAllTrips(variables);

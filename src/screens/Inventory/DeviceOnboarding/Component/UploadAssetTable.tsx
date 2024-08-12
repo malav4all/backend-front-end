@@ -22,6 +22,7 @@ import {
 } from "../../../../helpers/methods";
 import AssetAssingmentStyles from "../../../Settings/AssertAssingment/AssetAssingment.styles";
 import { bulkDeviceUpload } from "../service/DeviceOnboarding.service";
+import { tripTypeTableHeader } from "../DeviceOnboarding.helpers";
 
 interface Props {
   showDialog: boolean;
@@ -71,13 +72,7 @@ const UploadTableAsset = (props: Props) => {
     return (
       <Grid xs={12} sm={12} md={12} lg={12}>
         <CustomTable
-          headers={[
-            { name: "Imei", field: "deviceOnboardingIMEINumber" },
-            { name: "accountId", field: "location" },
-            { name: "Sim No", field: "deviceOnboardingSimNo" },
-            { name: "Business Model", field: "businessmodel" },
-            { name: "EnteredBy", field: "createdBy" },
-          ]}
+          headers={tripTypeTableHeader}
           rows={dataRender()}
           paginationCount={tableData.length}
           rowsPerPage={5}

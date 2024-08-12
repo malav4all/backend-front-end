@@ -42,6 +42,7 @@ import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import EditIcon from "@mui/icons-material/Edit";
 import history from "../../utils/history";
 import { hasAccessTo } from "../../utils/AuthorizationManager";
+import { store } from "../../utils/store";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -196,7 +197,7 @@ const DeviceGroup = () => {
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: page,
           limit: rowsPerPage,
         },
