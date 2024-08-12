@@ -90,14 +90,13 @@ const TripDashboard = () => {
     },
   };
 
-  console.log(trips);
-
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const variables = {
           input: {
             accountId: store.getState().auth.tenantId,
+            status: "started",
           },
         };
         const response = await ListAllTrips(variables);
@@ -120,7 +119,41 @@ const TripDashboard = () => {
     setTotalActiveTrips(ongoingTrips.length);
   };
 
-  console.log(trips);
+  const buttonRender = (status: string) => {
+    switch (status) {
+      case "started":
+        return (
+          <CustomButton
+            label="Ended"
+            startIcon={<BsFillUnlockFill />}
+            onClick={() => {}}
+            customClasses={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              textTransform: "none",
+              backgroundColor: primaryColorPurple,
+              color: "#fff",
+            }}
+          />
+        );
+
+      default:
+        return (
+          <CustomButton
+            label="Unlock"
+            startIcon={<BsFillUnlockFill />}
+            onClick={() => {}}
+            customClasses={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              textTransform: "none",
+              backgroundColor: primaryColorPurple,
+              color: "#fff",
+            }}
+          />
+        );
+    }
+  };
 
   const getTripList = () => {
     return (
@@ -278,57 +311,7 @@ const TripDashboard = () => {
                   }
                 />
 
-                {/* {
-            switch(trip.status) {
-  case: "ended":
-    <CustomButton
-    label="Unlock"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-    break;
-  case: "create":
-    <CustomButton
-    label="Create"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-    break;
-  default:
-    case: "started":
-    <CustomButton
-    label="Started"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-}
-} */}
-                {/* {trip.status === "ended" ? (
-                  
-                ) : (
-                  <></>
-                )} */}
+                {buttonRender(trip.status)}
               </ListItem>
             );
           })}
