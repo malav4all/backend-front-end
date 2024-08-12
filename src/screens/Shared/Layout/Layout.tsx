@@ -94,7 +94,11 @@ const Layout = () => {
   };
 
   const { data } = useSubscription(DEVICE_DATA, {
-    variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
+    variables: {
+      topicType: "alert",
+      accountId: store.getState().auth.tenantId,
+      imeis: [],
+    },
   });
 
   useEffect(() => {

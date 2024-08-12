@@ -8,7 +8,7 @@ export const tripTypeTableHeader = [
     field: "name",
   },
   {
-    name: "Minimum Battery Percentage",
+    name: "Min Battery %",
     field: "minBatteryPercentage",
   },
   {
@@ -20,7 +20,7 @@ export const tripTypeTableHeader = [
     field: "gstPercentage",
   },
   {
-    name: "EnteredBy",
+    name: "Entered By",
     field: "createdBy",
   },
 ];

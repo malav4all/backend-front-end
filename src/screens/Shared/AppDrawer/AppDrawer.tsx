@@ -104,10 +104,9 @@ const AppDrawer = (props: CustomProps) => {
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
-  const { toggleTheme, darkMode } = useThemeContext(); // Use the context
+  const { toggleTheme, darkMode } = useThemeContext();
   const sidebar = useAppSelector(selectSidebar);
   const submenuRefs = useRef<(HTMLDivElement | null)[]>([]);
-  console.log({ sidebar });
   useEffect(() => {
     setActiveIndexFromUrl();
   }, [sidebar, pathname]);

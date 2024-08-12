@@ -19,7 +19,7 @@ function SaveFormBtn({ id }: { id: any }) {
       // const payload = JSON.parse(JsonElements);
       await UpdateForm({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           updatedBy: store.getState().auth.userName,
           formId: parseInt(id),
           published: false,

@@ -2,18 +2,14 @@ import {
   Autocomplete,
   Box,
   Checkbox,
-  Chip,
-  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
-  SelectChangeEvent,
-  Stack,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import _ from "lodash";
 import {
   CustomButton,
@@ -33,8 +29,6 @@ import {
   insertDeviceGroupField,
   validateAddDeviceGroupForm,
 } from "../../DeviceGroupTypeAndValidation";
-import { fetchAssetAssingmentDataHandler } from "../../../Settings/AssertAssingment/service/AssetAssingment.service";
-import CustomAutoComplete from "../../../../global/components/CustomAutoComplete/CustomAutoComplete";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import {
@@ -112,7 +106,9 @@ const AddDeviceGroup = (props: CustomProps) => {
 
   const fetchImeiData = async () => {
     try {
-      const res = await fetchDeviceList({ input: { accountId: "IMZ113343" } });
+      const res = await fetchDeviceList({
+        input: { accountId: store.getState().auth.tenantId },
+      });
       setImeiData(res?.getImeiList?.imeiList);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -122,7 +118,7 @@ const AddDeviceGroup = (props: CustomProps) => {
   const insertDeviceGroupDetails = async () => {
     try {
       const insertDeviceGroupBody = {
-        accountId: "IMZ113343",
+        accountId: store.getState().auth.tenantId,
         imeiData: deviceGroupFromFields.imeiList?.value,
         deviceGroupName: deviceGroupFromFields.deviceGroupName?.value?.trim(),
       };
