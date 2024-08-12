@@ -67,6 +67,7 @@ import Trips from "../../Trip/ActiveTrips/Trips";
 import urls from "../../../global/constants/UrlConstants";
 import TripAccess from "../../Trip/UserAccess/UserAccess";
 import DeviceList from "../../DeviceList/DeviceList";
+import { RoleManagement } from "../../Settings/RoleManagement/RoleManagement";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -130,9 +131,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/trip-dashboard"}
+            path={"/trip-view"}
             component={TripDashboard}
-            componentName={strings.TRIPDASHBOARD}
+            componentName={strings.TRIPVIEW}
           />
           <PrivateRoute
             exact
@@ -158,9 +159,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/location"}
+            path={"/geozone"}
             component={Geozone}
-            componentName={strings.LOCATION}
+            componentName={strings.GEOZONE}
           />
           <PrivateRoute
             exact
@@ -202,21 +203,21 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/alert-reports"}
             component={AlertReport}
-            componentName={strings.ALERT_REPORTS}
+            componentName={strings.ALERT}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/distance-reports"}
             component={DistanceReport}
-            componentName={strings.DISTANCE_REPORTS}
+            componentName={strings.DISTANCE}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/trip-reports"}
             component={TripReport}
-            componentName={strings.TRIP_REPORT}
+            componentName={strings.TRIP}
           />
           <PrivateRoute
             exact
@@ -392,9 +393,16 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/settings/LocationType"}
+            path={"/LocationType"}
             component={LocationType}
             componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Role"}
+            component={RoleManagement}
+            componentName={strings.ROLE_MANAGEMENT}
           />
           <PrivateRoute
             exact
@@ -408,14 +416,14 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/entity"}
             component={Entity}
-            componentName={strings.LOCATIONTYPE}
+            componentName={strings.ENTITY}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/entity-type"}
             component={EntityType}
-            componentName={strings.LOCATIONTYPE}
+            componentName={strings.ENTITY_TYPE}
           />
           <PrivateRoute
             exact

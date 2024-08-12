@@ -77,7 +77,7 @@ export class StringConstants {
 
   // authManager
   DASHBOARD = "Dashboard";
-  TRIPDASHBOARD = "TripDashboard";
+  TRIPVIEW = "TripView";
   MAPVIEW = "MapView";
   CAMPAIGNS = "Campaigns";
   SEQUENCES = "Sequences";
@@ -294,6 +294,7 @@ export class StringConstants {
   Started = "Started";
   Ended = "Ended";
   Closed = "Closed";
+  GEOZONE = "Geozone";
 }
 
 let strings = new StringConstants();
