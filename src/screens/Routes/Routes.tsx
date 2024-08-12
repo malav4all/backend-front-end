@@ -267,7 +267,8 @@ const Routes = () => {
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
-      const coordinates = item?.routesData?.map((coor: any) => {
+      console.log(item);
+      const coordinates = item?.routeDetails?.map((coor: any) => {
         const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
         return { lat, lng };
       });
@@ -291,36 +292,6 @@ const Routes = () => {
         totalDuration: formatDuration(item?.totalDuration),
         action: (
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Tooltip
-              title={
-                <CustomPaper
-                  className={{ backgroundColor: disabledBackgroundColor }}
-                >
-                  <Typography sx={classes.liveTrackingTooltipText}>
-                    {"Live Tracking"}
-                  </Typography>
-                </CustomPaper>
-              }
-              placement="top"
-              arrow
-              componentsProps={{
-                tooltip: {
-                  sx: {
-                    background: "none",
-                  },
-                },
-              }}
-            >
-              <SensorsRoundedIcon
-                style={{ color: primaryHeaderColor, cursor: "pointer" }}
-                onClick={() => {
-                  history.push({
-                    pathname: "/live-tracking",
-                  });
-                }}
-              />
-            </Tooltip>
-
             <Tooltip
               title={
                 <CustomPaper
@@ -632,7 +603,7 @@ const Routes = () => {
                   >
                     {item.name.slice(0, -1) + " " + (index + 1)}
                   </InputLabel>
-                  <Box sx={{ width: "350px",  }}>
+                  <Box sx={{ width: "350px" }}>
                     <Autocomplete
                       sx={classes.emailDropDownStyle}
                       id={`location-${item._id}`}
