@@ -1,4 +1,4 @@
-import { Grid, Stack, Box, Card, CardContent, Typography } from "@mui/material";
+import { Grid, Box, Card, CardContent, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ViewAlertConfigurationDetails from "./ViewAlertConfigurationDetails";
@@ -10,7 +10,6 @@ import CustomLoader from "../../../../global/components/CustomLoader/CustomLoade
 import { isTruthy, openErrorNotification } from "../../../../helpers/methods";
 import {
   alertConfigurationFormInitialState,
-  dynamicFormInitialState,
   transitTypeFormInitialState,
   tripInformationFormInitialState,
 } from "./ViewTripTypes";
@@ -18,10 +17,10 @@ import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
 import { fetchTripbyId } from "../TripServices";
 import notifiers from "../../../../global/constants/NotificationConstants";
+import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
 
 const ViewTrip = () => {
   const classes = viewTripStyle;
-  const [loader, setLoader] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
     transitTypeFormInitialState()
@@ -43,7 +42,7 @@ const ViewTrip = () => {
       const res = await fetchTripbyId({
         input: {
           accountId: store.getState().auth.tenantId,
-          tripId: id, // use the actual trip ID from the route params
+          tripId: id,
         },
       });
 
@@ -89,7 +88,7 @@ const ViewTrip = () => {
         vehicleType: tripData?.tripData[0]?.vehicleNo || "",
         routeId: tripData?.route?.routeId,
       });
-      setDynamicForm(tripData?.metaData?.dynamicForm || []);
+      setDynamicForm(dynamicFormInitialState(tripData?.metaData?.dynamicForm));
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -99,10 +98,6 @@ const ViewTrip = () => {
     }
   };
 
-  console.log({ transitTypeForm });
-  console.log({ tripInformationForm });
-  console.log({ alertConfigurationForm });
-  console.log({ dynamicForm });
   const getGeneralTabData = () => (
     <Grid container sx={classes.mainBox} spacing={2}>
       <Grid item xl={12} lg={12} sm={12} xs={12}>
@@ -150,16 +145,19 @@ const ViewTrip = () => {
 
   const getTripDetails = () => (
     <>
-      {loader ? (
+      {isLoading ? (
         <CustomLoader />
       ) : (
         <>
           <Grid container>
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
               <ViewHeaderComponent
-                showEditButton
+                showEditButton={
+                  tripInformationForm?.status === "created" ? true : false
+                }
                 hideAssignTask
                 from={`${urls.editTripViewPath}/${id}`}
+                tripStatus={tripInformationForm?.status}
                 tripInformationForm={tripInformationForm}
                 alertConfigurationForm={alertConfigurationForm}
                 transitTypeForm={transitTypeForm}

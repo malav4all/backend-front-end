@@ -1,6 +1,7 @@
 import { client } from "../../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../../core-services/rest-api";
 import {
+  CHECK_BATTERY,
   CREATE_TRIP,
   FETCH_ENTITY,
   FETCH_GEOZONE,
@@ -53,6 +54,19 @@ export const createTrip = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: CREATE_TRIP,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const checkBattery = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: CHECK_BATTERY,
       variables,
     });
 

@@ -1,11 +1,11 @@
 import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/rest-api";
-import { FETCH_TRACKPLAY_DATA } from "./trackplay.mutation";
+import { FETCH_DEVICE_MAP } from "./map-mutation";
 
-export const fetchTrackplayHandler = async (variables: any): Promise<any> => {
+export const fetchMapViewDevice = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: FETCH_TRACKPLAY_DATA,
+      mutation: FETCH_DEVICE_MAP,
       variables,
     });
 

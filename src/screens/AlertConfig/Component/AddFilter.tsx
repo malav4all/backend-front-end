@@ -44,7 +44,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { MultiInputTimeRangeField } from "@mui/x-date-pickers-pro/MultiInputTimeRangeField";
 import { insertDeviceGroupField } from "../../DeviceGroup/DeviceGroupTypeAndValidation";
 import { fetchAssetAssingmentDataHandler } from "../../Settings/AssertAssingment/service/AssetAssingment.service";
-import { fetchDeviceGroup } from "../../DeviceGroup/service/DeviceGroup.service";
+import {
+  fetchDeviceGroup,
+  fetchDeviceList,
+} from "../../DeviceGroup/service/DeviceGroup.service";
 import { Card, CardContent, IconButton, CardActions } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 interface CustomProps {
@@ -108,11 +111,11 @@ const AddFilter = (props: CustomProps) => {
     alertDataInput.event === "unlocked" ||
     alertDataInput.event === "other";
 
-  // useEffect(() => {
-  //   fetchLocationTypeHandler();
-  //   fetchImeiData();
-  //   getDeviceGroupData();
-  // }, []);
+  useEffect(() => {
+    fetchLocationTypeHandler();
+    fetchImeiData();
+    getDeviceGroupData();
+  }, []);
 
   // useEffect(() => {
   //   props.setEdit?.(false);
@@ -195,14 +198,11 @@ const AddFilter = (props: CustomProps) => {
 
   const fetchImeiData = async () => {
     try {
-      const res = await fetchAssetAssingmentDataHandler({
-        input: {
-          page: -1,
-          limit: 10,
-        },
+      const res = await await fetchDeviceList({
+        input: { accountId: store.getState().auth.tenantId },
       });
-      setImeiData(res.fetchAssertAssingmentModule.data);
-      setImeiUser(res.fetchAssertAssingmentModule.data);
+      setImeiData(res?.getImeiList?.imeiList);
+      setImeiUser(res?.getImeiList?.imeiList);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -261,6 +261,7 @@ const AddFilter = (props: CustomProps) => {
   const insertUserDetails = async () => {
     try {
       const insertUserBody = {
+        accountId: store.getState().auth.tenantId,
         mobileNo: userFormFields.mobileNo.value,
         alertName: userFormFields.alertName.value,
         isAlertDisable: isAlertActivated,
@@ -310,6 +311,7 @@ const AddFilter = (props: CustomProps) => {
     try {
       const res = await fetchGeozoneHandler({
         input: {
+          accountId: store.getState().auth.accountId,
           page: -1,
           limit: 0,
         },
@@ -324,6 +326,7 @@ const AddFilter = (props: CustomProps) => {
     try {
       const res = await fetchDeviceGroup({
         input: {
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 10,
         },

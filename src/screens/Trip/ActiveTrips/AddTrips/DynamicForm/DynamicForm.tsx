@@ -6,6 +6,7 @@ import {
   TextField,
   Select,
   MenuItem,
+  InputLabel,
 } from "@mui/material";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -23,8 +24,8 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   handleInputChange,
   formData,
 }) => {
-  const theme = useTheme();
   console.log({ dynamicForm });
+  const theme = useTheme();
   const renderDynamicFormFields = (form: any) => {
     return form?.content?.map((field: any) => (
       <Grid
@@ -37,12 +38,31 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         key={field.id}
         sx={{ marginBottom: "16px" }}
       >
+        <InputLabel
+          style={{
+            display: "flex",
+            fontSize: "18px",
+            color: theme.palette.text.primary,
+            fontWeight: 600,
+          }}
+          shrink
+        >
+          {field?.extraAttributes?.label}
+          {field?.extraAttributes?.required && (
+            <Box ml={0.4} style={{ color: "red" }}>
+              *
+            </Box>
+          )}
+        </InputLabel>
+
         {field?.type === "TextField" && (
           <CustomInput
             placeHolder={field?.extraAttributes?.placeHolder}
             name={field?.extraAttributes?.label}
             onChange={handleInputChange}
-            value={field?.extraAttributes?.value || ""}
+            value={
+              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+            }
           />
         )}
         {field?.type === "NumberField" && (
@@ -51,13 +71,19 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             placeHolder={field?.extraAttributes?.placeHolder}
             name={field?.extraAttributes?.label}
             onChange={handleInputChange}
-            value={field?.extraAttributes?.value || ""}
+            value={
+              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+            }
           />
         )}
-        {field?.type === "SelectField" && (
+        {(field?.type === "SelectField" ||
+          field?.type === "TripField" ||
+          field?.type === "EntityField") && (
           <Select
             name={field?.extraAttributes?.label}
-            value={field?.extraAttributes?.value || ""}
+            value={
+              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+            }
             onChange={handleInputChange}
             displayEmpty
             fullWidth
@@ -72,7 +98,11 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
         {field?.type === "DateField" && (
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
-              value={field?.extraAttributes?.value || null}
+              value={
+                formData?.[field.id]?.value ||
+                field?.extraAttributes?.value ||
+                null
+              }
               onChange={(newValue) =>
                 handleInputChange({
                   target: {

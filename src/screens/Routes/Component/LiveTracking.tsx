@@ -151,17 +151,17 @@ const ViewLiveTracking = () => {
         speedGraphData({
           input: {
             accountId: store.getState().auth.tenantId,
-            imei: "688056086137",
+            imei: imei,
           },
         }),
         batteryGraphData({
           input: {
             accountId: store.getState().auth.tenantId,
-            imei: "688056086137",
+            imei: imei,
           },
         }),
       ]);
-      console.log(online, offline);
+
       setGraphData({
         online: online?.speedGraphData,
         offline: offline?.batteryGraphDataData,

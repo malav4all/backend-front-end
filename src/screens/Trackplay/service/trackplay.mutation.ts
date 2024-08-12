@@ -1,15 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const FETCH_TRACKPLAY_DATA = gql`
-  mutation {
-    getRowData {
+  mutation ($input: DistanceTrackPlayInputType!) {
+    getDistanceTrackPlay(input: $input) {
+      latitude
+      longitude
       imei
-      direction
-      lat
-      lng
+      bearing
       speed
-      label
-      currentTime
     }
   }
 `;

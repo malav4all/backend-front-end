@@ -38,9 +38,7 @@ const AddIndustry = ({
   const addIndustryDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>
-          Add Industry
-        </Typography>
+        <Typography sx={classes.boldFonts}>Add Industry</Typography>
       </Box>
     );
   };
@@ -64,7 +62,7 @@ const AddIndustry = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} lg={4}>
+        {/* <Grid item xs={12} sm={6} lg={4}>
           <CustomInput
             required
             label="Industry File"
@@ -74,7 +72,7 @@ const AddIndustry = ({
             placeHolder="Choose File"
             onChange={handleFileChange}
           />
-        </Grid>
+        </Grid> */}
 
         <Grid item xs={12} sm={6} lg={4}>
           <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
@@ -189,7 +187,7 @@ const AddIndustry = ({
     <CustomDialog
       isDialogOpen={open}
       closable
-    //   closeButtonVisibility
+      //   closeButtonVisibility
       handleDialogClose={handleClose}
       dialogHeaderContent={addIndustryHeaderImg()}
       dialogTitleContent={addIndustryDialogTitle()}

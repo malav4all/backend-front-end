@@ -23,6 +23,7 @@ import {
 import strings from "../../../../global/constants/StringConstants";
 import {
   alertConfigurationFormInitialState,
+  dynamicFormInitialState,
   transitTypeFormInitialState,
   tripInformationFormInitialState,
 } from "./AddTripsTypes";
@@ -36,13 +37,10 @@ import TransitTypeForm from "./TransitTypeForm/TransitTypeForm";
 import TripInformationForm from "./TripInformationForm/TripInformationForm";
 import AlertConfigurationForm from "./AlertConfigurationForm/AlertConfigurationForm";
 import { useHistory } from "react-router-dom";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import notifiers from "../../../../global/constants/NotificationConstants";
 import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
 import DynamicForm from "./DynamicForm/DynamicForm";
-import { dynamicFormInitialState } from "../ViewTrip/ViewTripTypes";
 
 const steps = ["Transit Type", "Trip Information", "Alert Detail"];
 
@@ -63,13 +61,15 @@ const AddTrip = (props: any) => {
   const [alertConfigurationForm, setAlertConfigurationForm] = useState<any>(
     alertConfigurationFormInitialState(redirectionState?.alertConfigurationForm)
   );
-  const [dynamicForm, setDynamicForm] = useState<any>(
+  const [dynamicForm, setDynamicForm] = useState(
     dynamicFormInitialState(redirectionState?.dynamicForm)
   );
 
   useEffect(() => {
-    fetchDataAndSetOptions();
-  }, []);
+    if (transitTypeForm.transitType.value) {
+      fetchDataAndSetOptions();
+    }
+  }, [transitTypeForm.transitType.value]);
 
   const fetchDataAndSetOptions = async () => {
     try {
@@ -88,9 +88,7 @@ const AddTrip = (props: any) => {
         const entityFields = forms?.flatMap((form: any) =>
           form?.content?.filter((field: any) => field?.type === "EntityField")
         );
-
         const tripType = transitTypeForm?.transitType?.value;
-
         if (tripType) {
           for (const field of entityFields) {
             if (field?.extraAttributes && field?.extraAttributes.entityType) {
@@ -161,7 +159,7 @@ const AddTrip = (props: any) => {
         ...field,
         extraAttributes: {
           ...field.extraAttributes,
-          value: field.extraAttributes.value || "", // Ensure the value is set correctly
+          value: field.extraAttributes.value || "",
         },
       })),
     }));
@@ -181,6 +179,7 @@ const AddTrip = (props: any) => {
           <TripInformationForm
             tripInformationForm={tripInformationForm}
             setTripInformationForm={setTripInformationForm}
+            transitTypeForm={transitTypeForm}
           />
         );
       case 2:

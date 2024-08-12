@@ -24,6 +24,7 @@ interface CustomProps {
   dynamicForm?: any;
   personId?: string;
   tabValue?: string;
+  tripStatus?: string;
 }
 
 const ViewHeaderComponent = (props: CustomProps) => {
@@ -34,11 +35,11 @@ const ViewHeaderComponent = (props: CustomProps) => {
       pathname: urls.editTripViewPath,
       state: {
         edit: true,
-        tripInformationForm: props.tripInformationForm,
-        alertConfigurationForm: props.alertConfigurationForm,
-        transitTypeForm: props.transitTypeForm,
-        dynamicForm: props.dynamicForm,
-        personId: props.personId,
+        tripInformationForm: props?.tripInformationForm,
+        alertConfigurationForm: props?.alertConfigurationForm,
+        transitTypeForm: props?.transitTypeForm,
+        dynamicForm: props?.dynamicForm,
+        personId: props?.personId,
       },
     });
   };
@@ -122,15 +123,38 @@ const ViewHeaderComponent = (props: CustomProps) => {
               spacing={1}
               sx={classes.viewHeaderLeft}
             >
-              {/* {props.tabValue &&
-                props.tabValue === strings.general &&
-                props.showEditButton && ( */}
-              <CustomButton
-                label={strings.Edit}
-                buttonType="primaryBtn"
-                onClick={() => handleEdit()}
-                // startIcon={<EditIcon />}
-              />
+              {props.tripStatus !== "started" &&
+                props.tripStatus !== "ended" &&
+                props.tripStatus !== "Closed" &&
+                props.showEditButton && (
+                  <CustomButton
+                    label={strings.Edit}
+                    buttonType="primaryBtn"
+                    onClick={() => handleEdit()}
+                    // startIcon={<EditIcon />}
+                  />
+                )}
+              {props?.tripStatus === "created" && (
+                <CustomButton
+                  label="Start Trip"
+                  buttonType="primaryBtn"
+                  onClick={() => history.goBack()}
+                />
+              )}
+              {props?.tripStatus === "started" && (
+                <CustomButton
+                  label="End Trip"
+                  buttonType="primaryBtn"
+                  onClick={() => history.goBack()}
+                />
+              )}
+              {props?.tripStatus === "ended" && (
+                <CustomButton
+                  label="Close Trip"
+                  buttonType="primaryBtn"
+                  onClick={() => history.goBack()}
+                />
+              )}
             </Stack>
           </Stack>
         </Box>
