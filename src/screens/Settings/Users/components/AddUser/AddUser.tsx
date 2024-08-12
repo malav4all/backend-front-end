@@ -182,10 +182,11 @@ const AddUser = (props: CustomProps) => {
   };
 
   const handleDeviceGroup = (formFillEvent: any) => {
-    const selectedAccount = deviceGroup.find(
-      (account: any) => account.deviceGroupName === formFillEvent.target.value
+    const selectedAccounts = formFillEvent.target.value.map((value: string) =>
+      deviceGroup.find((account: any) => account.deviceGroupName === value)
     );
-    setDeviceGroupValue(selectedAccount);
+
+    setDeviceGroupValue(selectedAccounts);
     setUserFormFields({
       ...userFormFields,
       deviceGroupName: {
@@ -631,33 +632,37 @@ const AddUser = (props: CustomProps) => {
                 </Box>
               </InputLabel>
               <Select
+                multiple
                 sx={classes.dropDownStyle}
                 id="add_user_device_group_dropdown"
                 name="deviceGroup"
-                value={userFormFields?.deviceGroupName?.value}
+                value={userFormFields?.deviceGroupName?.value || []}
                 onChange={(e) => handleDeviceGroup(e)}
                 MenuProps={classes.menuProps}
                 displayEmpty
-                renderValue={() =>
-                  userFormFields?.deviceGroupName?.value ||
-                  "Select Device Group"
+                renderValue={(selected) =>
+                  selected.length > 0
+                    ? selected.join(", ")
+                    : "Select Device Group"
                 }
                 error={
-                  !isTruthy(userFormFields?.deviceGroupName?.value) &&
+                  !isTruthy(userFormFields?.deviceGroupName?.value?.length) &&
                   userFormFields?.deviceGroupName?.error
                 }
               >
                 {deviceGroup.map((item: any, index: any) => (
-                  <MenuItem
-                    key={index}
-                    value={item.deviceGroupName}
-                    sx={classes.dropDownOptionsStyle}
-                  >
+                  <MenuItem key={index} value={item.deviceGroupName}>
+                    <Checkbox
+                      checked={userFormFields?.deviceGroupName?.value?.includes(
+                        item.deviceGroupName
+                      )}
+                      // sx={classes.checkBoxStyle}
+                    />
                     {item.deviceGroupName}
                   </MenuItem>
                 ))}
               </Select>
-              {!isTruthy(userFormFields?.deviceGroupName?.value) && (
+              {!isTruthy(userFormFields?.deviceGroupName?.value?.length) && (
                 <FormHelperText error sx={classes.errorStyle}>
                   {userFormFields.deviceGroupName?.error}
                 </FormHelperText>
