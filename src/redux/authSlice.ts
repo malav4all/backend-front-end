@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../utils/store";
 import { FormattedResources } from "../models/interfaces";
-
+import { ListOfMenusType } from "../utils/AuthorizationManager";
 export interface AuthState {
   authenticated: boolean;
   accessToken: string;
@@ -12,11 +12,12 @@ export interface AuthState {
   role: string;
   roleId: number | string;
   account: string;
-  resources: FormattedResources; 
+  resources: FormattedResources;
   accountId: string;
   userId: string;
   roleName: string;
   tenantId: string;
+  sidebar: ListOfMenusType[];
 }
 
 const initialState: AuthState = {
@@ -34,6 +35,7 @@ const initialState: AuthState = {
   resources: {} as FormattedResources,
   roleName: "",
   tenantId: "",
+  sidebar: [],
 };
 
 export const authSlice = createSlice({
@@ -54,7 +56,8 @@ export const authSlice = createSlice({
         accountId: string;
         userId: string;
         roleName: string;
-        tenantId: string
+        tenantId: string;
+        sidebar: ListOfMenusType[];
       }>
     ) => {
       state.authenticated = action.payload.authenticated;
@@ -69,6 +72,7 @@ export const authSlice = createSlice({
       state.userId = action.payload.userId;
       state.roleName = action.payload.roleName;
       state.tenantId = action.payload.tenantId;
+      state.sidebar = action?.payload?.sidebar;
     },
     addLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -113,5 +117,5 @@ export const selectRole = (state: RootState) => state.auth.role;
 export const selectRoleId = (state: RootState) => state.auth.roleId;
 export const selectAccount = (state: RootState) => state.auth.account;
 export const selectResources = (state: RootState) => state.auth.resources;
-
+export const selectSidebar = (state: RootState) => state?.auth?.sidebar;
 export default authSlice.reducer;

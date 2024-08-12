@@ -800,7 +800,7 @@ export const getTripIcon = (fillColor: string) => {
   );
 };
 
-export const getInventoryIcon = (fillColor: string) => {
+export const getInventoryIcon = (fillColor: any) => {
   return (
     <svg
       stroke="#DBDBDB"
@@ -816,7 +816,7 @@ export const getInventoryIcon = (fillColor: string) => {
   );
 };
 
-export const getFromBuilderIcon = (fillColor: string) => {
+export const getFromBuilderIcon = (fillColor: any) => {
   return (
     <svg
       stroke="#DBDBDB"

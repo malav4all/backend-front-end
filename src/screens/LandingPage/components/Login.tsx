@@ -130,6 +130,7 @@ const Login = () => {
               roleName: user?.loginUser?.data?.data?.user.roleId.name,
               tenantId:
                 user?.loginUser?.data?.data?.user?.account?.accountId || "",
+              sidebar: user?.loginUser?.data?.data?.user.sidebar,
             })
           );
           setIsLoading(false);

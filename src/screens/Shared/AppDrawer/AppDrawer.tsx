@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Collapse,
   List,
@@ -10,27 +10,31 @@ import {
   useMediaQuery,
   Switch,
   FormControlLabel,
-  Paper,
-  Box,
 } from "@mui/material";
-import { RiLogoutCircleRLine } from "react-icons/ri";
+import { Box } from "@mui/system";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { styled } from "@mui/material/styles";
 import history from "../../../utils/history";
 import { isTruthy } from "../../../helpers/methods";
-import { GenerateMenu } from "../../../utils/AuthorizationManager";
+import {
+  GenerateMenu,
+  ListOfMenusType,
+  getIconComponent,
+} from "../../../utils/AuthorizationManager";
 import { IoIosLogOut } from "react-icons/io";
 import {
-  activeMenuBackgroundColor,
   disabledBackgroundColor,
+  pinkDarkColor,
   theme,
 } from "../../../utils/styles";
 import { CloseButton, CustomPaper } from "../../../global/components";
 import { store } from "../../../utils/store";
-import { logOutAction, selectName } from "../../../redux/authSlice";
+import {
+  logOutAction,
+  selectName,
+  selectSidebar,
+} from "../../../redux/authSlice";
 import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
@@ -94,41 +98,33 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const AppDrawer = (props: CustomProps) => {
   const classes = appDrawerStyles;
   const pathname = window.location.pathname;
-  const [optionItems, setOptionItems] = useState<any[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true);
   const [activeIndex, setActiveIndex] = useState<number>(-1);
-  const [isHovered, setIsHovered] = useState<number | null>(null); // New state for managing hover index
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const dispatch = useAppDispatch();
   const userName = useAppSelector(selectName);
   const { toggleTheme, darkMode } = useThemeContext(); // Use the context
+  const sidebar = useAppSelector(selectSidebar);
   const submenuRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    generateAppDrawer();
-  }, []);
-
+  console.log({ sidebar });
   useEffect(() => {
     setActiveIndexFromUrl();
-  }, [optionItems, pathname]);
+  }, [sidebar, pathname]);
 
-  const handleMouseEnter = (index: number) => {
+  const handleMouseEnter = (index: any) => {
     setIsHovered(index);
   };
 
   const handleMouseLeave = () => {
-    setIsHovered(null);
+    setIsHovered(false);
   };
 
   const setActiveIndexFromUrl = () => {
-    let activeIndexFromUrl = optionItems.findIndex(
-      (item: any) => item.link === pathname || isSubMenuItemActive(item)
+    let activeIndexFromUrl = sidebar?.findIndex(
+      (item: any) => item?.link === pathname || isSubMenuItemActive(item)
     );
     setActiveIndex(activeIndexFromUrl);
-  };
-
-  const generateAppDrawer = () => {
-    setOptionItems(GenerateMenu());
   };
 
   const handleSubmenuToggle = (index: number, option: any) => {
@@ -226,7 +222,9 @@ const AppDrawer = (props: CustomProps) => {
               ) : (
                 <Tooltip title={data.text} placement="right" arrow>
                   <ListItemIcon>
-                    {isActiveTab(data.link) ? data.activeIcon : data.icon}
+                    {isActiveTab(data?.link)
+                      ? getIconComponent(data?.activeIcon, pinkDarkColor)
+                      : getIconComponent(data?.icon, "#dbdbdb")}
                   </ListItemIcon>
                 </Tooltip>
               )}
@@ -288,9 +286,9 @@ const AppDrawer = (props: CustomProps) => {
                       : classes.closedDrawerListItemIcon,
                   ]}
                 >
-                  {isActiveTab(option.link) || isSubMenuItemActive(option)
-                    ? option.activeIcon
-                    : option.icon}
+                  {isActiveTab(option?.link) || isSubMenuItemActive(option)
+                    ? getIconComponent(option?.activeIcon, pinkDarkColor)
+                    : getIconComponent(option?.icon, "#dbdbdb")}
                 </ListItemIcon>
                 {isTruthy(option.subMenu) && !isDrawerOpen && (
                   <Box sx={classes.closedDrawerListItemArrowIcon}>
@@ -329,7 +327,7 @@ const AppDrawer = (props: CustomProps) => {
   const getNewMenuOptions = () => {
     return (
       <List dense>
-        {optionItems.map((option, index) => {
+        {sidebar?.map((option: any, index: any) => {
           return <>{getMenuOptions(option, index)}</>;
         })}
       </List>
@@ -338,7 +336,11 @@ const AppDrawer = (props: CustomProps) => {
 
   const getAppLogo = () => {
     return (
-      <Box sx={classes.logoBox}>
+      <Box
+        sx={classes.logoBox}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {!isDrawerOpen && isDesktop ? (
           <Box
             sx={{
@@ -364,7 +366,7 @@ const AppDrawer = (props: CustomProps) => {
     return (
       <CloseButton
         onClick={() => {
-          props.setMenuMobileVisible?.(false);
+          props?.setMenuMobileVisible?.(false);
         }}
       />
     );
@@ -391,9 +393,9 @@ const AppDrawer = (props: CustomProps) => {
             sx={isDrawerOpen ? classes.squareBox : classes.squareBox1}
             component={"div"}
           >
-            <Typography sx={classes.avatarStyle}>
-              {/* {userName.charAt(0)} */}
-            </Typography>
+            {/* <Typography sx={classes.avatarStyle}>
+              {userName.charAt(0)}
+            </Typography> */}
           </Box>
 
           {isDrawerOpen && (
@@ -523,4 +525,3 @@ const AppDrawer = (props: CustomProps) => {
 };
 
 export default AppDrawer;
-  
