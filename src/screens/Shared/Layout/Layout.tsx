@@ -271,7 +271,7 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/alert-config"}
+            path={"/alerts"}
             component={AlertConfig}
             componentName={strings.ALERT_CONFIG}
           />
