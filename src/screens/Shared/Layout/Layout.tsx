@@ -120,7 +120,7 @@ const Layout = () => {
   const getContent = () => {
     return (
       <Box sx={classes.content}>
-        <Box>
+        <Box sx={{ zIndex: "10000",  }}>
           <HeaderNavbar />
         </Box>
         <Switch>

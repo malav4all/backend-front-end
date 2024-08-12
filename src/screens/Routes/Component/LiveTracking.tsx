@@ -25,7 +25,6 @@ const ViewLiveTracking = () => {
   const [address, setAddress] = useState<string>("Loading...");
   const location = useLocation();
   const [graphData, setGraphData] = useState<any>();
-  console.log("location State:", location);
 
   const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
 
@@ -200,7 +199,7 @@ const ViewLiveTracking = () => {
             boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}
         >
-          <Speedometer speed={trackData?.speed} />
+          {trackData && <Speedometer speed={trackData?.speed} />}
         </div>
 
         <div style={{ position: "relative", width: "100%", height: "100%" }}>

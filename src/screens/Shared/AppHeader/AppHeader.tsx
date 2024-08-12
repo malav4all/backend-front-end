@@ -1,4 +1,11 @@
-import { AppBar, Box, Drawer, IconButton, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Drawer,
+  IconButton,
+  Toolbar,
+  useTheme,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import appHeaderStyles from "./AppHeader.styles";
@@ -6,6 +13,7 @@ import { drawerWidth } from "../../../utils/styles";
 import AppDrawer from "../AppDrawer/AppDrawer";
 
 const AppHeader = () => {
+  const theme = useTheme();
   const classes = appHeaderStyles;
   const [menuMobileVisible, setMenuMobileVisible] = useState<boolean>(false);
 
@@ -58,7 +66,11 @@ const AppHeader = () => {
               size="large"
               edge="start"
               aria-label="open drawer"
-              sx={{ mr: 2, display: { md: "none" } }}
+              sx={{
+                mr: 2,
+                display: { md: "none" },
+                color: theme.palette.text.primary,
+              }}
               onClick={handleMenuMobileVisibility}
             >
               <MenuIcon />

@@ -190,7 +190,7 @@ const Dashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid md={12} xs={12} sx={{ margin: "auto" }}>
+      <Grid md={12} xs={12}>
         <Grid
           container
           spacing={3}
@@ -199,7 +199,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "-30px auto", width: " 97%" }}
+          sx={{ margin: "auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
             <GetAlerts data={dataGraph?.deviceDashboardData} />
@@ -246,7 +246,7 @@ const Dashboard = () => {
         backgroundColor: theme.palette.background.default,
         width: "100%",
         height: "auto",
-        margin: "auto",
+        // margin: "auto",
       }}
     >
       {/* <Box>

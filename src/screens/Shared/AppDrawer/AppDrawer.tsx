@@ -10,21 +10,16 @@ import {
   useMediaQuery,
   Switch,
   FormControlLabel,
-  Paper,
   Box,
 } from "@mui/material";
-import { RiLogoutCircleRLine } from "react-icons/ri";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { styled } from "@mui/material/styles";
 import history from "../../../utils/history";
 import { isTruthy } from "../../../helpers/methods";
 import { GenerateMenu } from "../../../utils/AuthorizationManager";
 import { IoIosLogOut } from "react-icons/io";
 import {
-  activeMenuBackgroundColor,
   disabledBackgroundColor,
   theme,
 } from "../../../utils/styles";
@@ -34,7 +29,6 @@ import { logOutAction, selectName } from "../../../redux/authSlice";
 import appDrawerStyles from "./AppDrawer.styles";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
-import ROUTEYE_LOGO_MINI from "../../../assets/images/ROUTEYE_LOGO_MINI.png";
 import { useThemeContext } from "../../../redux/ThemeContext";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { MdOutlineKeyboardDoubleArrowLeft } from "react-icons/md";
@@ -186,7 +180,7 @@ const AppDrawer = (props: CustomProps) => {
                     ...classes.menuOption,
                     backgroundColor: "#5F22E1",
                   },
-              classes.submenuItems, // Apply submenu item styles
+              classes.submenuItems,
             ]}
           >
             <ListItem
@@ -212,8 +206,8 @@ const AppDrawer = (props: CustomProps) => {
                       sx={{
                         ...classes.navBarLabel,
                         ...classes.listItemTextBox,
-                        marginLeft: "2rem", // Add indentation to submenu items
-                        fontSize: "0.875rem", // Reduced font size for submenu items
+                        marginLeft: "2rem", 
+                        fontSize: "0.875rem", 
                       }}
                     >
                       <span>{data.text}</span>
@@ -511,8 +505,8 @@ const AppDrawer = (props: CustomProps) => {
               )}
             </Box>
             <Box sx={classes.menuOptionsHeight}>{getNewMenuOptions()}</Box>
-            <Box>{darkModeSection()}</Box>
-            <Box>{getLogoutButton()}</Box>
+            {/* <Box>{darkModeSection()}</Box>
+            <Box>{getLogoutButton()}</Box> */}
           </Box>
         </Box>
       </>

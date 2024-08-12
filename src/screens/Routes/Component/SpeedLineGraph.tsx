@@ -13,7 +13,6 @@ const SpeedLineChart: React.FC<LineChartProps> = ({
   height = 170,
   dataGraph,
 }) => {
-  console.log({ dataGraph });
   const theme = useTheme();
   const chartRef = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<ApexCharts | null>(null);

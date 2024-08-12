@@ -2,12 +2,10 @@ import React from "react";
 import ApexCharts from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-const Speedometer = ({ speed }: { speed: number }) => {
-
+const Speedometer = ({ speed }: { speed: any }) => {
   const options: ApexOptions = {
-    series: [speed],
     chart: {
-      type: "radialBar", 
+      type: "radialBar",
       offsetY: -20,
       sparkline: {
         enabled: true,
@@ -22,8 +20,7 @@ const Speedometer = ({ speed }: { speed: number }) => {
         },
         track: {
           background: "#e7e7e7",
-          strokeWidth: "97%",
-        //   margin: 5, 
+          strokeWidth: "470px",
           dropShadow: {
             enabled: true,
             top: 2,
@@ -39,9 +36,9 @@ const Speedometer = ({ speed }: { speed: number }) => {
           },
           value: {
             offsetY: -2,
-            fontSize: "12px",
+            fontSize: "15px",
             formatter: function (val) {
-              return `${val}`; 
+              return `${val}`;
             },
           },
         },
@@ -52,6 +49,7 @@ const Speedometer = ({ speed }: { speed: number }) => {
         top: -10,
       },
     },
+
     fill: {
       type: "gradient",
       gradient: {
@@ -63,6 +61,7 @@ const Speedometer = ({ speed }: { speed: number }) => {
         stops: [0, 50, 53, 91],
       },
     },
+
     yaxis: {
       min: 0,
       max: 150,
@@ -78,11 +77,11 @@ const Speedometer = ({ speed }: { speed: number }) => {
         zIndex: 1000,
         backgroundColor: "#fff",
         padding: "10px",
-        borderRadius: "5px", // Rounded shape
+        borderRadius: "5px",
         boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
         textAlign: "center",
-        width: "200px", // Width set to 200px
-        height: "150px", // Height set to 200px
+        width: "200px",
+        height: "150px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -90,7 +89,7 @@ const Speedometer = ({ speed }: { speed: number }) => {
     >
       <ApexCharts
         options={options}
-        series={options.series}
+        series={[speed]}
         type="radialBar"
         height={180}
       />
