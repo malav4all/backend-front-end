@@ -2,10 +2,11 @@ import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/rest-api";
 import { FETCH_TRACKPLAY_DATA } from "./trackplay.mutation";
 
-export const fetchTrackplayHandler = async (): Promise<any> => {
+export const fetchTrackplayHandler = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: FETCH_TRACKPLAY_DATA,
+      variables,
     });
 
     return response.data;

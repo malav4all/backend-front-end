@@ -191,6 +191,11 @@ const DistanceReport = (props: CustomProps) => {
               onClick={() => {
                 history.push({
                   pathname: "/trackplay",
+                  state: {
+                    imei: item.imei,
+                    startDate: dateFilter.startDate,
+                    endDate: dateFilter.endDate,
+                  },
                 });
               }}
             />
