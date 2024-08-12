@@ -129,7 +129,7 @@ const Login = () => {
               accountId: user?.loginUser?.data?.data?.user?.account?._id,
               roleName: user?.loginUser?.data?.data?.user.roleId.name,
               tenantId:
-                user?.loginUser?.data?.data?.user?.account?.accountId || "",
+                user?.loginUser?.data?.data?.user?.account?.tenantId || "",
               sidebar: user?.loginUser?.data?.data?.user.sidebar,
             })
           );
