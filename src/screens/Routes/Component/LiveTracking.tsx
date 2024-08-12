@@ -11,6 +11,7 @@ import SpeedLineChart from "./SpeedLineGraph";
 import { batteryGraphData, speedGraphData } from "../service/routes.service";
 import BatteryLineChart from "./BatteryLineGraph";
 import { Box } from "@mui/material";
+import Speedometer from "./Speedometer";
 
 interface LocationState {
   imei: string;
@@ -24,11 +25,11 @@ const ViewLiveTracking = () => {
   const [address, setAddress] = useState<string>("Loading...");
   const location = useLocation();
   const [graphData, setGraphData] = useState<any>();
-  console.log("location State:", location.state);
+  console.log("location State:", location);
 
   const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
 
-  const { imei, status } = location.state as LocationState;
+  const { imei, status } = location?.state as LocationState;
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
@@ -41,7 +42,7 @@ const ViewLiveTracking = () => {
       defaultLayers.vector.normal.map,
       {
         center: { lat: 28.495831757053296, lng: 77.07923644083718 },
-        zoom: 5,
+        zoom: 8,
         pixelRatio: window.devicePixelRatio || 1,
       }
     );
@@ -79,13 +80,13 @@ const ViewLiveTracking = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Reverse Geocoding Data: ", data);
+      // console.log("Reverse Geocoding Data: ", data);
 
       if (data.items && data.items.length > 0) {
         const address = data.items[0].address.label;
         return address;
       } else {
-        console.log("No address found for the given coordinates.");
+        // console.log("No address found for the given coordinates.");
         return "No address available";
       }
     } catch (error) {
@@ -101,7 +102,7 @@ const ViewLiveTracking = () => {
         setTrackData(trackJson);
 
         const { longitude, latitude, bearing, imei } = trackJson;
-
+        map.setZoom(15);
         // Fetch address for the current location
         getReverseGeocodingData(latitude, longitude).then(setAddress);
 
@@ -134,6 +135,9 @@ const ViewLiveTracking = () => {
         );
         setCurrentMarker(newMarker);
         map.addObject(newMarker);
+
+        map.setCenter({ lat: latitude, lng: longitude });
+        map.setZoom(15);
       } catch (error) {
         console.error("Error parsing JSON string:", error);
       }
@@ -154,7 +158,7 @@ const ViewLiveTracking = () => {
           input: { accountId: "IMZ113343", imei: "688056086137" },
         }),
       ]);
-      console.log(online, offline);
+      // console.log(online, offline);
       setGraphData({
         online: online?.speedGraphData,
         offline: offline?.batteryGraphDataData,
@@ -168,10 +172,10 @@ const ViewLiveTracking = () => {
         <div
           style={{
             position: "absolute",
-            top: "20%",
-            left: "0.5%", 
+            top: "27%",
+            left: "0.5%",
             zIndex: 1000,
-            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}
         >
           <SpeedLineChart dataGraph={graphData?.online} />
@@ -179,14 +183,26 @@ const ViewLiveTracking = () => {
         <div
           style={{
             position: "absolute",
-            top: "50%", 
-            left: "0.5%", 
+            top: "53%",
+            left: "0.5%",
             zIndex: 1000,
-            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)", 
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}
         >
           <BatteryLineChart dataGraph={graphData?.offline} />
         </div>
+        <div
+          style={{
+            position: "absolute",
+            top: "20%",
+            right: "0.5%",
+            zIndex: 1000,
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+          }}
+        >
+          <Speedometer speed={trackData?.speed} />
+        </div>
+
         <div style={{ position: "relative", width: "100%", height: "100%" }}>
           <div id="map" style={{ width: "100%", height: "80%" }}></div>
           {trackData && (
@@ -203,12 +219,18 @@ const ViewLiveTracking = () => {
                   <FaLock style={{ display: "inline" }} />
                   <p className="text-sm font-semibold">{trackData.imei}</p>
                 </span>
+                <p className="text-sm py-1">
+                  Status:{" "}
+                  <span className=" bg-green-500 rounded p-1 text-white">
+                    {status}
+                  </span>
+                </p>
                 <p className="text-sm">
-                  Connection:
+                  Connection:{" "}
                   {!trackData?.statusBitDefinition?.connection ? (
-                    <span>true</span>
+                    <span>Connected</span>
                   ) : (
-                    <span>false</span>
+                    <span>Not Connected</span>
                   )}
                 </p>
                 <p className="text-sm">
@@ -218,7 +240,6 @@ const ViewLiveTracking = () => {
                   Date/Time:{" "}
                   {moment(trackData.dateTime).format("DD-MM-YYYY HH:mm:ss")}
                 </p>
-                <p className="text-sm text-green-500">Status: {status}</p>
               </div>
               <div className="flex-1 p-2">
                 <span
@@ -232,11 +253,19 @@ const ViewLiveTracking = () => {
                   <LiaSignalSolid style={{ display: "inline" }} />
                   <p className="text-sm font-semibold">Network</p>
                 </span>
-                Network
                 <p className="text-sm">Speed: {trackData.speed} km/h</p>
-                <p className="text-sm">
-                  Satellites: {trackData["Additional Data"][3].satellites}
-                </p>
+
+                {trackData["Additional Data"] && (
+                  <>
+                    <p className="text-sm">
+                      Satellites:{" "}
+                      {trackData["Additional Data"].find((item: any) =>
+                        item.hasOwnProperty("satellites")
+                      )?.satellites || "N/A"}
+                    </p>
+                  </>
+                )}
+
                 <p className="text-sm">Bearing: 0°</p>
               </div>
               <div className="flex-1 p-2">
@@ -289,13 +318,24 @@ const ViewLiveTracking = () => {
                   <FaCarBattery style={{ display: "inline" }} />
                   <p className="text-sm font-semibold">Battery</p>
                 </span>
-                <p className="text-sm">
-                  Battery Level:{" "}
-                  {trackData["Additional Data"][1].batteryPercentage}
-                </p>
-                <p className="text-sm">
-                  {`Battery Voltage: ${trackData["Additional Data"][1].batteryVoltage} V`}
-                </p>
+                {trackData["Additional Data"] && (
+                  <>
+                    <p className="text-sm">
+                      Battery Level:{" "}
+                      {trackData["Additional Data"].find((item: any) =>
+                        item.hasOwnProperty("batteryPercentage")
+                      )?.batteryPercentage || "N/A"}{" "}
+                      %
+                    </p>
+                    <p className="text-sm">
+                      {`Battery Voltage: ${
+                        trackData["Additional Data"].find((item: any) =>
+                          item.hasOwnProperty("batteryVoltage")
+                        )?.batteryVoltage || "N/A"
+                      } mV`}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}

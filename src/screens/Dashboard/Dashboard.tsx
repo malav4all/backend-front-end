@@ -152,7 +152,7 @@ const Dashboard = () => {
                 accountId: item.accountId,
                 imei: item.imei,
                 status: item.status,
-                name: item.name,
+                name: "DL1ZC3350",
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
                 action:
                   item.status === "offline" ? (
@@ -249,9 +249,9 @@ const Dashboard = () => {
         margin: "auto",
       }}
     >
-      <Box>
+      {/* <Box>
         <DashboardHeader refresh={graphData} />
-      </Box>
+      </Box> */}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>

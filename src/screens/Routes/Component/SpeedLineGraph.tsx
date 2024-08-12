@@ -10,7 +10,7 @@ interface LineChartProps {
 
 const SpeedLineChart: React.FC<LineChartProps> = ({
   width = "100%",
-  height = 200,
+  height = 170,
   dataGraph,
 }) => {
   console.log({ dataGraph });
