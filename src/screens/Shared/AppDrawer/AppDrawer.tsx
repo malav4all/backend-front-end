@@ -512,8 +512,8 @@ const AppDrawer = (props: CustomProps) => {
               )}
             </Box>
             <Box sx={classes.menuOptionsHeight}>{getNewMenuOptions()}</Box>
-            <Box>{darkModeSection()}</Box>
-            <Box>{getLogoutButton()}</Box>
+            {/* <Box>{darkModeSection()}</Box>
+            <Box>{getLogoutButton()}</Box> */}
           </Box>
         </Box>
       </>
