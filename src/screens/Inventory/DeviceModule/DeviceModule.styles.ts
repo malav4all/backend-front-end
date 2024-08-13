@@ -19,6 +19,10 @@ const DeviceModelStyles = {
     ...boldFont,
     color: primaryHeadingColor,
   },
+  headerBackgroundColor: {
+    backgroundColor: theme.palette.background.paper,
+    padding: "2rem 0rem",
+  },
   profileHeaderEmail: {
     color: lightTextColor,
   },

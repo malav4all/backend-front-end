@@ -213,8 +213,8 @@ const EntityType = () => {
     return (
       <CustomButton
         id="profile_submit_button"
-        label="Add EntityType"
-        customClasses={{ width: "150px" }}
+        label="Add Entity Type"
+        customClasses={{ width: "170px" }}
         onClick={() => setAddEntityTypeDialogHandler(true)}
       />
     );
@@ -249,9 +249,21 @@ const EntityType = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Entity Type</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Entity Type
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
@@ -275,7 +287,6 @@ const EntityType = () => {
           justifyContent="end"
           alignItems="center"
           spacing={1}
-          pt={2}
           px={3}
         >
           {searchBarRole()}

@@ -40,6 +40,7 @@ import AddFilter from "./Component/AddFilter";
 import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
 import history from "../../utils/history";
+import { store } from "../../utils/store";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
@@ -62,16 +63,18 @@ const AlertConfig = () => {
   const [selectedUserRowData, setSelectedUserRowData] = useState<any>({});
   const [edit, setEdit] = useState(false);
 
-  // useEffect(() => {
-  //   if (searchAlertConfig) {
-  //     searchDetailTable();
-  //   } else getUsersDetailTable();
-  // }, [searchAlertConfig, pageNumber, rowsPerPage]);
+  useEffect(() => {
+    if (searchAlertConfig) {
+      searchDetailTable();
+    } else getUsersDetailTable();
+  }, [searchAlertConfig, pageNumber, rowsPerPage]);
 
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Alerts
         </Typography>
       </Box>
@@ -113,6 +116,7 @@ const AlertConfig = () => {
       setIsLoading(true);
       const res = await searchAlertRecord({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchAlertConfig,
           page: pageNumber,
           limit: perPageData,
@@ -134,6 +138,7 @@ const AlertConfig = () => {
       setIsLoading(true);
       const res = await listAlertRecord({
         input: {
+          accountId: store.getState().auth.tenantId,
           page: pageNumber,
           limit: perPageData,
         },
@@ -175,7 +180,9 @@ const AlertConfig = () => {
         deviceGroupName: (
           <>
             <Tooltip
-              title={usersData?.alertConfig?.alertImeiGroup.forEach((item:any)=> item)}
+              title={usersData?.alertConfig?.alertImeiGroup.forEach(
+                (item: any) => item
+              )}
               placement="top"
               arrow
               // onClick={() => {
@@ -344,19 +351,19 @@ const AlertConfig = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        marginTop: "1rem",
       }}
     >
       <Grid container spacing={2} direction="column">
         <Grid item>
           <CustomAppHeader
             className={{
-              backgroundColor: headerColor,
-              padding: "10px 20px 15px 18px",
+              ...classes.headerBackgroundColor,
+              backgroundColor: theme.palette.background.paper,
             }}
           >
             <Stack
               px={4}
-              pt={2}
               direction={{ lg: "row", xs: "column" }}
               justifyContent="space-between"
               alignItems={{ lg: "center" }}
@@ -365,7 +372,7 @@ const AlertConfig = () => {
                 sx={{
                   fontSize: getRelativeFontSize(6),
                   ...boldFont,
-                  color: "white",
+                  color: theme.palette.text.primary,
                 }}
               >
                 {getHeader()}

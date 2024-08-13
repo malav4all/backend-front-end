@@ -196,7 +196,7 @@ const Routes = () => {
       const { totalDistance, totalDuration } = await calculateDistance();
       const res = await createRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           routeName: formField?.routeName?.value,
           routesData: finalLocationIds,
           createdBy: store.getState()?.auth?.userName,
@@ -267,7 +267,8 @@ const Routes = () => {
 
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
-      const coordinates = item?.routesData?.map((coor: any) => {
+      console.log(item);
+      const coordinates = item?.routeDetails?.map((coor: any) => {
         const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
         return { lat, lng };
       });
@@ -291,36 +292,6 @@ const Routes = () => {
         totalDuration: formatDuration(item?.totalDuration),
         action: (
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Tooltip
-              title={
-                <CustomPaper
-                  className={{ backgroundColor: disabledBackgroundColor }}
-                >
-                  <Typography sx={classes.liveTrackingTooltipText}>
-                    {"Live Tracking"}
-                  </Typography>
-                </CustomPaper>
-              }
-              placement="top"
-              arrow
-              componentsProps={{
-                tooltip: {
-                  sx: {
-                    background: "none",
-                  },
-                },
-              }}
-            >
-              <SensorsRoundedIcon
-                style={{ color: primaryHeaderColor, cursor: "pointer" }}
-                onClick={() => {
-                  history.push({
-                    pathname: "/live-tracking",
-                  });
-                }}
-              />
-            </Tooltip>
-
             <Tooltip
               title={
                 <CustomPaper
@@ -367,7 +338,7 @@ const Routes = () => {
       setIsLoading(true);
       const res = await fetchRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page,
           limit: 10,
         },
@@ -386,7 +357,7 @@ const Routes = () => {
     try {
       const res = await fetchGeozoneHandler({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 0,
         },
@@ -400,7 +371,9 @@ const Routes = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Active Routes
         </Typography>
       </Box>
@@ -632,7 +605,7 @@ const Routes = () => {
                   >
                     {item.name.slice(0, -1) + " " + (index + 1)}
                   </InputLabel>
-                  <Box sx={{ width: "350px",  }}>
+                  <Box sx={{ width: "350px" }}>
                     <Autocomplete
                       sx={classes.emailDropDownStyle}
                       id={`location-${item._id}`}
@@ -771,8 +744,8 @@ const Routes = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack

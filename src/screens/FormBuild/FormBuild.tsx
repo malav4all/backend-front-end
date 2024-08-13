@@ -23,6 +23,7 @@ import { FaEdit } from "react-icons/fa";
 import { GetForms } from "./formBuilder.service";
 import moment from "moment";
 import formBuilderStyles from "./FormBuild.service";
+import { store } from "../../utils/store";
 
 const FormBuilder: React.FC = () => {
   const theme = useTheme();
@@ -34,7 +35,7 @@ const FormBuilder: React.FC = () => {
     const fetchForms = async () => {
       const response = await GetForms({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: 1,
           limit: 10,
         },
@@ -49,7 +50,9 @@ const FormBuilder: React.FC = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Form Builder
         </Typography>
       </Box>
@@ -118,8 +121,8 @@ const FormBuilder: React.FC = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack

@@ -100,7 +100,7 @@ const AssetAssingmentStyles = {
     gap: "15px",
   },
   headerBackgroundColor: {
-    backgroundColor: "#f1edff",
+    backgroundColor: "#15152E",
     padding: "35px 0px 25px 20px",
   },
   searchBarSection: {

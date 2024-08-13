@@ -6,28 +6,19 @@ import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { useTitle } from "../../utils/UseTitle";
 import {
-  alertRowData,
   dashboardGraphOnlineOrOffline,
   lineChartGraphStatus,
   offlineGraphStatus,
   onlineGraphStatus,
-  statusDevice,
 } from "./service/Dashboard.service";
-import { openErrorNotification } from "../../helpers/methods";
-import { CustomButton, CustomDialog } from "../../global/components";
-import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
-import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
 import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
-import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
-import { useSubscription } from "@apollo/client";
-import { ALERT_DEVICE_DATA, DEVICE_DATA } from "./service/Dashboard.mutation";
-import { AiOutlineRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
+import { store } from "../../utils/store";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -75,10 +66,18 @@ const Dashboard = () => {
     try {
       const [online, offline, chartLine, deviceDashboardData] =
         await Promise.all([
-          onlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-          offlineGraphStatus({ input: { accountId: "IMZ113343" } }),
-          lineChartGraphStatus({ input: { accountId: "IMZ113343" } }),
-          dashboardGraphOnlineOrOffline({ input: { accountId: "IMZ113343" } }),
+          onlineGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          offlineGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          lineChartGraphStatus({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
+          dashboardGraphOnlineOrOffline({
+            input: { accountId: store.getState().auth.tenantId },
+          }),
         ]);
       setGraphData({
         online: online?.onlineDeviceGraph,
@@ -246,7 +245,6 @@ const Dashboard = () => {
         backgroundColor: theme.palette.background.default,
         width: "100%",
         height: "auto",
-        // margin: "auto",
       }}
     >
       {/* <Box>

@@ -33,7 +33,7 @@ const CreateFormButton: React.FC = () => {
     try {
       const response = await createForm({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           createdBy: store.getState().auth.userName,
           ...values,
         },

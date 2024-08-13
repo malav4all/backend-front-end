@@ -41,7 +41,7 @@ import {
       },
     },
     headerBackgroundColor: {
-      backgroundColor: "#f1edff",
+      backgroundColor: "#15152E",
       padding: "10px 20px 15px 18px",
     },
     mainCardHeader: {},

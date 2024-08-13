@@ -35,7 +35,11 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
   const fetchTableTripType = async () => {
     try {
       const res = await fetchTripTypeTableHandler({
-        input: { accountId: "IMZ113343", page: -1, limit: 1000000 },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: -1,
+          limit: 1000000,
+        },
       });
       setTripTypeData(res.tripTypeList.data);
     } catch (error: any) {
@@ -47,7 +51,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
     try {
       const res = await fetchRoutes({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: -1,
           limit: 10000,
         },

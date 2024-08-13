@@ -1,13 +1,34 @@
-import React, { useEffect, useRef } from "react";
-import { airports } from "./dummy";
+import React, { useEffect, useRef, useState } from "react";
+import { openErrorAlertNotification } from "../../helpers/methods";
+import { fetchMapViewDevice } from "./service/map-service";
+import { store } from "../../utils/store";
 
 const apiKey = "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo";
 
 const HereMapCluster: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const currentBubbleRef = useRef(null);
+  const mapInstanceRef = useRef<any>(null); // Create a ref to store the map instance
+  const [viewDetail, setViewDetail] = useState<any>([]);
 
   useEffect(() => {
+    const fetchDeviceDetail = async () => {
+      try {
+        const res = await fetchMapViewDevice({
+          input: { accountId: store.getState().auth.tenantId },
+        });
+        setViewDetail(res.viewAllDeviceMap);
+      } catch (error: any) {
+        openErrorAlertNotification(error.message);
+      }
+    };
+
+    fetchDeviceDetail();
+  }, []);
+
+  useEffect(() => {
+    if (!viewDetail.length) return;
+
     const initializeMap = async () => {
       const H = window.H;
 
@@ -30,11 +51,13 @@ const HereMapCluster: React.FC = () => {
 
       window.addEventListener("resize", () => map.getViewPort().resize());
 
-      const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+      new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
       const ui = H.ui.UI.createDefault(map, defaultLayers);
 
-      const dataPoints = airports.map(
-        (item) =>
+      mapInstanceRef.current = map; // Store the map instance in the ref
+
+      const dataPoints = viewDetail.map(
+        (item: any) =>
           new H.clustering.DataPoint(item.latitude, item.longitude, null, item)
       );
 
@@ -57,7 +80,10 @@ const HereMapCluster: React.FC = () => {
         }
       };
 
-      const getReverseGeocodingData = async (latitude: number, longitude: number) => {
+      const getReverseGeocodingData = async (
+        latitude: number,
+        longitude: number
+      ) => {
         const url = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${latitude},${longitude}&lang=en-US&apikey=${apiKey}`;
 
         try {
@@ -66,7 +92,6 @@ const HereMapCluster: React.FC = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          console.log("Reverse Geocoding Data: ", data);
 
           if (data.items && data.items.length > 0) {
             const address = data.items[0].address.label;
@@ -85,23 +110,30 @@ const HereMapCluster: React.FC = () => {
         const target = event.target;
 
         // Ensure target is a marker and not a cluster
-        if (target instanceof H.map.Marker && !target.getData().getClusteredData) {
+        if (
+          target instanceof H.map.Marker &&
+          !target.getData().getClusteredData
+        ) {
           const data = target.getData();
-          if (!data.Jq) {
-            console.log("Marker Data: ", data);
 
-            const address = await getReverseGeocodingData(data.dm.data.latitude, data.dm.data.longitude);
+          if (!data.Jq) {
+            const address = await getReverseGeocodingData(
+              data.dm.data.latitude,
+              data.dm.data.longitude
+            );
 
             const bubbleContent = `
               <div class="font-sans leading-relaxed p-4 w-64">
-                <h3 class="m-0 text-lg text-gray-800 font-semibold">${data.name || "6232512668984"
-              }</h3>
+                <h3 class="m-0 text-lg text-gray-800 font-semibold">${
+                  data?.dm?.data?.imei
+                }</h3>
                 <p class="mt-2 text-sm text-gray-600"><strong>Address:</strong> ${address}</p>
-              }</p>
-                <p class="mt-2 text-sm text-gray-600"><strong>Latitude:</strong> ${data?.dm?.data?.latitude || "No latitude available"
-              }</p>
-                <p class="mt-2 text-sm text-gray-600"><strong>Longitude:</strong> ${data?.dm?.data?.longitude || "No longitude available"
-              }</p>
+                <p class="mt-2 text-sm text-gray-600"><strong>Latitude:</strong> ${
+                  data?.dm?.data?.latitude || "No latitude available"
+                }</p>
+                <p class="mt-2 text-sm text-gray-600"><strong>Longitude:</strong> ${
+                  data?.dm?.data?.longitude || "No longitude available"
+                }</p>
               </div>
             `;
 
@@ -120,7 +152,17 @@ const HereMapCluster: React.FC = () => {
     };
 
     initializeMap();
-  }, []);
+
+    // Clean up resources
+    return () => {
+      if (mapInstanceRef.current) {
+        window.removeEventListener("resize", () =>
+          mapInstanceRef.current.getViewPort().resize()
+        );
+        mapInstanceRef.current.dispose();
+      }
+    };
+  }, [viewDetail]);
 
   return (
     <div id="map" ref={mapRef} style={{ width: "100%", height: "100vh" }} />

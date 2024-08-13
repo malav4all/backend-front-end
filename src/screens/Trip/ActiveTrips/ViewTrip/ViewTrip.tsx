@@ -85,8 +85,7 @@ const ViewTrip = () => {
       setTransitTypeForm({
         transitType: tripData?.route?.routeName || "",
         vehicleType: tripData?.tripData[0]?.vehicleNo || "",
-        numberOfPassengers: 0, // Assuming this data is not provided in the API response
-        specialRequirements: "", // Assuming this data is not provided in the API response
+        routeId: tripData?.route.routeId,
       });
 
       setIsLoading(false);

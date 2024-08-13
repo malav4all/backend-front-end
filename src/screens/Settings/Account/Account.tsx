@@ -170,16 +170,27 @@ const Account = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Settings / Account</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Settings / Account
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

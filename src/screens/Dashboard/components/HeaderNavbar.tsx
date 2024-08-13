@@ -27,8 +27,8 @@ const HeaderNavbar = () => {
 
   return (
     <>
-      <nav className="bg-[#060B25] dark:bg-[#15152E] border-gray-20  border-b border-[#303968]">
-        <div className="px-12 flex flex-wrap items-center justify-between mx-auto p-4">
+      <nav className="bg-[#060B25] border-gray-20 border-b border-[#303968]">
+        <div className="px-6 flex flex-wrap items-center justify-between mx-auto py-2">
           <div>
             {/* <img src={ROUTEYE_LOGO} alt="Routeye Logo" className="h-[30px]" /> */}
           </div>
@@ -38,24 +38,24 @@ const HeaderNavbar = () => {
               onClick={toggleTheme}
             >
               {darkMode ? (
-                <MdOutlineLightMode size={24} />
+                <MdOutlineLightMode size={18} />
               ) : (
-                <MdOutlineDarkMode size={24} />
+                <MdOutlineDarkMode size={18} />
               )}
             </div>
 
             <div className="relative rounded-lg ">
               <div
-                className="flex gap-2 items-center cursor-pointer border border-[#313147] p-2 rounded-lg "
+                className="flex gap-2 items-center cursor-pointer border border-[#313147] px-2 py-1 rounded-lg "
                 onClick={toggleOptions}
               >
                 <div className="flex items-center">
-                  <p className="bg-[#5F22E1] p-3 rounded-full w-[30px] h-[30px] flex justify-center items-center text-2xl text-white">
+                  <p className="bg-[#5F22E1] p-3 rounded-full w-[30px] h-[30px] flex justify-center items-center text-xl text-white">
                     {userName?.charAt(0)}
                   </p>
                 </div>
                 <p className="text-white">{userName}</p>
-                <FaSortDown className="text-white mb-2 ml-3" />
+                <FaSortDown className="text-white text-sm mb-2 ml-3" />
               </div>
 
               {showOptions && (

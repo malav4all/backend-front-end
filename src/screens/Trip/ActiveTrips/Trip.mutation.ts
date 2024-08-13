@@ -56,8 +56,10 @@ export const SEARCH_DEVICE_GROUP = gql`
 export const FETCH_TRIP_METRICS = gql`
   mutation ($input: TripInput!) {
     getTripStatusMetrics(input: $input) {
-      status
-      count
+      data {
+        status
+        count
+      }
     }
   }
 `;

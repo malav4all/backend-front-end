@@ -16,6 +16,10 @@ const deviceGroupStyles = (theme: Theme) => ({
       margin: "0px",
     },
   },
+  headerBackgroundColor: {
+    backgroundColor: theme.palette.background.paper,
+    padding: "2rem 0rem",
+  },
   mainSection: {
     padding: "30px",
     paddingTop: "2px",

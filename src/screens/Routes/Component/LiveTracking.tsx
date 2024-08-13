@@ -12,6 +12,7 @@ import { batteryGraphData, speedGraphData } from "../service/routes.service";
 import BatteryLineChart from "./BatteryLineGraph";
 import { Box } from "@mui/material";
 import Speedometer from "./Speedometer";
+import { store } from "../../../utils/store";
 
 interface LocationState {
   imei: string;
@@ -62,7 +63,7 @@ const ViewLiveTracking = () => {
   const { data } = useSubscription(DEVICE_DATA, {
     variables: {
       topicType: "track",
-      accountId: "IMZ113343",
+      accountId: store.getState().auth.tenantId,
       imeis: [imei],
     },
   });
@@ -108,10 +109,10 @@ const ViewLiveTracking = () => {
         const domIconElement = document.createElement("div");
         domIconElement.style.margin = "-20px 0 0 -20px";
 
-        domIconElement.innerHTML = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="40" height="40">
-          <path d="m0.812665,23.806608l37.937001,-22.931615l-21.749812,38.749665l1.374988,-17.749847l-17.562177,1.931797z"
-            fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
-        </svg>`;
+        domIconElement.innerHTML = `<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="40" fill="rgba(255, 255, 255, 0.5)" stroke="none" />
+  <polygon points="50,20 70,65 50,55 30,65" fill="#7C58CB" stroke="#5F22E1" stroke-width="2" />
+</svg>`;
 
         if (currentMarker) {
           map.removeObject(currentMarker);
@@ -151,13 +152,19 @@ const ViewLiveTracking = () => {
     try {
       const [online, offline] = await Promise.all([
         speedGraphData({
-          input: { accountId: "IMZ113343", imei: "688056086137" },
+          input: {
+            accountId: store.getState().auth.tenantId,
+            imei: imei,
+          },
         }),
         batteryGraphData({
-          input: { accountId: "IMZ113343", imei: "688056086137" },
+          input: {
+            accountId: store.getState().auth.tenantId,
+            imei: imei,
+          },
         }),
       ]);
-      // console.log(online, offline);
+
       setGraphData({
         online: online?.speedGraphData,
         offline: offline?.batteryGraphDataData,
@@ -299,9 +306,9 @@ const ViewLiveTracking = () => {
                 <p className="text-sm">
                   Ignition:{" "}
                   {!trackData?.statusBitDefinition?.ignitionOn ? (
-                    <span>true</span>
+                    <span>On</span>
                   ) : (
-                    <span>false</span>
+                    <span>Off</span>
                   )}
                 </p>
               </div>

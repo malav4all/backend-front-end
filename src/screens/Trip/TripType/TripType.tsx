@@ -95,7 +95,11 @@ const TripType = () => {
     try {
       setIsLoading(true);
       const res = await fetchTripTypeTableHandler({
-        input: { accountId: "IMZ113343", page: pageNumber, limit: perPageData },
+        input: {
+          accountId: store.getState().auth.tenantId,
+          page: pageNumber,
+          limit: perPageData,
+        },
       });
       const finalData = res?.tripTypeList?.data?.map((item: any) => {
         return {
@@ -246,10 +250,27 @@ const TripType = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Trip Type</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Trip Type
+          </Typography>
         </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        ></Stack>
       </CustomAppHeader>
     );
   };
@@ -267,7 +288,6 @@ const TripType = () => {
           justifyContent="end"
           alignItems="center"
           spacing={1}
-          pt={2}
           px={3}
         >
           {searchBarRole()}

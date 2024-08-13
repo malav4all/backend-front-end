@@ -44,10 +44,6 @@ i18next
 declare global {
   interface Window {
     __forceSmoothScrollPolyfill__: boolean;
-  }
-
-  interface Window {
-    __forceSmoothScrollPolyfill__: boolean;
     H: any;
   }
 }

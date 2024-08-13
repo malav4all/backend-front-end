@@ -42,6 +42,7 @@ import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import EditIcon from "@mui/icons-material/Edit";
 import history from "../../utils/history";
 import { hasAccessTo } from "../../utils/AuthorizationManager";
+import { store } from "../../utils/store";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -171,7 +172,9 @@ const DeviceGroup = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Device Group
         </Typography>
       </Box>
@@ -196,7 +199,7 @@ const DeviceGroup = () => {
       setIsLoading(true);
       const res = await fetchDeviceGroup({
         input: {
-          accountId: "IMZ113343",
+          accountId: store.getState().auth.tenantId,
           page: page,
           limit: rowsPerPage,
         },
@@ -339,13 +342,12 @@ const DeviceGroup = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack
           px={4}
-          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -354,7 +356,7 @@ const DeviceGroup = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...boldFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             {getHeader()}

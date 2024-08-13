@@ -1,11 +1,15 @@
 import React from "react";
 import ApexCharts from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
+import { Typography, useTheme } from "@mui/material";
 
 const Speedometer = ({ speed }: { speed: any }) => {
+  const theme = useTheme();
   const options: ApexOptions = {
     chart: {
       type: "radialBar",
+      width: "100%",
+      height: 200,
       offsetY: -20,
       sparkline: {
         enabled: true,
@@ -16,29 +20,22 @@ const Speedometer = ({ speed }: { speed: any }) => {
         startAngle: -90,
         endAngle: 90,
         hollow: {
-          size: "70%",
+          size: "20%", // Reduce hollow size to make the blue part thicker
         },
         track: {
-          background: "#e7e7e7",
-          strokeWidth: "470px",
-          dropShadow: {
-            enabled: true,
-            top: 2,
-            left: 0,
-            color: "#999",
-            opacity: 1,
-            blur: 2,
-          },
+          background: "#16497D",
+          strokeWidth: "100%", // Thicker background track
         },
         dataLabels: {
           name: {
             show: false,
           },
           value: {
-            offsetY: -2,
+            offsetY: 20,
+            color: theme.palette.text.primary,
             fontSize: "15px",
             formatter: function (val) {
-              return `${val}`;
+              return `${val} Km/h`;
             },
           },
         },
@@ -75,23 +72,35 @@ const Speedometer = ({ speed }: { speed: any }) => {
         bottom: "20px",
         right: "20px",
         zIndex: 1000,
-        backgroundColor: "#fff",
+        background: theme.palette.background.paper,
+        color: theme.palette.text.primary,
         padding: "10px",
         borderRadius: "5px",
         boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
-        textAlign: "center",
-        width: "200px",
-        height: "150px",
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        flexDirection: "column",
       }}
     >
+      <Typography
+        variant="h5"
+        sx={{
+          fontFamily: "Geist_semibold",
+          fontSize: "0.9rem",
+          marginBottom: "0.5rem",
+          padding: "0.2rem 0.8rem",
+          borderRadius: "5px",
+          borderLeft: "7px solid",
+          borderLeftColor: "#855BDE",
+        }}
+      >
+        Speed (Live)
+      </Typography>
       <ApexCharts
         options={options}
         series={[speed]}
         type="radialBar"
         height={180}
+        width={200}
       />
     </div>
   );

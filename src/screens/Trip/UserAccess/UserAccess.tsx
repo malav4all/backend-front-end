@@ -226,7 +226,7 @@ const TripAccess = () => {
       <CustomButton
         id="profile_submit_button"
         label="Add Trip Access"
-        customClasses={{ width: "160px" }}
+        customClasses={{ width: "180px" }}
         onClick={() => setAddUserAccessDialogHandler(true)}
       />
     );
@@ -261,9 +261,21 @@ const TripAccess = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Trip Access</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Trip Access
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}

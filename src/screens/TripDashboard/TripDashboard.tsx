@@ -1,50 +1,45 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Grid,
-  IconButton,
-  InputAdornment,
+  Typography,
   LinearProgress,
   ListItem,
   ListItemText,
-  Paper,
-  Typography,
   useTheme,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import {
-  debounceEventHandler,
-  isTruthy,
-  openErrorNotification,
-} from "../../helpers/methods";
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
-import strings from "../../global/constants/StringConstants";
-import history from "../../utils/history";
-import { useTitle } from "../../utils/UseTitle";
-import { CustomButton, CustomInput } from "../../global/components";
-import HereMap from "./components/HereMap";
-import DashboardHeader from "./components/DashboardHeader";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FlagIcon from "@mui/icons-material/Flag";
+import { CustomButton, CustomInput } from "../../global/components";
+import HereMap from "./components/HereMap";
 import { ListAllTrips } from "./service/TripDashboard.service";
-import dashboardStyles from "./TripDashboardStyles";
-import dummyData from "./TripDashboard.helper";
 import { BsFillUnlockFill } from "react-icons/bs";
-import { MdAccessTimeFilled } from "react-icons/md";
-import { MdDateRange } from "react-icons/md";
-import { primaryColorPurple } from "../../utils/styles";
+import { MdAccessTimeFilled, MdDateRange } from "react-icons/md";
+import { useSubscription } from "@apollo/client";
+import { DEVICE_DATA } from "../Dashboard/service/Dashboard.mutation";
+import { store } from "../../utils/store";
+
+import strings from "../../global/constants/StringConstants";
+import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
+import dashboardStyles from "./TripDashboardStyles";
+import { debounceEventHandler } from "../../helpers/methods";
+
 interface Trip {
   tripId: string;
   name: string;
   tripData: {
     vehicleNo: string;
+    imei: any;
   }[];
   startPoint: {
     name: string;
+    latitude: number;
+    longitude: number;
   };
   endPoint: {
     name: string;
+    latitude: number;
+    longitude: number;
   };
   status: string;
   tripEndDate: string;
@@ -63,15 +58,12 @@ interface Stats {
 const TripDashboard = () => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  useTitle(strings.DashboardTitle);
-  const classes = dashboardStyles;
   const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
   const [searchData, setSearchData] = useState<string>("");
   const [trips, setTrips] = useState<Trip[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [totalActiveTrips, setTotalActiveTrips] = useState<number>(0);
-  const [lockStatus, setLockStatus] = useState("Unlock");
+  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
+
   const stats: Record<string, Stats> = {
     executed: {
       title: "Today's Trips",
@@ -89,20 +81,19 @@ const TripDashboard = () => {
     },
   };
 
-  console.log(trips);
-
   useEffect(() => {
     const fetchTrips = async () => {
       try {
         const variables = {
           input: {
-            accountId: "IMZ113343",
+            accountId: store.getState().auth.tenantId,
+            status: "started",
           },
         };
         const response = await ListAllTrips(variables);
         setTrips(response?.tripList?.data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        console.error(err);
       } finally {
         setIsLoading(false);
       }
@@ -114,12 +105,61 @@ const TripDashboard = () => {
     getOngoingTrips(trips);
   }, [trips]);
 
+  const handleTripClick = (trip: Trip) => {
+    setSelectedTrip(trip);
+  };
+
+  console.log();
+
+  // const { data } = useSubscription(DEVICE_DATA, {
+  //   variables: {
+  //     topicType: "track",
+  //     accountId: store.getState().auth.tenantId,
+  //     imeis: ["688056086137"],
+  //   },
+  //   skip: !selectedTrip,
+  // });
+
   const getOngoingTrips = (trips: Trip[]) => {
     const ongoingTrips = trips.filter((trip) => trip.status === "ongoing");
     setTotalActiveTrips(ongoingTrips.length);
   };
 
-  console.log(trips);
+  const buttonRender = (status: string) => {
+    switch (status) {
+      case "started":
+        return (
+          <CustomButton
+            label="End"
+            startIcon={<BsFillUnlockFill />}
+            onClick={() => {}}
+            customClasses={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              textTransform: "none",
+              backgroundColor: theme.palette.primary.main,
+              color: "#fff",
+            }}
+          />
+        );
+
+      default:
+        return (
+          <CustomButton
+            label="Unlock"
+            startIcon={<BsFillUnlockFill />}
+            onClick={() => {}}
+            customClasses={{
+              padding: "8px 16px",
+              borderRadius: "8px",
+              textTransform: "none",
+              backgroundColor: theme.palette.primary.main,
+              color: "#fff",
+            }}
+          />
+        );
+    }
+  };
 
   const getTripList = () => {
     return (
@@ -155,6 +195,7 @@ const TripDashboard = () => {
             return (
               <ListItem
                 key={trip.tripId}
+                onClick={() => handleTripClick(trip)}
                 sx={{
                   border: "1px solid",
                   borderColor: theme.palette.divider,
@@ -277,57 +318,7 @@ const TripDashboard = () => {
                   }
                 />
 
-                {/* {
-            switch(trip.status) {
-  case: "ended":
-    <CustomButton
-    label="Unlock"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-    break;
-  case: "create":
-    <CustomButton
-    label="Create"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-    break;
-  default:
-    case: "started":
-    <CustomButton
-    label="Started"
-    startIcon={<BsFillUnlockFill />}
-    onClick={() => {}}
-    customClasses={{
-      padding: "8px 16px",
-      borderRadius: "8px",
-      textTransform: "none",
-      backgroundColor: primaryColorPurple,
-      color: "#fff",
-    }}
-  />
-}
-} */}
-                {/* {trip.status === "ended" ? (
-                  
-                ) : (
-                  <></>
-                )} */}
+                {buttonRender(trip.status)}
               </ListItem>
             );
           })}
@@ -442,7 +433,7 @@ const TripDashboard = () => {
   const getMap = () => {
     return (
       <Box sx={{ position: "relative", height: "640px" }}>
-        <HereMap />
+        <HereMap selectedTrip={selectedTrip} />
       </Box>
     );
   };
@@ -466,23 +457,14 @@ const TripDashboard = () => {
             color: theme.palette.text.primary,
           },
         }}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
       />
     );
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchData(SearchEvent.target.value.trim().toLowerCase());
-    } else {
-      setSearchData("");
-    }
+  const handleSearchOnChange = (
+    SearchEvent: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchData(SearchEvent.target.value.trim().toLowerCase() || "");
   };
 
   const getDashboardBody = () => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/system";
-import { Switch } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 import PrivateRoute from "../../../global/components/PrivateRoute/PrivateRoute";
 import Dashboard from "../../Dashboard/Dashboard";
 import AppDrawer from "../AppDrawer/AppDrawer";
@@ -68,6 +68,7 @@ import urls from "../../../global/constants/UrlConstants";
 import TripAccess from "../../Trip/UserAccess/UserAccess";
 import DeviceList from "../../DeviceList/DeviceList";
 import HeaderNavbar from "../../Dashboard/components/HeaderNavbar";
+import { RoleManagement } from "../../Settings/RoleManagement/RoleManagement";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -76,7 +77,7 @@ const Layout = () => {
   const isAuthenticated = useAppSelector(selectAuthenticated);
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-
+  const location = useLocation();
   const handleOnIdle = () => {
     setIdleModal(true);
     const idleLogoutTime = 15;
@@ -94,7 +95,11 @@ const Layout = () => {
   };
 
   const { data } = useSubscription(DEVICE_DATA, {
-    variables: { topicType: "alert", accountId: "IMZ113343", imeis: [] },
+    variables: {
+      topicType: "alert",
+      accountId: store.getState().auth.tenantId,
+      imeis: [],
+    },
   });
 
   useEffect(() => {
@@ -120,9 +125,13 @@ const Layout = () => {
   const getContent = () => {
     return (
       <Box sx={classes.content}>
-        <Box sx={{ zIndex: "10000",  }}>
-          <HeaderNavbar />
-        </Box>
+        {!(
+          location.pathname === "/map-view" || location.pathname === "/location"
+        ) && (
+          <Box sx={{ zIndex: "10000" }}>
+            <HeaderNavbar />
+          </Box>
+        )}
         <Switch>
           <PrivateRoute
             exact
@@ -134,9 +143,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/trip-dashboard"}
+            path={"/trip-view"}
             component={TripDashboard}
-            componentName={strings.TRIPDASHBOARD}
+            componentName={strings.TRIPVIEW}
           />
           <PrivateRoute
             exact
@@ -162,9 +171,9 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/location"}
+            path={"/geozone"}
             component={Geozone}
-            componentName={strings.LOCATION}
+            componentName={strings.GEOZONE}
           />
           <PrivateRoute
             exact
@@ -206,21 +215,21 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/alert-reports"}
             component={AlertReport}
-            componentName={strings.ALERT_REPORTS}
+            componentName={strings.ALERT}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/distance-reports"}
             component={DistanceReport}
-            componentName={strings.DISTANCE_REPORTS}
+            componentName={strings.DISTANCE}
           />
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
             path={"/trip-reports"}
             component={TripReport}
-            componentName={strings.TRIP_REPORT}
+            componentName={strings.TRIP}
           />
           <PrivateRoute
             exact
@@ -274,7 +283,7 @@ const Layout = () => {
           <PrivateRoute
             exact
             isLoggedIn={isAuthenticated}
-            path={"/alert-config"}
+            path={"/alerts"}
             component={AlertConfig}
             componentName={strings.ALERT_CONFIG}
           />
@@ -399,6 +408,13 @@ const Layout = () => {
             path={"/LocationType"}
             component={LocationType}
             componentName={strings.LOCATIONTYPE}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/settings/Role"}
+            component={RoleManagement}
+            componentName={strings.ROLE_MANAGEMENT}
           />
           <PrivateRoute
             exact

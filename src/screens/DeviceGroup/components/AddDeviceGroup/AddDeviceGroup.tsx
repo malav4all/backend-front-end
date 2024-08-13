@@ -112,7 +112,9 @@ const AddDeviceGroup = (props: CustomProps) => {
 
   const fetchImeiData = async () => {
     try {
-      const res = await fetchDeviceList({ input: { accountId: "IMZ113343" } });
+      const res = await fetchDeviceList({
+        input: { accountId: store.getState().auth.tenantId },
+      });
       setImeiData(res?.getImeiList?.imeiList);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -122,7 +124,7 @@ const AddDeviceGroup = (props: CustomProps) => {
   const insertDeviceGroupDetails = async () => {
     try {
       const insertDeviceGroupBody = {
-        accountId: "IMZ113343",
+        accountId: store.getState().auth.tenantId,
         imeiData: deviceGroupFromFields.imeiList?.value,
         deviceGroupName: deviceGroupFromFields.deviceGroupName?.value?.trim(),
       };

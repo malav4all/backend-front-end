@@ -25,8 +25,14 @@ import { RiFileExcel2Line } from "react-icons/ri";
 import trackplayStyle from "./Trackplay.styles";
 import { CustomInput } from "../../global/components";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import { store } from "../../utils/store";
 
-const Trackplay = () => {
+interface TrackPlayProps {
+  location?: any;
+}
+
+const Trackplay = ({ location }: TrackPlayProps) => {
+  const trackPlayData = location.state;
   const classes = trackplayStyle;
   const [map, setMap] = useState<any>(null);
   const [speed, setSpeed] = useState(1);
@@ -60,51 +66,6 @@ const Trackplay = () => {
     currentIndexRef.current = currentIndex;
   }, [currentIndex]);
 
-  const getReports = async (dataTest: any) => {
-    const finalArr = dataTest.map(
-      ({ direction, __typename, label, lat, lng, ...rest }: any) => {
-        return {
-          ...rest,
-          lat: Number(lat),
-          lng: Number(lng),
-        };
-      }
-    );
-
-    const payload = { trace: finalArr };
-
-    const url = `https://router.hereapi.com/v8/import?transportMode=car&return=polyline,turnByTurnActions,actions,instructions,travelSummary&apiKey=B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo`;
-
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-    const route = data.routes[0];
-    const reportData = route.sections[0].actions.map(
-      (
-        { instruction, action, duration, length, offset, currentTime }: any,
-        index: number
-      ) => {
-        return {
-          sNo: index,
-          imei: dataTest[0].label,
-          instruction,
-          action,
-          duration,
-          length,
-          offset,
-          currentTime,
-        };
-      }
-    );
-
-    setDataValue(reportData);
-  };
-
   function addPolylineToMap(data: any) {
     const polylines = [];
     const speedColors = {
@@ -115,10 +76,10 @@ const Trackplay = () => {
 
     // Initialize the bounding box with the first point
     let boundingBox = new window.H.geo.Rect(
-      Number(data[0].lat),
-      Number(data[0].lng),
-      Number(data[0].lat),
-      Number(data[0].lng)
+      Number(data[0].latitude),
+      Number(data[0].longitude),
+      Number(data[0].latitude),
+      Number(data[0].longitude)
     );
 
     for (let i = 0; i < data.length - 1; i++) {
@@ -137,22 +98,22 @@ const Trackplay = () => {
 
       const segmentLine = new window.H.geo.LineString();
       segmentLine.pushPoint({
-        lat: Number(point1.lat),
-        lng: Number(point1.lng),
+        lat: Number(point1.latitude),
+        lng: Number(point1.longitude),
       });
       segmentLine.pushPoint({
-        lat: Number(point2.lat),
-        lng: Number(point2.lng),
+        lat: Number(point2.latitude),
+        lng: Number(point2.longitude),
       });
 
       // Update the bounding box with the new points
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point1.lat),
-        lng: Number(point1.lng),
+        lat: Number(point1.latitude),
+        lng: Number(point1.longitude),
       });
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point2.lat),
-        lng: Number(point2.lng),
+        lat: Number(point2.latitude),
+        lng: Number(point2.longitude),
       });
 
       const polyline = new window.H.map.Polyline(segmentLine, {
@@ -162,15 +123,15 @@ const Trackplay = () => {
       polylines.push(polyline);
     }
 
-    polylines.forEach((polyline) => map.addObject(polyline));
+    polylines.forEach((polyline) => map?.addObject(polyline));
 
     // Zoom to fit the bounding box
-    map.getViewModel().setLookAtData({
-      bounds: boundingBox,
-    });
+    // map.getViewModel()?.setLookAtData({
+    //   bounds: boundingBox,
+    // });
 
     // Set a specific zoom level to zoom in as desired
-    map.setZoom(12);
+    // map.setZoom(12);
 
     const startIcon = new window.H.map.Icon(startSvgMarkup, {
       anchor: { x: 20, y: 24 }, // Adjust the anchor to move the icon left by 20px
@@ -181,7 +142,7 @@ const Trackplay = () => {
     });
     // Add start marker
     const startMarker = new window.H.map.Marker(
-      { lat: Number(data[0].lat), lng: Number(data[0].lng) },
+      { lat: Number(data[0].latitude), lng: Number(data[0].longitude) },
       { icon: startIcon }
     );
     map.addObject(startMarker);
@@ -189,8 +150,8 @@ const Trackplay = () => {
     // Add end marker
     const endMarker = new window.H.map.Marker(
       {
-        lat: Number(data[data.length - 1].lat),
-        lng: Number(data[data.length - 1].lng),
+        lat: Number(data[data.length - 1].latitude),
+        lng: Number(data[data.length - 1].longitude),
       },
       { icon: endIcon }
     );
@@ -198,11 +159,18 @@ const Trackplay = () => {
   }
 
   const trackPlayApiHandler = async () => {
-    const trackdata = await fetchTrackplayHandler();
+    const trackdata = await fetchTrackplayHandler({
+      input: {
+        accountId: store.getState().auth.tenantId,
+        imei: trackPlayData?.imei,
+        startDate: trackPlayData?.startDate,
+        endDate: trackPlayData?.endDate,
+      },
+    });
 
-    addPolylineToMap(trackdata.getRowData);
-    getReports(trackdata.getRowData);
-    setRawData(trackdata.getRowData);
+    addPolylineToMap(trackdata.getDistanceTrackPlay);
+    // getReports(trackdata.getDistanceTrackPlay);
+    setRawData(trackdata.getDistanceTrackPlay);
   };
 
   useEffect(() => {
@@ -228,7 +196,6 @@ const Trackplay = () => {
     setMap(initialMap);
     window.H.ui.UI.createDefault(initialMap, defaultLayers);
     window.addEventListener("resize", () => initialMap.getViewPort().resize());
-
     return () => {
       window.removeEventListener("resize", () =>
         initialMap.getViewPort().resize()
@@ -239,7 +206,7 @@ const Trackplay = () => {
   const test = () => {
     const interpolatedPoints = interpolatePoints(rawData);
     let newTimeouts: any[] = [];
-    interpolatedPoints.forEach((item, index) => {
+    interpolatedPoints.forEach((item: any, index) => {
       const timeoutId = setTimeout(() => {
         const { lat, lng, direction } = item;
         animate(lat, lng, direction);
@@ -258,13 +225,13 @@ const Trackplay = () => {
       const numInterpolations = 10;
       for (let j = 0; j < numInterpolations; j++) {
         const lat = interpolate(
-          parseFloat(start.lat),
-          parseFloat(end.lat),
+          parseFloat(start.latitude),
+          parseFloat(end.latitude),
           j / numInterpolations
         );
         const lng = interpolate(
-          parseFloat(start.lng),
-          parseFloat(end.lng),
+          parseFloat(start.longitude),
+          parseFloat(end.longitude),
           j / numInterpolations
         );
         const direction = interpolateDirection(
@@ -392,18 +359,6 @@ const Trackplay = () => {
       timeoutIds.forEach((id) => clearTimeout(id));
     }
     test();
-  };
-
-  // useEffect(() => {
-  //   return () => {
-  //     if (timeoutIds.length > 0) {
-  //       timeoutIds.forEach((id) => clearTimeout(id));
-  //     }
-  //   };
-  // }, []);
-
-  const toggleMovement = () => {
-    setStop((prevStop) => !prevStop);
   };
 
   const generateExcelFile = () => {

@@ -21,6 +21,11 @@ const formBuilderStyles = {
     },
   },
 
+  headerBackgroundColor: {
+    backgroundColor: theme.palette.background.paper,
+    padding: "2rem 0rem",
+  },
+
   label: {
     ...semiBoldFont,
     fontSize: "14px",

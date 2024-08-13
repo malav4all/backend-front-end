@@ -30,7 +30,7 @@ const AccountStyles = {
     color: primaryHeadingColor,
   },
   headerBackgroundColor: {
-    backgroundColor: headerColor,
+    backgroundColor: "#15152E",
     padding: "35px 0px 25px 20px",
   },
   settingsTitle: {

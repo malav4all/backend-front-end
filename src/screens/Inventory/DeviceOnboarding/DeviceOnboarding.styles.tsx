@@ -28,8 +28,8 @@ const DeviceOnboardingStyle = {
     gap: "15px",
   },
   headerBackgroundColor: {
-    backgroundColor: "#ECF9FF",
-    padding: "35px 0px 25px 20px",
+    backgroundColor: theme.palette.background.paper,
+    padding: "2rem 0rem",
   },
   searchBarSection: {
     display: "flex",

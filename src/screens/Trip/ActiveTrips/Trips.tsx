@@ -67,10 +67,6 @@ const Trips = () => {
     }
   }, [searchTrips, page, rowsPerPage, tabValue]);
 
-  // useEffect(() => {
-  //   getTripMetrics();
-  // }, []);
-
   const getTripMetrics = async () => {
     try {
       setIsLoading(true);
@@ -78,7 +74,7 @@ const Trips = () => {
         input: { accountId: store.getState().auth.tenantId },
       });
 
-      const metrics = res?.data?.getTripStatusMetrics || [];
+      const metrics = res?.getTripStatusMetrics.data || [];
 
       setCreatedCount(
         metrics.find((metric: any) => metric.status === "created")?.count || 0
