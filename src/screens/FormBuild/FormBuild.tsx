@@ -50,7 +50,9 @@ const FormBuilder: React.FC = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Form Builder
         </Typography>
       </Box>
@@ -119,8 +121,8 @@ const FormBuilder: React.FC = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack

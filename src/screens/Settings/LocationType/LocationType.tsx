@@ -201,9 +201,22 @@ const LocationType = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Location Type</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              backgroundColor: theme.palette.background.paper,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Location Type
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
@@ -253,7 +266,6 @@ const LocationType = () => {
         {SettingsHeader()}
         <Stack
           px={4}
-          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}

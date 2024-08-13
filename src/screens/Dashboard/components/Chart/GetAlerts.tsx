@@ -12,7 +12,7 @@ const GetAlerts = ({ data }: any) => {
     <Box
       id="Alerts_pannel"
       sx={{
-        marginTop: "1rem",
+        // marginTop: "1rem",
         backgroundColor: "transparent",
       }}
     >

@@ -2,6 +2,7 @@ import { Box } from "@mui/system";
 import { CustomIcon } from "..";
 import closeButtonStyles from "./CloseButton.styles";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useTheme } from "@emotion/react";
 
 interface CustomProps {
   onClick: Function;

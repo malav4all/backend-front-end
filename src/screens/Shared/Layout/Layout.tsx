@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/system";
-import { Switch } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 import PrivateRoute from "../../../global/components/PrivateRoute/PrivateRoute";
 import Dashboard from "../../Dashboard/Dashboard";
 import AppDrawer from "../AppDrawer/AppDrawer";
@@ -67,6 +67,7 @@ import Trips from "../../Trip/ActiveTrips/Trips";
 import urls from "../../../global/constants/UrlConstants";
 import TripAccess from "../../Trip/UserAccess/UserAccess";
 import DeviceList from "../../DeviceList/DeviceList";
+import HeaderNavbar from "../../Dashboard/components/HeaderNavbar";
 import { RoleManagement } from "../../Settings/RoleManagement/RoleManagement";
 
 const Layout = () => {
@@ -76,7 +77,7 @@ const Layout = () => {
   const isAuthenticated = useAppSelector(selectAuthenticated);
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
-
+  const location = useLocation();
   const handleOnIdle = () => {
     setIdleModal(true);
     const idleLogoutTime = 15;
@@ -124,6 +125,13 @@ const Layout = () => {
   const getContent = () => {
     return (
       <Box sx={classes.content}>
+        {!(
+          location.pathname === "/map-view" || location.pathname === "/location"
+        ) && (
+          <Box sx={{ zIndex: "10000" }}>
+            <HeaderNavbar />
+          </Box>
+        )}
         <Switch>
           <PrivateRoute
             exact
@@ -385,7 +393,7 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/settings/Module"}
             component={CustomerModule}
-            componentName={strings.MODULE}
+            componentName={strings.CUSTOMER_MODULE}
           />
           <PrivateRoute
             exact
@@ -441,7 +449,7 @@ const Layout = () => {
             isLoggedIn={isAuthenticated}
             path={"/trip-access"}
             component={TripAccess}
-            componentName={strings.TRIPT_TYPE}
+            componentName={strings.TRIP_ACCESS}
           />
           <PrivateRoute
             exact
@@ -461,6 +469,7 @@ const Layout = () => {
     ) : (
       <>
         <Box>{!isDesktop && <AppHeader />}</Box>
+
         <Box sx={classes.root}>
           {isDesktop && <AppDrawer />}
           {getContent()}

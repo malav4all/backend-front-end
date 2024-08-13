@@ -89,8 +89,8 @@ export class StringConstants {
   USERS = "Users";
   LOGINACTIVITY = "LoginActivity";
   INDUSTRY = "Industry";
-  MODULE = "Module";
-
+  CUSTOMER_MODULE = "Customer Module";
+  MANAGE_TRIPS = "Manage Trips";
   ROLE_MANAGEMENT = "Role";
   ACCOUNT = "Account";
   DEVICEONBOARDING = "Device Onboarding";
@@ -248,7 +248,7 @@ export class StringConstants {
   // Email Campaign Types
   EMAIL_REGULAR_CAMPAIGN = "regular";
   EMAIL_AB_CAMPAIGN = "ab";
-
+  MODULE = "Module";
   LOCATION = "Location";
   ROUTES = "ROUTES";
   VIEW_ROUTES = "VIEW ROUTES";
@@ -264,7 +264,7 @@ export class StringConstants {
   ALERT_CONFIG = "ALERTS";
   DEVICE_GROUP = "DEVICE GROUP";
   ACTIVE_TRIPS = "ACTIVE TRIPS";
-  MANAGE_TRIPS = "MANAGE TRIPS";
+  // MANAGE_TRIPS = "MANAGE TRIPS";
   ARCHIVED_TRIPS = "ARCHIVED TRIPS";
   FORM_BUILDER = "FORM BUILDER";
   TRIP = "Trip";
@@ -275,8 +275,8 @@ export class StringConstants {
   ENTITY_TYPE = "ENTITY TYPE";
   TRIPT_TYPE = "TRIP TYPE";
   TRIP_REPORT = "TRIP REPORT";
+  TRIP_ACCESS = "TRIP ACCESS";
   USER_ACCESS = "USER ACCESS";
-  TRIP_ACCESS = "USER ACCESS";
   ADD_DEVICE = "ADD DEVICE";
   DEVICE_TRANSFER = "DEVICE TRANSFER";
   DATAPUSH = "DATA PUSH";

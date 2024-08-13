@@ -6,26 +6,16 @@ import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
 import { useTitle } from "../../utils/UseTitle";
 import {
-  alertRowData,
   dashboardGraphOnlineOrOffline,
   lineChartGraphStatus,
   offlineGraphStatus,
   onlineGraphStatus,
-  statusDevice,
 } from "./service/Dashboard.service";
-import { openErrorNotification } from "../../helpers/methods";
-import { CustomButton, CustomDialog } from "../../global/components";
-import CustomDatePicker from "../../global/components/CustomDatePicker/CustomDatePicker";
-import dashboardStyles from "./DashboardStyles";
 import CustomTableDashboard from "../../global/components/CustomTableDashboard/CustomTableDashboard";
 import LineChart from "./components/Chart/LineChart";
 import OfflinePieChart from "./components/Chart/OfflinePieChart";
 import GetAlerts from "./components/Chart/GetAlerts";
-import DashboardHeader from "./components/DashboardHeader";
 import OnlinePieChart from "./components/Chart/OnlinePieChart";
-import { useSubscription } from "@apollo/client";
-import { ALERT_DEVICE_DATA, DEVICE_DATA } from "./service/Dashboard.mutation";
-import { AiOutlineRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { store } from "../../utils/store";
@@ -161,7 +151,7 @@ const Dashboard = () => {
                 accountId: item.accountId,
                 imei: item.imei,
                 status: item.status,
-                name: item.name,
+                name: "DL1ZC3350",
                 connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
                 action:
                   item.status === "offline" ? (
@@ -199,7 +189,7 @@ const Dashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid md={12} xs={12} sx={{ margin: "auto" }}>
+      <Grid md={12} xs={12}>
         <Grid
           container
           spacing={3}
@@ -208,7 +198,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "-30px auto", width: " 97%" }}
+          sx={{ margin: "auto", width: " 97%" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
             <GetAlerts data={dataGraph?.deviceDashboardData} />
@@ -255,12 +245,11 @@ const Dashboard = () => {
         backgroundColor: theme.palette.background.default,
         width: "100%",
         height: "auto",
-        margin: "auto",
       }}
     >
-      <Box>
+      {/* <Box>
         <DashboardHeader refresh={graphData} />
-      </Box>
+      </Box> */}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>

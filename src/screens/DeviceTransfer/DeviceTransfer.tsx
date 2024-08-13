@@ -23,6 +23,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {
   debounceEventHandler,
@@ -42,6 +43,7 @@ import {
 
 const DeviceTransfer = () => {
   const classes = DeviceOnboardingStyle;
+  const theme = useTheme();
   const [searchText, setSearchText] = useState<string>("");
   const [perPageData, setPerPageData] = useState(10);
   const [tableData, setTableData] = useState<any[]>([]);
@@ -122,14 +124,7 @@ const DeviceTransfer = () => {
     return (
       <Box>
         <Typography
-          sx={{
-            ...boldFont,
-            fontSize: getRelativeFontSize(10),
-            color: primaryHeadingColor,
-            [theme.breakpoints.down("md")]: {
-              marginTop: theme.spacing(3),
-            },
-          }}
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
         >
           Device Transfer
         </Typography>
@@ -192,7 +187,7 @@ const DeviceTransfer = () => {
 
   const getDetails = () => {
     return (
-      <Grid container mt={2} gap={3} display={"flex"} justifyContent={"center"}>
+      <Grid container my={2} gap={3} display={"flex"} justifyContent={"center"}>
         <Grid item xs={12} sm={6} md={6} lg={4} xl={3}>
           <Box>
             <Stack direction="column">
@@ -400,18 +395,26 @@ const DeviceTransfer = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack
           px={4}
-          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
         >
-          {getHeader()}
+          <Typography
+            sx={{
+              fontSize: getRelativeFontSize(6),
+              ...boldFont,
+              color: theme.palette.text.primary,
+            }}
+          >
+            {getHeader()}
+          </Typography>
+
           <Stack
             direction={{ sm: "row", xs: "column" }}
             alignItems={{ sm: "center" }}
@@ -421,6 +424,7 @@ const DeviceTransfer = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
+
       <Stack
         px={4}
         pt={2}

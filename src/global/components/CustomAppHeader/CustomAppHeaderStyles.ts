@@ -1,13 +1,19 @@
-const CustomAppHeaderStyles = {
-  customPaper: {
-    // boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 15px 0px",
-    backgroundColor: "#f1edff",
-    border: "none",
-  },
-  customPaperMobile: {
-    border: "none",
-    // boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 15px 0px",
-  },
-} as const;
+import { useTheme } from "@mui/material";
 
-export default CustomAppHeaderStyles;
+const useCustomAppHeaderStyles = () => {
+  const theme = useTheme();
+
+  return {
+    customPaper: {
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      border: "none",
+    },
+    customPaperMobile: {
+      border: "none",
+      // Add any other styles specific to mobile here
+    },
+  } as const;
+};
+
+export default useCustomAppHeaderStyles;

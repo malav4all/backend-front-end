@@ -41,8 +41,10 @@ import { addDevicetable } from "./AddDeviceValidation";
 import { PiPencilSimpleBold } from "react-icons/pi";
 import ExportCSV from "../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
+import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
 
 const AddDevice = () => {
+  const classes = DeviceOnboardingStyle;
   const theme = useTheme();
   const [formField, setFormField] = useState<any>({
     imei: {
@@ -278,14 +280,7 @@ const AddDevice = () => {
     return (
       <Box>
         <Typography
-          sx={{
-            ...boldFont,
-            fontSize: getRelativeFontSize(10),
-            color: primaryHeadingColor,
-            [theme.breakpoints.down("md")]: {
-              marginTop: theme.spacing(3),
-            },
-          }}
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
         >
           Add Device
         </Typography>
@@ -304,13 +299,12 @@ const AddDevice = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack
           px={4}
-          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -319,7 +313,7 @@ const AddDevice = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...boldFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             {getHeader()}
@@ -334,6 +328,7 @@ const AddDevice = () => {
           </Stack>
         </Stack>
       </CustomAppHeader>
+
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,

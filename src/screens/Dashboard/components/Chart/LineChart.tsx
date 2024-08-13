@@ -51,9 +51,20 @@ const LineChart: React.FC<LineChartProps> = ({
       series: dataGraph?.lineChart?.series || [],
       xaxis: {
         categories: dataGraph?.lineChart?.xaxis?.categories,
+        title: {
+          text: "Time", 
+          style: {
+            color: theme.palette.text.primary,
+          },
+        },
       },
       yaxis: {
-        opposite: isDarkMode,
+        title: {
+          text: "No of Devices",
+          style: {
+            color: theme.palette.text.primary,
+          },
+        },
       },
       grid: {
         borderColor: isDarkMode ? "#060B25" : "#E0E0E0",
@@ -118,7 +129,7 @@ const LineChart: React.FC<LineChartProps> = ({
           borderLeftColor: "#855BDE",
         }}
       >
-        Line Data
+        Offline Vs Online
       </Typography>
       <Box ref={chartRef} sx={{ height: height, width: "100%" }} />
     </Box>

@@ -289,9 +289,18 @@ const DistanceReport = (props: CustomProps) => {
 
   const getDashboardHeader = () => {
     return (
-      <Grid container sx={classes.header}>
+      <Grid
+        container
+        sx={{
+          ...classes.header,
+          backgroundColor: theme.palette.background.default,
+        }}
+      >
         <Grid item xs={12} md={5} lg={6} xl={6}>
-          <Typography variant="h5" sx={{ ...classes.heading, color: "white" }}>
+          <Typography
+            variant="h5"
+            sx={{ ...classes.heading, color: theme.palette.text.primary }}
+          >
             Distance Reports
           </Typography>
         </Grid>

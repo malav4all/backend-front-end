@@ -91,7 +91,9 @@ const DeviceModule = () => {
   const getHeader = () => {
     return (
       <Box>
-        <Typography sx={{ ...classes.mainCardHeading, color: "white" }}>
+        <Typography
+          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
+        >
           Device Module
         </Typography>
       </Box>
@@ -263,13 +265,12 @@ const DeviceModule = () => {
     >
       <CustomAppHeader
         className={{
-          backgroundColor: headerColor,
-          padding: "10px 20px 15px 18px",
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Stack
           px={4}
-          pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -278,7 +279,7 @@ const DeviceModule = () => {
             sx={{
               fontSize: getRelativeFontSize(6),
               ...boldFont,
-              color: primaryHeadingColor,
+              color: theme.palette.text.primary,
             }}
           >
             {getHeader()}

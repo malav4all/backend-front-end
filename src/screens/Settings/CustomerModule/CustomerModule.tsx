@@ -78,7 +78,6 @@ const CustomerModule = () => {
     history.push(`?tabValue=${newValue}`);
   };
 
-
   const createCustomerModule = async () => {
     try {
       if (handleValidation()) {
@@ -114,19 +113,29 @@ const CustomerModule = () => {
       setIsLoading(false);
     }
   };
-
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-        <Typography style={classes.settingsTitle}>Settings / Module</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Settings / Module
+          </Typography>
         </Box>
         <Stack
           direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
           justifyContent="space-between"
           mt={2}
-        >
-        </Stack>
+        ></Stack>
       </CustomAppHeader>
     );
   };

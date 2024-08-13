@@ -8,10 +8,10 @@ interface CustomProps {
 }
 
 const CustomAppHeader = (props: CustomProps) => {
-  const classes = customPaperStyles;
+  const classes = customPaperStyles();
 
   return (
-      <Box sx={[classes.customPaper, props.className]}>{props.children}</Box>
+    <Box sx={[classes.customPaper, props.className]}>{props.children}</Box>
   );
 };
 

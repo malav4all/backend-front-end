@@ -250,10 +250,27 @@ const TripType = () => {
 
   const SettingsHeader = () => {
     return (
-      <CustomAppHeader className={classes.headerBackgroundColor}>
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         <Box ml={1}>
-          <Typography style={classes.settingsTitle}>Trip Type</Typography>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Trip Type
+          </Typography>
         </Box>
+        <Stack
+          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+          justifyContent="space-between"
+          mt={2}
+        ></Stack>
       </CustomAppHeader>
     );
   };
@@ -271,7 +288,6 @@ const TripType = () => {
           justifyContent="end"
           alignItems="center"
           spacing={1}
-          pt={2}
           px={3}
         >
           {searchBarRole()}
