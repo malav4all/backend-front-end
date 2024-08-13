@@ -18,13 +18,16 @@ import {
 import strings from "../../../../global/constants/StringConstants";
 import { debounceEventHandler } from "../../../../helpers/methods";
 import SearchIcon from "@mui/icons-material/Search";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import moment from "moment";
 import routesReportStyles from "./TripReport.styles";
 import HereMap from "../../../TripDashboard/components/HereMap";
 import CustomDatePicker from "../../../../global/components/CustomDatePicker/CustomDatePicker";
 import { MdFileDownload } from "react-icons/md";
 import { IoCloseCircle } from "react-icons/io5";
+import { store } from "../../../../utils/store";
+import { fetchTrips } from "../../../Trip/ActiveTrips/TripServices";
+import { tripTableHeader } from "../../../Trip/ActiveTrips/AddTrips/AddTripFormValidation";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -59,6 +62,11 @@ const TripReport = () => {
     startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
+  const [tripData, setTripData] = useState([]);
+
+  useEffect(() => {
+    getTripData();
+  }, [page, rowsPerPage]);
 
   const handleDownloadClick = () => {
     setShowButtons(!showButtons);
@@ -83,6 +91,42 @@ const TripReport = () => {
       fromDate: lastSelectedRange.startDate,
       toDate: lastSelectedRange.endDate,
     });
+  };
+
+  const getTripData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchTrips({
+        input: {
+          page,
+          limit: rowsPerPage,
+          accountId: store.getState().auth.tenantId,
+          status: "closed",
+        },
+      });
+
+      const mappedData = mapTripDataToTableRows(res?.tripList?.data || []);
+      setTripTableData(mappedData);
+      setCount(res?.tripList?.paginatorInfo?.count || 0);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching trip data:", error);
+      setIsLoading(false);
+    }
+  };
+
+  const mapTripDataToTableRows = (tripData: any) => {
+    return tripData.map((trip: any) => ({
+      imeiNumber: trip.tripData[0]?.imei?.join(", ") || "N/A",
+      tripId: trip.tripId || "N/A",
+      totalDistance: trip.route?.totalDistance || "N/A",
+      totalDuration: trip.route?.totalDuration || "N/A",
+      tripStartDate:
+        moment(trip.tripStartDate).format("YYYY-MM-DD HH:mm:ss") || "N/A",
+      tripEndDate:
+        moment(trip.tripEndDate).format("YYYY-MM-DD HH:mm:ss") || "N/A",
+      createdBy: trip.createdBy || "N/A",
+    }));
   };
 
   const handleDaterangeChange = (value: string, date: string) => {
@@ -157,8 +201,7 @@ const TripReport = () => {
 
   const handlePerPageData = (event: any) => {
     setPage(1);
-    setSearchPageNumber(1);
-    setRowsPerPage(event?.target?.value);
+    setRowsPerPage(event.target.value);
   };
 
   const handleChangePage = (
@@ -435,23 +478,22 @@ const TripReport = () => {
                 )}
               </Box>
 
-              <CustomTable
-                headers={[
-                  { name: "From", field: "from" },
-                  { name: "To", field: "to" },
-                  { name: "Duration", field: "duration" },
-                  { name: "Status", field: "status" },
-                ]}
-                rows={isSearching ? filterData : tripTableData}
-                paginationCount={count}
-                rowsPerPage={limit}
-                pageNumber={page}
-                perPageData={limit}
-                isRowPerPageEnable={false}
-                setPage={setPage}
-                handlePageChange={handleChangePage}
-                handlePerPageData={handlePerPageData}
-              />
+              <Box sx={{ backgroundColor: "#f5f5f5", padding: "1rem" }}>
+                <Typography variant="h5">Trip Reports</Typography>
+                <CustomTable
+                  headers={tripTableHeader}
+                  rows={tripTableData}
+                  paginationCount={count}
+                  rowsPerPage={rowsPerPage}
+                  pageNumber={page}
+                  perPageData={rowsPerPage}
+                  isRowPerPageEnable={true}
+                  setPage={setPage}
+                  handlePageChange={handleChangePage}
+                  handlePerPageData={handlePerPageData}
+                />
+                <CustomLoader isLoading={isLoading} />
+              </Box>
             </Box>
           </Box>
         </Grid>
