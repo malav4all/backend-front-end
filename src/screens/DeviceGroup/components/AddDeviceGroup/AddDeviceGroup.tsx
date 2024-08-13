@@ -2,18 +2,14 @@ import {
   Autocomplete,
   Box,
   Checkbox,
-  Chip,
-  FormControlLabel,
   FormHelperText,
   Grid,
   InputLabel,
-  SelectChangeEvent,
-  Stack,
   TextField,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import _ from "lodash";
 import {
   CustomButton,
@@ -33,8 +29,6 @@ import {
   insertDeviceGroupField,
   validateAddDeviceGroupForm,
 } from "../../DeviceGroupTypeAndValidation";
-import { fetchAssetAssingmentDataHandler } from "../../../Settings/AssertAssingment/service/AssetAssingment.service";
-import CustomAutoComplete from "../../../../global/components/CustomAutoComplete/CustomAutoComplete";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import {

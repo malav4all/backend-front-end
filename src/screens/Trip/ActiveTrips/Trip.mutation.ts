@@ -90,3 +90,16 @@ export const FETCH_TRIP_BY_ID = gql`
     }
   }
 `;
+
+export const TRIP_STATUS_CHANGE = gql`
+  mutation ($input: TripStatusInput!) {
+    updateTripStatus(input: $input) {
+      success
+      message
+      data {
+        tripId
+        status
+      }
+    }
+  }
+`;

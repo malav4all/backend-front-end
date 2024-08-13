@@ -95,3 +95,12 @@ export const CREATE_TRIP = gql`
     }
   }
 `;
+
+export const CHECK_BATTERY = gql`
+  mutation ($input: BatteryCheckInput!) {
+    checkBattery(input: $input) {
+      success
+      message
+    }
+  }
+`;

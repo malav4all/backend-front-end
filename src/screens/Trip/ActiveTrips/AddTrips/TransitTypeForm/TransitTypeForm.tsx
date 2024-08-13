@@ -62,35 +62,44 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
     }
   };
 
-  const handleSelectChange = async (event: SelectChangeEvent<any>) => {
+  const handleSelectChange = async (event: any) => {
     const { name, value } = event?.target;
 
-    if (name === "routeId") {
+    if (name === "transitType") {
+      const selectedTrip: any = tripTypeData?.find(
+        (trip: any) => trip?.tripName === value
+      );
+      if (selectedTrip) {
+        setTransitTypeForm((prevFields: any) => ({
+          ...prevFields,
+          transitType: {
+            ...prevFields?.transitType,
+            value,
+            error: "",
+          },
+          accountId: selectedTrip?.accountId,
+          minBatteryPercentage: selectedTrip?.minBatteryPercentage,
+        }));
+      }
+    } else if (name === "routeId") {
       const selectedRoute = routesTableData?.find(
         (route: any) => route?.routeId === value
       );
       if (selectedRoute) {
-        const formattedRoute = {
-          _id: selectedRoute?._id,
-          totalDuration: selectedRoute?.totalDuration,
-          totalDistance: selectedRoute?.totalDistance,
-          createdBy: selectedRoute?.createdBy,
-          routesData: selectedRoute?.routeDetails.map(
-            (detail: any) => detail?._id
-          ),
-          routeName: selectedRoute?.routeName,
-          routeId: selectedRoute?.routeId,
-          accountId: store?.getState()?.auth?.tenantId,
-        };
+        const startPoint = selectedRoute.routeDetails[0];
+        const endPoint =
+          selectedRoute.routeDetails[selectedRoute.routeDetails.length - 1];
 
         setTransitTypeForm((prevFields: any) => ({
           ...prevFields,
           routeId: {
-            ...prevFields.routeId,
+            ...prevFields?.routeId,
             value,
             error: "",
           },
-          route: formattedRoute,
+          route: selectedRoute,
+          startPoint,
+          endPoint,
         }));
       }
     } else {
@@ -149,7 +158,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
             </InputLabel>
             <Select
               className={classes.dropDownStyle}
-              id="add_user_status_dropdown"
+              id="routeId"
               name="routeId"
               value={transitTypeForm?.routeId?.value || ""}
               onChange={handleSelectChange}

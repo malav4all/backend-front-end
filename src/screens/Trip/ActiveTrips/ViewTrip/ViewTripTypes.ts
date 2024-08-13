@@ -1,8 +1,6 @@
 export const transitTypeFormInitialState = () => ({
   transitType: "",
   vehicleType: "",
-  numberOfPassengers: 0,
-  specialRequirements: "",
 });
 
 export const tripInformationFormInitialState = () => ({

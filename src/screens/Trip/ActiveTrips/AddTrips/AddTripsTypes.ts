@@ -57,3 +57,19 @@ export const alertConfigurationFormInitialState = (prevState?: any) => ({
     },
   },
 });
+
+export const dynamicFormInitialState = (prevState = []) => {
+  return prevState.map((form: any) => ({
+    ...form,
+    content: form?.content?.map((field: any) => {
+      console.log("Field Before Update:", field);
+      return {
+        ...field,
+        extraAttributes: {
+          ...field?.extraAttributes,
+          value: field?.extraAttributes?.value,
+        },
+      };
+    }),
+  }));
+};

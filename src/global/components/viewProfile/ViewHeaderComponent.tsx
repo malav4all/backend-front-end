@@ -21,24 +21,40 @@ interface CustomProps {
   tripInformationForm?: any;
   alertConfigurationForm?: any;
   transitTypeForm?: any;
+  dynamicForm?: any;
   personId?: string;
   tabValue?: string;
+  tripStatus?: string;
+  onStatusChange?: (newStatus: string) => void;
 }
 
 const ViewHeaderComponent = (props: CustomProps) => {
   const classes = viewHeaderComponentStyle;
-
+  const { onStatusChange } = props;
   const handleEdit = () => {
     history.push({
       pathname: urls.editTripViewPath,
       state: {
         edit: true,
-        tripInformationForm: props.tripInformationForm,
-        alertConfigurationForm: props.alertConfigurationForm,
-        transitTypeForm: props.transitTypeForm,
-        personId: props.personId,
+        tripInformationForm: props?.tripInformationForm,
+        alertConfigurationForm: props?.alertConfigurationForm,
+        transitTypeForm: props?.transitTypeForm,
+        dynamicForm: props?.dynamicForm,
+        personId: props?.personId,
       },
     });
+  };
+
+  const handleStartTrip = () => {
+    if (onStatusChange) onStatusChange("started");
+  };
+
+  const handleEndTrip = () => {
+    if (onStatusChange) onStatusChange("ended");
+  };
+
+  const handleCloseTrip = () => {
+    if (onStatusChange) onStatusChange("closed");
   };
 
   const getHeaderDetails = () => (
@@ -120,15 +136,39 @@ const ViewHeaderComponent = (props: CustomProps) => {
               spacing={1}
               sx={classes.viewHeaderLeft}
             >
-              {/* {props.tabValue &&
-                props.tabValue === strings.general &&
-                props.showEditButton && ( */}
-              <CustomButton
-                label={strings.Edit}
-                buttonType="primaryBtn"
-                onClick={() => handleEdit()}
-                // startIcon={<EditIcon />}
-              />
+              {props.tripStatus !== "started" &&
+                props.tripStatus !== "ended" &&
+                props.tripStatus !== "Closed" &&
+                props.tripStatus !== "created" &&
+                props.showEditButton && (
+                  <CustomButton
+                    label={strings.Edit}
+                    buttonType="primaryBtn"
+                    onClick={() => handleEdit()}
+                    // startIcon={<EditIcon />}
+                  />
+                )}
+              {props?.tripStatus === "created" && (
+                <CustomButton
+                  label="Start Trip"
+                  buttonType="primaryBtn"
+                  onClick={handleStartTrip}
+                />
+              )}
+              {props?.tripStatus === "started" && (
+                <CustomButton
+                  label="End Trip"
+                  buttonType="primaryBtn"
+                  onClick={handleEndTrip}
+                />
+              )}
+              {props?.tripStatus === "ended" && (
+                <CustomButton
+                  label="Close Trip"
+                  buttonType="primaryBtn"
+                  onClick={handleCloseTrip}
+                />
+              )}
             </Stack>
           </Stack>
         </Box>
