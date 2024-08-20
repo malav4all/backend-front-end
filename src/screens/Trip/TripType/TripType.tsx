@@ -158,6 +158,7 @@ const TripType = () => {
         });
         setTripTypeFormData(tripTypeInsertField());
         await fetchTableTripType();
+        setAddTripTypeDialogHandler(false);
         openSuccessNotification(res.createTripType.message);
         setIsLoading(false);
       }
