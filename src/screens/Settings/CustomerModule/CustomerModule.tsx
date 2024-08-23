@@ -1,9 +1,9 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState, useCallback } from "react";
 import {
   Box,
-  Grid,
   InputAdornment,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -20,92 +20,145 @@ import {
   createModule,
   fetchTableHandler,
   searchTableHandler,
+  updateCustomerModule,
 } from "./service/Customer.service";
 import {
   debounceEventHandler,
   openErrorNotification,
   openSuccessNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import {
   customerModuleInsertField,
   customerModuleTableHeader,
   customerModuleValidation,
 } from "./CustomerIndustryHelpers";
-import history from "../../../utils/history";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddCustomerModule from "./component/AddCustomerModule";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { useLocation } from "react-router-dom";
-import { tabConfig } from "../SettingsHelpers";
+import { PiPencilSimpleBold } from "react-icons/pi";
+import { headerColor } from "../../../utils/styles";
 
-const CustomerModule = () => {
+interface CustomerModuleFormData {
+  name: { value: string; error: string };
+  code: { value: string; error: string };
+  description: { value: string; error: string };
+  id?: { value: string; error: string };
+}
+
+interface TableData {
+  name: string;
+  code: string;
+  description: string;
+  action: JSX.Element;
+}
+
+interface RowData {
+  name: string;
+  code: string;
+  description: string;
+  id: string;
+}
+
+const CustomerModule: React.FC = () => {
   const classes = IndustryStyles;
   const theme = useTheme();
-  const [customerModuleFormData, setCustomerModuleFormData] = useState<any>(
-    customerModuleInsertField()
-  );
+
+  const [customerModuleFormData, setCustomerModuleFormData] =
+    useState<CustomerModuleFormData>(customerModuleInsertField());
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [perPageData, setPerPageData] = useState(10);
-  const [count, setCount] = useState(0);
-  const [tableData, setTableData] = useState([]);
+  const [perPageData, setPerPageData] = useState<number>(10);
+  const [count, setCount] = useState<number>(0);
+  const [tableData, setTableData] = useState<TableData[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const location = useLocation();
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
+
   useEffect(() => {
     setPageNumber(1);
   }, [searchText, perPageData]);
 
   useEffect(() => {
-    if (searchText) {
-      searchDataHandler();
-    } else {
-      fetchTableDataHandler();
-    }
+    searchText ? searchDataHandler() : fetchTableDataHandler();
   }, [pageNumber, perPageData, searchText]);
 
-  const handlePerPageData = (event: any) => {
+  const handlePerPageDataChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPageNumber(1);
-    setPerPageData(event.target.value);
+    setPerPageData(Number(event.target.value));
   };
 
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
-  };
+  const createOrUpdateCustomerModule = async () => {
+    if (!handleValidation()) return;
 
-  const createCustomerModule = async () => {
+    const payload: Record<string, string> = {
+      name: customerModuleFormData.name.value,
+      code: customerModuleFormData.code.value,
+      description: customerModuleFormData.description.value,
+    };
+
+    if (edit && customerModuleFormData.id) {
+      payload._id = customerModuleFormData.id.value;
+    }
+
     try {
-      if (handleValidation()) {
-        const name = customerModuleFormData.name.value;
-        const code = customerModuleFormData.code.value;
-        const description = customerModuleFormData.description.value;
-        const res = await createModule({ input: { name, code, description } });
-        setCustomerModuleFormData(customerModuleInsertField());
-        openSuccessNotification(res?.createCustomerModule?.message);
-        await fetchTableDataHandler();
-        setDialogOpen(false);
-      }
+      const res = edit
+        ? await updateCustomerModule({ input: payload })
+        : await createModule({ input: payload });
+
+      openSuccessNotification(
+        res?.[edit ? "updateCustomerModule" : "createCustomerModule"]?.message
+      );
+      resetForm();
+      fetchTableDataHandler();
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
+  const resetForm = () => {
+    setCustomerModuleFormData(customerModuleInsertField());
+    setEdit(false);
+    setDialogOpen(false);
+  };
+
+  const editModule = useCallback((rowdata: RowData) => {
+    setCustomerModuleFormData(customerModuleInsertField(rowdata));
+    setEdit(true);
+    setDialogOpen(true);
+  }, []);
+
   const fetchTableDataHandler = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const res = await fetchTableHandler({
         input: { page: pageNumber, limit: perPageData },
       });
-      if (res && res.customerModuleListAll) {
-        setTableData(res.customerModuleListAll.data || []);
+
+      if (res?.customerModuleListAll) {
+        const finalData: TableData[] = res.customerModuleListAll.data.map(
+          (item: RowData) => ({
+            name: item.name,
+            code: item.code,
+            description: item.description,
+            action: (
+              <Tooltip
+                title="Edit"
+                key={item.id}
+                onClick={() => editModule(item)}
+              >
+                <PiPencilSimpleBold
+                  style={{
+                    margin: "0px 8px -7px 0px",
+                    cursor: "pointer",
+                    color: headerColor,
+                    fontSize: "20px",
+                  }}
+                />
+              </Tooltip>
+            ),
+          })
+        );
+        setTableData(finalData);
         setCount(res.customerModuleListAll.paginatorInfo?.count || 0);
-      } else {
-        throw new Error("Invalid response format");
       }
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -113,36 +166,10 @@ const CustomerModule = () => {
       setIsLoading(false);
     }
   };
-  const SettingsHeader = () => {
-    return (
-      <CustomAppHeader
-        className={{
-          ...classes.headerBackgroundColor,
-          backgroundColor: theme.palette.background.paper,
-        }}
-      >
-        <Box ml={1}>
-          <Typography
-            style={{
-              ...classes.settingsTitle,
-              color: theme.palette.text.primary,
-            }}
-          >
-            Settings / Module
-          </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
-      </CustomAppHeader>
-    );
-  };
 
   const searchDataHandler = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const res = await searchTableHandler({
         input: {
           search: searchText,
@@ -150,11 +177,11 @@ const CustomerModule = () => {
           limit: perPageData,
         },
       });
-      setTableData(res?.searchCustomerModule?.data);
-      setCount(res?.searchCustomerModule?.paginatorInfo?.count);
-      setIsLoading(false);
+      setTableData(res?.searchCustomerModule?.data || []);
+      setCount(res?.searchCustomerModule?.paginatorInfo?.count || 0);
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -175,20 +202,21 @@ const CustomerModule = () => {
     }
   };
 
-  const onChangeHandler = (event: React.ChangeEvent<any>) => {
-    setCustomerModuleFormData({
-      ...customerModuleFormData,
+  const handleFormChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setCustomerModuleFormData((prevState: CustomerModuleFormData) => ({
+      ...prevState,
       [event.target.name]: {
         value: event.target.value,
         error: "",
       },
-    });
+    }));
   };
 
-  const handleValidation = () => {
-    const { isValid, errors }: { isValid: boolean; errors: any } =
-      customerModuleValidation(customerModuleFormData);
-    setCustomerModuleFormData({ ...errors });
+  const handleValidation = (): boolean => {
+    const { isValid, errors } = customerModuleValidation(
+      customerModuleFormData
+    );
+    setCustomerModuleFormData(errors);
     return isValid;
   };
 
@@ -199,103 +227,101 @@ const CustomerModule = () => {
     setPageNumber(newPage);
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchText(SearchEvent.target.value.trim());
-      setPerPageData(10);
-    } else {
-      setSearchText("");
-    }
+  const handleSearchOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value.trim());
+    setPerPageData(10);
   };
 
-  const searchBarRole = () => {
-    return (
-      <CustomInput
-        id="role_mgmt_search_field"
-        placeHolder="Search Module Name"
-        name="Role"
-        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-    );
-  };
+  const renderSearchBar = () => (
+    <CustomInput
+      id="role_mgmt_search_field"
+      placeHolder="Search Module Name"
+      name="Role"
+      onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
 
-  const getAddCustomerModuleBtn = () => {
-    return (
-      <CustomButton
-        id="add_module_button"
-        label="Create Module"
-        onClick={() => setDialogOpen(true)}
-      />
-    );
-  };
+  const renderAddCustomerModuleButton = () => (
+    <CustomButton
+      id="add_module_button"
+      label="Create Module"
+      onClick={() => setDialogOpen(true)}
+    />
+  );
 
-  const rolesTableRender = () => {
-    return (
-      <>
-        <Stack
-          direction="row"
-          justifyContent="end"
-          alignItems="center"
-          spacing={1}
-          pt={2}
-          px={3}
-        >
-          {searchBarRole()}
-          {getAddCustomerModuleBtn()}
-        </Stack>
-        <Box
-          sx={{
-            minWidth: "300px",
-            overflow: "auto",
-            padding: "30px",
-          }}
-        >
-          <CustomTable
-            headers={customerModuleTableHeader}
-            rows={tableData}
-            paginationCount={count}
-            handlePageChange={handleChangePage}
-            pageNumber={pageNumber}
-            handlePerPageData={handlePerPageData}
-            rowsPerPage={perPageData}
-            perPageData={perPageData}
-            setPage={setPageNumber}
-          />
-        </Box>
-      </>
-    );
-  };
+  const renderRolesTable = () => (
+    <>
+      <Stack
+        direction="row"
+        justifyContent="end"
+        alignItems="center"
+        spacing={1}
+        pt={2}
+        px={3}
+      >
+        {renderSearchBar()}
+        {renderAddCustomerModuleButton()}
+      </Stack>
+      <Box sx={{ minWidth: "300px", overflow: "auto", padding: "30px" }}>
+        <CustomTable
+          headers={customerModuleTableHeader}
+          rows={tableData}
+          paginationCount={count}
+          handlePageChange={handleChangePage}
+          pageNumber={pageNumber}
+          handlePerPageData={handlePerPageDataChange}
+          rowsPerPage={perPageData}
+          perPageData={perPageData}
+          setPage={setPageNumber}
+        />
+      </Box>
+    </>
+  );
 
   return (
     <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        height: "100%",
-      }}
+      sx={{ backgroundColor: theme.palette.background.paper, height: "100%" }}
     >
-      {SettingsHeader()}
+      <CustomAppHeader
+        className={{
+          ...classes.headerBackgroundColor,
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
+        <Box ml={1}>
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
+            Settings / Module
+          </Typography>
+        </Box>
+      </CustomAppHeader>
       <AddCustomerModule
         open={dialogOpen}
-        handleClose={() => setDialogOpen(false)}
+        handleClose={resetForm}
         customerModuleFormData={customerModuleFormData}
         modulesData={[]}
-        onChangeHandler={onChangeHandler}
+        onChangeHandler={(e) => handleFormChange}
         handleModuleChange={() => {}}
         checkExitsRoleHandler={checkExitsCustomerModuleHandler}
         handleFileChange={() => {}}
-        handleSave={createCustomerModule}
+        handleSave={createOrUpdateCustomerModule}
         isLoading={isLoading}
         MenuProps={{}}
         classes={classes}
+        edit={edit}
       />
-      {rolesTableRender()}
+      {renderRolesTable()}
       <CustomLoader isLoading={isLoading} />
     </Box>
   );

@@ -11,20 +11,28 @@ export const customerModuleTableHeader = [
     name: "Description",
     field: "description",
   },
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
-export const customerModuleInsertField = () => {
+export const customerModuleInsertField = (data?: any) => {
   return {
+    id: {
+      value: data?._id ?? "",
+      error: "",
+    },
     name: {
-      value: "",
+      value: data?.name ?? "",
       error: "",
     },
     code: {
-      value: "",
+      value: data?.code ?? "",
       error: "",
     },
     description: {
-      value: "",
+      value: data?.description ?? "",
       error: "",
     },
   } as any;

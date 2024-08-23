@@ -1,19 +1,12 @@
+import React, { ChangeEvent, useEffect, useState, useCallback } from "react";
 import {
   Box,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Grid,
   InputAdornment,
-  ListItemText,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   CustomAppHeader,
@@ -28,13 +21,12 @@ import {
   fetchIndustryTableHandler,
   fetchTableHandler,
   searchTableHandler,
+  updateIndustry,
 } from "./service/Industry.service";
 import {
   debounceEventHandler,
-  isTruthy,
   openErrorNotification,
   openSuccessNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import {
   industryInsertField,
@@ -42,20 +34,33 @@ import {
   industryValidation,
 } from "./IndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import {
-  primaryHeadingColor,
-  regularFont,
-  getRelativeFontSize,
-} from "../../../utils/styles";
 import AddIndustry from "./component/AddIndustry";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { tabConfig } from "../SettingsHelpers";
-import history from "../../../utils/history";
-import { useLocation } from "react-router-dom";
-const Industry = () => {
+import { PiPencilSimpleBold } from "react-icons/pi";
+import { headerColor } from "../../../utils/styles";
+
+interface IndustryFormData {
+  name: { value: string; error: string };
+  code: { value: string; error: string };
+  description: { value: string; error: string };
+  id?: { value: string; error: string };
+}
+
+interface TableData {
+  name: string;
+  code: string;
+  description: string;
+  action: JSX.Element;
+}
+
+interface ModuleData {
+  name: string;
+  code: string;
+}
+
+const Industry: React.FC = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
+  const menuProps = {
     PaperProps: {
       style: {
         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
@@ -64,96 +69,104 @@ const Industry = () => {
   };
   const classes = IndustryStyles;
   const theme = useTheme();
-  const location = useLocation();
-  const [industryFormData, setIndustryFormData] = useState(
+
+  const [industryFormData, setIndustryFormData] = useState<IndustryFormData>(
     industryInsertField()
   );
-  const [modulesData, setModuleData] = useState([]);
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [perPageData, setPerPageData] = useState(10);
-  const [count, setCount] = useState(0);
-  const [tableData, setTableData] = useState([]);
-  const [searchText, setSearchText] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState<any>();
-  const [addIndustryDialogHandler, setAddIndustryDialogHandler] =
-    useState(false);
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
+  const [moduleData, setModuleData] = useState<ModuleData[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [totalItemCount, setTotalItemCount] = useState<number>(0);
+  const [industryTableData, setIndustryTableData] = useState<TableData[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+  const [isAddIndustryDialogOpen, setIsAddIndustryDialogOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
-    setPageNumber(1);
-  }, [searchText, perPageData]);
+    setCurrentPage(1);
+  }, [searchQuery, rowsPerPage]);
 
   useEffect(() => {
-    if (searchText) {
-      searchDataHandler();
-    } else {
-      fetchTableIndustry();
-    }
-  }, [pageNumber, perPageData, searchText]);
+    searchQuery ? handleSearchIndustry() : handleFetchIndustryTable();
+  }, [currentPage, rowsPerPage, searchQuery]);
 
   useEffect(() => {
-    fetchTableDataHandler();
+    handleFetchModuleData();
   }, []);
 
-  const handleModuleChange = (event: any) => {
-    setIndustryFormData({
-      ...industryFormData,
-      code: {
-        value: event.target.value,
-        error: "",
-      },
-    });
-  };
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
+  const handleModuleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setIndustryFormData((prevState) => ({
+      ...prevState,
+      code: { value: event.target.value, error: "" },
+    }));
   };
 
-  const fetchTableIndustry = async () => {
+  const handleEditIndustry = useCallback((industryData: IndustryFormData) => {
+    setIsAddIndustryDialogOpen(true);
+    setIndustryFormData(industryInsertField(industryData));
+    setIsEditMode(true);
+  }, []);
+
+  const handleFetchIndustryTable = async () => {
     try {
       setIsLoading(true);
       const res = await fetchIndustryTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+        input: { page: currentPage, limit: rowsPerPage },
       });
-      const finalData = res?.industryListAll?.data?.map((item: any) => {
-        return {
-          name: item.name,
-          code: item?.code?.map((val: any) => val).join(","),
-          description: item.description,
-        };
-      });
-      setTableData(finalData);
-      setCount(res?.industryListAll?.paginatorInfo?.count);
-      setIsLoading(false);
+
+      if (res?.industryListAll) {
+        const formattedTableData: TableData[] = res.industryListAll.data.map(
+          (item: any) => ({
+            id: item._id,
+            name: item.name,
+            code: item.code.join(", "),
+            description: item.description,
+            action: (
+              <Tooltip title="Edit" onClick={() => handleEditIndustry(item)}>
+                <PiPencilSimpleBold
+                  style={{
+                    margin: "0px 8px -7px 0px",
+                    cursor: "pointer",
+                    color: headerColor,
+                    fontSize: "20px",
+                  }}
+                />
+              </Tooltip>
+            ),
+          })
+        );
+        setIndustryTableData(formattedTableData);
+        setTotalItemCount(res.industryListAll.paginatorInfo?.count || 0);
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const searchDataHandler = async () => {
+  const handleSearchIndustry = async () => {
     try {
       setIsLoading(true);
       const res = await searchTableHandler({
         input: {
-          search: searchText,
-          page: pageNumber,
-          limit: perPageData,
+          search: searchQuery,
+          page: currentPage,
+          limit: rowsPerPage,
         },
       });
-      setTableData(res?.searchIndustry?.data);
-      setCount(res?.searchIndustry?.paginatorInfo?.count);
-      setIsLoading(false);
+      setIndustryTableData(res?.searchIndustry?.data || []);
+      setTotalItemCount(res?.searchIndustry?.paginatorInfo?.count || 0);
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const checkExitsRoleHandler = async () => {
+  const handleCheckExistingIndustry = async () => {
     try {
       const res = await checkExitsIndustry({
         input: { name: industryFormData.name.value },
@@ -166,112 +179,145 @@ const Industry = () => {
     }
   };
 
-  const addIndustryHandler = async () => {
+  const handleSaveIndustry = async () => {
+    if (!validateIndustryFormData()) return;
+
+    const payload = {
+      name: industryFormData.name.value,
+      code: industryFormData.code.value,
+      description: industryFormData.description.value,
+    };
+
+    const action = isEditMode
+      ? updateIndustry({
+          input: { _id: industryFormData.id?.value!, ...payload },
+        })
+      : addIndustry({ input: payload });
+
     try {
-      const payload: any = {
-        name: industryFormData.name.value,
-        code: industryFormData.code.value,
-        description: industryFormData.description.value,
-      };
       setIsLoading(true);
-      if (handleValidation()) {
-        const res = await addIndustry({
-          input: { ...payload },
-        });
-        setIndustryFormData(industryInsertField());
-        await fetchTableIndustry();
-        openSuccessNotification(res.createIndustry.message);
-        setIsLoading(false);
-      }
+      const res = await action;
+
+      const successMessage = isEditMode
+        ? res?.updateIndustry?.message
+        : res?.createIndustry?.message;
+
+      openSuccessNotification(successMessage);
+      resetForm();
+      setIsAddIndustryDialogOpen(false);
+      await handleFetchIndustryTable();
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const handleValidation = () => {
-    const { isValid, errors }: { isValid: boolean; errors: any } =
-      industryValidation(industryFormData);
-    setIndustryFormData({ ...errors });
+  const validateIndustryFormData = (): boolean => {
+    const { isValid, errors } = industryValidation(industryFormData);
+    setIndustryFormData(errors);
     return isValid;
   };
 
-  const handleChangePage = (
+  const handlePageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
-    setPageNumber(newPage);
+    setCurrentPage(newPage);
   };
 
-  const fetchTableDataHandler = async () => {
+  const handleFetchModuleData = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchTableHandler({
-        input: { page: -1, limit: 0 },
-      });
-      setModuleData(res?.customerModuleListAll?.data);
-      setIsLoading(false);
+      const res = await fetchTableHandler({ input: { page: -1, limit: 0 } });
+      setModuleData(res?.customerModuleListAll?.data || []);
     } catch (error: any) {
       openErrorNotification(error.message);
+    } finally {
       setIsLoading(false);
     }
   };
 
-  const onChangeHandler = (event: React.ChangeEvent<any>) => {
-    setIndustryFormData({
-      ...industryFormData,
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setIndustryFormData((prevState) => ({
+      ...prevState,
       [event.target.name]: {
         value: event.target.value,
         error: "",
       },
-    });
+    }));
   };
 
-  const handleFileChange = (e: any) => {
-    const fileList = e.target.files[0];
-    setFile(fileList);
+  const handleSearchInputChange = (
+    SearchEvent: ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchQuery(SearchEvent.target.value.trim());
+    setRowsPerPage(10);
   };
 
-  const getAddIndustryBtn = () => {
-    return (
-      <CustomButton
-        id="profile_submit_button"
-        label="Add Industry"
-        customClasses={{ width: "150px" }}
-        onClick={() => setAddIndustryDialogHandler(true)}
-      />
-    );
+  const resetForm = () => {
+    setIndustryFormData(industryInsertField());
+    setIsEditMode(false);
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchText(SearchEvent.target.value.trim());
-      setPerPageData(10);
-    } else {
-      setSearchText("");
-    }
-  };
+  const renderSearchBar = () => (
+    <CustomInput
+      id="industry_search_field"
+      placeHolder="Search Industry Name"
+      name="search"
+      onChange={debounceEventHandler(handleSearchInputChange, 2000)}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
 
-  const searchBarRole = () => {
-    return (
-      <CustomInput
-        id="role_mgmt_search_field"
-        placeHolder="Search Industry Name"
-        name="Role"
-        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-    );
-  };
+  const renderAddIndustryButton = () => (
+    <CustomButton
+      id="add_industry_button"
+      label="Add Industry"
+      customClasses={{ width: "150px" }}
+      onClick={() => setIsAddIndustryDialogOpen(true)}
+    />
+  );
 
-  const SettingsHeader = () => {
-    return (
+  const renderIndustryTable = () => (
+    <>
+      <Stack
+        direction="row"
+        justifyContent="end"
+        alignItems="center"
+        spacing={1}
+        pt={2}
+        px={3}
+      >
+        {renderSearchBar()}
+        {renderAddIndustryButton()}
+      </Stack>
+      <Box sx={{ minWidth: "300px", overflow: "auto", padding: "30px" }}>
+        <CustomTable
+          headers={industryTableHeader}
+          rows={industryTableData}
+          paginationCount={totalItemCount}
+          handlePageChange={handlePageChange}
+          pageNumber={currentPage}
+          handlePerPageData={(e: any) => setRowsPerPage(Number(e.target.value))}
+          rowsPerPage={rowsPerPage}
+          perPageData={rowsPerPage}
+          setPage={setCurrentPage}
+        />
+      </Box>
+    </>
+  );
+
+  return (
+    <Box
+      sx={{ backgroundColor: theme.palette.background.paper, height: "100%" }}
+    >
       <CustomAppHeader
         className={{
           ...classes.headerBackgroundColor,
@@ -283,81 +329,21 @@ const Industry = () => {
             Settings / Industry
           </Typography>
         </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
       </CustomAppHeader>
-    );
-  };
-
-  const handlePerPageData = (event: any) => {
-    setPageNumber(1);
-    setPerPageData(event.target.value);
-  };
-
-  const rolesTableRender = () => {
-    return (
-      <>
-        <Stack
-          direction="row"
-          justifyContent="end"
-          alignItems="center"
-          spacing={1}
-          pt={2}
-          px={3}
-        >
-          {searchBarRole()}
-          {getAddIndustryBtn()}
-        </Stack>
-        <Box
-          sx={{
-            minWidth: "300px",
-            overflow: "auto",
-            padding: "30px",
-          }}
-        >
-          <CustomTable
-            headers={industryTableHeader}
-            rows={tableData}
-            paginationCount={count}
-            handlePageChange={handleChangePage}
-            pageNumber={pageNumber}
-            handlePerPageData={handlePerPageData}
-            rowsPerPage={perPageData}
-            perPageData={perPageData}
-            setPage={setPageNumber}
-          />
-        </Box>
-      </>
-    );
-  };
-
-  return (
-    <Box
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        height: "100%",
-      }}
-    >
-      {SettingsHeader()}
-      {rolesTableRender()}
+      {renderIndustryTable()}
       <AddIndustry
-        open={addIndustryDialogHandler}
-        handleClose={() => setAddIndustryDialogHandler(false)}
+        open={isAddIndustryDialogOpen}
+        handleClose={() => setIsAddIndustryDialogOpen(false)}
         industryFormData={industryFormData}
-        modulesData={modulesData}
-        file={file}
-        onChangeHandler={onChangeHandler}
+        modulesData={moduleData}
+        onChangeHandler={handleInputChange}
         handleModuleChange={handleModuleChange}
-        checkExitsRoleHandler={checkExitsRoleHandler}
-        handleFileChange={handleFileChange}
-        handleSave={addIndustryHandler}
+        checkExitsRoleHandler={handleCheckExistingIndustry}
+        handleSave={handleSaveIndustry}
         isLoading={isLoading}
-        MenuProps={MenuProps}
-        isTruthy={isTruthy}
+        MenuProps={menuProps}
         classes={classes}
+        edit={isEditMode}
       />
       <CustomLoader isLoading={isLoading} />
     </Box>

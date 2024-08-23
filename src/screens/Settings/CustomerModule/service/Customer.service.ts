@@ -5,6 +5,7 @@ import {
   CREATE_CUSTOMER_MODULE,
   FETCH_CUSTOMER_MODULE,
   SEARCH_CUSTOMER_MODULE,
+  UPDATE_CUSTOMER_MODULE,
 } from "./Customer.mutation";
 
 export const createModule = async (variables: any): Promise<any> => {
@@ -51,6 +52,19 @@ export const checkExitsCustomerModule = async (
   try {
     const response = await client.mutate({
       mutation: CHECK_EXITS_CUSTOMER_MODULE,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const updateCustomerModule = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPDATE_CUSTOMER_MODULE,
       variables,
     });
 

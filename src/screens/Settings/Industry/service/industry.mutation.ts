@@ -70,3 +70,12 @@ export const CHECK_EXITS_INDUSTRY = gql`
     }
   }
 `;
+
+export const UPDATE_INDUSTRY = gql`
+  mutation ($input: UpdateIndustryInput!) {
+    updateIndustry(input: $input) {
+      success
+      message
+    }
+  }
+`;

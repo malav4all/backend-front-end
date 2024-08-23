@@ -207,6 +207,16 @@ const AccountStyles = {
     fontSize: getRelativeFontSize(13),
     textAlign: "center",
   },
+  accountTypeErrorMessage: {
+    fontSize: "0.900rem", // Keep this consistent with other error messages
+    color: theme.palette.error.main,
+    marginTop: "4px",
+    maxWidth: "250px", // Adjust as necessary to fit within the layout
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    paddingLeft: "10px",
+  },
 } as const;
 
 export default AccountStyles;

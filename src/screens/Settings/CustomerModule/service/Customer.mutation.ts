@@ -53,3 +53,12 @@ export const CHECK_EXITS_CUSTOMER_MODULE = gql`
     }
   }
 `;
+
+export const UPDATE_CUSTOMER_MODULE = gql`
+  mutation ($input: UpdateCustomerModuleInput!) {
+    updateCustomerModule(input: $input) {
+      success
+      message
+    }
+  }
+`;

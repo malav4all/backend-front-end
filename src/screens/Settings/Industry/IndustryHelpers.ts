@@ -12,23 +12,27 @@ export const industryTableHeader = [
     field: "description",
   },
   {
-    name: "Image",
-    field: "file",
+    name: "Action",
+    field: "action",
   },
 ];
 
-export const industryInsertField = () => {
+export const industryInsertField = (data?: any) => {
   return {
+    id: {
+      value: data?._id ?? "",
+      error: "",
+    },
     name: {
-      value: "",
+      value: data?.name ?? "",
       error: "",
     },
     code: {
-      value: [],
+      value: data?.code ?? [],
       error: "",
     },
     description: {
-      value: "",
+      value: data?.description ?? "",
       error: "",
     },
   } as any;

@@ -82,6 +82,10 @@ export const insertAccountField = (data?: any, edit?: boolean) => {
 
 export const accountTableHeader = [
   {
+    name: "Account Id",
+    field: "accountId",
+  },
+  {
     name: "Account Name",
     field: "accountName",
   },

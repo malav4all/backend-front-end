@@ -31,87 +31,204 @@ import {
 import uploadUser from "../../../../assets/images/uploadUser.svg";
 import _ from "lodash";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next";
-import cookies from "js-cookie";
 import Datapush from "./DataPush/Datapush";
 
-interface CustomProps {
+interface AccountField {
+  value: string;
+  error: string;
+}
+
+interface AccountFields {
+  accountName: AccountField;
+  accountContactName: AccountField;
+  accountContactEmail: AccountField;
+  accountAddress: AccountField;
+  accountContactMobile: AccountField;
+  accountType: AccountField;
+  accountPanNo: AccountField;
+  accountGstNo: AccountField;
+  accountAadharNo: AccountField;
+  accountState: AccountField;
+  accountCity: AccountField;
+  remarks: AccountField;
+  accountAuthorizedNo: AccountField;
+  accountApiKey: AccountField;
+  accountCreatedBy: AccountField;
+  accountKey: AccountField;
+  accountValue: AccountField;
+}
+
+interface RoleData {
+  _id: string;
+  name: string;
+}
+
+interface AddAccountModalProps {
   openAddAccountDialog: boolean;
-  handleCloseAddAccountDialog?: Function;
+  handleCloseAddAccountDialog?: () => void;
   edit?: boolean;
-  tableData?: Function;
-  isLoading?: boolean;
+  tableData?: () => void;
   selectedRowData?: any;
 }
 
-const languages = [
-  {
-    code: "en",
-    name: "English",
-  },
-  {
-    code: "hi",
-    name: "Hindi",
-  },
-];
-
-const AddAccountModal = (props: CustomProps) => {
-  const currentLanguageCode = cookies.get("i18next") || "en";
-  const currentLanguage = languages.find((l) => l.code === currentLanguageCode);
-  const { t } = useTranslation();
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
     },
-  };
+  },
+};
+
+const AddAccountModal: React.FC<AddAccountModalProps> = ({
+  openAddAccountDialog,
+  handleCloseAddAccountDialog,
+  edit,
+  tableData,
+  selectedRowData,
+}) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
   const classes = AccountStyles;
   const [accountFields, setAccountFields] = useState<any>(
-    insertAccountField(props?.selectedRowData)
+    insertAccountField(selectedRowData)
   );
-  const [roleData, setRoleData] = useState([]);
-  const [authAccountNo, setAccountAuthNo] = useState([]);
-  const [accountConfig, setAccountConfig] = useState([]);
-  const [language, setLanguage] = useState("");
+  const [roleData, setRoleData] = useState<RoleData[]>([]);
+  const [authAccountNo, setAccountAuthNo] = useState<string[]>([]);
+  const [accountConfig, setAccountConfig] = useState<
+    { key: string; value: string }[]
+  >([]);
   const [dataPushActive, setDataPushActive] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
-  const theme = useTheme();
-  useEffect(() => {
-    setAccountFields(insertAccountField());
-    setAccountConfig([]);
-    setAccountAuthNo([]);
-    cookies.set("i18next", "en");
-    i18next.changeLanguage("en");
-    setLanguage("");
-  }, [props.openAddAccountDialog]);
 
   useEffect(() => {
-    if (props.edit && props.selectedRowData) {
-      setAccountFields(insertAccountField(props.selectedRowData));
-      setAccountConfig(props?.selectedRowData?.accountConfiguration);
-      setAccountAuthNo(props?.selectedRowData?.authAccountNo);
+    setAccountFields(insertAccountField(selectedRowData));
+    setAccountConfig([]);
+    setAccountAuthNo([]);
+  }, [openAddAccountDialog]);
+
+  useEffect(() => {
+    if (edit && selectedRowData) {
+      setAccountFields(insertAccountField(selectedRowData));
+      setAccountConfig(selectedRowData?.accountConfiguration || []);
+      setAccountAuthNo(selectedRowData?.accountAuthMobile || []);
     }
-  }, [props.selectedRowData]);
+  }, [selectedRowData, edit]);
 
   useEffect(() => {
     fetchTableDataHandler();
   }, []);
-
-  useEffect(() => {
-    document.body.dir = currentLanguage as any;
-    document.title = t("app_title");
-  }, [currentLanguage, t]);
 
   const fetchTableDataHandler = async () => {
     try {
       const res = await fetchIndustryHandler({
         input: { page: -1, limit: 0 },
       });
-      setRoleData(res?.industryListAll?.data);
+      setRoleData(res?.industryListAll?.data || []);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const onChangeHandler = (event: any) => {
+    const { name, value } = event.target as HTMLInputElement;
+    setAccountFields({
+      ...accountFields,
+      [name as keyof AccountFields]: {
+        value: value as string,
+        error: "",
+      },
+    });
+  };
+
+  const validateFields = (): boolean => {
+    let isValid = true;
+    const errors: Partial<AccountFields> = {};
+
+    if (!accountFields.accountName.value) {
+      errors.accountName = {
+        value: accountFields.accountName.value,
+        error: "Account Name is required",
+      };
+      isValid = false;
+    }
+    if (!accountFields.accountContactName.value) {
+      errors.accountContactName = {
+        value: accountFields.accountContactName.value,
+        error: "Contact Name is required",
+      };
+      isValid = false;
+    }
+    if (!accountFields.accountContactEmail.value) {
+      errors.accountContactEmail = {
+        value: accountFields.accountContactEmail.value,
+        error: "Contact Email is required",
+      };
+      isValid = false;
+    }
+    if (!accountFields.accountContactMobile.value) {
+      errors.accountContactMobile = {
+        value: accountFields.accountContactMobile.value,
+        error: "Contact Mobile is required",
+      };
+      isValid = false;
+    }
+    if (!accountFields.accountType.value) {
+      errors.accountType = {
+        value: accountFields.accountType.value,
+        error: "Account Type is required",
+      };
+      isValid = false;
+    }
+
+    if (!isValid) {
+      setAccountFields((prev: any) => ({ ...prev, ...errors }));
+    }
+
+    return isValid;
+  };
+
+  const addAccountHandler = async () => {
+    if (!validateFields()) return;
+
+    const accountPayload = {
+      accountName: accountFields.accountName.value,
+      accountContactName: accountFields.accountContactName.value,
+      accountContactEmail: accountFields.accountContactEmail.value,
+      accountAddress: accountFields.accountAddress.value,
+      accountContactMobile: String(accountFields.accountContactMobile.value),
+      parentId:
+        store.getState().auth.account === "Master Admin"
+          ? ""
+          : store.getState().auth.accountId,
+      industryType: accountFields.accountType.value,
+      accountPanNo: accountFields.accountPanNo.value,
+      accountGstNo: accountFields.accountGstNo.value,
+      accountAadharNo: accountFields.accountAadharNo.value,
+      accountState: accountFields.accountState.value,
+      accountCity: accountFields.accountCity.value,
+      remarks: accountFields.remarks.value,
+      accountAuthMobile: authAccountNo,
+      accountConfiguration: accountConfig,
+      createdBy: store.getState().auth.userName,
+    };
+
+    try {
+      if (edit) {
+        const res = await updateAccount({
+          input: { ...accountPayload, _id: selectedRowData?._id },
+        });
+        openSuccessNotification(res?.updateAccount?.message);
+      } else {
+        const res = await addAccount({
+          input: { ...accountPayload },
+        });
+        openSuccessNotification(res?.createAccount?.message);
+      }
+      await tableData?.();
+      handleCloseAddAccountDialog?.();
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -124,15 +241,21 @@ const AddAccountModal = (props: CustomProps) => {
     ) {
       setAccountFields((prevData: any) => ({
         ...prevData,
-        accountKey: { ...prevData.tagsValue, error: "key cant be empty" },
-        accountValue: { ...prevData.tagsValue, error: "Value cant be empty" },
+        accountKey: {
+          ...prevData.accountKey,
+          error: "Key can't be empty",
+        },
+        accountValue: {
+          ...prevData.accountValue,
+          error: "Value can't be empty",
+        },
       }));
       return false;
     }
-    const checkExistingValue = accountConfig?.some(
-      (item: any) =>
-        item?.key === accountFields.accountKey.value &&
-        item?.value === accountFields.accountValue.value
+    const checkExistingValue = accountConfig.some(
+      (item) =>
+        item.key === accountFields.accountKey.value &&
+        item.value === accountFields.accountValue.value
     );
     if (checkExistingValue) {
       setAccountFields((prevData: any) => ({
@@ -143,29 +266,12 @@ const AddAccountModal = (props: CustomProps) => {
         },
         accountValue: {
           ...prevData.accountValue,
-          error: "You cannot add duplicate value",
+          error: "You cannot add duplicate Value",
         },
       }));
       return false;
     }
     return true;
-  };
-
-  const addAccountConfig = () => {
-    if (validateAccountConfig()) {
-      const addedConfig: any[] = [];
-      addedConfig.push(...accountConfig, {
-        key: accountFields.accountKey.value,
-        value: accountFields.accountValue.value,
-      });
-      const filterValue: any = _.uniqWith(addedConfig, _.isEqual);
-      setAccountConfig(filterValue);
-      setAccountFields((prevData: any) => ({
-        ...prevData,
-        accountKey: { value: "", error: "" },
-        accountValue: { value: "", error: "" },
-      }));
-    }
   };
 
   const validateAuthorizedNo = () => {
@@ -174,20 +280,20 @@ const AddAccountModal = (props: CustomProps) => {
         ...prevData,
         accountAuthorizedNo: {
           ...prevData.accountAuthorizedNo,
-          error: "Account Auth No can be empty",
+          error: "Account Auth No can't be empty",
         },
       }));
       return false;
     }
-    const checkExistingValue = authAccountNo?.some(
-      (item: any) => item === accountFields.accountAuthorizedNo.value
+    const checkExistingValue = authAccountNo.some(
+      (item) => item === accountFields.accountAuthorizedNo.value
     );
     if (checkExistingValue) {
       setAccountFields((prevData: any) => ({
         ...prevData,
         accountAuthorizedNo: {
           ...prevData.accountAuthorizedNo,
-          error: "You cannot add duplicate  No",
+          error: "You cannot add duplicate No",
         },
       }));
       return false;
@@ -197,10 +303,12 @@ const AddAccountModal = (props: CustomProps) => {
 
   const addAuthNoHandler = () => {
     if (validateAuthorizedNo()) {
-      const arrAuthNo: any[] = [];
-      arrAuthNo.push(...authAccountNo, accountFields.accountAuthorizedNo.value);
-      const filterValue: any = _.uniqWith(arrAuthNo, _.isEqual);
-      setAccountAuthNo(filterValue);
+      const arrAuthNo = [
+        ...authAccountNo,
+        accountFields.accountAuthorizedNo.value,
+      ];
+      const filteredValue = _.uniqWith(arrAuthNo, _.isEqual);
+      setAccountAuthNo(filteredValue);
       setAccountFields((prevData: any) => ({
         ...prevData,
         accountAuthorizedNo: {
@@ -211,7 +319,7 @@ const AddAccountModal = (props: CustomProps) => {
     }
   };
 
-  const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleChange = (event: any) => {
     setDataPushActive(event.target.checked);
     if (event.target.checked) {
       setOpenPopup(true);
@@ -229,25 +337,27 @@ const AddAccountModal = (props: CustomProps) => {
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
-              label={t(" Account Name")}
+              label={t("Account Name")}
               id="account_name_field"
               type="text"
               name="accountName"
               placeHolder="Enter Account Name"
               onChange={onChangeHandler}
               value={accountFields.accountName.value}
+              error={accountFields.accountName.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
               label={t("Account Contact Name")}
-              id="account_name_field"
+              id="account_contact_name_field"
               type="text"
               name="accountContactName"
               placeHolder="Enter Account Contact Name"
               onChange={onChangeHandler}
               value={accountFields.accountContactName.value}
+              error={accountFields.accountContactName.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -263,32 +373,36 @@ const AddAccountModal = (props: CustomProps) => {
                   </Typography>
                   <Typography sx={classes.star}>*</Typography>
                 </Box>
-
                 <Select
                   id="role_select_dropdown"
                   name="accountType"
-                  disabled={props.edit}
+                  disabled={edit}
                   sx={classes.dropDownStyle}
                   displayEmpty
                   value={accountFields.accountType.value}
                   onChange={onChangeHandler}
                   MenuProps={MenuProps}
-                  renderValue={
-                    accountFields.accountType.value !== ""
-                      ? undefined
-                      : () => "Select an Industry Type"
-                  }
+                  error={accountFields.accountType.error}
+                  renderValue={(value) => {
+                    const selectedRole = roleData.find(
+                      (role) => role._id === value
+                    );
+                    return selectedRole
+                      ? selectedRole.name
+                      : "Select an Account Type";
+                  }}
                 >
-                  {roleData.map((item: any, index: number) => (
-                    <MenuItem
-                      key={index}
-                      value={item._id}
-                      sx={classes.optionStyle}
-                    >
-                      {item?.name}
+                  {roleData.map((item: any) => (
+                    <MenuItem key={item._id} value={item._id}>
+                      {item.name}
                     </MenuItem>
                   ))}
                 </Select>
+                {accountFields.accountType.error && (
+                  <Typography sx={classes.accountTypeErrorMessage}>
+                    {accountFields.accountType.error}
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Grid>
@@ -302,6 +416,7 @@ const AddAccountModal = (props: CustomProps) => {
               placeHolder="Enter Account Contact Email"
               onChange={onChangeHandler}
               value={accountFields.accountContactEmail.value}
+              error={accountFields.accountContactEmail.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -321,11 +436,12 @@ const AddAccountModal = (props: CustomProps) => {
               required
               label={t("Account Contact Mobile")}
               id="account_contact_mobile_field"
-              type="text"
+              type="number"
               name="accountContactMobile"
               placeHolder="Enter contact mobile number"
               onChange={onChangeHandler}
               value={accountFields.accountContactMobile.value}
+              error={accountFields.accountContactMobile.error}
             />
           </Grid>
 
@@ -333,7 +449,7 @@ const AddAccountModal = (props: CustomProps) => {
             <CustomInput
               label={t("Account PAN Number")}
               id="account_pan_field"
-              type="number"
+              type="text"
               name="accountPanNo"
               placeHolder="Enter Account Pan No"
               onChange={onChangeHandler}
@@ -344,7 +460,7 @@ const AddAccountModal = (props: CustomProps) => {
             <CustomInput
               label={t("Account GST Number")}
               id="account_gst_field"
-              type="number"
+              type="text"
               name="accountGstNo"
               placeHolder="Enter Account GST No"
               onChange={onChangeHandler}
@@ -498,57 +614,6 @@ const AddAccountModal = (props: CustomProps) => {
     );
   };
 
-  const onChangeHandler = (event: any) => {
-    setAccountFields({
-      ...accountFields,
-      [event?.target?.name]: {
-        value: event?.target?.value,
-        error: "",
-      },
-    });
-  };
-
-  const addAccountHandler = async () => {
-    try {
-      const accountpayload: any = {
-        accountName: accountFields.accountName.value,
-        accountContactName: accountFields.accountContactName.value,
-        accountContactEmail: accountFields.accountContactEmail.value,
-        accountAddress: accountFields.accountAddress.value,
-        accountContactMobile: accountFields.accountContactMobile.value,
-        parentId:
-          store.getState().auth.account === "Master Admin"
-            ? ""
-            : store.getState().auth.accountId,
-        industryType: accountFields.accountType.value,
-        accountPanNo: accountFields.accountPanNo.value,
-        accountGstNo: accountFields.accountGstNo.value,
-        accountAadharNo: accountFields.accountAadharNo.value,
-        accountState: accountFields.accountState.value,
-        accountCity: accountFields.accountCity.value,
-        remarks: accountFields.remarks.value,
-        accountAuthMobile: authAccountNo,
-        accountConfiguration: accountConfig,
-        createdBy: store.getState().auth.userName,
-      };
-      if (props.edit) {
-        const res = await updateAccount({
-          input: { ...accountpayload, _id: props?.selectedRowData?._id },
-        });
-        openSuccessNotification(res.updateAccount?.message);
-      } else {
-        const res = await addAccount({
-          input: { ...accountpayload },
-        });
-        openSuccessNotification(res?.createAccountModule?.message);
-      }
-      await props.tableData?.();
-      props.handleCloseAddAccountDialog?.(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
-
   const addAccountDialogFooter = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
@@ -556,7 +621,7 @@ const AddAccountModal = (props: CustomProps) => {
           <CustomButton
             id="add_user_cancel_button"
             label="Cancel"
-            onClick={() => props?.handleCloseAddAccountDialog?.()}
+            onClick={() => handleCloseAddAccountDialog?.()}
             customClasses={{
               ...classes.cancelButtonStyle,
               backgroundColor: "#00000000",
@@ -565,7 +630,7 @@ const AddAccountModal = (props: CustomProps) => {
           />
           <CustomButton
             id="add_user_submit_button"
-            label={props.edit ? "Update" : "Add"}
+            label={edit ? "Update" : "Add"}
             onClick={addAccountHandler}
           />
         </Box>
@@ -585,7 +650,7 @@ const AddAccountModal = (props: CustomProps) => {
     return (
       <Box>
         <Typography sx={classes.boldFonts}>
-          {props.edit ? t("Update Account") : t("Add Account")}
+          {edit ? t("Update Account") : t("Add Account")}
         </Typography>
       </Box>
     );
@@ -595,10 +660,10 @@ const AddAccountModal = (props: CustomProps) => {
     return (
       <Grid container sx={classes.centerItemFlex}>
         <CustomDialog
-          isDialogOpen={props.openAddAccountDialog}
+          isDialogOpen={openAddAccountDialog}
           closable
           closeButtonVisibility
-          handleDialogClose={props.handleCloseAddAccountDialog}
+          handleDialogClose={handleCloseAddAccountDialog}
           dialogHeaderContent={addAccountHeaderImg()}
           dialogTitleContent={addAccountDialogTitle()}
           dialogBodyContent={addAccountDialogBody()}

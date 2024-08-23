@@ -6,6 +6,7 @@ import {
   FETCH_CUSTOMER_MODULE,
   FETCH_INDUSTRY,
   SEARCH_INDUSTRY_MODULE,
+  UPDATE_INDUSTRY,
 } from "./industry.mutation";
 
 export const fetchTableHandler = async (variables: any): Promise<any> => {
@@ -66,6 +67,19 @@ export const checkExitsIndustry = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: CHECK_EXITS_INDUSTRY,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const updateIndustry = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPDATE_INDUSTRY,
       variables,
     });
 

@@ -25,7 +25,15 @@ export const FETCH_ACCOUNT = gql`
         accountContactEmail
         accountContactMobile
         tenantId
+        accountPanNo
         accountId
+        accountGstNo
+        accountAadharNo
+        accountState
+        accountAddress
+        accountCity
+        remarks
+        accountAuthMobile
         accountConfiguration {
           key
           value
@@ -50,9 +58,28 @@ export const SEARCH_ACCOUNT_MODULE = gql`
       data {
         _id
         accountName
+        accountAddress
         accountContactName
         accountContactEmail
+        accountContactMobile
+        tenantId
+        accountPanNo
+        accountId
+        accountGstNo
+        accountAadharNo
+        accountState
         accountAddress
+        accountCity
+        remarks
+        accountAuthMobile
+        accountConfiguration {
+          key
+          value
+        }
+        industryType {
+          _id
+          name
+        }
       }
     }
   }

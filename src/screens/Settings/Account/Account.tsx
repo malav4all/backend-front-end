@@ -7,7 +7,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-
 import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -16,7 +15,6 @@ import {
   CustomInput,
   CustomTable,
 } from "../../../global/components";
-
 import {
   fetchAccountTableHandler,
   searchTableHandler,
@@ -24,87 +22,113 @@ import {
 import {
   debounceEventHandler,
   openErrorNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import AddAccountModal from "./Component/AddAccountModal";
 import {
   getRelativeFontSize,
   headerColor,
   primaryHeadingColor,
-  theme,
 } from "../../../utils/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import { accountTableHeader } from "./Account.helper";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AccountStyles from "./Account.styles";
-import history from "../../../utils/history";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
-import { useLocation } from "react-router-dom";
-import { tabConfig } from "../SettingsHelpers";
 
-const Account = () => {
+interface AccountData {
+  accountId: string;
+  accountName: string;
+  accountContactName: string;
+  accountContactEmail: string;
+  accountAddress: string;
+  accountContactMobile: string;
+  industryType: { name: string };
+}
+
+interface TableData {
+  accountId: string;
+  accountName: string;
+  accountContactName: string;
+  accountContactEmail: string;
+  accountAddress: string;
+  accountContactMobile: string;
+  accountType: string;
+  action: JSX.Element;
+}
+
+interface FetchAccountResponse {
+  fetchAccountModuleList: {
+    data: AccountData[];
+    paginatorInfo: { count: number };
+  };
+}
+
+const Account: React.FC = () => {
   const theme = useTheme();
   const classes = AccountStyles;
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [perPageData, setPerPageData] = useState(10);
-  const [count, setCount] = useState(0);
-  const [tableData, setTableData] = useState([]);
-  const [searchText, setSearchText] = useState<string>("");
-  const [addAccountDialogHandler, setAddAccountDialogHandler] = useState(false);
-  const [selectedRowData, setSelectedRowData] = useState<any>();
-  const [edit, setEdit] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [totalItemCount, setTotalItemCount] = useState<number>(0);
+  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isAddAccountDialogOpen, setIsAddAccountDialogOpen] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState<any>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
+
   useEffect(() => {
     setPageNumber(1);
-  }, [searchText, perPageData]);
+  }, [searchQuery, rowsPerPage]);
 
   useEffect(() => {
-    if (searchText) {
-      searchDataHandler();
+    if (searchQuery) {
+      handleSearchData();
     } else {
-      fetchTableAccount();
+      fetchAccountTable();
     }
-  }, [pageNumber, perPageData, searchText]);
+  }, [pageNumber, rowsPerPage, searchQuery]);
 
-  const fetchTableAccount = async () => {
+  const tableInsideDataRender = (res: any) => {
+    const formattedTableData = res?.map((item: AccountData) => ({
+      accountId: item.accountId,
+      accountName: item.accountName,
+      accountContactName: item.accountContactName,
+      accountContactEmail: item.accountContactEmail,
+      accountAddress: item.accountAddress,
+      accountContactMobile: item.accountContactMobile,
+      accountType: item.industryType.name,
+      action: (
+        <Tooltip
+          title="Edit"
+          onClick={() => {
+            setIsAddAccountDialogOpen(true);
+            setSelectedRowData(item);
+            setIsEditMode(true);
+          }}
+        >
+          <EditIcon
+            htmlColor={headerColor}
+            style={{ margin: "0px 8px -7px 17px" }}
+          />
+        </Tooltip>
+      ),
+    }));
+    return formattedTableData;
+  };
+
+  const fetchAccountTable = async () => {
     try {
       setIsLoading(true);
-      const res = await fetchAccountTableHandler({
-        input: { page: pageNumber, limit: perPageData },
+      const res: FetchAccountResponse = await fetchAccountTableHandler({
+        input: { page: pageNumber, limit: rowsPerPage },
       });
-      const finalData = res?.fetchAccountModuleList?.data?.map((item: any) => {
-        return {
-          accountName: item?.accountName,
-          accountContactName: item?.accountContactName,
-          accountContactEmail: item?.accountContactEmail,
-          accountAddress: item?.accountAddress,
-          accountContactMobile: item?.accountContactMobile,
-          accountType: item?.industryType?.name,
-          action: (
-            <>
-              <Tooltip
-                title="Edit"
-                onClick={() => {
-                  setAddAccountDialogHandler(true);
-                  setSelectedRowData(item);
-                  setEdit(true);
-                }}
-              >
-                <EditIcon
-                  htmlColor={headerColor}
-                  style={{ margin: "0px 8px -7px 17px" }}
-                />
-              </Tooltip>
-            </>
-          ),
-        };
-      });
-      setTableData(finalData);
-      setCount(res?.fetchAccountModuleList?.paginatorInfo?.count);
+
+      if (res?.fetchAccountModuleList?.data) {
+        const finalData = tableInsideDataRender(
+          res?.fetchAccountModuleList?.data
+        );
+        setTableData(finalData);
+        setTotalItemCount(res.fetchAccountModuleList.paginatorInfo.count);
+      }
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -112,174 +136,159 @@ const Account = () => {
     }
   };
 
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
-  };
-
-  const searchDataHandler = async () => {
+  const handleSearchData = async () => {
     try {
       setIsLoading(true);
       const res = await searchTableHandler({
         input: {
-          search: searchText,
+          search: searchQuery,
           page: pageNumber,
-          limit: perPageData,
+          limit: rowsPerPage,
         },
       });
-      setTableData(res?.searchAccount?.data);
-      setCount(res?.searchAccount?.paginatorInfo?.count);
+      const finalData = tableInsideDataRender(res?.searchAccount?.data);
+      setTableData(finalData);
+      setTotalItemCount(res?.searchAccount?.paginatorInfo?.count || 0);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const handleChangePage = (
+  const handlePageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPageNumber(newPage);
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchText(SearchEvent.target.value.trim());
-      setPerPageData(10);
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value) {
+      setSearchQuery(event.target.value.trim());
+      setRowsPerPage(10);
     } else {
-      setSearchText("");
+      setSearchQuery("");
     }
   };
 
-  const closeAddAccountDialogHandler = () => {
-    setAddAccountDialogHandler(false);
-    setEdit(false);
+  const closeAddAccountDialog = () => {
+    setIsAddAccountDialogOpen(false);
+    setIsEditMode(false);
   };
 
-  const addAccountDialogBox = () => {
-    return (
-      <AddAccountModal
-        openAddAccountDialog={addAccountDialogHandler}
-        handleCloseAddAccountDialog={closeAddAccountDialogHandler}
-        tableData={fetchTableAccount}
-        selectedRowData={selectedRowData}
-        edit={edit}
-      />
-    );
-  };
+  const renderAddAccountDialog = () => (
+    <AddAccountModal
+      openAddAccountDialog={isAddAccountDialogOpen}
+      handleCloseAddAccountDialog={closeAddAccountDialog}
+      tableData={fetchAccountTable}
+      selectedRowData={selectedRowData}
+      edit={isEditMode}
+    />
+  );
 
-  const SettingsHeader = () => {
-    return (
-      <CustomAppHeader
-        className={{
-          ...classes.headerBackgroundColor,
-          backgroundColor: theme.palette.background.paper,
-        }}
-      >
-        <Box ml={1}>
-          <Typography
-            style={{
-              ...classes.settingsTitle,
-              color: theme.palette.text.primary,
-            }}
-          >
-            Settings / Account
-          </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
-      </CustomAppHeader>
-    );
-  };
-
-  const addAccountButton = () => {
-    return (
-      <CustomButton
-        id="users_add_button"
-        label={"Add Account"}
-        onClick={() => setAddAccountDialogHandler(true)}
-        customClasses={{
-          width: "150px",
-        }}
-      />
-    );
-  };
-
-  const searchBarRole = () => {
-    return (
-      <CustomInput
-        id="role_mgmt_search_field"
-        placeHolder="Search Account Name"
-        name="Role"
-        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-    );
-  };
-
-  const handlePerPageData = (event: any) => {
-    setPageNumber(1);
-    setPerPageData(event.target.value);
-  };
-
-  const rolesTableRender = () => {
-    return (
-      <>
-        <Stack
-          px={4}
-          pt={2}
-          direction={{ lg: "row", xs: "column" }}
-          justifyContent="space-between"
-          alignItems={{ lg: "center" }}
-        >
-          <Typography
-            sx={{
-              fontSize: getRelativeFontSize(6),
-              color: primaryHeadingColor,
-              fontWeight: "bold",
-            }}
-          ></Typography>
-
-          <Stack
-            direction={{ sm: "row", xs: "column" }}
-            alignItems={{ sm: "center" }}
-            spacing={1}
-          >
-            {searchBarRole()}
-            {addAccountButton()}
-          </Stack>
-        </Stack>
-        <Box
-          sx={{
-            minWidth: "300px",
-            overflow: "auto",
-            padding: "30px",
+  const renderSettingsHeader = () => (
+    <CustomAppHeader
+      className={{
+        ...classes.headerBackgroundColor,
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Box ml={1}>
+        <Typography
+          style={{
+            ...classes.settingsTitle,
+            color: theme.palette.text.primary,
           }}
         >
-          <CustomTable
-            headers={accountTableHeader}
-            rows={tableData}
-            paginationCount={count}
-            handlePageChange={handleChangePage}
-            pageNumber={pageNumber}
-            handlePerPageData={handlePerPageData}
-            rowsPerPage={perPageData}
-            perPageData={perPageData}
-            setPage={setPageNumber}
-          />
-        </Box>
-      </>
-    );
+          Settings / Account
+        </Typography>
+      </Box>
+      <Stack
+        direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
+        justifyContent="space-between"
+        mt={2}
+      />
+    </CustomAppHeader>
+  );
+
+  const renderAddAccountButton = () => (
+    <CustomButton
+      id="users_add_button"
+      label={"Add Account"}
+      onClick={() => setIsAddAccountDialogOpen(true)}
+      customClasses={{
+        width: "150px",
+      }}
+    />
+  );
+
+  const renderSearchBar = () => (
+    <CustomInput
+      id="role_mgmt_search_field"
+      placeHolder="Search Account Name"
+      name="Role"
+      onChange={debounceEventHandler(handleSearchInputChange, 700)}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
+
+  const handleRowsPerPageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setPageNumber(1);
+    setRowsPerPage(Number(event.target.value));
   };
+
+  const renderAccountTable = () => (
+    <>
+      <Stack
+        px={4}
+        pt={2}
+        direction={{ lg: "row", xs: "column" }}
+        justifyContent="space-between"
+        alignItems={{ lg: "center" }}
+      >
+        <Typography
+          sx={{
+            fontSize: getRelativeFontSize(6),
+            color: primaryHeadingColor,
+            fontWeight: "bold",
+          }}
+        />
+        <Stack
+          direction={{ sm: "row", xs: "column" }}
+          alignItems={{ sm: "center" }}
+          spacing={1}
+        >
+          {renderSearchBar()}
+          {renderAddAccountButton()}
+        </Stack>
+      </Stack>
+      <Box
+        sx={{
+          minWidth: "300px",
+          overflow: "auto",
+          padding: "30px",
+        }}
+      >
+        <CustomTable
+          headers={accountTableHeader}
+          rows={tableData}
+          paginationCount={totalItemCount}
+          handlePageChange={handlePageChange}
+          pageNumber={pageNumber}
+          handlePerPageData={handleRowsPerPageChange}
+          rowsPerPage={rowsPerPage}
+          perPageData={rowsPerPage}
+          setPage={setPageNumber}
+        />
+      </Box>
+    </>
+  );
 
   return (
     <Grid
@@ -290,7 +299,6 @@ const Account = () => {
       lg={12}
       xl={12}
       sx={{
-        // padding: theme.spacing(2),
         paddingTop: "2px",
         marginTop: "2px",
         width: "100%",
@@ -299,9 +307,9 @@ const Account = () => {
         height: "130%",
       }}
     >
-      {SettingsHeader()}
-      {rolesTableRender()}
-      {addAccountDialogBox()}
+      {renderSettingsHeader()}
+      {renderAccountTable()}
+      {renderAddAccountDialog()}
       <CustomLoader isLoading={isLoading} />
     </Grid>
   );
