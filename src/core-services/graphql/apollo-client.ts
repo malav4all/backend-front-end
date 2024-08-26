@@ -19,7 +19,7 @@ import { updateTokens } from "../../redux/authSlice";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename";
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 interface AccessToken {
   accessToken: string;
 }
@@ -74,8 +74,12 @@ const UploadLink = createUploadLink({
 
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }: any) => {
+    console.log(graphQLErrors, networkError, operation);
+
+    // Handle GraphQLErrors
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
+        console.log(err);
         switch (err.extensions.exception?.status) {
           case 401:
             const observable = new Observable<FetchResult<Record<string, any>>>(
@@ -110,11 +114,25 @@ const errorLink = onError(
         }
       }
     }
+
+    // Handle NetworkError
     if (networkError) {
-      if (networkError.message === "Failed to fetch") {
+      const resultErrors = networkError.result?.errors;
+      if (resultErrors && resultErrors.length > 0) {
+        const graphqlError = resultErrors[0]; // Assuming you're interested in the first error
+        const message = graphqlError.message || "An error occurred";
+        const statusCode = graphqlError.extensions?.code || "Unknown code";
+
+        // Optionally, display or log the error
+        console.error(`Network Error ${statusCode}: ${message}`);
+        alert(`Network Error ${statusCode}: ${message}`);
+
+        // Optionally, rethrow the error with more context
+        throw new Error(`Network Error ${statusCode}: ${message}`);
+      } else if (networkError.message === "Failed to fetch") {
         alert("Backend Server is not responding. Please try again later.");
       } else {
-        alert(`[Network error]: ${networkError}`);
+        alert(`[Network error]: ${networkError.message}`);
       }
     }
   }
@@ -125,9 +143,11 @@ const httpLink = new HttpLink({
   fetch: customFetch,
 });
 
-const wsLink = new GraphQLWsLink(createClient({
-  url: `ws://localhost:8080/subscriptions`,
-}));
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: `ws://localhost:8080/subscriptions`,
+  })
+);
 
 const splitLink = split(
   ({ query }) => {
@@ -162,4 +182,3 @@ export const client = new ApolloClient({
 });
 
 export { ApolloProvider };
-

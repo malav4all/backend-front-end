@@ -17,7 +17,6 @@ import {
   debounceEventHandler,
   openErrorNotification,
   openSuccessNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import strings from "../../../global/constants/StringConstants";
 import {
@@ -30,14 +29,10 @@ import { validateLocationTypeForm } from "./LocationTypeandValidations";
 import { regularFont } from "../../../utils/styles";
 import AddLocationTypeModal from "./component/AddLocationType";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import CustomTabs from "../../../global/components/CustomTabs/CustomTabs";
 import LocationTypeStyles from "./LocationType.styles";
-import { tabConfig } from "../SettingsHelpers";
-import { useLocation } from "react-router-dom";
-import history from "../../../utils/history";
 const tableHeader = [
   {
-    name: "Type",
+    name: "Location Type",
     field: "type",
   },
 ];
@@ -45,7 +40,6 @@ const tableHeader = [
 const LocationType = () => {
   const theme = useTheme();
   const classes = LocationTypeStyles;
-  const location = useLocation();
   const [formField, setFormField] = useState<any>({ value: "", error: "" });
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -55,9 +49,6 @@ const LocationType = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
     fetchLocationTypeHandler();
@@ -97,11 +88,6 @@ const LocationType = () => {
     }
   };
 
-  const handleChange = (newValue: string) => {
-    setTabValue(newValue);
-    history.push(`?tabValue=${newValue}`);
-  };
-
   const fetchLocationTypeHandler = async () => {
     try {
       const res = await fetchLocationType({
@@ -114,11 +100,10 @@ const LocationType = () => {
       setData(res.fetchLocationType.data);
       setCount(res.fetchLocationType.paginatorInfo.count);
     } catch (error: any) {
+      console.log(error);
       openErrorNotification(error.message);
     }
   };
-
-  // console.log({ data });
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
@@ -135,13 +120,14 @@ const LocationType = () => {
       setIsLoading(true);
       const res = await searchLocations({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchLocation,
           page: 1,
           limit: 10,
         },
       });
-      setData(res?.searchLocations?.data);
-      setCount(res?.searchLocations?.paginatorInfo?.count);
+      setData(res?.searchLocationTypes?.data);
+      setCount(res?.searchLocationTypes?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -152,7 +138,7 @@ const LocationType = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Location"
+        placeHolder="Search Location Type"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

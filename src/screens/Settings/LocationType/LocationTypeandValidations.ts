@@ -3,7 +3,7 @@ export const validateLocationTypeForm = (formField: any) => {
   let errors = { ...formField };
 
   if (!errors.value) {
-    errors.error = "Please enter type";
+    errors.error = "Please enter location type";
     isValid = false;
   }
 

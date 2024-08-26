@@ -27,7 +27,7 @@ export const FETCH_LOCATION_TYPE = gql`
 
 export const SEARCH_LOCATION = gql`
   mutation ($input: SearchLocationsInput!) {
-    searchLocations(input: $input) {
+    searchLocationTypes(input: $input) {
       paginatorInfo {
         count
       }

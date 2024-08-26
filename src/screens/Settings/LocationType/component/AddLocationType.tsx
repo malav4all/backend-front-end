@@ -50,7 +50,7 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
         <Grid item xs={12}>
           <CustomInput
             required
-            label="Type"
+            label="Location Type"
             id="location_type_field"
             type="text"
             name="type"
@@ -80,7 +80,7 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
             id="add_location_type_cancel_button"
             label="Cancel"
             onClick={handleClose}
-            customClasses={{...classes.cancelButtonStyle,}}
+            customClasses={{ ...classes.cancelButtonStyle }}
           />
           <CustomButton
             id="add_location_type_submit_button"
