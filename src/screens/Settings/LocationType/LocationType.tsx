@@ -193,22 +193,31 @@ const LocationType = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
+        <Stack
+          px={1}
+          mt={4}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
           <Typography
             style={{
               ...classes.settingsTitle,
-              backgroundColor: theme.palette.background.paper,
               color: theme.palette.text.primary,
             }}
           >
             Location Type
           </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {getSearchBar()}
+            {AddLocationType()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
     );
   };
@@ -250,28 +259,6 @@ const LocationType = () => {
         }}
       >
         {SettingsHeader()}
-        <Stack
-          px={4}
-          direction={{ lg: "row", xs: "column" }}
-          justifyContent="space-between"
-          alignItems={{ lg: "center" }}
-        >
-          <Typography
-            sx={{
-              ...regularFont,
-              color: theme.palette.text.primary,
-            }}
-          ></Typography>
-
-          <Stack
-            direction={{ sm: "row", xs: "column" }}
-            alignItems={{ sm: "center" }}
-            spacing={1}
-          >
-            {getSearchBar()}
-            {AddLocationType()}
-          </Stack>
-        </Stack>
 
         <Box
           sx={{

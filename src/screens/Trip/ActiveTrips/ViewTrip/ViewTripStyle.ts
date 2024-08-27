@@ -9,23 +9,33 @@ import {
 
 const viewTripStyle = {
   mainBox: {
-    padding: "30px",
     display: "flex",
     flexDirection: "column",
-    background: "#060B25",
+    marginTop: "1.6rem",
+    marginLeft: "1.6rem",
+    width: "95%",
+    borderRadius: "5px",
+    backgroundColor: "#212139",
     [`@media screen and (max-width: ${1390}px)`]: {
       padding: "10px 30px",
-      background: "#060B25",
+      background: "#212139",
     },
   },
   projectTitle: {
     ...boldFont,
     fontSize: getRelativeFontSize(3),
   },
+  borderStyles: {
+    borderRadius: "5px",
+    border: "1px solid",
+    borderColor: "rgba(255, 255, 255, 0.12)",
+  },
   card: {
-    border: "1px solid #F0F0F0",
-    borderRadius: "10px",
-    boxShadow: 0,
+    border: "1px solid",
+    borderColor: theme.palette.divider,
+    borderRadius: "5px",
+    backgroundColor: "#060B25",
+    padding: 0,
   },
   centerItemFlex: {
     ...centerItemFlex,
@@ -42,6 +52,15 @@ const viewTripStyle = {
   jobDetailsText: {
     ...boldFont,
     fontSize: getRelativeFontSize(3),
+  },
+  headingText: {
+    fontFamily: "Geist_semibold",
+    fontSize: "1.1rem",
+    marginBottom: "1.7rem",
+    padding: "0.2rem 0.8rem",
+    borderRadius: "5px",
+    borderLeft: "7px solid",
+    borderLeftColor: "#855BDE",
   },
   jobTitleText: {
     ...boldFont,

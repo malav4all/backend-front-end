@@ -21,7 +21,6 @@ import {
 import React, { useEffect, useState } from "react";
 import {
   CustomButton,
-  CustomContactNumberInput,
   CustomDialog,
   CustomInput,
 } from "../../../../../global/components";
@@ -31,14 +30,10 @@ import {
   openErrorNotification,
   openSuccessNotification,
 } from "../../../../../helpers/methods";
-import {
-  insertUserField,
-  validateAddUserForm,
-} from "../../UserTypeAndValidation";
+import { insertUserField } from "../../UserTypeAndValidation";
 import uploadUser from "../../../../../assets/images/uploadUser.svg";
 import strings from "../../../../../global/constants/StringConstants";
 import _ from "lodash";
-import { addUserPayload } from "../../UsersInterface";
 import {
   createUser,
   fetchAccountHandler,
@@ -55,7 +50,6 @@ import {
 } from "../../../../DeviceGroup/service/DeviceGroup.service";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import { error } from "console";
 
 interface CustomProps {
   openAddUserDialog: boolean;
@@ -87,8 +81,6 @@ const AddUser = (props: CustomProps) => {
   const [roleData, setRoleData] = useState([]);
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
-  const [isAccountAdmin, setIsAccountAdmin] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   useEffect(() => {
     props.setEdit?.(false);
@@ -683,6 +675,8 @@ const AddUser = (props: CustomProps) => {
                 backgroundColor: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 borderRadius: "5px",
+                height: "47px",
+                overflowY: "hidden",
               }}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
@@ -721,13 +715,23 @@ const AddUser = (props: CustomProps) => {
                 <TextField
                   {...params}
                   placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                 />
               )}
             />
           </Box>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
           <Box
             sx={{ textAlign: "end", display: "flex", justifyContent: "start" }}
           >
@@ -758,15 +762,21 @@ const AddUser = (props: CustomProps) => {
                 label="Account Admin"
                 labelPlacement="start"
                 sx={{
-                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
-                  alignItems: "start", // Center the label and switch horizontally
+                  flexDirection: "column-reverse",
+                  alignItems: "start",
+                  "& .MuiFormControlLabel-label": {
+                    fontWeight: "bold",
+                    marginLeft: "-15px",
+                    fontSize: "15px",
+                    marginBottom: "0.7rem",
+                  },
                 }}
               />
             </FormGroup>
           </Box>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <Grid item xs={12} sm={3} md={3} lg={3} xl={3}>
           <Box
             sx={{
               textAlign: "end",
@@ -801,10 +811,16 @@ const AddUser = (props: CustomProps) => {
                   />
                 }
                 label="Super Admin"
-                labelPlacement="top" // Place the label on top
+                labelPlacement="top"
                 sx={{
-                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
-                  alignItems: "start", // Center the label and switch horizontally
+                  flexDirection: "column-reverse",
+                  alignItems: "start",
+                  "& .MuiFormControlLabel-label": {
+                    fontWeight: "bold",
+                    marginLeft: "-15px",
+                    fontSize: "15px",
+                    marginBottom: "0.7rem",
+                  },
                 }}
               />
             </FormGroup>

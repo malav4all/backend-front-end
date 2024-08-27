@@ -32,6 +32,7 @@ const UserAccessStyles = {
     fontFamily: "Geist_Medium",
     fontSize: "2rem",
     color: "white",
+    marginLeft: "-0.7rem",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(3),
     },

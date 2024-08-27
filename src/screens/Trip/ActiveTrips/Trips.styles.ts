@@ -10,6 +10,16 @@ const tripStyles = {
     },
   },
 
+  settingsTitle: {
+    fontFamily: "Geist_Medium",
+    fontSize: "2rem",
+    color: "white",
+    marginLeft: "-0.7rem",
+    [theme.breakpoints.down("md")]: {
+      marginTop: theme.spacing(3),
+    },
+  },
+
   mainSection: {
     padding: "30px",
     paddingTop: "2px",

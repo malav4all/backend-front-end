@@ -18,6 +18,13 @@ const layoutStyles = {
     height: "100vh",
     overflowX: "auto",
     backgroundColor: primaryBackgroundColor,
+    position: "relative",
+  },
+  navbarPosition: {
+    position: "absolute",
+    top: 0,
+    zIndex: "9999999999999",
+    width: "100%",
   },
   root: {
     display: "flex",

@@ -235,7 +235,7 @@ export const RoleManagement = () => {
                 onClick={handleRoleCreator}
                 startIcon={<AddIcon />}
                 customClasses={{
-                  width: "150px",
+                  width: "175px",
                 }}
               />
             )}
@@ -299,6 +299,7 @@ export const RoleManagement = () => {
         margin: "auto",
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "3.5rem",
       }}
     >
       <Grid>
