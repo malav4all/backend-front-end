@@ -31,8 +31,8 @@ export const FETCH_ADD_DEVICE_LIST = gql`
 `;
 
 export const SEARCH_DEVICE_LIST = gql`
-  mutation ($input: SearchLocationsInput!) {
-    searchLocations(input: $input) {
+  mutation ($input: SearchAddDeviceInput!) {
+    searchDeviceList(input: $input) {
       paginatorInfo {
         count
       }
@@ -40,8 +40,12 @@ export const SEARCH_DEVICE_LIST = gql`
       message
       data {
         _id
+        deviceId
         imei
+        deviceModelType
+        deviceModelName
         deviceModelCode
+        createdBy
       }
     }
   }
