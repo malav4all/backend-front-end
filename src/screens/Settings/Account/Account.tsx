@@ -42,6 +42,7 @@ interface AccountData {
   accountAddress: string;
   accountContactMobile: string;
   industryType: { name: string };
+  deviceOnboardingIMEINumberCount?: number;
 }
 
 interface TableData {
@@ -96,6 +97,7 @@ const Account: React.FC = () => {
       accountAddress: item.accountAddress,
       accountContactMobile: item.accountContactMobile,
       accountType: item.industryType.name,
+      deviceOnboardingIMEINumberCount: item.deviceOnboardingIMEINumberCount,
       action: (
         <Tooltip
           title="Edit"

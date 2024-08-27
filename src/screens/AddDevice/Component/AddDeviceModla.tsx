@@ -24,6 +24,7 @@ interface AddDeviceModalProps {
   onChangeHandler: (event: React.ChangeEvent<any>) => void;
   handleSave: () => void;
   isLoading: boolean;
+  edit: boolean;
 }
 
 const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
@@ -33,6 +34,7 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
   onChangeHandler,
   handleSave,
   isLoading,
+  edit,
 }) => {
   const classes = DeviceOnboardingStyle;
   const [deviceModelData, setDeviceModelData] = useState([]);
@@ -52,7 +54,7 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
             fontWeight: "bold",
           }}
         >
-          Add Device
+          {edit ? "Update Device" : "Add Device"}
         </Typography>
       </Box>
     );
@@ -123,6 +125,15 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
                   </MenuItem>
                 ))}
               </Select>
+              {formField?.deviceModelCode?.error && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ marginTop: 1 }}
+                >
+                  {formField?.deviceModelCode?.error}
+                </Typography>
+              )}
             </Stack>
           </Box>
         </Grid>
@@ -150,7 +161,7 @@ const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
           />
           <CustomButton
             id="add_location_type_submit_button"
-            label="Add"
+            label={edit ? "Update" : "Add"}
             onClick={handleSave}
             loading={isLoading}
           />

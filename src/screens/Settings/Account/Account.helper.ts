@@ -110,6 +110,10 @@ export const accountTableHeader = [
     field: "accountType",
   },
   {
+    name: "Device Count",
+    field: "deviceOnboardingIMEINumberCount",
+  },
+  {
     name: "Action",
     field: "action",
     align: "center",

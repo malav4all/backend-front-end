@@ -34,6 +34,7 @@ import AddDeviceModal from "./Component/AddDeviceModla";
 import {
   addDeviceList,
   fetchDeviceList,
+  searchDeviceList,
   updateDevice,
 } from "./service/add-device.service";
 import { store } from "../../utils/store";
@@ -59,7 +60,7 @@ const AddDevice = () => {
   const [page, setPage] = useState(1);
   const [uploadAsset, setUploadAsset] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState<any>(10);
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const [searchLocation, setSearchLocation] = useState<any>("");
@@ -68,48 +69,144 @@ const AddDevice = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
-    fetchDeviceListData();
-  }, [page, limit]);
+    setPage(1);
+  }, [searchLocation, limit]);
 
-  const handleSearchOnChange = (
-    SearchEvent: ChangeEvent<HTMLInputElement>
-  ) => {};
+  useEffect(() => {
+    if (searchLocation) {
+      handleSearchData();
+    } else {
+      fetchDeviceListData();
+    }
+  }, [page, limit, searchLocation]);
+
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value) {
+      setSearchLocation(event.target.value.trim());
+      setLimit(10);
+    } else {
+      fetchDeviceListData();
+    }
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const errors: any = {};
+
+    if (!formField.imei.value.trim()) {
+      errors.imei = "IMEI is required";
+      isValid = false;
+    }
+
+    if (!formField.deviceModelCode.value.trim()) {
+      errors.deviceModelCode = "Device Model Code is required";
+      isValid = false;
+    }
+
+    setFormField((prevState: any) => ({
+      ...prevState,
+      imei: {
+        ...prevState.imei,
+        error: errors.imei || "",
+      },
+      deviceModelCode: {
+        ...prevState.deviceModelCode,
+        error: errors.deviceModelCode || "",
+      },
+    }));
+
+    return isValid;
+  };
+
+  const tableDataRender = (res: any) => {
+    const tableData = res?.map((item: any) => {
+      return {
+        deviceId: item.deviceId,
+        imei: item.imei,
+        deviceModelName: item.deviceModelName,
+        deviceModelType: item.deviceModelType,
+        createdBy: item.createdBy,
+        action: (
+          <>
+            <Tooltip
+              title="Edit"
+              onClick={() => {
+                editDevice(item);
+              }}
+            >
+              <PiPencilSimpleBold
+                style={{
+                  margin: "0px 8px -7px 0px",
+                  cursor: "pointer",
+                  color: headerColor,
+                  fontSize: "20px",
+                }}
+              />
+            </Tooltip>
+          </>
+        ),
+      };
+    });
+    return tableData;
+  };
+
+  const handleSearchData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchDeviceList({
+        input: {
+          search: searchLocation,
+          page,
+          limit,
+        },
+      });
+      const responseTable = tableDataRender(res?.searchDeviceList?.data);
+      setData(responseTable);
+      setCount(res?.searchDeviceList?.paginatorInfo?.count || 0);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
 
   const addDeviceRecord = async () => {
     try {
-      if (edit) {
-        const res = await updateDevice({
-          input: {
-            _id: formField?.rowId,
-            imei: formField?.imei?.value,
-            deviceModelCode: formField?.deviceModelCode?.value,
-            updatedBy: store?.getState()?.auth.userName,
-          },
-        });
-        openSuccessNotification(res?.updateDeviceList?.message);
-      } else {
-        const res = await addDeviceList({
-          input: {
-            imei: formField?.imei?.value,
-            deviceModelCode: formField?.deviceModelCode?.value,
-            createdBy: store?.getState()?.auth.userName,
-          },
-        });
-        openSuccessNotification(res?.addDeviceList?.message);
-      }
+      if (validateForm()) {
+        if (edit) {
+          const res = await updateDevice({
+            input: {
+              _id: formField?.rowId,
+              imei: formField?.imei?.value,
+              deviceModelCode: formField?.deviceModelCode?.value,
+              updatedBy: store?.getState()?.auth.userName,
+            },
+          });
+          openSuccessNotification(res?.updateDeviceList?.message);
+        } else {
+          const res = await addDeviceList({
+            input: {
+              imei: formField?.imei?.value,
+              deviceModelCode: formField?.deviceModelCode?.value,
+              createdBy: store?.getState()?.auth.userName,
+            },
+          });
+          openSuccessNotification(res?.addDeviceList?.message);
+        }
 
-      await fetchDeviceListData();
-      setFormField({
-        imei: {
-          value: "",
-          error: "",
-        },
-        deviceModelCode: {
-          value: "",
-          error: "",
-        },
-      });
-      setDialogOpen(false); // Close the dialog after successful addition
+        await fetchDeviceListData();
+        setFormField({
+          imei: {
+            value: "",
+            error: "",
+          },
+          deviceModelCode: {
+            value: "",
+            error: "",
+          },
+        });
+        setEdit(false);
+        setDialogOpen(false); // Close the dialog after successful addition
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -142,36 +239,8 @@ const AddDevice = () => {
           limit,
         },
       });
-      const tableData = res?.fetchDeviceList?.data.map((item: any) => {
-        return {
-          deviceId: item.deviceId,
-          imei: item.imei,
-          deviceModelName: item.deviceModelName,
-          deviceModelType: item.deviceModelType,
-          createdBy: item.createdBy,
-          action: (
-            <>
-              <Tooltip
-                title="Edit"
-                onClick={() => {
-                  editDevice(item);
-                }}
-              >
-                <PiPencilSimpleBold
-                  style={{
-                    margin: "0px 8px -7px 0px",
-                    cursor: "pointer",
-                    color: headerColor,
-                    fontSize: "20px",
-                  }}
-                />
-              </Tooltip>
-            </>
-          ),
-        };
-      });
-
-      setData(tableData);
+      const responseTable = tableDataRender(res?.fetchDeviceList?.data);
+      setData(responseTable);
       setCount(res?.fetchDeviceList?.paginatorInfo?.count);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -184,7 +253,7 @@ const AddDevice = () => {
         placeHolder="Search Devices"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
-          handleSearchOnChange,
+          handleSearchInputChange,
           strings.SEARCH_TIME_OUT
         )}
         InputProps={{
@@ -227,7 +296,7 @@ const AddDevice = () => {
           paginationCount={count}
           handlePageChange={handleChangePage}
           pageNumber={page}
-          setPage={searchLocation ? setSearchPageNumber : setPage}
+          setPage={setPage}
           handlePerPageData={handlePerPageData}
           perPageData={limit}
           rowsPerPage={limit}
@@ -386,6 +455,7 @@ const AddDevice = () => {
           }}
           handleSave={addDeviceRecord}
           isLoading={isLoading}
+          edit={edit}
         />
       </Box>
       {uploadAssetGroupModal()}

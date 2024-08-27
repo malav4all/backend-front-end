@@ -34,6 +34,7 @@ export const FETCH_ACCOUNT = gql`
         accountCity
         remarks
         accountAuthMobile
+        deviceOnboardingIMEINumberCount
         accountConfiguration {
           key
           value
