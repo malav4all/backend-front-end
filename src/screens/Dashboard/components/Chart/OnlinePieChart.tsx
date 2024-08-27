@@ -10,7 +10,7 @@ interface PieChartProps {
 
 const OnlinePieChart: React.FC<PieChartProps> = ({
   width = "100%",
-  height = 300,
+  height = 315,
   dataGraph,
 }) => {
   const theme = useTheme();

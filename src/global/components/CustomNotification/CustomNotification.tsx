@@ -50,10 +50,11 @@ const CustomNotification = (props: CustomProps) => {
   const customClassesStyle = makeStyles((theme: Theme) => ({
     notificationBlock: {
       ...getStyles(props.variant),
-      width: "100%",
+      width: "350px",
       padding: "5px",
       display: "flex",
       borderRadius: "10px",
+      marginTop: "3rem",
     },
   }));
 

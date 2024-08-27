@@ -42,7 +42,7 @@ const alertConfigStyles = {
   },
   headerBackgroundColor: {
     backgroundColor: "#f1edff",
-    padding: "10px 20px 15px 18px",
+    padding: "17px -4px 15px 0px",
   },
   mainCardHeader: {},
   mainCardHeading: {

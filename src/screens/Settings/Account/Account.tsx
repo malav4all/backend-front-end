@@ -195,7 +195,12 @@ const Account: React.FC = () => {
         backgroundColor: theme.palette.background.paper,
       }}
     >
-      <Box ml={1}>
+      <Stack
+        px={3}
+        direction={{ lg: "row", xs: "column" }}
+        justifyContent="space-between"
+        alignItems={{ lg: "center" }}
+      >
         <Typography
           style={{
             ...classes.settingsTitle,
@@ -204,12 +209,16 @@ const Account: React.FC = () => {
         >
           Settings / Account
         </Typography>
-      </Box>
-      <Stack
-        direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-        justifyContent="space-between"
-        mt={2}
-      />
+
+        <Stack
+          direction={{ sm: "row", xs: "column" }}
+          alignItems={{ sm: "center" }}
+          spacing={1}
+        >
+          {renderSearchBar()}
+          {renderAddAccountButton()}
+        </Stack>
+      </Stack>
     </CustomAppHeader>
   );
 
@@ -261,14 +270,6 @@ const Account: React.FC = () => {
             fontWeight: "bold",
           }}
         />
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          {renderSearchBar()}
-          {renderAddAccountButton()}
-        </Stack>
       </Stack>
       <Box
         sx={{
@@ -301,12 +302,12 @@ const Account: React.FC = () => {
       lg={12}
       xl={12}
       sx={{
-        paddingTop: "2px",
         marginTop: "2px",
         width: "100%",
         margin: "auto",
         backgroundColor: theme.palette.background.paper,
-        height: "130%",
+        height: "100vh",
+        paddingTop: "2.5rem",
       }}
     >
       {renderSettingsHeader()}

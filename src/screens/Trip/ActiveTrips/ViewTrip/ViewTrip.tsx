@@ -1,4 +1,11 @@
-import { Grid, Box, Card, CardContent, Typography } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ViewAlertConfigurationDetails from "./ViewAlertConfigurationDetails";
@@ -23,7 +30,9 @@ import { fetchTripbyId, updateTripStatus } from "../TripServices";
 import notifiers from "../../../../global/constants/NotificationConstants";
 import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
 import { useHistory } from "react-router-dom";
+import MapComponent from "./components/MapComponent";
 const ViewTrip = () => {
+  const theme = useTheme();
   const history = useHistory();
   const classes = viewTripStyle;
   const { id } = useParams<{ id: string }>();
@@ -124,26 +133,42 @@ const ViewTrip = () => {
   };
 
   const getGeneralTabData = () => (
-    <Grid container sx={classes.mainBox} spacing={2}>
-      <Grid item xl={12} lg={12} sm={12} xs={12}>
-        <Grid container spacing={2} display={"block"}>
-          <Grid item xl={3} lg={3} sm={12} xs={12}>
+    <Grid container sx={{ ...classes.mainBox, padding: "1rem" }} spacing={2}>
+      <Typography variant="h3" sx={classes.headingText}>
+        Trip Information
+      </Typography>
+      <Grid item xs={12}>
+        <Box sx={classes.borderStyles}>
+          <Box>
             <ViewTripInformationDetails
               tripInformationForm={tripInformationForm}
             />
-          </Grid>
-          <Grid item xl={3} lg={3} sm={12} xs={12}>
+          </Box>
+        </Box>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Box sx={{ borderRadius: "8px" }}>
+          <Box sx={classes.borderStyles}>
             <ViewAlertConfigurationDetails
               alertConfigurationForm={alertConfigurationForm}
             />
-          </Grid>
-          <Grid item xl={3} lg={3} sm={12} xs={12}>
+          </Box>
+        </Box>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Box sx={{ borderRadius: "8px" }}>
+          <Box sx={classes.borderStyles}>
             <ViewTransitTypeDetails transitTypeForm={transitTypeForm} />
-          </Grid>
-          <Grid item xl={3} lg={3} sm={12} xs={12}>
-            {renderDynamicFormContent()}
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Box sx={{ borderRadius: "8px" }}>
+          <Box>{renderDynamicFormContent()}</Box>
+        </Box>
       </Grid>
     </Grid>
   );
@@ -169,33 +194,65 @@ const ViewTrip = () => {
   };
 
   const getTripDetails = () => (
-    <>
+    <Box
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        minHeight: "100vh",
+        padding: "24px",
+        paddingTop: "4.5rem",
+      }}
+    >
       {isLoading ? (
         <CustomLoader />
       ) : (
-        <>
-          <Grid container>
-            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-              <ViewHeaderComponent
-                showEditButton={
-                  tripInformationForm?.status === "created" ? true : false
-                }
-                hideAssignTask
-                from={`${urls.editTripViewPath}/${id}`}
-                tripStatus={tripInformationForm?.status}
-                tripInformationForm={tripInformationForm}
-                alertConfigurationForm={alertConfigurationForm}
-                transitTypeForm={transitTypeForm}
-                dynamicForm={dynamicForm}
-                personId={id}
-                onStatusChange={handleStatusChange}
-              />
-            </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Box>
+              <Box>
+                <ViewHeaderComponent
+                  showEditButton={tripInformationForm?.status === "created"}
+                  hideAssignTask
+                  from={`${urls.editTripViewPath}/${id}`}
+                  tripStatus={tripInformationForm?.status}
+                  tripInformationForm={tripInformationForm}
+                  alertConfigurationForm={alertConfigurationForm}
+                  transitTypeForm={transitTypeForm}
+                  dynamicForm={dynamicForm}
+                  personId={id}
+                  onStatusChange={handleStatusChange}
+                />
+              </Box>
+            </Box>
           </Grid>
-          {getGeneralTabData()}
-        </>
+
+          <Grid xs={12} lg={4} sx={{ marginTop: "2rem" }}>
+            {getGeneralTabData()}
+          </Grid>
+
+          <Grid item xs={12} lg={8}>
+            <Card sx={{ borderRadius: "8px", marginTop: "2rem" }}>
+              <CardContent>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "Geist_semibold",
+                    fontSize: "1.1rem",
+                    marginBottom: "1.7rem",
+                    padding: "0.2rem 0.8rem",
+                    borderRadius: "5px",
+                    borderLeft: "7px solid",
+                    borderLeftColor: "#855BDE",
+                  }}
+                >
+                  Map View
+                </Typography>
+                <MapComponent />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       )}
-    </>
+    </Box>
   );
 
   return getTripDetails();

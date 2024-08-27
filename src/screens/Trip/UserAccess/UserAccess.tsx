@@ -267,7 +267,12 @@ const TripAccess = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
+        <Stack
+          px={3}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
           <Typography
             style={{
               ...classes.settingsTitle,
@@ -276,12 +281,16 @@ const TripAccess = () => {
           >
             Trip Access
           </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {searchBarRole()}
+            {getAddUserAccessBtn()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
     );
   };
@@ -294,17 +303,6 @@ const TripAccess = () => {
   const rolesTableRender = () => {
     return (
       <>
-        <Stack
-          direction="row"
-          justifyContent="end"
-          alignItems="center"
-          spacing={1}
-          pt={2}
-          px={3}
-        >
-          {searchBarRole()}
-          {getAddUserAccessBtn()}
-        </Stack>
         <Box
           sx={{
             minWidth: "300px",
@@ -333,6 +331,7 @@ const TripAccess = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       {SettingsHeader()}

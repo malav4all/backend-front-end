@@ -169,7 +169,6 @@ const AlertReport = () => {
             variant="h5"
             sx={{
               ...classes.heading,
-
               color: theme.palette.text.primary,
             }}
           >
@@ -485,6 +484,7 @@ const AlertReport = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       {getReportHeader()}

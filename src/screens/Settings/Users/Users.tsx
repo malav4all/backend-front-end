@@ -21,10 +21,9 @@ import CustomButton from "../../../global/components/CustomButton/CustomButton";
 import AddUser from "./components/AddUser/AddUser";
 import { RowData, UserData } from "../../../models/interfaces";
 import SearchIcon from "@mui/icons-material/Search";
-import { PiPencilSimpleBold } from "react-icons/pi";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   debounceEventHandler,
-  getFormattedStatsCount,
   isTruthy,
   openErrorNotification,
 } from "../../../helpers/methods";
@@ -162,7 +161,12 @@ const Users = () => {
           />
         ),
         action: (
-          <>
+          <Box
+            sx={{
+              display: "flex",
+              gap: "0.5rem",
+            }}
+          >
             <Tooltip title="Change Password">
               <MdPassword
                 color={headerColor}
@@ -183,16 +187,17 @@ const Users = () => {
                 editUser(usersData);
               }}
             >
-              <PiPencilSimpleBold
+              <EditIcon sx={{ color: "#7c58cb" }} />
+              {/* <PiPencilSimpleBold
                 style={{
                   margin: "0px 8px -7px 0px",
                   cursor: "pointer",
                   color: headerColor,
                   fontSize: "20px",
                 }}
-              />
+              /> */}
             </Tooltip>
-          </>
+          </Box>
         ),
       };
     });
@@ -456,7 +461,12 @@ const Users = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
+        <Stack
+          px={3}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
           <Typography
             style={{
               ...classes.settingsTitle,
@@ -465,12 +475,16 @@ const Users = () => {
           >
             Settings / User
           </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {getSearchBar()}
+            {addUserButton()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
     );
   };
@@ -497,15 +511,6 @@ const Users = () => {
             color: primaryHeadingColor,
           }}
         ></Typography>
-
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          {getSearchBar()}
-          {addUserButton()}
-        </Stack>
       </Stack>
 
       <Box

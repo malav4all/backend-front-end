@@ -287,17 +287,6 @@ const Industry: React.FC = () => {
 
   const renderIndustryTable = () => (
     <>
-      <Stack
-        direction="row"
-        justifyContent="end"
-        alignItems="center"
-        spacing={1}
-        pt={2}
-        px={3}
-      >
-        {renderSearchBar()}
-        {renderAddIndustryButton()}
-      </Stack>
       <Box sx={{ minWidth: "300px", overflow: "auto", padding: "30px" }}>
         <CustomTable
           headers={industryTableHeader}
@@ -324,12 +313,32 @@ const Industry: React.FC = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
-          <Typography style={classes.settingsTitle}>
+        <Stack
+          px={3}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
+          <Typography
+            style={{
+              ...classes.settingsTitle,
+              color: theme.palette.text.primary,
+            }}
+          >
             Settings / Industry
           </Typography>
-        </Box>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {renderSearchBar()}
+            {renderAddIndustryButton()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
+
       {renderIndustryTable()}
       <AddIndustry
         open={isAddIndustryDialogOpen}

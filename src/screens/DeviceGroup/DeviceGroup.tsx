@@ -77,10 +77,6 @@ const DeviceGroup = () => {
     setSearchPageNumber(newPage);
   };
 
-  const getRedirectionUrl = (_id: any) => {
-    return history.push(`/device-group/view/${_id}`);
-  };
-
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => {
       return {
@@ -328,6 +324,7 @@ const DeviceGroup = () => {
         onClick={() => setAddDeviceGroupDialogHandler(true)}
         customClasses={{
           width: "150px",
+          marginRight: "10px",
         }}
       />
     );
@@ -338,6 +335,7 @@ const DeviceGroup = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader
@@ -347,7 +345,7 @@ const DeviceGroup = () => {
         }}
       >
         <Stack
-          px={4}
+          px={3}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -368,17 +366,10 @@ const DeviceGroup = () => {
             spacing={1}
           >
             {getSearchBar()}
+            {addDeviceGroupButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>
-
-      <Box
-        sx={{ display: "flex", justifyContent: "flex-end", flexWrap: "wrap" }}
-        mt={2}
-        mr={2}
-      >
-        {addDeviceGroupButton()}
-      </Box>
 
       <Grid
         item

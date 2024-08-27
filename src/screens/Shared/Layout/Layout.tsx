@@ -126,9 +126,11 @@ const Layout = () => {
     return (
       <Box sx={classes.content}>
         {!(
-          location.pathname === "/map-view" || location.pathname === "/location"
+          location.pathname === "/map-view" ||
+          location.pathname === "/location" ||
+          location.pathname === "/geozone"
         ) && (
-          <Box sx={{ zIndex: "10000" }}>
+          <Box sx={classes.navbarPosition}>
             <HeaderNavbar />
           </Box>
         )}

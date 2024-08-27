@@ -258,17 +258,6 @@ const CustomerModule: React.FC = () => {
 
   const renderRolesTable = () => (
     <>
-      <Stack
-        direction="row"
-        justifyContent="end"
-        alignItems="center"
-        spacing={1}
-        pt={2}
-        px={3}
-      >
-        {renderSearchBar()}
-        {renderAddCustomerModuleButton()}
-      </Stack>
       <Box sx={{ minWidth: "300px", overflow: "auto", padding: "30px" }}>
         <CustomTable
           headers={customerModuleTableHeader}
@@ -295,7 +284,12 @@ const CustomerModule: React.FC = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
+        <Stack
+          px={3}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
           <Typography
             style={{
               ...classes.settingsTitle,
@@ -304,8 +298,18 @@ const CustomerModule: React.FC = () => {
           >
             Settings / Module
           </Typography>
-        </Box>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+             {renderSearchBar()}
+             {renderAddCustomerModuleButton()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
+
       <AddCustomerModule
         open={dialogOpen}
         handleClose={resetForm}
