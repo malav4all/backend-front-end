@@ -1,4 +1,4 @@
-import { boldFont, mediumFont, theme } from "../../../utils/styles";
+import { mediumFont, regularFont, theme } from "../../../utils/styles";
 
 const customTabsStyles = {
   headerBox: {
@@ -9,7 +9,7 @@ const customTabsStyles = {
     padding: "15px 30px",
   },
   customTabsText: {
-    ...boldFont,
+    ...regularFont,
   },
   outerTabBox: {
     marginTop: "10px",
@@ -18,10 +18,10 @@ const customTabsStyles = {
   tab: {
     "& .MuiButtonBase-root-MuiTab-root": {
       padding: "12px 2px",
-      color: "#FFFFFF !important", 
+      color: "#FFFFFF !important",
     },
     "& .Mui-selected": {
-      color: "#FFFFFF !important", 
+      color: "#FFFFFF !important",
     },
   },
   tabBox: {
@@ -29,14 +29,14 @@ const customTabsStyles = {
     justifyContent: "center",
     alignItems: "center",
     padding: "2px",
-    borderRadius: "10px",
+    borderRadius: "5px",
     height: "40px",
     width: "100%",
   },
   active: {
     backgroundColor: "#5F22E2",
     textDecoration: "none",
-    color:"#ffffff"
+    color: "#ffffff",
   },
   inActive: {
     opacity: 0.6,
@@ -46,7 +46,7 @@ const customTabsStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    fontFamily: "Geist_Medium",
+    fontFamily: "Geist_Regular",
     fontWeight: 500,
     margin: theme.spacing(1),
     textTransform: "none",

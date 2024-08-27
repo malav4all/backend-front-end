@@ -19,7 +19,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import {
   boldFont,
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -265,6 +264,7 @@ const DeviceList = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader
@@ -274,7 +274,7 @@ const DeviceList = () => {
         }}
       >
         <Stack
-          px={4}
+          px={3}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -292,7 +292,6 @@ const DeviceList = () => {
           <Stack
             direction={{ sm: "row", xs: "column" }}
             alignItems={{ sm: "center" }}
-            spacing={1}
           >
             {getSearchBar()}
           </Stack>

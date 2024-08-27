@@ -23,7 +23,6 @@ import strings from "../../../global/constants/StringConstants";
 import {
   boldFont,
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
 } from "../../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -300,6 +299,7 @@ const DeviceOnboarding = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader

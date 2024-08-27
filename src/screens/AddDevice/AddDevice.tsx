@@ -181,7 +181,7 @@ const AddDevice = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Location"
+        placeHolder="Search Devices"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -261,7 +261,7 @@ const AddDevice = () => {
           label="Download&nbsp;Template"
           onClick={ExportCSV(["imei,deviceModelCode"], "addDevice")}
           customClasses={{
-            width: "170px",
+            width: "190px",
           }}
         />
 
@@ -295,6 +295,7 @@ const AddDevice = () => {
         width: "100%",
         height: "100vh",
         margin: "auto",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader
@@ -354,7 +355,7 @@ const AddDevice = () => {
             alignItems={{ sm: "center" }}
             spacing={1}
           >
-            {getSearchBar()}
+            {/* {getSearchBar()} */}
             {AddLocationType()}
           </Stack>
         </Stack>

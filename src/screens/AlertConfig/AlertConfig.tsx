@@ -2,7 +2,6 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Chip,
-  FormControlLabel,
   Grid,
   InputAdornment,
   Stack,
@@ -20,22 +19,15 @@ import {
 } from "../../global/components";
 import alertConfigStyles from "./AlertConfig.styles";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  headerColor,
-} from "../../utils/styles";
+import { getRelativeFontSize, boldFont, headerColor } from "../../utils/styles";
 import {
   debounceEventHandler,
   isTruthy,
   openErrorNotification,
 } from "../../helpers/methods";
 import strings from "../../global/constants/StringConstants";
-
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { UserData, alertConfigTableHeader } from "./AlertConfig.helpers";
-import LockResetIcon from "@mui/icons-material/LockReset";
 import AddFilter from "./Component/AddFilter";
 import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
@@ -351,7 +343,7 @@ const AlertConfig = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
-        marginTop: "1rem",
+        paddingTop: "4.5rem",
       }}
     >
       <Grid container spacing={2} direction="column">
@@ -384,13 +376,10 @@ const AlertConfig = () => {
                 spacing={1}
               >
                 {getSearchBar()}
+                {addFilterButton()}
               </Stack>
             </Stack>
           </CustomAppHeader>
-        </Grid>
-
-        <Grid item padding={2} sx={{ display: "flex", justifyContent: "end" }}>
-          <Box>{addFilterButton()}</Box>
         </Grid>
 
         <Grid item padding={2}>
@@ -398,7 +387,8 @@ const AlertConfig = () => {
             sx={{
               minWidth: "300px",
               overflow: "auto",
-              padding: "30px",
+              paddingLeft: "30px",
+              paddingRight: "10px",
             }}
           >
             {campaignerTable()}

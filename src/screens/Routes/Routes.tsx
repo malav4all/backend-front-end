@@ -740,6 +740,7 @@ const Routes = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader
@@ -749,7 +750,7 @@ const Routes = () => {
         }}
       >
         <Stack
-          px={4}
+          px={1}
           pt={2}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
@@ -771,48 +772,47 @@ const Routes = () => {
             spacing={1}
           >
             {getSearchBar()}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                flexWrap: "wrap",
+                backgroundColor: theme.palette.background.paper,
+              }}
+              mt={2}
+              mr={2}
+            >
+              {!isHideForm ? (
+                <CustomButton
+                  id="users_add_button"
+                  label={"Create Routes"}
+                  onClick={() => {
+                    setIsHideForm(!isHideForm);
+                  }}
+                  customClasses={{
+                    width: "160px",
+                  }}
+                />
+              ) : (
+                <Box
+                  sx={{
+                    padding: "0rem 2rem",
+                    fontSize: "2rem",
+                    cursor: "pointer",
+                    borderRadius: "100%",
+                    color: theme.palette.text.primary,
+                  }}
+                  onClick={() => {
+                    setIsHideForm(!isHideForm);
+                  }}
+                >
+                  <RiCloseCircleFill />
+                </Box>
+              )}
+            </Box>
           </Stack>
         </Stack>
       </CustomAppHeader>
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          flexWrap: "wrap",
-          backgroundColor: theme.palette.background.paper,
-        }}
-        mt={2}
-        mr={2}
-      >
-        {!isHideForm ? (
-          <CustomButton
-            id="users_add_button"
-            label={"Create Routes"}
-            onClick={() => {
-              setIsHideForm(!isHideForm);
-            }}
-            customClasses={{
-              width: "160px",
-            }}
-          />
-        ) : (
-          <Box
-            sx={{
-              padding: "0rem 2rem",
-              fontSize: "2rem",
-              cursor: "pointer",
-              borderRadius: "100%",
-              color: theme.palette.text.primary,
-            }}
-            onClick={() => {
-              setIsHideForm(!isHideForm);
-            }}
-          >
-            <RiCloseCircleFill />
-          </Box>
-        )}
-      </Box>
 
       {isHideForm && (
         <Box

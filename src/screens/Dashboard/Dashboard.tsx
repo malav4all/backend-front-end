@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, Typography } from "@mui/material";
 import moment from "moment-timezone";
 import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -33,23 +33,9 @@ const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const classes = dashboardStyles;
-  // const [page, setPage] = useState(1);
-  // const [limit, setLimit] = useState(10);
-  // const [count, setCount] = useState(0);
+
   const [offlinePage, setOfflinePage] = useState(1);
   const [offlineLimit, setOfflineLimit] = useState(10);
-  const [offlineCount, setOfflineCount] = useState<number>(0);
-  // const [alertTableData, setAlertTableData] = useState([]);
-  // const [dateFilter, setDateFilter] = useState({
-  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
-  //   endDate: moment().toISOString(),
-  // });
-  // const [offlineDateFilter, setOfflineDateFilter] = useState({
-  //   startDate: moment().clone().subtract(30, "minutes").toISOString(),
-  //   endDate: moment().toISOString(),
-  // });
-  // const [selectedRange, setSelectedRange] = useState("Past 30m");
   const [statData, setStatData] = useState<any>([]);
   const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
   const [dataGraph, setGraphData] = useState<any>();
@@ -150,9 +136,36 @@ const Dashboard = () => {
               return {
                 accountId: item.accountId,
                 imei: item.imei,
-                status: item.status,
+                status:
+                  item.status === "offline" ? (
+                    <Chip
+                      label={item.status}
+                      size="small"
+                      sx={{
+                        backgroundColor: "#FF4560",
+                      }}
+                    />
+                  ) : (
+                    <Chip
+                      label={item.status}
+                      size="small"
+                      sx={{
+                        backgroundColor: "#00e396bd",
+                      }}
+                    />
+                  ),
                 name: "DL1ZC3350",
-                connectedTime: item.lastPing && moment(item.lastPing).fromNow(),
+                connectedTime:
+                  item.lastPing && moment(item.lastPing).isValid() ? (
+                    <>
+                      {moment(item.lastPing).format("h:mm:ss a, DD-MM-YY")}
+                      <br />
+                      {" (" + moment(item.lastPing).fromNow() + ")"}
+                    </>
+                  ) : (
+                    " "
+                  ),
+
                 action:
                   item.status === "offline" ? (
                     <span></span>
@@ -198,7 +211,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "auto", width: " 97%" }}
+          sx={{ margin: "auto", width: " 97%", marginTop: "2.5rem" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
             <GetAlerts data={dataGraph?.deviceDashboardData} />
@@ -219,14 +232,10 @@ const Dashboard = () => {
               spacing={2}
             >
               <Grid item xs={12} sm={6} md={6}>
-                <Box>
-                  <OnlinePieChart dataGraph={dataGraph} />
-                </Box>
+                <OnlinePieChart dataGraph={dataGraph} />
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
-                <Box>
-                  <OfflinePieChart dataGraph={dataGraph} />
-                </Box>
+                <OfflinePieChart dataGraph={dataGraph} />
               </Grid>
             </Grid>
           </Grid>

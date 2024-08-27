@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
   font-family: "Geist_Thin";
   src: url("./assets/fonts/Geist-Thin.woff") format("truetype");
@@ -51,14 +50,14 @@
 
 body {
   margin: 0;
-  font-family: Geist_Regular, Geist_Black, Geist_Bold,
-  Geist_Medium, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: "#15152E" + "!important";
+  font-family: Geist_Regular, Geist_Black, Geist_Bold, Geist_Medium,
+    -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: "#F0F5F9";
 }
 
-.MuiTableRow-root > td:first-child{
+.MuiTableRow-root > td:first-child {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top: 1px solid #ffffff;
@@ -66,7 +65,7 @@ body {
   border-bottom: 1px solid #7c8fac48;
 }
 
-.MuiTableRow-root > td:last-child{
+.MuiTableRow-root > td:last-child {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
   border-top: 1px solid #ffffff;
@@ -77,19 +76,19 @@ body {
 .MuiTableRow-head th:first-child {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
-  border-top: 1px solid #E9ECEF;
+  border-top: 1px solid #e9ecef;
   border-left: 1px solid #ffffff;
-  border-bottom: 1px solid #E9ECEF;
+  border-bottom: 1px solid #e9ecef;
 }
 
 .MuiTableRow-head th {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
-  border-top: 1px solid #E9ECEF;
-  border-bottom: 1px solid #E9ECEF;
-} 
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
 
-.MuiTableRow-root > td{
+.MuiTableRow-root > td {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top: 1px solid #ffffff;
