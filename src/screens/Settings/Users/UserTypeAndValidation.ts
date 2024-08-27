@@ -44,7 +44,6 @@ export const initialUserData = {
 };
 
 export const insertUserField = (data?: any) => {
-  console.log(data);
   return {
     firstName: {
       value: data?.firstName ?? "",
@@ -108,10 +107,6 @@ export const insertUserField = (data?: any) => {
     },
     imeiList: {
       value: data?.imeiList ?? [],
-      error: "",
-    },
-    deviceGroupName: {
-      value: data?.deviceGroupName ?? "",
       error: "",
     },
   } as any;

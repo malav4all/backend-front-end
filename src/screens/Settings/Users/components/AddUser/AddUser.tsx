@@ -77,7 +77,7 @@ const AddUser = (props: CustomProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [deviceGroup, setDeviceGroup] = useState<any>([]);
   const [accountData, setAccountData] = useState<any>([]);
-  const [deviceGroupValue, setDeviceGroupValue] = useState({});
+  const [deviceGroupValue, setDeviceGroupValue] = useState<any>([]);
   const [roleData, setRoleData] = useState([]);
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
@@ -92,8 +92,18 @@ const AddUser = (props: CustomProps) => {
   useEffect(() => {
     if (props?.edit && props?.selectedUserRowData) {
       props.setEdit?.(true);
-      setDeviceGroupValue(props?.selectedUserRowData?.deviceGroup ?? {});
       setUserFormFields(insertUserField(props?.selectedUserRowData));
+      setUserFormFields((prevFields: any) => ({
+        ...prevFields,
+        accountId: {
+          value: props?.selectedUserRowData?.accountId || "",
+          error: "",
+        },
+        deviceGroupAccountId: {
+          value: props?.selectedUserRowData?.accountId || "",
+          error: "",
+        },
+      }));
     }
   }, [props?.selectedUserRowData]);
 
@@ -112,6 +122,7 @@ const AddUser = (props: CustomProps) => {
   const fetchDeviceGroupData = async () => {
     try {
       setIsLoading(true);
+
       const res = await fetchDeviceGroup({
         input: {
           accountId: userFormFields?.deviceGroupAccountId?.value,
@@ -119,7 +130,43 @@ const AddUser = (props: CustomProps) => {
           limit: 10,
         },
       });
-      setDeviceGroup(res?.fetchDeviceGroup?.data);
+
+      const fetchedDeviceGroups = res?.fetchDeviceGroup?.data || [];
+
+      console.log("Fetched Device Groups:", fetchedDeviceGroups);
+      console.log(
+        "Selected User Row Data:",
+        props?.selectedUserRowData?.deviceGroup
+      );
+
+      // Ensure deviceGroup is an array before mapping
+      const selectedDeviceGroupNames = Array.isArray(
+        props?.selectedUserRowData?.deviceGroup
+      )
+        ? props?.selectedUserRowData?.deviceGroup.map(
+            (group: any) => group.deviceGroupName
+          )
+        : [];
+
+      const selectedDeviceGroups = fetchedDeviceGroups
+        .filter((group: any) =>
+          selectedDeviceGroupNames.includes(group.deviceGroupName)
+        )
+        .map((group: any) => group.deviceGroupName);
+
+      console.log("Selected Device Groups:", selectedDeviceGroups);
+
+      // Set state after filtering
+      setDeviceGroup(fetchedDeviceGroups);
+      setDeviceGroupValue(selectedDeviceGroups);
+      setUserFormFields((prevFields: any) => ({
+        ...prevFields,
+        deviceGroupName: {
+          value: selectedDeviceGroups,
+          error: "",
+        },
+      }));
+
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(
@@ -134,7 +181,18 @@ const AddUser = (props: CustomProps) => {
       const res = await fetchDeviceList({
         input: { accountId: userFormFields?.deviceGroupAccountId?.value },
       });
-      setImeiData(res?.getImeiList?.imeiList);
+
+      const imeiList = res?.getImeiList?.imeiList || [];
+
+      // Ensure props?.selectedUserRowData?.imeiList is an array before filtering
+      const selectedImeis = Array.isArray(props?.selectedUserRowData?.imeiList)
+        ? imeiList.filter((imei: any) =>
+            props?.selectedUserRowData?.imeiList.includes(imei)
+          )
+        : [];
+
+      setImeiData(imeiList);
+      setSelectedImeis(selectedImeis);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -213,21 +271,23 @@ const AddUser = (props: CustomProps) => {
   };
 
   const handleDeviceGroup = (formFillEvent: any) => {
-    const selectedAccounts = formFillEvent?.target?.value?.map(
+    const selectedDeviceGroups = formFillEvent?.target?.value;
+
+    const selectedDeviceGroupObjects = selectedDeviceGroups.map(
       (value: string) =>
-        deviceGroup.find((account: any) => account?.deviceGroupName === value)
+        deviceGroup.find((group: any) => group?.deviceGroupName === value)
     );
 
-    setDeviceGroupValue(selectedAccounts);
+    // Update the state to reflect the selected device groups
+    setDeviceGroupValue(selectedDeviceGroupObjects);
     setUserFormFields({
       ...userFormFields,
       deviceGroupName: {
-        value: formFillEvent?.target?.value,
+        value: selectedDeviceGroups,
         error: "",
       },
     });
   };
-
   const handleClickShowPassword = () => {
     setShowPassword(showPassword);
   };
@@ -760,7 +820,7 @@ const AddUser = (props: CustomProps) => {
                 id="add_user_device_group_dropdown"
                 name="deviceGroup"
                 value={userFormFields?.deviceGroupName?.value || []}
-                onChange={(e) => handleDeviceGroup(e)}
+                onChange={handleDeviceGroup}
                 MenuProps={classes.menuProps}
                 displayEmpty
                 renderValue={(selected) =>
@@ -776,7 +836,7 @@ const AddUser = (props: CustomProps) => {
                 {deviceGroup.map((item: any, index: any) => (
                   <MenuItem key={index} value={item.deviceGroupName}>
                     <Checkbox
-                      checked={userFormFields?.deviceGroupName?.value?.includes(
+                      checked={userFormFields.deviceGroupName?.value?.includes(
                         item.deviceGroupName
                       )}
                     />
