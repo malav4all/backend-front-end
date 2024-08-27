@@ -1,5 +1,6 @@
 import { client } from "../../../core-services/graphql/apollo-client";
 import { ServiceResponse } from "../../../core-services/rest-api";
+import { handleGraphQLError } from "../../../helpers/methods";
 import {
   ADD_DEVICE,
   BULK_DEVICE_UPLOAD,
@@ -17,7 +18,7 @@ export const addDeviceList = async (variables: any): Promise<any> => {
 
     return response.data;
   } catch (error: any) {
-    throw new ServiceResponse<any>(0, error.message, undefined);
+    handleGraphQLError(error);
   }
 };
 
@@ -67,6 +68,6 @@ export const bulkRoutesDeviceList = async (variables: any): Promise<any> => {
 
     return response.data;
   } catch (error: any) {
-    throw new ServiceResponse<any>(0, error.message, undefined);
+    handleGraphQLError(error);
   }
 };

@@ -45,10 +45,11 @@ const UploadTableAsset = (props: Props) => {
       const payload = tableData.map((item: any) => {
         return {
           imei: item?.imei?.toString(),
-          deviceModelCode: "DMTRAQLOC508",
+          deviceModelCode: item.deviceModelCode,
           createdBy: store.getState().auth.userName,
         };
       });
+      // console.log(payload);
       const res = await bulkRoutesDeviceList({
         input: payload,
       });

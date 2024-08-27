@@ -6,6 +6,7 @@ import MomentHelpers from "./MomentHelpers";
 import { FormattedResources, Resources } from "../models/interfaces";
 import { logOutAction } from "../redux/authSlice";
 import history from "../utils/history";
+import { ServiceResponse } from "../core-services/rest-api";
 
 const methodsContext = this;
 
@@ -70,10 +71,7 @@ export const openSuccessNotification = (
   });
 };
 
-export const openWarningNotification = (
-  message: any,
-  title: string
-) => {
+export const openWarningNotification = (message: any, title: string) => {
   globalEmitter.emit(strings.notification, {
     type: strings.warning,
     message: message,
@@ -249,3 +247,17 @@ export const getFileExtension = (fileName: string) => {
   const ext = /^.+\.([^.]+)$/.exec(fileName);
   return ext === null ? "" : ext[1];
 };
+
+export function handleGraphQLError(error: any): never {
+  if (error.networkError) {
+    const resultErrors = error.networkError.result?.errors;
+    if (resultErrors && resultErrors.length > 0) {
+      const graphqlError = resultErrors[0];
+      const message = graphqlError.message || "An error occurred";
+      const statusCode = graphqlError.extensions?.code || "Unknown code";
+      throw new Error(`Error ${statusCode}: ${message}`);
+    }
+  }
+
+  throw new ServiceResponse<any>(0, error.message, undefined);
+}

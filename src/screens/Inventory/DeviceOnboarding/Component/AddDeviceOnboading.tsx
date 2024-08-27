@@ -108,16 +108,6 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     }
   };
 
-  const handleFormDataChange = (formFillEvent: React.ChangeEvent<any>) => {
-    setDeviceFormFields({
-      ...userDeviceFields,
-      [formFillEvent.target.name]: {
-        ...userDeviceFields[formFillEvent.target.name],
-        value: formFillEvent.target.value,
-      },
-    });
-  };
-
   const addUserDialogTitle = () => {
     return (
       <Box>

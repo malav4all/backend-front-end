@@ -36,6 +36,16 @@ export const fetchDeviceOnboardingTableHandler = async (
 
     return response.data;
   } catch (error: any) {
+    if (error.networkError) {
+      const resultErrors = error.networkError.result?.errors;
+      if (resultErrors && resultErrors.length > 0) {
+        const graphqlError = resultErrors[0];
+        const message = graphqlError.message || "An error occurred";
+        const statusCode = graphqlError.extensions?.code || "Unknown code";
+        throw new Error(`Error ${statusCode}: ${message}`);
+      }
+    }
+
     throw new ServiceResponse<any>(0, error.message, undefined);
   }
 };
