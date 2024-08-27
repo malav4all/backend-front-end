@@ -138,6 +138,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
         userDeviceFields.deviceOnboardingIMEINumber.value,
       businessModel: userDeviceFields.businessModel.value,
     };
+
     try {
       if (props.edit) {
         const res = await updateDeviceOnboardingList({
@@ -245,15 +246,15 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     }
   };
 
-  const handleOnChange = (event: React.ChangeEvent<any>) => {
+  const handleOnChange = (newValue: any) => {
     setDeviceFormFields({
       ...userDeviceFields,
       deviceOnboardingIMEINumber: {
-        value: event.target.value,
+        value: newValue ? newValue.label : "",
+        error: "",
       },
     });
   };
-
   const addUserDialogBody = () => {
     return (
       <Grid container spacing={2}>
@@ -301,7 +302,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                     value={item._id}
                     sx={classes.dropDownOptionsStyle}
                   >
-                    {item.accountName}
+                    {item.accountId} - {item.accountName}
                   </MenuItem>
                 ))}
               </Select>
@@ -335,6 +336,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                       value: item,
                     })) || []
                   }
+                  onChange={(event, newValue) => handleOnChange(newValue)}
                   renderInput={(params) => {
                     const InputProps = { ...params.InputProps };
                     InputProps.endAdornment = null;
@@ -344,7 +346,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                         {...params}
                         name="startLocation"
                         placeholder="Select Imei"
-                        onSelect={handleOnChange}
+                        // onChange={handleOnChange}
                         InputProps={InputProps}
                       />
                     );
@@ -490,7 +492,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                         value={item._id}
                         sx={classes.dropDownOptionsStyle}
                       >
-                        {item.locationId}
+                        {item.locationId} - {item.name}
                       </MenuItem>
                     ))}
                   </Select>
