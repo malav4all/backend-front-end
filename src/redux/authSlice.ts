@@ -7,6 +7,10 @@ export interface AuthState {
   accessToken: string;
   refreshToken?: string;
   loading: boolean;
+  isAccountAdmin: boolean;
+  isSuperAdmin: boolean;
+  imeiList: any;
+  deviceGroup: any;
   userName: string;
   email?: string;
   role: string;
@@ -36,6 +40,10 @@ const initialState: AuthState = {
   roleName: "",
   tenantId: "",
   sidebar: [],
+  isAccountAdmin: false,
+  isSuperAdmin: false,
+  imeiList: [],
+  deviceGroup: {},
 };
 
 export const authSlice = createSlice({
@@ -58,6 +66,10 @@ export const authSlice = createSlice({
         roleName: string;
         tenantId: string;
         sidebar: ListOfMenusType[];
+        isAccountAdmin: boolean;
+        isSuperAdmin: boolean;
+        imeiList: Array<any>;
+        deviceGroup: any;
       }>
     ) => {
       state.authenticated = action.payload.authenticated;
@@ -73,6 +85,10 @@ export const authSlice = createSlice({
       state.roleName = action.payload.roleName;
       state.tenantId = action.payload.tenantId;
       state.sidebar = action?.payload?.sidebar;
+      state.isAccountAdmin = action.payload.isAccountAdmin;
+      state.isSuperAdmin = action.payload.isSuperAdmin;
+      state.imeiList = action.payload.imeiList;
+      state.deviceGroup = action.payload.deviceGroup;
     },
     addLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -92,6 +108,10 @@ export const authSlice = createSlice({
       state.accountId = "";
       state.roleName = "";
       state.tenantId = "";
+      state.isAccountAdmin = false;
+      state.isSuperAdmin = false;
+      state.imeiList = [];
+      state.deviceGroup = {};
     },
     updateTokens: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
@@ -118,4 +138,8 @@ export const selectRoleId = (state: RootState) => state.auth.roleId;
 export const selectAccount = (state: RootState) => state.auth.account;
 export const selectResources = (state: RootState) => state.auth.resources;
 export const selectSidebar = (state: RootState) => state?.auth?.sidebar;
+export const isAccountAdmin = (state: RootState) => state?.auth?.isAccountAdmin;
+export const isSuperAdmin = (state: RootState) => state?.auth?.isSuperAdmin;
+export const imeiList = (state: RootState) => state?.auth?.imeiList;
+export const deviceGroup = (state: RootState) => state?.auth?.deviceGroup;
 export default authSlice.reducer;

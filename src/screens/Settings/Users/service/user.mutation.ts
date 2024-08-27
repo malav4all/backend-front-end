@@ -29,9 +29,16 @@ export const FETCH_USER = gql`
       data {
         _id
         firstName
+        isSuperAdmin
+        isAccountAdmin
+        imeiList
+        deviceGroup
+        emailVerified
+        mobileVerified
         lastName
         userName
         accountName
+        accountId
         email
         mobileNumber
         createdBy
@@ -40,9 +47,6 @@ export const FETCH_USER = gql`
         }
         roleName
         status
-        accountId {
-          _id
-        }
       }
     }
   }
@@ -102,14 +106,24 @@ export const SEARCH_USER = gql`
       data {
         _id
         firstName
+        isSuperAdmin
+        isAccountAdmin
+        imeiList
+        deviceGroup
+        emailVerified
+        mobileVerified
         lastName
+        userName
+        accountName
+        accountId
         email
         mobileNumber
-        userName
-        roleName
-        accountName
-        status
         createdBy
+        roleId {
+          _id
+        }
+        roleName
+        status
       }
     }
   }

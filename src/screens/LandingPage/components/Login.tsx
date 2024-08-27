@@ -120,6 +120,10 @@ const Login = () => {
               email,
               authenticated: true,
               accessToken: user?.loginUser?.data?.data?.user.accessToken,
+              isSuperAdmin: user?.loginUser?.data?.data?.user.isSuperAdmin,
+              isAccountAdmin: user?.loginUser?.data?.data?.user.isAccountAdmin,
+              imeiList: user?.loginUser?.data?.data?.user.imeiList,
+              deviceGroup: user?.loginUser?.data?.data?.user.deviceGroup,
               userName: user?.loginUser?.data?.data?.user.name,
               role: user?.loginUser?.data?.data?.user?.roleId.name,
               resources: {},
@@ -197,7 +201,7 @@ const Login = () => {
                 !isTruthy(formFields.email.value) && formFields.email.error
               }
             />
-            {!emailRegex.test(formFields.email.value) &&
+            {/* {!emailRegex.test(formFields.email.value) &&
             formFields.email.value.length > 0 ? (
               <>
                 <FormHelperText error sx={classes.errorStyling}>
@@ -206,7 +210,7 @@ const Login = () => {
               </>
             ) : (
               <FormHelperText>{"\u00A0"}</FormHelperText>
-            )}
+            )} */}
           </Box>
 
           <Box>

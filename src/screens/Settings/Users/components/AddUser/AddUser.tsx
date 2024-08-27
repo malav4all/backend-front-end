@@ -38,7 +38,6 @@ import {
 import uploadUser from "../../../../../assets/images/uploadUser.svg";
 import strings from "../../../../../global/constants/StringConstants";
 import _ from "lodash";
-import { addUserPayload } from "../../UsersInterface";
 import {
   createUser,
   fetchAccountHandler,
@@ -55,7 +54,6 @@ import {
 } from "../../../../DeviceGroup/service/DeviceGroup.service";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import { error } from "console";
 
 interface CustomProps {
   openAddUserDialog: boolean;
@@ -87,28 +85,18 @@ const AddUser = (props: CustomProps) => {
   const [roleData, setRoleData] = useState([]);
   const [imeiData, setImeiData] = useState<any>([]);
   const [selectedImeis, setSelectedImeis] = useState<any>([]);
-  const [isAccountAdmin, setIsAccountAdmin] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  const authState = store.getState().auth;
 
   useEffect(() => {
     props.setEdit?.(false);
-    setUserFormFields(insertUserField());
+    // setUserFormFields(insertUserField());
   }, [props?.openAddUserDialog]);
-
-  const fetchImeiData = async () => {
-    try {
-      const res = await fetchDeviceList({
-        input: { accountId: userFormFields?.deviceGroupAccountId?.value },
-      });
-      setImeiData(res?.getImeiList?.imeiList);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
 
   useEffect(() => {
     if (props?.edit && props?.selectedUserRowData) {
       props.setEdit?.(true);
+      setDeviceGroupValue(props?.selectedUserRowData?.deviceGroup ?? {});
       setUserFormFields(insertUserField(props?.selectedUserRowData));
     }
   }, [props?.selectedUserRowData]);
@@ -142,6 +130,56 @@ const AddUser = (props: CustomProps) => {
         isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
       );
       setIsLoading(false);
+    }
+  };
+
+  const fetchImeiData = async () => {
+    try {
+      const res = await fetchDeviceList({
+        input: { accountId: userFormFields?.deviceGroupAccountId?.value },
+      });
+      setImeiData(res?.getImeiList?.imeiList);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchAccountData = async () => {
+    try {
+      const res = await fetchAccountHandler({
+        input: { page: -1, limit: 10000 },
+      });
+      setAccountData(res?.fetchAccountModuleList?.data);
+      if (res?.fetchAccountModuleList?.data.length === 1) {
+        setUserFormFields({
+          ...userFormFields,
+          accountName: {
+            value: res?.fetchAccountModuleList?.data[0].accountName,
+            error: "",
+          },
+          accountId: {
+            value: res?.fetchAccountModuleList?.data[0]?.accountId,
+            error: "",
+          },
+          deviceGroupAccountId: {
+            value: res?.fetchAccountModuleList?.data[0].accountId,
+            error: "",
+          },
+        });
+      }
+    } catch (error: any) {
+      openErrorNotification(error.message);
+    }
+  };
+
+  const fetchRoleData = async () => {
+    try {
+      const res = await fetchRole({
+        input: { page: -1, limit: 0 },
+      });
+      setRoleData(res?.roleListAll?.data);
+    } catch (error: any) {
+      openErrorNotification(error.message);
     }
   };
 
@@ -179,8 +217,9 @@ const AddUser = (props: CustomProps) => {
   };
 
   const handleDeviceGroup = (formFillEvent: any) => {
-    const selectedAccounts = formFillEvent.target.value.map((value: string) =>
-      deviceGroup.find((account: any) => account.deviceGroupName === value)
+    const selectedAccounts = formFillEvent?.target?.value?.map(
+      (value: string) =>
+        deviceGroup.find((account: any) => account?.deviceGroupName === value)
     );
 
     setDeviceGroupValue(selectedAccounts);
@@ -225,39 +264,119 @@ const AddUser = (props: CustomProps) => {
     });
   };
 
-  const addUserDialogTitle = () => {
-    return (
-      <Box>
-        <Typography sx={classes.boldFonts}>
-          {props.edit ? "Update User" : "Add User"}
-        </Typography>
-      </Box>
-    );
-  };
+  const validateForm = () => {
+    let isValid = true;
+    const errors: any = {};
 
-  const fetchAccountData = async () => {
-    try {
-      const res = await fetchAccountHandler({
-        input: { page: -1, limit: 10000 },
-      });
-      setAccountData(res?.fetchAccountModuleList?.data);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-    }
-  };
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const contactNumberRegex = /^[0-9]{10}$/;
 
-  const fetchRoleData = async () => {
-    try {
-      const res = await fetchRole({
-        input: { page: -1, limit: 0 },
-      });
-      setRoleData(res?.roleListAll?.data);
-    } catch (error: any) {
-      openErrorNotification(error.message);
+    if (!userFormFields.firstName.value.trim()) {
+      errors.firstName = "First Name is required";
+      isValid = false;
     }
+
+    if (!userFormFields.lastName.value.trim()) {
+      errors.lastName = "Last Name is required";
+      isValid = false;
+    }
+
+    if (!userFormFields.email.value.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userFormFields.email.value)) {
+      errors.email = "Invalid email format";
+      isValid = false;
+    }
+
+    if (!userFormFields.mobileNumber.value.trim()) {
+      errors.mobileNumber = "Contact Number is required";
+      isValid = false;
+    } else if (!contactNumberRegex.test(userFormFields.mobileNumber.value)) {
+      errors.mobileNumber = "Contact Number must be exactly 10 digits.";
+      isValid = false;
+    }
+
+    if (!userFormFields.userName.value.trim()) {
+      errors.userName = "User Name is required";
+      isValid = false;
+    }
+
+    if (!props.edit) {
+      if (!userFormFields.password.value.trim()) {
+        errors.password = "Password is required";
+        isValid = false;
+      } else if (!passwordRegex.test(userFormFields.password.value)) {
+        errors.password =
+          "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+        isValid = false;
+      }
+    }
+
+    if (!userFormFields.roleName.value.trim()) {
+      errors.roleName = "Role is required";
+      isValid = false;
+    }
+
+    if (!userFormFields.status.value.trim()) {
+      errors.status = "Status is required";
+      isValid = false;
+    }
+
+    if (!userFormFields.accountName.value.trim()) {
+      errors.accountName = "Account is required";
+      isValid = false;
+    }
+
+    setUserFormFields((prevState: any) => ({
+      ...prevState,
+      firstName: {
+        ...prevState.firstName,
+        error: errors.firstName || "",
+      },
+      lastName: {
+        ...prevState.lastName,
+        error: errors.lastName || "",
+      },
+      email: {
+        ...prevState.email,
+        error: errors.email || "",
+      },
+      mobileNumber: {
+        ...prevState.mobileNumber,
+        error: errors.mobileNumber || "",
+      },
+      userName: {
+        ...prevState.userName,
+        error: errors.userName || "",
+      },
+      password: {
+        ...prevState.password,
+        error: errors.password || "",
+      },
+      roleName: {
+        ...prevState.roleName,
+        error: errors.roleName || "",
+      },
+      status: {
+        ...prevState.status,
+        error: errors.status || "",
+      },
+      accountName: {
+        ...prevState.accountName,
+        error: errors.accountName || "",
+      },
+    }));
+
+    return isValid;
   };
 
   const insertUserDetails = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       const insertUserBody = {
@@ -304,6 +423,8 @@ const AddUser = (props: CustomProps) => {
       openErrorNotification(
         isTruthy(error?.message) ? error?.message : notifiers?.GENERIC_ERROR
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -350,6 +471,16 @@ const AddUser = (props: CustomProps) => {
         error: "",
       },
     });
+  };
+
+  const addUserDialogTitle = () => {
+    return (
+      <Box>
+        <Typography sx={classes.boldFonts}>
+          {props.edit ? "Update User" : "Add User"}
+        </Typography>
+      </Box>
+    );
   };
 
   const addUserDialogBody = () => {
@@ -498,6 +629,11 @@ const AddUser = (props: CustomProps) => {
                   </MenuItem>
                 ))}
               </Select>
+              {!!userFormFields.roleName.error && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.roleName.error}
+                </FormHelperText>
+              )}
             </Stack>
           </Box>
         </Grid>
@@ -533,15 +669,21 @@ const AddUser = (props: CustomProps) => {
                   userFormFields?.status?.error
                 }
               >
-                {["Active", "Inactive"].map((item, index) => (
-                  <MenuItem
-                    key={index}
-                    value={item}
-                    sx={classes.dropDownOptionsStyle}
-                  >
-                    {item}
+                {props.edit ? (
+                  ["Active", "Inactive"].map((item, index) => (
+                    <MenuItem
+                      key={index}
+                      value={item}
+                      sx={classes.dropDownOptionsStyle}
+                    >
+                      {item}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="Active" sx={classes.dropDownOptionsStyle}>
+                    Active
                   </MenuItem>
-                ))}
+                )}
               </Select>
               {!isTruthy(userFormFields?.status?.value) && (
                 <FormHelperText error sx={classes.errorStyle}>
@@ -595,12 +737,12 @@ const AddUser = (props: CustomProps) => {
                   </MenuItem>
                 ))}
               </Select>
+              {!!userFormFields.accountName.error && (
+                <FormHelperText error sx={classes.errorStyle}>
+                  {userFormFields.accountName.error}
+                </FormHelperText>
+              )}
             </Stack>
-            {!isTruthy(userFormFields.accountName.value) && (
-              <FormHelperText error sx={classes.errorStyle}>
-                {userFormFields.accountName.error}
-              </FormHelperText>
-            )}
           </Box>
         </Grid>
 
@@ -615,9 +757,6 @@ const AddUser = (props: CustomProps) => {
                 shrink
               >
                 Device Group
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
               </InputLabel>
               <Select
                 multiple
@@ -644,7 +783,6 @@ const AddUser = (props: CustomProps) => {
                       checked={userFormFields?.deviceGroupName?.value?.includes(
                         item.deviceGroupName
                       )}
-                      // sx={classes.checkBoxStyle}
                     />
                     {item.deviceGroupName}
                   </MenuItem>
@@ -666,9 +804,6 @@ const AddUser = (props: CustomProps) => {
               shrink
             >
               Imei List
-              <Box ml={0.4} sx={classes.star}>
-                *
-              </Box>
             </InputLabel>
             <Autocomplete
               multiple
@@ -727,89 +862,142 @@ const AddUser = (props: CustomProps) => {
           </Box>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box
-            sx={{ textAlign: "end", display: "flex", justifyContent: "start" }}
-          >
-            <FormGroup
+        {authState.isSuperAdmin && (
+          <>
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box
+                sx={{
+                  textAlign: "end",
+                  display: "flex",
+                  justifyContent: "start",
+                }}
+              >
+                <FormGroup
+                  sx={{
+                    textAlign: "end",
+                    display: "flex",
+                    justifyContent: "start",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={userFormFields.isAccountAdmin.value}
+                        onChange={(event: any) =>
+                          setUserFormFields((prevFields: any) => ({
+                            ...prevFields,
+                            isAccountAdmin: {
+                              value: event.target.checked,
+                              error: "",
+                            },
+                          }))
+                        }
+                        color="warning"
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                    }
+                    label="Account Admin"
+                    labelPlacement="start"
+                    sx={{
+                      flexDirection: "column-reverse",
+                      alignItems: "start",
+                    }}
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+              <Box
+                sx={{
+                  textAlign: "end",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "start",
+                }}
+              >
+                <FormGroup
+                  sx={{
+                    textAlign: "end",
+                    flexDirection: "column",
+                    display: "flex",
+                    justifyContent: "end",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={userFormFields.isSuperAdmin.value}
+                        onChange={(event: any) =>
+                          setUserFormFields((prevFields: any) => ({
+                            ...prevFields,
+                            isSuperAdmin: {
+                              value: event.target.checked,
+                              error: "",
+                            },
+                          }))
+                        }
+                        color="warning"
+                        inputProps={{ "aria-label": "controlled" }}
+                      />
+                    }
+                    label="Super Admin"
+                    labelPlacement="top"
+                    sx={{
+                      flexDirection: "column-reverse",
+                      alignItems: "start",
+                    }}
+                  />
+                </FormGroup>
+              </Box>
+            </Grid>
+          </>
+        )}
+
+        {authState.isAccountAdmin && !authState.isSuperAdmin && (
+          <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+            <Box
               sx={{
                 textAlign: "end",
                 display: "flex",
                 justifyContent: "start",
               }}
             >
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={userFormFields.isAccountAdmin.value}
-                    onChange={(event: any) =>
-                      setUserFormFields((prevFields: any) => ({
-                        ...prevFields,
-                        isAccountAdmin: {
-                          value: event.target.checked,
-                          error: "",
-                        },
-                      }))
-                    }
-                    color="warning"
-                    inputProps={{ "aria-label": "controlled" }}
-                  />
-                }
-                label="Account Admin"
-                labelPlacement="start"
+              <FormGroup
                 sx={{
-                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
-                  alignItems: "start", // Center the label and switch horizontally
+                  textAlign: "end",
+                  display: "flex",
+                  justifyContent: "start",
                 }}
-              />
-            </FormGroup>
-          </Box>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Box
-            sx={{
-              textAlign: "end",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "staar",
-            }}
-          >
-            <FormGroup
-              sx={{
-                textAlign: "end",
-                flexDirection: "column",
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={userFormFields.isSuperAdmin.value}
-                    onChange={(event: any) =>
-                      setUserFormFields((prevFields: any) => ({
-                        ...prevFields,
-                        isSuperAdmin: {
-                          value: event.target.checked,
-                          error: "",
-                        },
-                      }))
-                    }
-                    color="warning"
-                    inputProps={{ "aria-label": "controlled" }}
-                  />
-                }
-                label="Super Admin"
-                labelPlacement="top" // Place the label on top
-                sx={{
-                  flexDirection: "column-reverse", // Adjust the layout to stack vertically with label on top
-                  alignItems: "start", // Center the label and switch horizontally
-                }}
-              />
-            </FormGroup>
-          </Box>
-        </Grid>
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={userFormFields.isAccountAdmin.value}
+                      onChange={(event: any) =>
+                        setUserFormFields((prevFields: any) => ({
+                          ...prevFields,
+                          isAccountAdmin: {
+                            value: event.target.checked,
+                            error: "",
+                          },
+                        }))
+                      }
+                      color="warning"
+                      inputProps={{ "aria-label": "controlled" }}
+                    />
+                  }
+                  label="Account Admin"
+                  labelPlacement="start"
+                  sx={{
+                    flexDirection: "column-reverse",
+                    alignItems: "start",
+                  }}
+                />
+              </FormGroup>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     );
   };
@@ -832,6 +1020,7 @@ const AddUser = (props: CustomProps) => {
             id="add_user_submit_button"
             label={props.edit ? "Update" : "Add"}
             onClick={insertUserDetails}
+            loading={isLoading}
           />
         </Box>
       </Grid>
