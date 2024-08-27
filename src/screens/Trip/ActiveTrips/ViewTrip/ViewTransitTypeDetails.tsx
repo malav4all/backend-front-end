@@ -29,24 +29,16 @@ const ViewTransitTypeDetails = (props: CustomProps) => {
               <img src={EditIcon} alt="edit" />
             </Box> */}
           </Stack>
-          <Typography variant="body2" sx={classes.workStatus}>
-            Vehicle Type:
-            <Typography variant="body2" ml={1}>
-              {props.transitTypeForm.vehicleType}
+          {props.transitTypeForm.vehicleType ? (
+            <Typography variant="body2" sx={classes.workStatus}>
+              Vehicle Type:
+              <Typography variant="body2" ml={1}>
+                {props.transitTypeForm.vehicleType}
+              </Typography>
             </Typography>
-          </Typography>
-          <Typography variant="body2" sx={classes.workStatus}>
-            Number of Passengers:
-            <Typography variant="body2" ml={1}>
-              {props.transitTypeForm.numberOfPassengers}
-            </Typography>
-          </Typography>
-          <Typography variant="body2" sx={classes.workStatus}>
-            Special Requirements:
-            <Typography variant="body2" ml={1}>
-              {props.transitTypeForm.specialRequirements}
-            </Typography>
-          </Typography>
+          ) : (
+            <Box></Box>
+          )}
         </CardContent>
       </Card>
     );

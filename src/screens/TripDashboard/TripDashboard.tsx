@@ -7,6 +7,7 @@ import {
   ListItem,
   ListItemText,
   useTheme,
+  CircularProgress,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import {
@@ -120,7 +121,6 @@ const TripDashboard = () => {
     setSelectedTrip(trip);
   };
 
-
   const unlockTrip = async (trip: Trip) => {
     try {
       const response = await axios.post(
@@ -167,7 +167,7 @@ const TripDashboard = () => {
               padding: "8px 16px",
               borderRadius: "8px",
               textTransform: "none",
-              backgroundColor: theme.palette.primary.main,
+              backgroundColor: "#5F22E1",
               color: "#fff",
             }}
           />
@@ -316,38 +316,40 @@ const TripDashboard = () => {
                         ETA: {formatDate(trip?.tripEndDate)}
                       </Typography>
 
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginTop: "8px",
-                        }}
-                      >
-                        <LinearProgress
-                          variant="determinate"
-                          value={progress}
-                          sx={{
-                            borderRadius: "6px",
-                            height: "18px",
-                            backgroundColor: "#ffffff",
-                            flexGrow: 1,
-                          }}
-                        />
-                        <Typography
-                          sx={{
-                            marginLeft: "8px",
-                            fontFamily: "Geist_Regular",
-                            fontSize: "0.9rem",
-                            color: theme.palette.text.secondary,
-                          }}
-                        >
-                          {Math.round(progress)}%
-                        </Typography>
-                      </Box>
+                      {buttonRender(trip.status, trip)}
                     </>
                   }
                 />
-                {buttonRender(trip.status, trip)}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <CircularProgress
+                    variant="determinate"
+                    value={progress}
+                    size={70}
+                    thickness={7}
+                    sx={{
+                      color: "#1976D2",
+                      position: "relative",
+                      zIndex: 1,
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontFamily: "Geist_Bold",
+                      fontSize: "0.7rem",
+                      color: theme.palette.text.primary,
+                      marginTop: "-40px",
+                    }}
+                  >
+                    {`${Math.round(progress)}%`}
+                  </Typography>
+                </Box>
               </ListItem>
             );
           })}
@@ -498,7 +500,7 @@ const TripDashboard = () => {
 
   const getDashboardBody = () => {
     return (
-      <Grid container spacing={2} sx={{ padding: "1rem" }}>
+      <Grid container spacing={2} sx={{ marginTop: "3.5rem", padding: "1rem" }}>
         <Grid item xs={12} sm={12} md={12} lg={4}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

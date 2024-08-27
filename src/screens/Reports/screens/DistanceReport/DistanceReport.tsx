@@ -24,9 +24,8 @@ import {
 import strings from "../../../../global/constants/StringConstants";
 import CustomLoader from "../../../../global/components/CustomLoader/CustomLoader";
 
-// import { getDistanceReport } from "./service/distance.service";
 import { getDistance } from "geolib";
-import { time } from "console";
+
 import distanceReportStyles from "./DistanceReport.styles";
 import { getDistanceReport } from "./service/distance.service";
 import { store } from "../../../../utils/store";
@@ -44,12 +43,9 @@ const DistanceReport = (props: CustomProps) => {
   const classes = distanceReportStyles;
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState<any>(false);
-  const [count, setCount] = useState<number>(0);
-  const [tableData, setTableData] = useState([]);
   const [routesTableData, setRoutesTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
-  const [searchRoutes, setSearchRoutes] = useState<string>("");
   const [dateFilter, setDateFilter] = useState({
     startDate: moment().clone().subtract(30, "minutes").toISOString(),
     endDate: moment().toISOString(),
@@ -358,60 +354,6 @@ const DistanceReport = (props: CustomProps) => {
     );
   };
 
-  const getDistanceHeader = () => {
-    <Grid container sx={classes.header}>
-      <Grid item xs={12} md={5} lg={6} xl={6}>
-        <Typography variant="h5" sx={classes.heading}>
-          Alerts Reports
-        </Typography>
-      </Grid>
-
-      <Grid
-        item
-        xs={12}
-        md={7}
-        lg={6}
-        xl={6}
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          flexWrap: "wrap",
-          gap: 2,
-          paddingRight: "17px",
-        }}
-      >
-        <Typography variant="h5" sx={classes.heading}>
-          {getSearchBar()}
-        </Typography>
-        <Select
-          id="campaigns_interval_dropdown"
-          sx={classes.dropDownStyle}
-          value={selectedRange}
-          onChange={handleChange}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-          renderValue={() => selectedRange}
-        >
-          <MenuItem value="Past 1h" sx={classes.optionStyle}>
-            Past 1h
-          </MenuItem>
-          <MenuItem value="Past 3h" sx={classes.optionStyle}>
-            Past 3h
-          </MenuItem>
-          <MenuItem value="Past 12h" sx={classes.optionStyle}>
-            Past 12h
-          </MenuItem>
-          <MenuItem value="Past 2d" sx={classes.optionStyle}>
-            Past 2d
-          </MenuItem>
-          <MenuItem value="Past 30d" sx={classes.optionStyle}>
-            Past 30d
-          </MenuItem>
-        </Select>
-      </Grid>
-    </Grid>;
-  };
-
   const getDashboardBody = () => {
     return (
       <Grid
@@ -453,19 +395,7 @@ const DistanceReport = (props: CustomProps) => {
             lg={12}
             sx={{ display: "flex", margin: "1rem 0rem" }}
           >
-            {/* <Typography
-              variant="h5"
-              sx={{
-                fontFamily: "Geist_Light",
-                fontSize: "1.5rem",
-                marginBottom: "0.5rem",
-                padding: "0.2rem 0.8rem",
-                borderRadius: "5px",
-                borderLeft: "7px solid #5F22E1",
-              }}
-            >
-              Distance Report
-            </Typography> */}
+            
           </Grid>
 
           <Grid
@@ -513,10 +443,10 @@ const DistanceReport = (props: CustomProps) => {
       sx={{
         backgroundColor: theme.palette.background.default,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       {getDashboardHeader()}
-      {/* {getDistanceHeader()} */}
       {getDashboardBody()}
       <CustomLoader isLoading={isLoading} />
     </Box>

@@ -21,7 +21,6 @@ import {
 import React, { useEffect, useState } from "react";
 import {
   CustomButton,
-  CustomContactNumberInput,
   CustomDialog,
   CustomInput,
 } from "../../../../../global/components";
@@ -31,10 +30,7 @@ import {
   openErrorNotification,
   openSuccessNotification,
 } from "../../../../../helpers/methods";
-import {
-  insertUserField,
-  validateAddUserForm,
-} from "../../UserTypeAndValidation";
+import { insertUserField } from "../../UserTypeAndValidation";
 import uploadUser from "../../../../../assets/images/uploadUser.svg";
 import strings from "../../../../../global/constants/StringConstants";
 import _ from "lodash";
@@ -818,6 +814,8 @@ const AddUser = (props: CustomProps) => {
                 backgroundColor: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 borderRadius: "5px",
+                height: "47px",
+                overflowY: "hidden",
               }}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
@@ -856,6 +854,16 @@ const AddUser = (props: CustomProps) => {
                 <TextField
                   {...params}
                   placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                 />
               )}
             />

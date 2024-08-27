@@ -8,9 +8,7 @@ import {
 import {
   boldFont,
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
-  theme,
 } from "../../utils/styles";
 import {
   Autocomplete,
@@ -32,7 +30,6 @@ import {
 } from "../../helpers/methods";
 import strings from "../../global/constants/StringConstants";
 import SearchIcon from "@mui/icons-material/Search";
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { store } from "../../utils/store";
 import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
 import { fetchAccountTableHandler } from "../Settings/Account/service/account.service";
@@ -461,6 +458,7 @@ const DeviceTransfer = () => {
         width: "100%",
         height: "100vh",
         margin: "auto",
+        paddingTop: "2.5rem",
       }}
     >
       {getDeviceTransfer()}

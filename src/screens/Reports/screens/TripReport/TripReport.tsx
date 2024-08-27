@@ -24,7 +24,6 @@ import routesReportStyles from "./TripReport.styles";
 import HereMap from "../../../TripDashboard/components/HereMap";
 import CustomDatePicker from "../../../../global/components/CustomDatePicker/CustomDatePicker";
 import { MdFileDownload } from "react-icons/md";
-import { IoCloseCircle } from "react-icons/io5";
 import { store } from "../../../../utils/store";
 import { fetchTrips } from "../../../Trip/ActiveTrips/TripServices";
 import { tripTableHeader } from "../../../Trip/ActiveTrips/AddTrips/AddTripFormValidation";
@@ -50,11 +49,9 @@ const TripReport = () => {
     endDate: moment().toISOString(),
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [filterData, setFilterData] = useState<any[]>([]);
   const [tripTableData, setTripTableData] = useState([]);
-  const [limit, setLimit] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [dateRange, setDateRange] = useState<CustomDateRange>(initialState);
   const [showButtons, setShowButtons] = useState(false);
@@ -62,7 +59,6 @@ const TripReport = () => {
     startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
-  const [tripData, setTripData] = useState([]);
 
   useEffect(() => {
     getTripData();
@@ -228,7 +224,6 @@ const TripReport = () => {
               label="Cancel"
               onClick={() => handleCloseModel()}
               customClasses={{ width: "110px" }}
-              // variant={"outlined"}
             />
             <CustomButton
               label={"Submit"}
@@ -236,7 +231,6 @@ const TripReport = () => {
                 datePickerChanged();
               }}
               customClasses={{ width: "110px" }}
-              // buttonType={"contained"}
             />
           </Box>
         </Box>
@@ -315,7 +309,6 @@ const TripReport = () => {
             justifyContent: "flex-end",
             flexWrap: "wrap",
             gap: 2,
-            paddingRight: "17px",
           }}
         >
           <Typography variant="h5" sx={classes.heading}>
@@ -405,7 +398,7 @@ const TripReport = () => {
                 "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px",
             }}
           >
-            <Typography
+            {/* <Typography
               variant="h5"
               sx={{
                 fontFamily: "Geist_Light",
@@ -417,7 +410,7 @@ const TripReport = () => {
               }}
             >
               Trip Records
-            </Typography>
+            </Typography> */}
             <Box display={"flex"} gap={2} mt={5}>
               <CustomButton label={"Trip Details"} onClick={() => {}} />
               <CustomButton label={"Alert Details"} onClick={() => {}} />
@@ -478,8 +471,8 @@ const TripReport = () => {
                 )}
               </Box>
 
-              <Box sx={{ backgroundColor: "#f5f5f5", padding: "1rem" }}>
-                <Typography variant="h5">Trip Reports</Typography>
+              <Box sx={{ padding: "1rem" }}>
+                {/* <Typography variant="h5">Trip Reports</Typography> */}
                 <CustomTable
                   headers={tripTableHeader}
                   rows={tripTableData}
@@ -571,6 +564,7 @@ const TripReport = () => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.default,
+        paddingTop: "2.5rem",
       }}
     >
       {getDashboardHeader()}

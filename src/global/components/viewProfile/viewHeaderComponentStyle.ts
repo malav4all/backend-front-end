@@ -2,7 +2,6 @@ import {
   boldFont,
   centerItemFlex,
   getRelativeFontSize,
-  mainContainer,
   primaryColorBlack,
   primaryColorPurple,
   theme,
@@ -14,7 +13,7 @@ const viewHeaderComponentStyle = {
     boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
   },
   mainBox: {
-    padding: "20px 10px",
+    // padding: "20px 10px",
     display: "flex",
     justifyContent: "space-between",
     alignContent: "center",

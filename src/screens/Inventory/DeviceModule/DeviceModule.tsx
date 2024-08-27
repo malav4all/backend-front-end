@@ -1,11 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
-  Container,
-  Grid,
   InputAdornment,
-  MenuItem,
-  Select,
   Stack,
   Tooltip,
   Typography,
@@ -21,14 +17,12 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   debounceEventHandler,
   openErrorNotification,
-  openSuccessNotification,
 } from "../../../helpers/methods";
 
 import AddDeviceModule from "./component/AddDeviceModule";
 import {
   boldFont,
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
 } from "../../../utils/styles";
 import strings from "../../../global/constants/StringConstants";
@@ -70,10 +64,6 @@ const DeviceModule = () => {
       fetchTableDeviceModel();
     }
   }, [pageNumber, perPageData, searchText]);
-
-  // useEffect(() => {
-  //   fetchTableDataHandler();
-  // }, []);
 
   const addDeviceButton = () => {
     return (
@@ -261,6 +251,7 @@ const DeviceModule = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       <CustomAppHeader
@@ -291,6 +282,7 @@ const DeviceModule = () => {
             spacing={1}
           >
             {getSearchBar()}
+            {addUserButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>
@@ -308,15 +300,6 @@ const DeviceModule = () => {
             fontWeight: "bold",
           }}
         ></Typography>
-
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          {getSearchBar()}
-          {addUserButton()}
-        </Stack>
       </Stack>
 
       <Box

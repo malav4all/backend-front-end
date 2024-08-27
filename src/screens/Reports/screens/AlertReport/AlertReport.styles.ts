@@ -1,25 +1,18 @@
 import {
-  boldFont,
-  centerItemFlex,
-  getRelativeFontSize,
-  mainContainer,
   theme,
   primaryHeadingColor,
-  pinkDarkColor,
-  mediumFont,
   regularFont,
-  inputLabelRequiredColor,
   pinkThemedMenuItems,
   purpleThemedSelectComponent,
   pureWhiteColor,
   headerColor,
-} from "../../../../utils/styles"
+} from "../../../../utils/styles";
 const alertReportStyles = {
   header: {
     display: "flex",
     alignItems: "center",
     backgroundColor: headerColor,
-    padding: "16px 3rem",
+    padding: "16px 0.5rem",
     paddingBottom: "64px",
     paddingTop: "35px",
   },
@@ -27,6 +20,7 @@ const alertReportStyles = {
     fontFamily: "Geist_Medium",
     color: primaryHeadingColor,
     fontSize: "2rem",
+    marginLeft: "0.5rem",
     [theme.breakpoints.down("md")]: {
       marginTop: theme.spacing(1),
     },
@@ -35,8 +29,7 @@ const alertReportStyles = {
     ...regularFont,
     ...purpleThemedSelectComponent,
     backgroundColor: pureWhiteColor,
-    height: "47px",
-    padding: "2px",
+    height: "42px",
     width: " 180px",
     borderRadius: "5px",
     fontSize: "14px",
@@ -45,6 +38,6 @@ const alertReportStyles = {
     ...regularFont,
     ...pinkThemedMenuItems,
   },
-} as const
+} as const;
 
-export default alertReportStyles
+export default alertReportStyles;

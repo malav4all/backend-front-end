@@ -125,12 +125,6 @@ const Trips = () => {
     setSearchTrips("");
   };
 
-  const handleSearchChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setSearchPageNumber(newPage);
-  };
 
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
@@ -207,9 +201,6 @@ const Trips = () => {
       action: (
         <Tooltip
           title="Edit"
-          onClick={() => {
-            // editTrip(item);
-          }}
           sx={{ color: theme.palette.text.primary }}
         >
           <PiPencilSimpleBold
@@ -244,10 +235,15 @@ const Trips = () => {
   };
 
   const getTripPage = () => (
-    <Box sx={{ background: "#060B25", height: "100vh" }}>
+    <Box sx={{ background: "#060B25", height: "100vh", paddingTop: "3.5rem" }}>
       <Box sx={classes.mainBox}>
-        <Typography variant="h4" sx={classes.tripText}>
-          Manage Trips
+        <Typography
+          style={{
+            ...classes.settingsTitle,
+            color: theme.palette.text.primary,
+          }}
+        >
+          Manage Trip
         </Typography>
         <Stack
           sx={classes.outerTabBox}
@@ -260,11 +256,13 @@ const Trips = () => {
           }}
           alignItems={{ lg: "center", sm: "center" }}
         >
-          <CustomTabs
-            changeValue={handleChange}
-            selected={tabValue}
-            tabConfig={tabs}
-          />
+          <Box sx={{ marginRight: "1rem" }}>
+            <CustomTabs
+              changeValue={handleChange}
+              selected={tabValue}
+              tabConfig={tabs}
+            />
+          </Box>
           <Stack direction="row" spacing={1} sx={classes.inputWrapper}>
             <Box>{getSearchBar()}</Box>
             <Stack direction="row" justifyContent="center">
@@ -298,6 +296,7 @@ const Trips = () => {
       </Box>
     </Box>
   );
+
 
   return getTripPage();
 };

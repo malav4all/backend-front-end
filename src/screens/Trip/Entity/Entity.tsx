@@ -35,7 +35,6 @@ import {
 } from "./EntityHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddEntity from "./component/AddEntity";
-import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
 const Entity = () => {
@@ -269,7 +268,12 @@ const Entity = () => {
           backgroundColor: theme.palette.background.paper,
         }}
       >
-        <Box ml={1}>
+        <Stack
+          px={3}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
+        >
           <Typography
             style={{
               ...classes.settingsTitle,
@@ -278,12 +282,16 @@ const Entity = () => {
           >
             Entity
           </Typography>
-        </Box>
-        <Stack
-          direction={{ lg: "row", md: "column", sm: "column", xs: "column" }}
-          justifyContent="space-between"
-          mt={2}
-        ></Stack>
+
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            {searchBarRole()}
+            {getAddEntityBtn()}
+          </Stack>
+        </Stack>
       </CustomAppHeader>
     );
   };
@@ -296,16 +304,6 @@ const Entity = () => {
   const rolesTableRender = () => {
     return (
       <>
-        <Stack
-          direction="row"
-          justifyContent="end"
-          alignItems="center"
-          spacing={1}
-          px={3}
-        >
-          {searchBarRole()}
-          {getAddEntityBtn()}
-        </Stack>
         <Box
           sx={{
             minWidth: "300px",
@@ -334,6 +332,7 @@ const Entity = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "2.5rem",
       }}
     >
       {SettingsHeader()}
