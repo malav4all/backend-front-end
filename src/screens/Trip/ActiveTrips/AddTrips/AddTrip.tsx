@@ -295,6 +295,7 @@ const AddTrip = (props: any) => {
         alertConfig: {
           subscribedAlerts: alertConfigurationForm?.subscribedAlerts,
           alertMedium: alertConfigurationForm?.alertMedium,
+          alertDetails: alertConfigurationForm?.alertDetails,
         },
         startPoint: tripInformationForm?.startPoint?.data,
         endPoint: tripInformationForm?.endPoint?.data,
