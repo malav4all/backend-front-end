@@ -26,6 +26,15 @@ export const ADD_ENTITES_TYPE = gql`
   }
 `;
 
+export const UPDATE_ENTITES_TYPE = gql`
+  mutation ($input: UpdateEntitesInput!) {
+    updateEntityType(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const FETCH_ENTITTES = gql`
   mutation ($input: EntitesTypeInput!) {
     fetchEntitesType(input: $input) {
@@ -56,9 +65,9 @@ export const FETCH_ENTITTES = gql`
   }
 `;
 
-export const SEARCH_INDUSTRY_MODULE = gql`
-  mutation ($input: SearchIndustryInput!) {
-    searchIndustry(input: $input) {
+export const SEARCH_ENTITY = gql`
+  mutation ($input: SearchEntitesInput!) {
+    searchEntity(input: $input) {
       paginatorInfo {
         count
       }
@@ -66,9 +75,21 @@ export const SEARCH_INDUSTRY_MODULE = gql`
       message
       data {
         _id
-        code
+        accountId
+        tripTypeList
         name
-        description
+        type
+        address
+        city
+        state
+        area
+        district
+        pinCode
+        contactName
+        contactPhone
+        gstIn
+        aadharCardNo
+        createdBy
       }
     }
   }

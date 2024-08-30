@@ -133,12 +133,6 @@ const AddUser = (props: CustomProps) => {
 
       const fetchedDeviceGroups = res?.fetchDeviceGroup?.data || [];
 
-      console.log("Fetched Device Groups:", fetchedDeviceGroups);
-      console.log(
-        "Selected User Row Data:",
-        props?.selectedUserRowData?.deviceGroup
-      );
-
       // Ensure deviceGroup is an array before mapping
       const selectedDeviceGroupNames = Array.isArray(
         props?.selectedUserRowData?.deviceGroup
@@ -153,8 +147,6 @@ const AddUser = (props: CustomProps) => {
           selectedDeviceGroupNames.includes(group.deviceGroupName)
         )
         .map((group: any) => group.deviceGroupName);
-
-      console.log("Selected Device Groups:", selectedDeviceGroups);
 
       // Set state after filtering
       setDeviceGroup(fetchedDeviceGroups);
@@ -471,6 +463,7 @@ const AddUser = (props: CustomProps) => {
             createdBy: store.getState().auth.userName,
           },
         });
+        setUserFormFields(insertUserField());
         props.handleCloseAddUserDialog(false);
         openSuccessNotification(res?.createUser?.message);
         await props.tableData?.();

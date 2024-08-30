@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   CustomAppHeader,
   CustomButton,
@@ -28,11 +22,7 @@ import {
 import routesStyles from "./Routes.styles";
 import {
   getRelativeFontSize,
-  primaryHeadingColor,
   boldFont,
-  disabledBackgroundColor,
-  chipBackgroundColor,
-  headerColor,
   primaryHeaderColor,
 } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -44,50 +34,35 @@ import {
   openSuccessNotification,
 } from "../../helpers/methods";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SensorsRoundedIcon from "@mui/icons-material/SensorsRounded";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   createRoutes,
   fetchRoutes,
   searchRoutess,
 } from "./service/routes.service";
 import { store } from "../../utils/store";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import history from "../../utils/history";
 import { routesTableHeader, validateRoutesForm } from "./Routes.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
-import strings from "../../global/constants/StringConstants";
 import { RiCloseCircleFill } from "react-icons/ri";
+import strings from "../../global/constants/StringConstants";
 
 const Routes = () => {
   const classes = routesStyles;
   const theme = useTheme();
   const [page, setPage] = useState<number>(1);
-  const [formField, setFormField] = useState<any>({
-    routeName: {
-      value: "",
-      error: "",
-    },
-    startLocation: {
-      value: "",
-      error: "",
-    },
-    endLocation: {
-      value: "",
-      error: "",
-    },
-  });
-  const [coordinatesArray, setCoordinatesArray] = useState<any>([]);
-  const [isHideForm, setIsHideForm] = useState<boolean>(false);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [count, setCount] = useState<number>(0);
   const [tableData, setTableData] = useState([]);
   const [routesTableData, setRoutesTableData] = useState([]);
   const [finalLocationIds, setFinalLocationIds] = useState<string[]>([]);
+  const [coordinatesArray, setCoordinatesArray] = useState<any[]>([]);
   const [counter, setCounter] = useState(66);
-  const [isLoading, setIsLoading] = useState<any>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isHideForm, setIsHideForm] = useState<boolean>(false);
   const [searchRoutes, setSearchRoutes] = useState<string>("");
   const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
-  const [selectedValues, setSelectedValues] = React.useState<any>({});
+  const [selectedValues, setSelectedValues] = useState<any>({});
   const [locationData, setLocationData] = useState<any>([
     {
       name: "LocationA",
@@ -98,17 +73,24 @@ const Routes = () => {
       error: "",
     },
   ]);
+  const [formField, setFormField] = useState<any>({
+    routeName: { value: "", error: "" },
+    startLocation: { value: "", error: "" },
+    endLocation: { value: "", error: "" },
+  });
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchRoutes]);
 
   useEffect(() => {
     fetchGeozone();
-    fetchRoutesHandler();
   }, []);
 
   useEffect(() => {
     if (searchRoutes) {
       getSearchData();
     } else {
-      fetchGeozone();
       fetchRoutesHandler();
     }
   }, [searchRoutes, page, rowsPerPage, searchPageNumber]);
@@ -118,8 +100,8 @@ const Routes = () => {
       setFormField({
         ...formField,
         [event.target.name]: {
-          ...formField[event?.target?.name],
-          value: event?.target?.value,
+          ...formField[event.target.name],
+          value: event.target.value,
           error: "",
         },
       });
@@ -133,7 +115,7 @@ const Routes = () => {
       !finalLocationIds.includes(newValue?.value?._id)
     ) {
       setFinalLocationIds((prevIds) => [...prevIds, newValue?.value?._id]);
-      setCoordinatesArray((prev: any) => [
+      setCoordinatesArray((prev) => [
         ...prev,
         {
           latitude: newValue?.value?.geoCodeData?.geometry?.coordinates[0],
@@ -141,14 +123,108 @@ const Routes = () => {
         },
       ]);
       setSelectedValues((prev: any) => ({ ...prev, [name]: newValue }));
+      setFormField({
+        ...formField,
+        [name]: {
+          value: newValue?.value?._id,
+          error: "",
+        },
+      });
     }
   };
 
+  const validateFields = () => {
+    const { routeName, startLocation, endLocation } = formField;
+    let isValid = true;
+
+    if (!isTruthy(routeName.value)) {
+      setFormField((prev: any) => ({
+        ...prev,
+        routeName: { ...prev.routeName, error: "Please enter Routes Name." },
+      }));
+      isValid = false;
+    }
+
+    if (!isTruthy(startLocation.value)) {
+      setFormField((prev: any) => ({
+        ...prev,
+        startLocation: {
+          ...prev.startLocation,
+          error: "Please select Start Location.",
+        },
+      }));
+      isValid = false;
+    }
+
+    if (!isTruthy(endLocation.value)) {
+      setFormField((prev: any) => ({
+        ...prev,
+        endLocation: {
+          ...prev.endLocation,
+          error: "Please select End Location.",
+        },
+      }));
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  const addRoutesHandler = async () => {
+    if (!validateFields()) return;
+
+    try {
+      setIsLoading(true);
+      const { totalDistance, totalDuration } = await calculateDistance();
+      const res = await createRoutes({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          routeName: formField?.routeName?.value,
+          routesData: finalLocationIds,
+          createdBy: store.getState()?.auth?.userName,
+          totalDistance: Number(totalDistance),
+          totalDuration: Number(totalDuration),
+        },
+      });
+
+      openSuccessNotification(res?.addRoute?.message);
+
+      resetForm();
+
+      await fetchRoutesHandler();
+      setIsHideForm(!isHideForm);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      openErrorNotification(error.message);
+    }
+  };
+
+  const resetForm = () => {
+    setFormField({
+      routeName: { value: "", error: "" },
+      startLocation: { value: "", error: "" },
+      endLocation: { value: "", error: "" },
+    });
+    setLocationData([
+      {
+        name: "LocationA",
+        field: "locationA",
+        type: "String",
+        fieldMapping: "",
+        required: true,
+        error: "",
+      },
+    ]);
+    setFinalLocationIds([]);
+    setSelectedValues({});
+  };
+
   const calculateDistance = async () => {
-    const firstCoordinate = coordinatesArray?.shift();
-    const lastCoordinate = coordinatesArray?.pop();
+    const firstCoordinate = coordinatesArray.shift();
+    const lastCoordinate = coordinatesArray.pop();
     const viaParams = coordinatesArray.map(
-      (point: any) => `via=${point.latitude},${point.longitude}`
+      (point) => `via=${point.latitude},${point.longitude}`
     );
 
     const viaQueryString = viaParams.join("&");
@@ -171,91 +247,28 @@ const Routes = () => {
     const route = data.routes[0];
     let totalDistance = 0;
     let totalDuration = 0;
-    route.sections.forEach((section: any) => {
-      totalDistance += section.travelSummary.length;
-      totalDuration += section.travelSummary.duration;
-    });
-    totalDistance /= 1000;
-    totalDuration /= 3600;
+    route.sections.forEach(
+      (section: { travelSummary: { length: number; duration: number } }) => {
+        totalDistance += section.travelSummary.length;
+        totalDuration += section.travelSummary.duration;
+      }
+    );
     return {
-      totalDistance: totalDistance.toFixed(2),
-      totalDuration: totalDuration.toFixed(2),
+      totalDistance: (totalDistance / 1000).toFixed(2),
+      totalDuration: (totalDuration / 3600).toFixed(2),
     };
   };
 
-  const handleValidation = () => {
-    const { isValid, errors } = validateRoutesForm(formField);
-    setFormField({ ...errors });
-    return isValid;
-  };
-
-  const addRoutesHandler = async () => {
-    try {
-      // if (handleValidation()) {
-      setIsLoading(true);
-      const { totalDistance, totalDuration } = await calculateDistance();
-      const res = await createRoutes({
-        input: {
-          accountId: store.getState().auth.tenantId,
-          routeName: formField?.routeName?.value,
-          routesData: finalLocationIds,
-          createdBy: store.getState()?.auth?.userName,
-          totalDistance: Number(totalDistance),
-          totalDuration: Number(totalDuration),
-        },
-      });
-      openSuccessNotification(res?.addRoute?.message);
-      setFormField({
-        routesName: {
-          value: "",
-          error: "",
-        },
-        endLocation: {
-          value: "",
-          error: "",
-        },
-        startLocation: {
-          value: "",
-          error: "",
-        },
-      });
-      setLocationData([
-        {
-          name: "LocationA",
-          field: "locationA",
-          type: "String",
-          fieldMapping: "",
-          required: true,
-          error: "",
-        },
-      ]);
-      setFinalLocationIds([]);
-      await fetchRoutesHandler();
-      setIsLoading(false);
-      // }
-    } catch (error: any) {
-      setIsLoading(false);
-      openErrorNotification(error.message);
-    }
-  };
-
   const formatDuration = (durationInHours: number) => {
-    if (durationInHours < 1) {
-      const minutes = Math.round(durationInHours * 60);
-      return `${minutes} Minutes`;
-    } else {
-      return `${durationInHours.toFixed(2)} Hours`;
-    }
+    return durationInHours < 1
+      ? `${Math.round(durationInHours * 60)} Minutes`
+      : `${durationInHours.toFixed(2)} Hours`;
   };
 
   const formatDistance = (distanceInKm: number) => {
-    const distance = Number(distanceInKm);
-    if (distance < 1) {
-      const meters = Math.round(distance * 1000);
-      return `${meters} m`;
-    } else {
-      return `${distance.toFixed(2)} Km`;
-    }
+    return distanceInKm < 1
+      ? `${Math.round(distanceInKm * 1000)} m`
+      : `${distanceInKm.toFixed(2)} Km`;
   };
 
   const handleSearchChangePage = (
@@ -265,74 +278,6 @@ const Routes = () => {
     setSearchPageNumber(newPage);
   };
 
-  const tableRender = (tableData: any) => {
-    const data = tableData?.map((item: any, index: number) => {
-      console.log(item);
-      const coordinates = item?.routeDetails?.map((coor: any) => {
-        const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
-        return { lat, lng };
-      });
-      const firstCoordinate = coordinates?.shift();
-      const lastCoordinate = coordinates?.pop();
-      const routeOrigin: { lat: number; lng: number }[] = [];
-      if (firstCoordinate) {
-        const { lat: firstLat, lng: firstLong } = firstCoordinate;
-        routeOrigin.push({ lat: firstLat, lng: firstLong });
-      }
-      if (lastCoordinate) {
-        const { lat: lastLat, lng: lastLong } = lastCoordinate;
-        routeOrigin.push({ lat: lastLat, lng: lastLong });
-      }
-      return {
-        key: item._id,
-        routeId: item.routeId,
-        routesName: item?.routeName,
-        createdBy: item?.createdBy,
-        totalDistance: formatDistance(item?.totalDistance),
-        totalDuration: formatDuration(item?.totalDuration),
-        action: (
-          <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Tooltip
-              title={
-                <CustomPaper
-                  className={{ backgroundColor: disabledBackgroundColor }}
-                >
-                  <Typography sx={classes.liveTrackingTooltipText}>
-                    {"View Routes"}
-                  </Typography>
-                </CustomPaper>
-              }
-              placement="top"
-              arrow
-              componentsProps={{
-                tooltip: {
-                  sx: {
-                    background: "none",
-                  },
-                },
-              }}
-            >
-              <VisibilityIcon
-                key={item._id}
-                style={{ color: primaryHeaderColor, cursor: "pointer" }}
-                onClick={() => {
-                  history.push({
-                    pathname: "/view-routes",
-                    state: {
-                      coordinates: coordinates,
-                      routeOrigin,
-                    },
-                  });
-                }}
-              />
-            </Tooltip>
-          </Box>
-        ),
-      };
-    });
-    return data;
-  };
-
   const fetchRoutesHandler = async () => {
     try {
       setIsLoading(true);
@@ -340,11 +285,11 @@ const Routes = () => {
         input: {
           accountId: store.getState().auth.tenantId,
           page,
-          limit: 10,
+          limit: rowsPerPage,
         },
       });
-      const data = tableRender(res?.fetchRoute?.data);
-      setRoutesTableData(data);
+
+      setRoutesTableData(tableRender(res?.fetchRoute?.data));
       setCount(res.fetchRoute?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -368,16 +313,62 @@ const Routes = () => {
     }
   };
 
-  const getHeader = () => {
-    return (
-      <Box>
-        <Typography
-          sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
-        >
-          Active Routes
-        </Typography>
-      </Box>
-    );
+  const tableRender = (tableData: any) => {
+    return tableData?.map((item: any) => {
+      const coordinates = item?.routeDetails?.map((coor: any) => {
+        const [lat, lng] = coor?.geoCodeData?.geometry?.coordinates;
+        return { lat, lng };
+      });
+      const firstCoordinate = coordinates?.shift();
+      const lastCoordinate = coordinates?.pop();
+      const routeOrigin: { lat: number; lng: number }[] = [];
+
+      if (firstCoordinate) {
+        const { lat: firstLat, lng: firstLong } = firstCoordinate;
+        routeOrigin.push({ lat: firstLat, lng: firstLong });
+      }
+      if (lastCoordinate) {
+        const { lat: lastLat, lng: lastLong } = lastCoordinate;
+        routeOrigin.push({ lat: lastLat, lng: lastLong });
+      }
+
+      return {
+        key: item._id,
+        routeId: item.routeId,
+        routesName: item?.routeName,
+        createdBy: item?.createdBy,
+        totalDistance: formatDistance(item?.totalDistance),
+        totalDuration: formatDuration(item?.totalDuration),
+        action: (
+          <Box sx={{ display: "flex", gap: "1rem" }}>
+            <Tooltip
+              title={
+                <CustomPaper className={{ backgroundColor: "transparent" }}>
+                  <Typography sx={classes.liveTrackingTooltipText}>
+                    {"View Routes"}
+                  </Typography>
+                </CustomPaper>
+              }
+              placement="top"
+              arrow
+            >
+              <VisibilityIcon
+                style={{ color: primaryHeaderColor, cursor: "pointer" }}
+                onClick={() => {
+                  history.push({
+                    pathname: "/view-routes",
+                    state: {
+                      coordinates: coordinates,
+                      routeOrigin,
+                    },
+                  });
+                }}
+              />
+            </Tooltip>
+          </Box>
+        ),
+      };
+    });
   };
 
   const handleChangePage = (
@@ -390,7 +381,7 @@ const Routes = () => {
   const handlePerPageData = (event: any) => {
     setPage(1);
     setSearchPageNumber(1);
-    setRowsPerPage(event?.target?.value);
+    setRowsPerPage(event.target.value);
   };
 
   const getSearchData = async () => {
@@ -398,14 +389,14 @@ const Routes = () => {
       setIsLoading(true);
       const res = await searchRoutess({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchRoutes,
-          page: 1,
-          limit: 10,
+          page: page,
+          limit: rowsPerPage,
         },
       });
-      const data = tableRender(res.searchRoutess.data);
-      setRoutesTableData(data);
-      setCount(res?.searchRoutess?.paginatorInfo?.count);
+      setRoutesTableData(tableRender(res?.searchRoute?.data));
+      setCount(res?.searchRoute?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -427,11 +418,7 @@ const Routes = () => {
     return (
       <Box
         id="campaign_history_display_table"
-        sx={{
-          minWidth: "300px",
-          width: "100%",
-          overflow: "auto",
-        }}
+        sx={{ minWidth: "300px", width: "100%", overflow: "auto" }}
       >
         <CustomTable
           headers={routesTableHeader}
@@ -442,7 +429,6 @@ const Routes = () => {
           }
           handleRowsPerPage={handlePerPageData}
           paginationCount={count}
-          // rowsPerPage={rowsPerPage}
           pageNumber={page}
           setPage={setPage}
           handlePerPageData={handlePerPageData}
@@ -472,268 +458,220 @@ const Routes = () => {
     setCounter(counter + 1);
   };
 
-  const getSearchBar = () => {
-    return (
-      <CustomInput
-        placeHolder="Search Routes..."
-        id="assetAssingment_search_field"
-        onChange={debounceEventHandler(
-          handleSearchOnChange,
-          strings.SEARCH_TIME_OUT
-        )}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-    );
-  };
+  const getSearchBar = () => (
+    <CustomInput
+      placeHolder="Search Routes..."
+      id="assetAssingment_search_field"
+      onChange={debounceEventHandler(
+        handleSearchOnChange,
+        strings.SEARCH_TIME_OUT
+      )}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <SearchIcon />
+          </InputAdornment>
+        ),
+      }}
+    />
+  );
 
-  const inputSection = () => {
-    return (
-      <>
-        <Grid container spacing={2}>
-          <Grid item sx={{ width: "95%" }}>
-            <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
-              <CustomInput
-                label="Routes Name"
-                placeHolder="Enter Routes name"
-                value={formField?.routeName?.value}
-                maxLength={100}
-                required
-                name="routeName"
-                onChange={handleOnChange}
-                error={formField?.routeName?.error}
-                sx={{
-                  backgroundColor: theme.palette.background.paper,
-                }}
-              />
-            </Grid>
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
-            <Box>
-              <InputLabel
-                sx={{
-                  ...classes.inputLabel,
-                  color: theme.palette.text.primary,
-                }}
-                shrink
-              >
-                Start Location
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-
-              <Autocomplete
-                sx={classes.emailDropDownStyle}
-                id="update_user_manager_field"
-                options={
-                  tableData
-                    ?.filter(
-                      (tItem) =>
-                        !Object.values(selectedValues).find(
-                          (selected: any) => selected?.value === tItem
-                        )
-                    )
-                    .map((item: any) => ({
-                      key: item._id,
-                      label: `${item.name} - ${item.description}`,
-                      value: item,
-                    })) || []
-                }
-                onChange={(event, newValue) =>
-                  handleAutocompleteChange(newValue, "startLocation")
-                }
-                renderInput={(params) => {
-                  const InputProps = { ...params.InputProps };
-                  InputProps.endAdornment = null;
-                  return (
-                    <TextField
-                      sx={classes.select}
-                      {...params}
-                      name="startLocation"
-                      placeholder="Select Start location"
-                      onSelect={handleOnChange}
-                      InputProps={InputProps}
-                      error={
-                        !isTruthy(formField.startLocation?.value) &&
-                        formField?.startLocation?.error
-                      }
-                    />
-                  );
-                }}
-              />
-              {!formField.startLocation.value && (
-                <FormHelperText error sx={classes.errorStyle}>
-                  {formField.startLocation?.error}
-                </FormHelperText>
-              )}
-            </Box>
-          </Grid>
-
-          {locationData?.map((item: any, index: number) => (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                width: "30%",
-              }}
-            >
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={5}
-                xl={5}
-                ml={5}
-                mt={1}
-                key={index}
-              >
-                <Box sx={{ width: "100%" }}>
-                  <InputLabel
-                    sx={{
-                      ...classes.inputLabel,
-                      color: theme.palette.text.primary,
-                    }}
-                    shrink
-                  >
-                    {item.name.slice(0, -1) + " " + (index + 1)}
-                  </InputLabel>
-                  <Box sx={{ width: "350px" }}>
-                    <Autocomplete
-                      sx={classes.emailDropDownStyle}
-                      id={`location-${item._id}`}
-                      options={
-                        tableData
-                          ?.filter(
-                            (tItem) =>
-                              !Object.values(selectedValues).find(
-                                (selected: any) => selected?.value === tItem
-                              )
-                          )
-                          .map((tItem: any) => ({
-                            key: tItem._id,
-                            label: `${tItem.name} - ${tItem.description}`,
-                            value: tItem,
-                          })) || []
-                      }
-                      onChange={(event, newValue) =>
-                        handleAutocompleteChange(newValue, item.name)
-                      }
-                      renderInput={(params) => {
-                        const InputProps = { ...params.InputProps };
-                        InputProps.endAdornment = null;
-                        return (
-                          <TextField
-                            sx={classes.select}
-                            {...params}
-                            name={`location-${item._id}`}
-                            placeholder="Search location"
-                            onSelect={() => {}}
-                            InputProps={InputProps}
-                          />
-                        );
-                      }}
-                    />
-                  </Box>
-                </Box>
-              </Grid>
-
-              <Grid
-                item
-                xs={0.5}
-                sm={0.5}
-                md={0.5}
-                lg={0.5}
-                xl={0.5}
-                key={index}
-              >
-                <DeleteIcon
-                  style={{
-                    marginTop: "50px",
-                    marginLeft: "190px",
-                    color: theme.palette.text.primary,
-                  }}
-                  onClick={() =>
-                    setLocationData(
-                      locationData.filter((_: any, i: any) => i !== index)
-                    )
-                  }
-                />
-              </Grid>
-            </Box>
-          ))}
-
-          <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
-            <Box>
-              <InputLabel
-                sx={{
-                  ...classes.inputLabel,
-                  color: theme.palette.text.primary,
-                }}
-                shrink
-              >
-                End Location
-                <Box ml={0.4} sx={classes.star}>
-                  *
-                </Box>
-              </InputLabel>
-              <Autocomplete
-                sx={classes.emailDropDownStyle}
-                id="update_user_manager_field"
-                options={
-                  tableData
-                    ?.filter(
-                      (tItem) =>
-                        !Object.values(selectedValues).find(
-                          (selected: any) => selected?.value === tItem
-                        )
-                    ) // Filter out selected values
-                    .map((item: any) => ({
-                      key: item._id,
-                      label: `${item.name} - ${item.description}`,
-                      value: item,
-                    })) || []
-                }
-                onChange={(event, newValue) =>
-                  handleAutocompleteChange(newValue, "endLocation")
-                }
-                renderInput={(params) => {
-                  const InputProps = { ...params.InputProps };
-                  InputProps.endAdornment = null;
-                  return (
-                    <TextField
-                      sx={classes.select}
-                      {...params}
-                      name="endLocation"
-                      placeholder="Select End location"
-                      onSelect={handleOnChange}
-                      InputProps={InputProps}
-                      error={
-                        !isTruthy(formField.startLocation?.value) &&
-                        formField.startLocation?.error
-                      }
-                    />
-                  );
-                }}
-              />
-              {!formField.endLocation.value && (
-                <FormHelperText error sx={classes.errorStyle}>
-                  {formField.endLocation?.error}
-                </FormHelperText>
-              )}
-            </Box>
-          </Grid>
+  const inputSection = () => (
+    <Grid container spacing={2}>
+      <Grid item sx={{ width: "95%" }}>
+        <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
+          <CustomInput
+            label="Routes Name"
+            placeHolder="Enter Routes name"
+            value={formField.routeName.value}
+            maxLength={100}
+            required
+            name="routeName"
+            onChange={handleOnChange}
+            error={formField.routeName.error}
+            sx={{ backgroundColor: theme.palette.background.paper }}
+          />
         </Grid>
-      </>
-    );
-  };
+      </Grid>
+
+      <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
+        <Box>
+          <InputLabel
+            sx={{
+              ...classes.inputLabel,
+              color: theme.palette.text.primary,
+            }}
+            shrink
+          >
+            Start Location
+            <Box ml={0.4} sx={classes.star}>
+              *
+            </Box>
+          </InputLabel>
+          <Autocomplete
+            sx={classes.emailDropDownStyle}
+            id="start_location_field"
+            options={
+              tableData
+                ?.filter(
+                  (tItem) =>
+                    !Object.values(selectedValues).find(
+                      (selected: any) => selected?.value === tItem
+                    )
+                )
+                .map((item: any) => ({
+                  key: item._id,
+                  label: `${item.locationId} - ${item.name}`,
+                  value: item,
+                })) || []
+            }
+            // value={formField.startLocation.value || null}
+            onChange={(event, newValue) =>
+              handleAutocompleteChange(newValue, "startLocation")
+            }
+            renderInput={(params) => (
+              <TextField
+                sx={classes.select}
+                {...params}
+                name="startLocation"
+                placeholder="Select Start location"
+                error={formField.startLocation.error}
+              />
+            )}
+          />
+          {!isTruthy(formField.startLocation.value) && (
+            <FormHelperText error sx={classes.errorStyle}>
+              {formField.startLocation.error}
+            </FormHelperText>
+          )}
+        </Box>
+      </Grid>
+
+      {locationData.map((item: any, index: number) => (
+        <Box
+          key={index}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            width: "30%",
+          }}
+        >
+          <Grid item xs={12} sm={12} md={12} lg={5} xl={5} ml={5} mt={1}>
+            <Box sx={{ width: "100%" }}>
+              <InputLabel
+                sx={{
+                  ...classes.inputLabel,
+                  color: theme.palette.text.primary,
+                }}
+                shrink
+              >
+                {item.name.slice(0, -1) + " " + (index + 1)}
+              </InputLabel>
+              <Box sx={{ width: "350px" }}>
+                <Autocomplete
+                  sx={classes.emailDropDownStyle}
+                  id={`location-${item._id}`}
+                  options={
+                    tableData
+                      ?.filter(
+                        (tItem) =>
+                          !Object.values(selectedValues).find(
+                            (selected: any) => selected?.value === tItem
+                          )
+                      )
+                      .map((tItem: any) => ({
+                        key: tItem._id,
+                        label: `${tItem.locationId} - ${tItem.name}`,
+                        value: tItem,
+                      })) || []
+                  }
+                  onChange={(event, newValue) =>
+                    handleAutocompleteChange(newValue, item.name)
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      sx={classes.select}
+                      {...params}
+                      name={`location-${item._id}`}
+                      placeholder="Search location"
+                    />
+                  )}
+                />
+              </Box>
+            </Box>
+          </Grid>
+
+          <Grid item xs={0.5} sm={0.5} md={0.5} lg={0.5} xl={0.5}>
+            <DeleteIcon
+              style={{
+                marginTop: "50px",
+                marginLeft: "190px",
+                color: theme.palette.text.primary,
+              }}
+              onClick={() =>
+                setLocationData(
+                  locationData.filter((_: any, i: number) => i !== index)
+                )
+              }
+            />
+          </Grid>
+        </Box>
+      ))}
+
+      <Grid item xs={12} sm={12} md={12} lg={5} xl={5}>
+        <Box>
+          <InputLabel
+            sx={{
+              ...classes.inputLabel,
+              color: theme.palette.text.primary,
+            }}
+            shrink
+          >
+            End Location
+            <Box ml={0.4} sx={classes.star}>
+              *
+            </Box>
+          </InputLabel>
+          <Autocomplete
+            sx={classes.emailDropDownStyle}
+            id="end_location_field"
+            options={
+              tableData
+                ?.filter(
+                  (tItem) =>
+                    !Object.values(selectedValues).find(
+                      (selected: any) => selected?.value === tItem
+                    )
+                )
+                .map((item: any) => ({
+                  key: item._id,
+                  label: `${item.locationId} - ${item.name}`,
+                  value: item,
+                })) || []
+            }
+            // value={formField.endLocation.value || null}
+            onChange={(event, newValue) =>
+              handleAutocompleteChange(newValue, "endLocation")
+            }
+            renderInput={(params) => (
+              <TextField
+                sx={classes.select}
+                {...params}
+                name="endLocation"
+                placeholder="Select End location"
+                error={formField.endLocation.error}
+              />
+            )}
+          />
+          {!isTruthy(formField.endLocation.value) && (
+            <FormHelperText error sx={classes.errorStyle}>
+              {formField.endLocation.error}
+            </FormHelperText>
+          )}
+        </Box>
+      </Grid>
+    </Grid>
+  );
 
   return (
     <Box
@@ -763,7 +701,7 @@ const Routes = () => {
               color: theme.palette.text.primary,
             }}
           >
-            {getHeader()}
+            Active Routes
           </Typography>
 
           <Stack
@@ -785,13 +723,9 @@ const Routes = () => {
               {!isHideForm ? (
                 <CustomButton
                   id="users_add_button"
-                  label={"Create Routes"}
-                  onClick={() => {
-                    setIsHideForm(!isHideForm);
-                  }}
-                  customClasses={{
-                    width: "160px",
-                  }}
+                  label="Create Routes"
+                  onClick={() => setIsHideForm(!isHideForm)}
+                  customClasses={{ width: "160px" }}
                 />
               ) : (
                 <Box
@@ -802,9 +736,7 @@ const Routes = () => {
                     borderRadius: "100%",
                     color: theme.palette.text.primary,
                   }}
-                  onClick={() => {
-                    setIsHideForm(!isHideForm);
-                  }}
+                  onClick={() => setIsHideForm(!isHideForm)}
                 >
                   <RiCloseCircleFill />
                 </Box>
@@ -840,13 +772,10 @@ const Routes = () => {
             mr={2}
           >
             <CustomButton
-              id="users_add_button"
-              label={"Add location"}
+              id="add_location_button"
+              label="Add location"
               onClick={addMoreLocation}
-              customClasses={{
-                width: "150px",
-                color: "#ffffff",
-              }}
+              customClasses={{ width: "150px", color: "#ffffff" }}
             />
           </Box>
 
@@ -858,12 +787,10 @@ const Routes = () => {
             mr={2}
           >
             <CustomButton
-              id="users_add_button"
-              label={"Submit"}
+              id="submit_routes_button"
+              label="Submit"
               onClick={addRoutesHandler}
-              customClasses={{
-                width: "150px",
-              }}
+              customClasses={{ width: "150px" }}
             />
           </Box>
         </Box>

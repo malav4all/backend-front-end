@@ -26,6 +26,15 @@ export const ADD_ENTITY_TYPE = gql`
   }
 `;
 
+export const UPDATE_ENTITY_TYPE = gql`
+  mutation ($input: UpdateEntityTypeInput!) {
+    updateEntityType(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const FETCH_ENTITY_TYPE = gql`
   mutation ($input: EntityTypeInput!) {
     fetchEntityType(input: $input) {
@@ -45,8 +54,8 @@ export const FETCH_ENTITY_TYPE = gql`
 `;
 
 export const SEARCH_INDUSTRY_MODULE = gql`
-  mutation ($input: SearchEntityTypeInput!) {
-    searchEntityType(input: $input) {
+  mutation ($input: SearchEntityInput!) {
+    searchEntity(input: $input) {
       paginatorInfo {
         count
       }
@@ -54,8 +63,8 @@ export const SEARCH_INDUSTRY_MODULE = gql`
       message
       data {
         _id
-        code
         name
+        createdBy
         description
       }
     }

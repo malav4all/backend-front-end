@@ -2,6 +2,7 @@ import {
   Box,
   InputAdornment,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -17,8 +18,8 @@ import TripTypeStyles from "./TripType.styles";
 import {
   addTripType,
   fetchTripTypeTableHandler,
-  fetchTableHandler,
   searchTableHandler,
+  updateTripType,
 } from "./service/TripType.service";
 import {
   debounceEventHandler,
@@ -36,6 +37,8 @@ import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddTripType from "./component/AddTripType";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
+import { PiPencilSimpleBold } from "react-icons/pi";
+import { headerColor } from "../../../utils/styles";
 
 const TripType = () => {
   const ITEM_HEIGHT = 48;
@@ -61,9 +64,9 @@ const TripType = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState<any>();
+  const [edit, setEdit] = useState(false);
   const [addTripTypeDialogHandler, setAddTripTypeDialogHandler] =
     useState(false);
-  const urlParams = new URLSearchParams(location.search);
 
   useEffect(() => {
     setPageNumber(1);
@@ -77,10 +80,6 @@ const TripType = () => {
     }
   }, [pageNumber, perPageData, searchText]);
 
-  useEffect(() => {
-    fetchTableDataHandler();
-  }, []);
-
   const handleModuleChange = (event: any) => {
     setTripTypeFormData({
       ...tripTypeFormData,
@@ -89,6 +88,38 @@ const TripType = () => {
         error: "",
       },
     });
+  };
+
+  const tableRender = (res: any) => {
+    const finalData = res?.map((item: any) => {
+      return {
+        accountId: item.accountId,
+        name: item.tripName,
+        minBatteryPercentage: item.minBatteryPercentage,
+        tripRate: item.tripRate,
+        gstPercentage: item.gstPercentage,
+        createdBy: item.createdBy,
+        action: (
+          <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+            <PiPencilSimpleBold
+              style={{
+                margin: "0px 8px -7px 0px",
+                cursor: "pointer",
+                color: headerColor,
+                fontSize: "20px",
+              }}
+            />
+          </Tooltip>
+        ),
+      };
+    });
+    return finalData;
+  };
+
+  const handleEditClick = (data: any): void => {
+    setAddTripTypeDialogHandler(true);
+    setEdit(true);
+    setTripTypeFormData(tripTypeInsertField(data));
   };
 
   const fetchTableTripType = async () => {
@@ -101,17 +132,8 @@ const TripType = () => {
           limit: perPageData,
         },
       });
-      const finalData = res?.tripTypeList?.data?.map((item: any) => {
-        return {
-          accountId: item.accountId,
-          name: item.tripName,
-          minBatteryPercentage: item.minBatteryPercentage,
-          tripRate: item.tripRate,
-          gstPercentage: item.gstPercentage,
-          createdBy: item.createdBy,
-        };
-      });
-      setTableData(finalData);
+      const final = tableRender(res?.tripTypeList?.data);
+      setTableData(final);
       setCount(res?.tripTypeList?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -125,12 +147,14 @@ const TripType = () => {
       setIsLoading(true);
       const res = await searchTableHandler({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchText,
           page: pageNumber,
           limit: perPageData,
         },
       });
-      setTableData(res?.searchTripType?.data);
+      const final = tableRender(res?.searchTripType?.data);
+      setTableData(final);
       setCount(res?.searchTripType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -141,38 +165,48 @@ const TripType = () => {
 
   const addTripTypeHandler = async () => {
     try {
+      const tripRateValue = Number(tripTypeFormData.tripRate.value);
+      const gstAmount = (tripRateValue * 18) / 100;
+      const totalTripRateWithGST = tripRateValue + gstAmount;
+
       const payload: any = {
         accountId: tripTypeFormData?.accountId?.value,
         tripName: tripTypeFormData.name.value,
         minBatteryPercentage: Number(
           tripTypeFormData.minBatteryPercentage.value
         ),
-        tripRate: Number(tripTypeFormData.tripRate.value),
+        tripRate: totalTripRateWithGST,
         gstPercentage: tripTypeFormData.gstPercentage.value,
         createdBy: store.getState().auth.userName,
       };
+
       setIsLoading(true);
-      if (handleValidation()) {
+      if (edit) {
+        const res = await updateTripType({
+          input: {
+            ...payload,
+            _id: tripTypeFormData?.id?.value,
+            updatedBy: store.getState().auth.userName,
+          },
+        });
+        openSuccessNotification(res?.updateTripType?.message);
+      } else {
         const res = await addTripType({
           input: { ...payload },
         });
-        setTripTypeFormData(tripTypeInsertField());
-        await fetchTableTripType();
-        setAddTripTypeDialogHandler(false);
         openSuccessNotification(res.createTripType.message);
-        setIsLoading(false);
       }
+
+      setTripTypeFormData(tripTypeInsertField());
+      await fetchTableTripType();
+      setEdit(false);
+      setAddTripTypeDialogHandler(false);
+
+      setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
       setIsLoading(false);
     }
-  };
-
-  const handleValidation = () => {
-    const { isValid, errors }: { isValid: boolean; errors: any } =
-      tripTypeValidation(tripTypeFormData);
-    setTripTypeFormData({ ...errors });
-    return isValid;
   };
 
   const handleChangePage = (
@@ -180,20 +214,6 @@ const TripType = () => {
     newPage: number
   ) => {
     setPageNumber(newPage);
-  };
-
-  const fetchTableDataHandler = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetchTableHandler({
-        input: { page: -1, limit: 0 },
-      });
-      setModuleData(res?.customerModuleListAll?.data);
-      setIsLoading(false);
-    } catch (error: any) {
-      openErrorNotification(error.message);
-      setIsLoading(false);
-    }
   };
 
   const onChangeHandler = (event: React.ChangeEvent<any>) => {
@@ -237,7 +257,7 @@ const TripType = () => {
         id="role_mgmt_search_field"
         placeHolder="Search TripType Name"
         name="Role"
-        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+        onChange={debounceEventHandler(handleSearchOnChange, 700)}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -341,6 +361,8 @@ const TripType = () => {
         MenuProps={MenuProps}
         isTruthy={isTruthy}
         classes={classes}
+        setTripTypeFormData={setTripTypeFormData}
+        edit={edit}
       />
       <CustomLoader isLoading={isLoading} />
     </Box>

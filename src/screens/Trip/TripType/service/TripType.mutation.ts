@@ -1,25 +1,17 @@
 import { gql } from "@apollo/client";
 
-export const FETCH_CUSTOMER_MODULE = gql`
-  mutation ($input: CustomerModuleInput!) {
-    customerModuleListAll(input: $input) {
-      paginatorInfo {
-        count
-      }
+export const ADD_TRIP_TYPE = gql`
+  mutation ($input: CreateTripTypeInput!) {
+    createTripType(input: $input) {
       success
       message
-      data {
-        _id
-        code
-        name
-      }
     }
   }
 `;
 
-export const ADD_INDUSTRY = gql`
-  mutation ($input: CreateTripTypeInput!) {
-    createTripType(input: $input) {
+export const UPDATE_TRIP_TYPE = gql`
+  mutation ($input: UpdateTripTypeInput!) {
+    updateTripType(input: $input) {
       success
       message
     }
@@ -49,7 +41,7 @@ export const FETCH_TRIP_TYPE = gql`
   }
 `;
 
-export const SEARCH_INDUSTRY_MODULE = gql`
+export const SEARCH_TRIP_TYPE = gql`
   mutation ($input: SearchTripTypeInput!) {
     searchTripType(input: $input) {
       paginatorInfo {
@@ -59,9 +51,14 @@ export const SEARCH_INDUSTRY_MODULE = gql`
       message
       data {
         _id
-        code
-        name
-        description
+        accountId
+        tripName
+        minBatteryPercentage
+        tripRate
+        disableField
+        filtrationFelid
+        gstPercentage
+        createdBy
       }
     }
   }

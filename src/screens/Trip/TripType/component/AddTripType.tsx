@@ -15,7 +15,7 @@ import {
   CustomDialog,
 } from "../../../../global/components";
 import { fetchAccountTableHandler } from "../../../Settings/Account/service/account.service";
-import { openErrorNotification } from "../../../../helpers/methods";
+import { openErrorNotification, isTruthy } from "../../../../helpers/methods";
 
 const AddTripType = ({
   open,
@@ -26,17 +26,22 @@ const AddTripType = ({
   handleSave,
   isLoading,
   classes,
+  setTripTypeFormData,
+  edit,
 }: any) => {
   useEffect(() => {
     fetchTableAccount();
   }, []);
+
   const theme = useTheme();
   const [data, setData] = useState([]);
 
   const addTripTypeDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Add TripType</Typography>
+        <Typography sx={classes.boldFonts}>
+          {edit ? "Update TripType" : "Add TripType"}
+        </Typography>
       </Box>
     );
   };
@@ -47,8 +52,67 @@ const AddTripType = ({
         input: { page: -1, limit: 10000000 },
       });
       setData(res?.fetchAccountModuleList?.data);
+      if (res?.fetchAccountModuleList?.data.length === 1) {
+        setTripTypeFormData({
+          ...tripTypeFormData,
+          accountId: {
+            value: res?.fetchAccountModuleList?.data[0]?.accountId,
+            error: "",
+          },
+        });
+      }
     } catch (error: any) {
       openErrorNotification(error.message);
+    }
+  };
+
+  const validateFields = () => {
+    let isValid = true;
+    const newFormData = { ...tripTypeFormData };
+
+    if (!isTruthy(newFormData.accountId.value)) {
+      newFormData.accountId.error = "Please select an Account ID.";
+      isValid = false;
+    } else {
+      newFormData.accountId.error = "";
+    }
+
+    if (!isTruthy(newFormData.name.value)) {
+      newFormData.name.error = "Please enter a Name.";
+      isValid = false;
+    } else {
+      newFormData.name.error = "";
+    }
+
+    if (!isTruthy(newFormData.minBatteryPercentage.value)) {
+      newFormData.minBatteryPercentage.error =
+        "Please enter the Min Battery Percentage.";
+      isValid = false;
+    } else {
+      newFormData.minBatteryPercentage.error = "";
+    }
+
+    if (!isTruthy(newFormData.tripRate.value)) {
+      newFormData.tripRate.error = "Please enter the Trip Rate.";
+      isValid = false;
+    } else {
+      newFormData.tripRate.error = "";
+    }
+
+    if (!isTruthy(newFormData.gstPercentage.value)) {
+      newFormData.gstPercentage.error = "Please enter the GST Percentage.";
+      isValid = false;
+    } else {
+      newFormData.gstPercentage.error = "";
+    }
+
+    setTripTypeFormData(newFormData);
+    return isValid;
+  };
+
+  const handleSaveWithValidation = () => {
+    if (validateFields()) {
+      handleSave();
     }
   };
 
@@ -101,7 +165,6 @@ const AddTripType = ({
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
             value={tripTypeFormData.name.value}
-            // onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.name.error}
           />
         </Grid>
@@ -113,11 +176,10 @@ const AddTripType = ({
             id="trip_name_field"
             type="number"
             name="minBatteryPercentage"
-            placeHolder="Enter Minimun Battery Percentage"
+            placeHolder="Enter Minimum Battery Percentage"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
             value={tripTypeFormData.minBatteryPercentage.value}
-            // onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.minBatteryPercentage.error}
           />
         </Grid>
@@ -133,7 +195,6 @@ const AddTripType = ({
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
             value={tripTypeFormData.tripRate.value}
-            // onBlur={checkExitsRoleHandler}
             error={tripTypeFormData.tripRate.error}
           />
         </Grid>
@@ -145,46 +206,14 @@ const AddTripType = ({
             id="trip_name_field"
             type="text"
             name="gstPercentage"
+            disabled
             placeHolder="Enter GST Percentage"
             onChange={onChangeHandler}
             propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.gstPercentage.value}
-            // onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.gstPercentage.error}
+            value={tripTypeFormData?.gstPercentage?.value}
+            error={tripTypeFormData?.gstPercentage?.error}
           />
         </Grid>
-
-        {/* <Grid item xs={12} sm={12} lg={6}>
-          <CustomInput
-            required
-            label="Disabled Field"
-            id="trip_name_field"
-            type="text"
-            name="name"
-            placeHolder="Enter Entity Type Name"
-            onChange={onChangeHandler}
-            propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.name.error}
-          />
-        </Grid> */}
-
-        {/* <Grid item xs={12} sm={12} lg={6}>
-          <CustomInput
-            required
-            label="Filtration Field"
-            id="trip_name_field"
-            type="text"
-            name="name"
-            placeHolder="Enter Entity Type Name"
-            onChange={onChangeHandler}
-            propsToInputElement={{ maxLength: 25 }}
-            value={tripTypeFormData.name.value}
-            onBlur={checkExitsRoleHandler}
-            error={tripTypeFormData.name.error}
-          />
-        </Grid> */}
       </Grid>
     );
   };
@@ -205,8 +234,8 @@ const AddTripType = ({
           />
           <CustomButton
             id="add_tripType_submit_button"
-            label="Add"
-            onClick={handleSave}
+            label={edit ? "Update" : "Add"}
+            onClick={handleSaveWithValidation}
             loading={isLoading}
           />
         </Box>
@@ -226,7 +255,6 @@ const AddTripType = ({
     <CustomDialog
       isDialogOpen={open}
       closable
-      //   closeButtonVisibility
       handleDialogClose={handleClose}
       dialogHeaderContent={addTripTypeHeaderImg()}
       dialogTitleContent={addTripTypeDialogTitle()}

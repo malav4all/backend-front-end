@@ -9,7 +9,19 @@ const HereMapCluster: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const currentBubbleRef = useRef<any>(null);
   const mapInstanceRef = useRef<any>(null);
+  const uiRef = useRef<any>(null); // Add reference to store the UI instance
   const [viewDetail, setViewDetail] = useState<any>([]);
+
+  const fetchDeviceDetail = async () => {
+    try {
+      const res = await fetchMapViewDevice({
+        input: { accountId: store.getState().auth.tenantId },
+      });
+      setViewDetail(res.viewAllDeviceMap);
+    } catch (error: any) {
+      openErrorAlertNotification(error.message);
+    }
+  };
 
   // First useEffect: Initializes the map
   useEffect(() => {
@@ -48,9 +60,11 @@ const HereMapCluster: React.FC = () => {
       const ui = H.ui.UI.createDefault(map, defaultLayers);
 
       mapInstanceRef.current = map;
+      uiRef.current = ui; // Store the UI instance
     };
 
     initializeMap();
+    fetchDeviceDetail();
 
     // Clean up resources
     return () => {
@@ -83,7 +97,7 @@ const HereMapCluster: React.FC = () => {
     const clusteringLayer = new H.map.layer.ObjectLayer(clusteredDataProvider);
     map.addLayer(clusteringLayer);
 
-    const ui = H.ui.UI.getInstance(map);
+    const ui = uiRef.current; // Reuse the UI instance
 
     const clearCurrentBubble = () => {
       if (currentBubbleRef.current) {

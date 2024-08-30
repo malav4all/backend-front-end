@@ -20,7 +20,6 @@ export const FETCH_GEOZONE = gql`
       data {
         _id
         name
-        description
         locationId
         locationType
         mobileNumber

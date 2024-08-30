@@ -5,7 +5,8 @@ import {
   CHECK_EXITS_INDUSTRY,
   FETCH_CUSTOMER_MODULE,
   FETCH_ENTITTES,
-  SEARCH_INDUSTRY_MODULE,
+  SEARCH_ENTITY,
+  UPDATE_ENTITES_TYPE,
 } from "./Entity.mutation";
 
 export const fetchTableHandler = async (variables: any): Promise<any> => {
@@ -34,6 +35,19 @@ export const addEntity = async (data: any): Promise<any> => {
   }
 };
 
+export const updateEntity = async (data: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPDATE_ENTITES_TYPE,
+      variables: data,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
 export const fetchEntityTableHandler = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
@@ -50,7 +64,7 @@ export const fetchEntityTableHandler = async (variables: any): Promise<any> => {
 export const searchTableHandler = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: SEARCH_INDUSTRY_MODULE,
+      mutation: SEARCH_ENTITY,
       variables,
     });
 

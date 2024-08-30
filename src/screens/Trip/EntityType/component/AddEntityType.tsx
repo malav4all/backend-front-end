@@ -20,13 +20,16 @@ const AddEntityType = ({
   isLoading,
   MenuProps,
   classes,
+  edit,
 }: any) => {
   const theme = useTheme();
 
   const addEntityTypeDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Add EntityType</Typography>
+        <Typography sx={classes.boldFonts}>
+          {edit ? "Update EntityType" : "Add EntityType"}
+        </Typography>
       </Box>
     );
   };
@@ -54,7 +57,6 @@ const AddEntityType = ({
           <Box sx={classes.formInput} display={"flex"} flexDirection={"column"}>
             <Box display={"flex"}>
               <Typography sx={classes.label}>Description </Typography>
-              <Typography sx={classes.star}>*</Typography>
             </Box>
             <TextField
               multiline
@@ -89,7 +91,7 @@ const AddEntityType = ({
           />
           <CustomButton
             id="add_entityType_submit_button"
-            label="Add"
+            label={edit ? "Update" : "Add"}
             onClick={() => handleSave()}
             loading={isLoading}
           />

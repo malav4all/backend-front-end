@@ -25,6 +25,15 @@ export const FETCH_LOCATION_TYPE = gql`
   }
 `;
 
+export const UPDATE_LOCATION_TYPE = gql`
+  mutation ($input: UpdateLocationTypeInput!) {
+    updateLocationType(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
 export const SEARCH_LOCATION = gql`
   mutation ($input: SearchLocationsInput!) {
     searchLocationTypes(input: $input) {
