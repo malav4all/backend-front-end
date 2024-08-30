@@ -6,6 +6,7 @@ import {
   FETCH_ENTITY,
   FETCH_GEOZONE,
   GET_ALL_DEVICE,
+  UPLOAD_FILE,
 } from "./AddTrip.mutation";
 
 export const fetchDeviceList = async (variables: any): Promise<any> => {
@@ -67,6 +68,18 @@ export const checkBattery = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: CHECK_BATTERY,
+      variables,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const fileUpload = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPLOAD_FILE,
       variables,
     });
 
