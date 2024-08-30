@@ -26,6 +26,7 @@ import {
   dynamicFormInitialState,
   transitTypeFormInitialState,
   tripInformationFormInitialState,
+  tripVerificationFormInitialState,
 } from "./AddTripsTypes";
 import {
   validateAlertConfigurationForm,
@@ -41,8 +42,14 @@ import notifiers from "../../../../global/constants/NotificationConstants";
 import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
 import DynamicForm from "./DynamicForm/DynamicForm";
+import TripVerificationForm from "./TripVerification/TripVerificationForm";
 
-const steps = ["Transit Type", "Trip Information", "Alert Detail"];
+const steps = [
+  "Trip Type",
+  "Trip Information",
+  "Alert Detail",
+  "Verification Photos",
+];
 
 const AddTrip = (props: any) => {
   const classes = addTripStyles;
@@ -61,10 +68,18 @@ const AddTrip = (props: any) => {
   const [alertConfigurationForm, setAlertConfigurationForm] = useState<any>(
     alertConfigurationFormInitialState(redirectionState?.alertConfigurationForm)
   );
+  const [tripVerificationForm, setTripVerificationForm] = useState<any>(
+    tripVerificationFormInitialState(redirectionState?.tripVerificationForm)
+  );
   const [dynamicForm, setDynamicForm] = useState(
     dynamicFormInitialState(redirectionState?.dynamicForm)
   );
 
+  const [imgSrc, setImgSrc] = useState({
+    vehicleImg: "",
+    installLockImg: "",
+    permitImg: "",
+  });
   useEffect(() => {
     if (transitTypeForm.transitType.value) {
       fetchDataAndSetOptions();
@@ -192,6 +207,15 @@ const AddTrip = (props: any) => {
             }
           />
         );
+      case 3:
+        return (
+          <TripVerificationForm
+            tripVerificationForm={tripVerificationForm}
+            setTripVerificationForm={setTripVerificationForm}
+            setImgSrc={setImgSrc}
+            imgSrc={imgSrc}
+          />
+        );
       default:
         return (
           <DynamicForm
@@ -278,6 +302,11 @@ const AddTrip = (props: any) => {
           dynamicForm: dynamicFormPayload,
         },
         createdBy: store.getState().auth.userName,
+        tripVerification: {
+          vehiclenumber: imgSrc.vehicleImg,
+          installLock: imgSrc.installLockImg,
+          permitNumber: imgSrc.permitImg,
+        },
       };
 
       console.log({ insertTripBody });
@@ -300,8 +329,9 @@ const AddTrip = (props: any) => {
             createdBy: store?.getState()?.auth?.userName,
           },
         });
+
         openSuccessNotification(res?.createTrip?.message);
-        history.goBack();
+        // history.goBack();
         await props?.tableData?.();
       }
       // }

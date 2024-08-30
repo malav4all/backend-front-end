@@ -104,3 +104,12 @@ export const CHECK_BATTERY = gql`
     }
   }
 `;
+
+export const UPLOAD_FILE = gql`
+  mutation ($input: FileUploadInput!) {
+    fileUpload(input: $input) {
+      fileName
+      message
+    }
+  }
+`;

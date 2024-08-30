@@ -111,6 +111,58 @@ const TripStyles = makeStyles((theme: Theme) => ({
   starColor: {
     color: inputLabelRequiredColor,
   },
+  customDropZone: {
+    borderRadius: "10px",
+    background: theme.palette.background.paper,
+    border: "1px dashed #E7E7E7",
+    "& .MuiDropzoneArea-root": {
+      width: "100%",
+      minHeight: "30px",
+      borderBottom: "1px dashed #E7E7E7",
+      borderRight: "1px dashed #E7E7E7",
+      borderLeft: "1px dashed #E7E7E7",
+      borderTop: "none",
+    },
+    "& .MuiDropzoneArea-textContainer": {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column-reverse",
+      justifyContent: "center",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "20px 0",
+      [theme.breakpoints.down("md")]: {
+        padding: "10px 0",
+      },
+      [`@media screen and (max-width: ${1370}px)`]: {
+        padding: "17px 0",
+      },
+    },
+    "& .MuiDropzoneArea-icon": {
+      width: "35px",
+      height: "35px",
+    },
+    "& .MuiTypography-root": {
+      fontSize: "0.875rem",
+      overflowWrap: "break-word",
+      width: "50%",
+      textAlign: "center",
+      marginLeft: "25%",
+      color: "#828282",
+    },
+    "& .MuiDropzoneArea-text": {
+      color: "#828282",
+      // ...regularFont,
+      margin: "10px auto",
+      width: "100%",
+      [theme.breakpoints.down("md")]: {
+        margin: "2px auto",
+      },
+    },
+    "& .MuiSvgIcon-root": {
+      display: "none",
+    },
+  },
 }));
 
 export default TripStyles;
