@@ -38,6 +38,14 @@ export const tripInformationFormInitialState = (prevState?: any) => ({
     value: prevState?.remarks ?? "",
     error: "",
   },
+  driverName: {
+    value: prevState?.driverName ?? "",
+    error: "",
+  },
+  contactNumber: {
+    value: prevState?.contactNumber ?? "",
+    error: "",
+  },
 });
 
 export const alertConfigurationFormInitialState = (prevState?: any) => ({
@@ -73,3 +81,18 @@ export const dynamicFormInitialState = (prevState = []) => {
     }),
   }));
 };
+
+export const tripVerificationFormInitialState = (prevState?: any) => ({
+  vehicleNumberPlate: {
+    value: prevState?.vehicleNumberPlate ?? "",
+    error: "",
+  },
+  installedLockPhoto: {
+    value: prevState?.installedLockPhoto ?? "",
+    error: "",
+  },
+  permitPhoto: {
+    value: prevState?.permitPhoto ?? "",
+    error: "",
+  },
+});
