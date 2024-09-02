@@ -149,6 +149,7 @@ export const validateAddFilterForm = (
 
   return { isValid, errors };
 };
+
 export interface UserData {
   name: JSX.Element;
   imei: string;

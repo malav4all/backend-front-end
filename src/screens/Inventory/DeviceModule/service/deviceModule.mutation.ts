@@ -50,9 +50,14 @@ export const SEARCH_DEVICE_MODULE = gql`
       success
       message
       data {
-        _id
-        deviceModelName
+        deviceId
         deviceModel
+        deviceModelName
+        deviceModelType
+        deviceModelIpAddress
+        deviceModelPortNumber
+        deviceModelSimCount
+        deviceModelNetworkType
       }
     }
   }

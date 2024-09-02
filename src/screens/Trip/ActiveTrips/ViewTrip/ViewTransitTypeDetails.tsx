@@ -23,7 +23,7 @@ const ViewTransitTypeDetails = (props: CustomProps) => {
         <CardContent>
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="h3" sx={classes.jobDetailsText}>
-              Transit Type
+              Trip Type
             </Typography>
             {/* <Box sx={classes.centerItemFlex}>
               <img src={EditIcon} alt="edit" />

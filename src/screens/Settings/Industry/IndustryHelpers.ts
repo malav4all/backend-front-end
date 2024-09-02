@@ -1,10 +1,10 @@
 export const industryTableHeader = [
   {
-    name: "Industry Name",
+    name: "Name",
     field: "name",
   },
   {
-    name: "Industry Modules",
+    name: "Modules",
     field: "code",
   },
   {

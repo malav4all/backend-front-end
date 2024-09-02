@@ -484,7 +484,7 @@ const AlertReport = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         height: "100%",
-        paddingTop: "2.5rem",
+        paddingTop: "3.5rem",
       }}
     >
       {getReportHeader()}

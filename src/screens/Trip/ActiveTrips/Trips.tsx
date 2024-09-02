@@ -231,7 +231,7 @@ const Trips = () => {
   };
 
   const getTripPage = () => (
-    <Box sx={{ background: "#060B25", height: "100vh", paddingTop: "3.5rem" }}>
+    <Box sx={{ background: "#060B25", height: "100vh", paddingTop: "4.5rem" }}>
       <Box sx={classes.mainBox}>
         <Typography
           style={{

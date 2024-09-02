@@ -89,7 +89,10 @@ const DeviceOnboarding = () => {
                 setEdit(true);
               }}
             >
-              <EditIcon />
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
             </Tooltip>
           </>
         ),

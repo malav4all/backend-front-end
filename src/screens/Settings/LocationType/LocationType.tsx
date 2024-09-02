@@ -240,11 +240,12 @@ const LocationType: React.FC = () => {
         justifyContent="space-between"
         alignItems={{ lg: "center" }}
       >
-        <Typography
-          style={{
-            ...classes.settingsTitle,
-            color: theme.palette.text.primary,
-          }}
+        <Stack
+          px={1}
+          mt={7}
+          direction={{ lg: "row", xs: "column" }}
+          justifyContent="space-between"
+          alignItems={{ lg: "center" }}
         >
           Location Type
         </Typography>
@@ -308,7 +309,7 @@ const LocationType: React.FC = () => {
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          height: "120%",
+          height: "100%",
         }}
       >
         {SettingsHeader()}

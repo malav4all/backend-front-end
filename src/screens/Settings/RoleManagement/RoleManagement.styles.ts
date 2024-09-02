@@ -63,7 +63,7 @@ const RoleManagementStyles = {
     height: "47px",
     padding: "2px",
     width: "100%",
-    borderRadius: "12px",
+    borderRadius: "5px",
     fontSize: "16px",
   },
   errorText: {

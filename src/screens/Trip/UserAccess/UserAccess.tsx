@@ -331,7 +331,7 @@ const TripAccess = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
-        paddingTop: "2.5rem",
+        paddingTop: "3.5rem",
       }}
     >
       {SettingsHeader()}

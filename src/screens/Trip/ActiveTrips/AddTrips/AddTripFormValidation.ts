@@ -16,7 +16,7 @@ export const validateTransitTypeForm = (form: any, isEdit: boolean) => {
   let errors = { ...form };
 
   if (!form.transitType.value) {
-    errors.transitType.error = "Transit Type is required";
+    errors.transitType.error = "Trip Type is required";
     isValid = false;
   }
 

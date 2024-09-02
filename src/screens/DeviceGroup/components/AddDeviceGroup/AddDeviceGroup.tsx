@@ -231,6 +231,7 @@ const AddDeviceGroup = (props: CustomProps) => {
                 backgroundColor: theme.palette.background.paper,
                 color: theme.palette.text.primary,
                 borderRadius: "5px",
+                height: "47px",
               }}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
@@ -268,6 +269,16 @@ const AddDeviceGroup = (props: CustomProps) => {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                   placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
                   error={
                     !isTruthy(deviceGroupFromFields.imeiList.value) &&

@@ -275,6 +275,7 @@ const AddFilter = (props: CustomProps) => {
           alertData: alertData,
         },
       };
+
       if (handleValidation()) {
         if (props.edit) {
           const res = await updateAlertRecord({
@@ -521,6 +522,16 @@ const AddFilter = (props: CustomProps) => {
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                   placeholder={
                     deviceName?.length === 0 ? "Select Device Name" : ""
                   }
@@ -553,7 +564,7 @@ const AddFilter = (props: CustomProps) => {
               <Select
                 id="add_filter_status_dropdown"
                 name="deviceGroup"
-                sx={{ padding: "-5rem" }}
+                sx={{ padding: "-5rem", height: "47px" }}
                 value={deviceGroupInput}
                 onChange={(e: any) => {
                   handleDeviceGroupSelect(e);
@@ -607,6 +618,7 @@ const AddFilter = (props: CustomProps) => {
               <Select
                 id="add_filter_status_dropdown"
                 name="eventName"
+                sx={{ padding: "-5rem", height: "47px" }}
                 value={alertDataInput.event}
                 onChange={handleEventChange}
                 displayEmpty

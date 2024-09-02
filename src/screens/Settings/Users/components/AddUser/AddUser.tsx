@@ -915,6 +915,7 @@ const AddUser = (props: CustomProps) => {
                       alignItems: "center",
                       color: "white",
                       backgroundColor: "#060b25",
+                      padding: 0,
                     },
                   }}
                 />

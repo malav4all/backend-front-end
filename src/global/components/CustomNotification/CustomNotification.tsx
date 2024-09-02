@@ -54,7 +54,8 @@ const CustomNotification = (props: CustomProps) => {
       padding: "5px",
       display: "flex",
       borderRadius: "10px",
-      marginTop: "3rem",
+      marginTop: "2.1rem",
+      zIndex: "10000000000000000000000000"
     },
   }));
 

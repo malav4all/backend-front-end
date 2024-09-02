@@ -458,23 +458,25 @@ const Routes = () => {
     setCounter(counter + 1);
   };
 
-  const getSearchBar = () => (
-    <CustomInput
-      placeHolder="Search Routes..."
-      id="assetAssingment_search_field"
-      onChange={debounceEventHandler(
-        handleSearchOnChange,
-        strings.SEARCH_TIME_OUT
-      )}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-    />
-  );
+  const getSearchBar = () => {
+    return (
+      <CustomInput
+        placeHolder="Search Routes"
+        id="assetAssingment_search_field"
+        onChange={debounceEventHandler(
+          handleSearchOnChange,
+          strings.SEARCH_TIME_OUT
+        )}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    );
+  };
 
   const inputSection = () => (
     <Grid container spacing={2}>
@@ -787,8 +789,8 @@ const Routes = () => {
             mr={2}
           >
             <CustomButton
-              id="submit_routes_button"
-              label="Submit"
+              id="users_add_button"
+              label={"Create"}
               onClick={addRoutesHandler}
               customClasses={{ width: "150px" }}
             />
@@ -805,8 +807,8 @@ const Routes = () => {
         xl={12}
         sx={{
           padding: "30px",
-          paddingTop: "2px",
-          marginTop: "10px",
+          paddingTop: "2.5px",
+          marginTop: "50px",
           [theme.breakpoints.down("md")]: {
             marginTop: theme.spacing(0),
           },

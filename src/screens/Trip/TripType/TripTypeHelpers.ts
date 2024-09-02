@@ -4,7 +4,7 @@ export const tripTypeTableHeader = [
     field: "accountId",
   },
   {
-    name: "TripType Name",
+    name: "Trip Type",
     field: "name",
   },
   {

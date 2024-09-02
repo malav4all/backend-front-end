@@ -30,7 +30,7 @@ import { fetchTripbyId, updateTripStatus } from "../TripServices";
 import notifiers from "../../../../global/constants/NotificationConstants";
 import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
 import { useHistory } from "react-router-dom";
-import MapComponent from "./components/MapComponent";
+import MapComponent from "./component/MapComponent";
 const ViewTrip = () => {
   const theme = useTheme();
   const history = useHistory();

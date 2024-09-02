@@ -34,7 +34,7 @@ const customTableDashboardStyles = {
   },
 
   tableHeaderCell: {
-    ...regularFont,
+    ...semiBoldFont,
     fontSize: "14px",
     border: "none",
     padding: "12px 18px",

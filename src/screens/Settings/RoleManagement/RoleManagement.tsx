@@ -180,12 +180,12 @@ export const RoleManagement = () => {
           );
         }),
         action: (
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", cursor: "pointer" }}>
             <>
-              <Tooltip title="Add / Edit Role" placement="top" arrow>
+              <Tooltip title="Edit Role" placement="top" arrow>
                 <EditIcon
-                  htmlColor={headerColor}
-                  style={{ margin: "0px 8px -7px 17px" }}
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                   onClick={() => handleEdit(role)}
                 />
               </Tooltip>

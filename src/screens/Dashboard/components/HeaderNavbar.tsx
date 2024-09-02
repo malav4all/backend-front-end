@@ -1,19 +1,17 @@
 import { useState } from "react";
-import ROUTEYE_LOGO from "../../../assets/images/ROUTEYE_LOGO.png";
 import { LuLogOut } from "react-icons/lu";
 import { FaSortDown } from "react-icons/fa";
-import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"; // Icons for theme toggle
-import { store } from "../../../utils/store";
+import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md"; 
 import { logOutAction, selectName } from "../../../redux/authSlice";
 import history from "../../../utils/history";
 import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
-import { useThemeContext } from "../../../redux/ThemeContext"; // Import the theme context
+import { useThemeContext } from "../../../redux/ThemeContext"; 
 
 const HeaderNavbar = () => {
   const [showOptions, setShowOptions] = useState(false);
   const userName = useAppSelector(selectName);
   const dispatch = useAppDispatch();
-  const { toggleTheme, darkMode } = useThemeContext(); // Use the theme context
+  const { toggleTheme, darkMode } = useThemeContext();
 
   const handleLogout = () => {
     history.push("/");
@@ -30,10 +28,9 @@ const HeaderNavbar = () => {
       <nav className="bg-[#060B25] border-gray-20 border-b border-[#303968]">
         <div className="px-6 flex flex-wrap items-center justify-between mx-auto py-2">
           <div>
-            {/* <img src={ROUTEYE_LOGO} alt="Routeye Logo" className="h-[30px]" /> */}
           </div>
           <div className="flex items-center gap-4">
-            <div
+            {/* <div
               className="cursor-pointer border border-[#313147] p-2 rounded-md text-white"
               onClick={toggleTheme}
             >
@@ -42,7 +39,7 @@ const HeaderNavbar = () => {
               ) : (
                 <MdOutlineDarkMode size={18} />
               )}
-            </div>
+            </div> */}
 
             <div className="relative rounded-lg ">
               <div

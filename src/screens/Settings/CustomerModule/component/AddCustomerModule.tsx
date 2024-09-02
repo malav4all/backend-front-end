@@ -16,7 +16,7 @@ interface AddCustomerModuleProps {
   open: boolean;
   handleClose: () => void;
   customerModuleFormData: CustomerModuleFormData;
-  modulesData: Array<{ name: string; code: string }>; // Adjust type based on actual data structure
+  modulesData: Array<{ name: string; code: string }>; 
   onChangeHandler: (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;

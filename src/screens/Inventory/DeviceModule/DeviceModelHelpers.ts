@@ -68,23 +68,23 @@ export const deviceModelTableHeader = [
     field: "deviceModelName",
   },
   {
-    name: "Device Model",
+    name: "Model",
     field: "deviceModel",
   },
   {
-    name: "Device Model Ip Address",
+    name: "Ip Address",
     field: "deviceModelIpAddress",
   },
   {
-    name: "Device Model port number",
+    name: "Port Number",
     field: "deviceModelPortNumber",
   },
   {
-    name: "Device Model sim number",
+    name: "sim count",
     field: "deviceModelSimCount",
   },
   {
-    name: "Device Model Network Type",
+    name: "Network Type",
     field: "deviceModelNetworkType",
   },
   {
@@ -93,3 +93,48 @@ export const deviceModelTableHeader = [
     align: "center",
   },
 ];
+
+export const validateDeviceModelForm = (deviceFields: any) => {
+  let isValid = true;
+  let errors: any = { ...deviceFields };
+
+  if (!errors?.deviceModelName?.value) {
+    errors.deviceModelName.error = "Please enter Device Model Name";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModel?.value) {
+    errors.deviceModel.error = "Please select Device Model";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModelIpAddress?.value) {
+    errors.deviceModelIpAddress.error = "Please enter IP address";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModelPortNumber?.value) {
+    errors.deviceModelPortNumber.error = "Please enter port number";
+    isValid = false;
+  } else if (isNaN(errors.deviceModelPortNumber.value)) {
+    errors.deviceModelPortNumber.error = "Port must be a valid number";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModelSimCount?.value) {
+    errors.deviceModelSimCount.error = "Please select Sim count";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModelNetworkType?.value) {
+    errors.deviceModelNetworkType.error = "Please select network type";
+    isValid = false;
+  }
+
+  if (!errors?.deviceModelParser?.value) {
+    errors.deviceModelParser.error = "Please enter parser name";
+    isValid = false;
+  }
+
+  return { isValid, errors };
+};

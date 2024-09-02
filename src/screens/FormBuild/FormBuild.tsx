@@ -117,6 +117,7 @@ const FormBuilder: React.FC = () => {
         backgroundColor: theme.palette.background.paper,
         color: theme.palette.text.primary,
         height: "100%",
+        paddingTop: "2rem",
       }}
     >
       <CustomAppHeader
