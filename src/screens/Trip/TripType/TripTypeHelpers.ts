@@ -23,28 +23,36 @@ export const tripTypeTableHeader = [
     name: "Entered By",
     field: "createdBy",
   },
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
-export const tripTypeInsertField = () => {
+export const tripTypeInsertField = (data?: any) => {
   return {
+    id: {
+      value: data?._id ?? "",
+      error: "",
+    },
     accountId: {
-      value: "",
+      value: data?.accountId ?? "",
       error: "",
     },
     name: {
-      value: "",
+      value: data?.tripName ?? "",
       error: "",
     },
     minBatteryPercentage: {
-      value: "",
+      value: data?.minBatteryPercentage ?? "",
       error: "",
     },
     tripRate: {
-      value: "",
+      value: data?.tripRate ?? "",
       error: "",
     },
     gstPercentage: {
-      value: "18%",
+      value: data?.gstPercentage ?? "18%",
       error: "",
     },
   } as any;

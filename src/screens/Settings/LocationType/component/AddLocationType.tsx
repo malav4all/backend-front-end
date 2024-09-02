@@ -14,6 +14,7 @@ interface AddLocationTypeModalProps {
   handleSave: () => void;
   isLoading: boolean;
   classes: any;
+  edit: boolean;
 }
 
 const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
@@ -24,6 +25,7 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
   handleSave,
   isLoading,
   classes,
+  edit,
 }) => {
   const theme = useTheme();
 
@@ -38,7 +40,7 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
             fontWeight: "bold",
           }}
         >
-          Add Location Type
+          {edit ? "Update Location Type" : "Add Location Type"}
         </Typography>
       </Box>
     );
@@ -56,8 +58,8 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
             name="type"
             placeHolder="Enter Location Type"
             onChange={onChangeHandler}
-            value={formField.value}
-            error={formField.error}
+            value={formField?.type?.value}
+            error={formField?.type?.error}
           />
         </Grid>
       </Grid>
@@ -84,7 +86,7 @@ const AddLocationTypeModal: React.FC<AddLocationTypeModalProps> = ({
           />
           <CustomButton
             id="add_location_type_submit_button"
-            label="Add"
+            label={edit ? "Update" : "Add"}
             onClick={handleSave}
             loading={isLoading}
           />

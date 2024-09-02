@@ -11,6 +11,10 @@ export const userTableHeader = [
     field: "email",
   },
   {
+    name: "Account Name",
+    field: "accountName",
+  },
+  {
     name: "Role Name",
     field: "roleName",
   },
@@ -82,7 +86,7 @@ export const insertUserField = (data?: any) => {
       error: "",
     },
     accountId: {
-      value: data?.accountId?._id ?? "",
+      value: data?.accountId ?? "",
       error: "",
     },
     accountName: {
@@ -94,11 +98,15 @@ export const insertUserField = (data?: any) => {
       error: "",
     },
     isAccountAdmin: {
-      value: false,
+      value: data?.isAccountAdmin ?? false,
       error: "",
     },
     isSuperAdmin: {
-      value: false,
+      value: data?.isSuperAdmin ?? false,
+      error: "",
+    },
+    imeiList: {
+      value: data?.imeiList ?? [],
       error: "",
     },
   } as any;

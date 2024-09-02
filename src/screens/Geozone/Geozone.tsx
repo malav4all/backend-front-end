@@ -20,6 +20,7 @@ import CreateGeoZoneModal from "./Component/CreateGeoZone.Modal";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import {
+  isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../helpers/methods";
@@ -38,9 +39,23 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import geozoneStyle from "./Geozone.styles";
 import { fetchLocationType } from "../Settings/LocationType/service/location-type.service";
-import { geoZoneInsertField, validateGeoZoneForm } from "./Geozone.helper";
+import { geoZoneInsertField } from "./Geozone.helper";
 import { headerColor, primaryHeaderColor } from "../../utils/styles";
 import { HiDotsVertical } from "react-icons/hi";
+
+const fieldNames: { [key: string]: string } = {
+  locationType: "Location Type",
+  name: "Name",
+  mobileNumber: "Mobile Number",
+  zipCode: "Zip Code",
+  country: "Country",
+  state: "State",
+  area: "Area",
+  city: "City",
+  district: "District",
+  address: "Address",
+};
+
 const Geozone = () => {
   // const classes = geozoneStyle();
   const theme = useTheme();
@@ -68,6 +83,23 @@ const Geozone = () => {
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, item: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedItem(item);
+  };
+
+  const validateFields = () => {
+    let isValid = true;
+    const newFormField = { ...formField };
+
+    Object.keys(formField).forEach((field) => {
+      if (!isTruthy(formField[field]?.value)) {
+        newFormField[field].error = `Please enter ${
+          fieldNames[field] || field
+        }.`;
+        isValid = false;
+      }
+    });
+
+    setFormField(newFormField);
+    return isValid;
   };
 
   const handleMenuClose = () => {
@@ -152,11 +184,6 @@ const Geozone = () => {
         var locationName = result.items[0].address.label;
         var zipcode = result.items[0].address.postalCode;
         var marker = new window.H.map.Marker(coord);
-        alert(
-          `Location: ${locationName}\nLatitude: ${coord.lat.toFixed(
-            4
-          )}\nLongitude: ${coord.lng.toFixed(4)}\nZipcode: ${zipcode}`
-        );
 
         currentMarker = marker;
         mapCheck.addObject(marker);
@@ -172,9 +199,6 @@ const Geozone = () => {
         ].filter(Boolean);
         setFormField({
           ...formField,
-          propertyName: {
-            value: locationName,
-          },
           type: {
             value: "Point",
           },
@@ -271,13 +295,10 @@ const Geozone = () => {
     }
   };
 
-  const handleValidation = () => {
-    const { isValid, errors } = validateGeoZoneForm(formField);
-    setFormField({ ...errors });
-    return isValid;
-  };
-
   const addGeozoneHandler = async () => {
+    if (!validateFields()) {
+      return;
+    }
     try {
       const payload = {
         accountId: store.getState().auth.tenantId,
@@ -294,9 +315,6 @@ const Geozone = () => {
               Number(formField.lat?.value),
               Number(formField.long?.value),
             ],
-          },
-          properties: {
-            name: formField.propertyName?.value,
           },
         },
         address: {
@@ -331,6 +349,7 @@ const Geozone = () => {
       mapCheck.removeObjects(mapCheck.getObjects());
       setFormField(geoZoneInsertField());
       await fetchGeozone();
+      setEdit(false);
     } catch (error: any) {
       openErrorNotification(error.message);
     }
@@ -423,9 +442,6 @@ const Geozone = () => {
           radius: {
             value: circle.getRadius(),
           },
-          propertyName: {
-            value: null,
-          },
         });
         if (resizingTimeout) {
           clearTimeout(resizingTimeout);
@@ -511,6 +527,7 @@ const Geozone = () => {
           formField={formField}
           addGeozoneHandler={addGeozoneHandler}
           locationType={locationType}
+          edit={edit}
         />
       </>
     );
@@ -535,7 +552,7 @@ const Geozone = () => {
   }, [viewGeozone]);
 
   let bubbleNew: any;
-  function openBubbleNew(position: any, text: any) {
+  function openBubbleNew(position: any, text: any, map: any) {
     var platform = new window.H.service.Platform({
       apikey: "B2MP4WbkH6aIrC9n0wxMrMrZhRCjw3EV7loqVzkBbEo",
     });
@@ -566,7 +583,7 @@ const Geozone = () => {
         );
         circle.setData(item.name);
         circle.addEventListener("tap", (evt: any) => {
-          openBubbleNew(evt.target.getCenter(), item.name);
+          openBubbleNew(evt.target.getCenter(), item.name, map);
         });
         map.addObject(circle);
       }
@@ -694,9 +711,6 @@ const Geozone = () => {
             ...formField,
             radius: {
               value: circle.getRadius(),
-            },
-            propertyName: {
-              value: null,
             },
           });
           if (resizingTimeout) {
@@ -1005,7 +1019,7 @@ const Geozone = () => {
                               fontWeight: "bold",
                             }}
                           >
-                            {item.name}
+                            {item.locationId} - {item.name}
                           </Typography>
                         }
                         secondary={

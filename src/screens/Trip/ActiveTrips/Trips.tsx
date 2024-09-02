@@ -125,7 +125,6 @@ const Trips = () => {
     setSearchTrips("");
   };
 
-
   const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
     if (SearchEvent.target.value) {
       setSearchTrips(SearchEvent.target.value.trim());
@@ -184,12 +183,12 @@ const Trips = () => {
   const tableRender = (tableData: any) => {
     const data = tableData?.map((item: any, index: number) => ({
       key: item._id,
-      imeiNumber: item?.tripData[0].imei,
-      totalDistance: item.route.totalDistance,
-      totalDuration: item.route.totalDuration,
-      tripStartDate: item.tripStartDate,
-      tripEndDate: item.tripEndDate,
-      createdBy: item.createdBy,
+      imeiNumber: item?.tripData[0]?.imei,
+      totalDistance: item?.route?.totalDistance,
+      totalDuration: item?.route?.totalDuration,
+      tripStartDate: item?.tripStartDate,
+      tripEndDate: item?.tripEndDate,
+      createdBy: item?.createdBy,
       tripId: (
         <Box
           sx={{ fontWeight: "bold", cursor: "pointer" }}
@@ -199,10 +198,7 @@ const Trips = () => {
         </Box>
       ),
       action: (
-        <Tooltip
-          title="Edit"
-          sx={{ color: theme.palette.text.primary }}
-        >
+        <Tooltip title="Edit" sx={{ color: theme.palette.text.primary }}>
           <PiPencilSimpleBold
             style={{
               margin: "0px 8px -7px 0px",
@@ -296,8 +292,6 @@ const Trips = () => {
       </Box>
     </Box>
   );
-
-
   return getTripPage();
 };
 

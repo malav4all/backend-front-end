@@ -1,11 +1,12 @@
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   InputAdornment,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
-import React, { ChangeEvent, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   CustomAppHeader,
@@ -23,31 +24,52 @@ import {
   createLocationType,
   fetchLocationType,
   searchLocations,
+  updateLocationType,
 } from "./service/location-type.service";
 import { store } from "../../../utils/store";
 import { validateLocationTypeForm } from "./LocationTypeandValidations";
-import { regularFont } from "../../../utils/styles";
 import AddLocationTypeModal from "./component/AddLocationType";
-import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+import { PiPencilSimpleBold } from "react-icons/pi";
+import { headerColor } from "../../../utils/styles";
 import LocationTypeStyles from "./LocationType.styles";
+import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
+
+interface LocationTypeFormField {
+  id: {
+    value: string;
+    error: string;
+  };
+  type: {
+    value: string;
+    error: string;
+  };
+}
+
 const tableHeader = [
-  {
-    name: "Location Type",
-    field: "type",
-  },
+  { name: "Location Type", field: "type" },
+  { name: "Action", field: "action" },
 ];
 
-const LocationType = () => {
+interface LocationTypeItem {
+  _id: string;
+  type: string;
+}
+
+const LocationType: React.FC = () => {
   const theme = useTheme();
   const classes = LocationTypeStyles;
-  const [formField, setFormField] = useState<any>({ value: "", error: "" });
+  const [formField, setFormField] = useState<LocationTypeFormField>({
+    id: { value: "", error: "" },
+    type: { value: "", error: "" },
+  });
   const [page, setPage] = useState(1);
+  const [edit, setEdit] = useState(false);
   const [limit, setLimit] = useState(10);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [count, setCount] = useState(0);
-  const [searchLocation, setSearchLocation] = useState<any>("");
+  const [searchLocation, setSearchLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [searchPageNumber, setSearchPageNumber] = useState<number>(1);
+  const [searchPageNumber, setSearchPageNumber] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -62,33 +84,93 @@ const LocationType = () => {
     }
   }, [searchLocation, page, limit, searchPageNumber]);
 
-  const handleValidation = () => {
+  const handleValidation = (): boolean => {
     const { isValid, errors } = validateLocationTypeForm(formField);
-    setFormField(errors);
+    setFormField(errors as LocationTypeFormField);
     return isValid;
   };
 
-  const addLocationTypeHandler = async () => {
+  const addLocationTypeHandler = async (): Promise<void> => {
     try {
       if (handleValidation()) {
-        const res = await createLocationType({
-          input: {
-            accountId: store.getState().auth.tenantId,
-            type: formField.value,
-            createdBy: store?.getState()?.auth.userName,
-          },
-        });
-        openSuccessNotification(res.addLocationType.message);
-        await fetchLocationTypeHandler();
-        setFormField({ value: "", error: "" });
-        setDialogOpen(false); // Close the dialog after successful addition
+        const payload = {
+          accountId: store.getState().auth.tenantId,
+          type: formField.type.value,
+          ...(edit
+            ? { updatedBy: store.getState().auth.userName }
+            : { createdBy: store.getState().auth.userName }),
+        };
+
+        if (edit) {
+          await handleUpdateLocationType(payload);
+        } else {
+          await handleCreateLocationType(payload);
+        }
+
+        resetForm();
+        setDialogOpen(false);
       }
     } catch (error: any) {
       openErrorNotification(error.message);
     }
   };
 
-  const fetchLocationTypeHandler = async () => {
+  const handleCreateLocationType = async (payload: any): Promise<void> => {
+    const res = await createLocationType({ input: payload });
+    openSuccessNotification(res.addLocationType.message);
+    await fetchLocationTypeHandler();
+  };
+
+  const handleUpdateLocationType = async (payload: any): Promise<void> => {
+    const res = await updateLocationType({
+      input: {
+        ...payload,
+        _id: formField.id.value,
+      },
+    });
+    openSuccessNotification(res.updateLocationType.message);
+    await fetchLocationTypeHandler();
+  };
+
+  const resetForm = (): void => {
+    setEdit(false);
+    setFormField({
+      id: { value: "", error: "" },
+      type: { value: "", error: "" },
+    });
+  };
+
+  const handleEditClick = (id: string, type: string): void => {
+    setDialogOpen(true);
+    setEdit(true);
+    setFormField({
+      id: { value: id, error: "" },
+      type: { value: type, error: "" },
+    });
+  };
+
+  const mapLocationTypeData = (data: LocationTypeItem[]) => {
+    return data.map((item) => ({
+      type: item.type,
+      action: (
+        <Tooltip
+          title="Edit"
+          onClick={() => handleEditClick(item._id, item.type)}
+        >
+          <PiPencilSimpleBold
+            style={{
+              margin: "0px 8px -7px 0px",
+              cursor: "pointer",
+              color: headerColor,
+              fontSize: "20px",
+            }}
+          />
+        </Tooltip>
+      ),
+    }));
+  };
+
+  const fetchLocationTypeHandler = async (): Promise<void> => {
     try {
       const res = await fetchLocationType({
         input: {
@@ -97,25 +179,21 @@ const LocationType = () => {
           limit,
         },
       });
-      setData(res.fetchLocationType.data);
+      const responseData = mapLocationTypeData(res.fetchLocationType.data);
+      setData(responseData);
       setCount(res.fetchLocationType.paginatorInfo.count);
     } catch (error: any) {
-      console.log(error);
       openErrorNotification(error.message);
     }
   };
 
-  const handleSearchOnChange = (SearchEvent: ChangeEvent<HTMLInputElement>) => {
-    if (SearchEvent.target.value) {
-      setSearchLocation(SearchEvent.target.value.replace(/\s/g, ""));
-      setPage(1);
-      setLimit(10);
-    } else {
-      setSearchLocation("");
-    }
+  const handleSearchOnChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const searchValue = event.target.value.trim();
+    setSearchLocation(searchValue || "");
+    setPage(1);
   };
 
-  const getSearchData = async () => {
+  const getSearchData = async (): Promise<void> => {
     try {
       setIsLoading(true);
       const res = await searchLocations({
@@ -126,8 +204,9 @@ const LocationType = () => {
           limit: 10,
         },
       });
-      setData(res?.searchLocationTypes?.data);
-      setCount(res?.searchLocationTypes?.paginatorInfo?.count);
+      const responseData = mapLocationTypeData(res.searchLocationTypes.data);
+      setData(responseData);
+      setCount(res.searchLocationTypes.paginatorInfo.count);
       setIsLoading(false);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -135,63 +214,31 @@ const LocationType = () => {
     }
   };
 
-  const getSearchBar = () => {
-    return (
-      <CustomInput
-        placeHolder="Search Location Type"
-        id="assetAssingment_search_field"
-        onChange={debounceEventHandler(
-          handleSearchOnChange,
-          strings.SEARCH_TIME_OUT
-        )}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-    );
-  };
-
-  const AddLocationType = () => {
-    return (
-      <CustomButton
-        id="add_location_type_button"
-        label="Add Location Type"
-        onClick={() => setDialogOpen(true)}
-      />
-    );
-  };
-
-  const handlePerPageData = (event: any) => {
+  const handlePerPageData = (event: ChangeEvent<HTMLInputElement>): void => {
     setPage(1);
-    setSearchPageNumber(1);
-    setLimit(event.target.value);
+    setLimit(Number(event.target.value));
   };
 
-  const handleSearchChangePage = (
+  const handlePageChange = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
-  ) => {
-    setSearchPageNumber(newPage);
-  };
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
+  ): void => {
     setPage(newPage);
   };
 
-  const SettingsHeader = () => {
-    return (
-      <CustomAppHeader
-        className={{
-          ...classes.headerBackgroundColor,
-          backgroundColor: theme.palette.background.paper,
-        }}
+  const SettingsHeader = (): JSX.Element => (
+    <CustomAppHeader
+      className={{
+        ...classes.headerBackgroundColor,
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
+      <Stack
+        px={1}
+        mt={4}
+        direction={{ lg: "row", xs: "column" }}
+        justifyContent="space-between"
+        alignItems={{ lg: "center" }}
       >
         <Stack
           px={1}
@@ -200,55 +247,62 @@ const LocationType = () => {
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
         >
-          <Typography
-            style={{
-              ...classes.settingsTitle,
-              color: theme.palette.text.primary,
+          Location Type
+        </Typography>
+
+        <Stack
+          direction={{ sm: "row", xs: "column" }}
+          alignItems={{ sm: "center" }}
+          spacing={1}
+        >
+          <CustomInput
+            placeHolder="Search Location Type"
+            id="assetAssingment_search_field"
+            onChange={debounceEventHandler(
+              handleSearchOnChange,
+              strings.SEARCH_TIME_OUT
+            )}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
             }}
-          >
-            Location Type
-          </Typography>
-
-          <Stack
-            direction={{ sm: "row", xs: "column" }}
-            alignItems={{ sm: "center" }}
-            spacing={1}
-          >
-            {getSearchBar()}
-            {AddLocationType()}
-          </Stack>
+          />
+          <CustomButton
+            id="add_location_type_button"
+            label="Add Location Type"
+            onClick={() => setDialogOpen(true)}
+          />
         </Stack>
-      </CustomAppHeader>
-    );
-  };
+      </Stack>
+    </CustomAppHeader>
+  );
 
-  const locationTypeTable = () => {
-    return (
-      <Box
-        id="assetAssingment_display_table"
-        sx={{
-          minWidth: "300px",
-          width: "100%",
-          overflow: "auto",
-        }}
-      >
-        <CustomTable
-          headers={tableHeader}
-          rows={data}
-          paginationCount={count}
-          handlePageChange={
-            searchLocation ? handleSearchChangePage : handleChangePage
-          }
-          pageNumber={searchLocation ? searchPageNumber : page}
-          setPage={searchLocation ? setSearchPageNumber : setPage}
-          handlePerPageData={handlePerPageData}
-          perPageData={limit}
-          rowsPerPage={limit}
-          isExportCSV={false}
-        />
-      </Box>
-    );
-  };
+  const locationTypeTable = (): JSX.Element => (
+    <Box
+      id="assetAssingment_display_table"
+      sx={{
+        minWidth: "300px",
+        width: "100%",
+        overflow: "auto",
+      }}
+    >
+      <CustomTable
+        headers={tableHeader}
+        rows={data}
+        paginationCount={count}
+        handlePageChange={handlePageChange}
+        pageNumber={page}
+        setPage={setPage}
+        handlePerPageData={handlePerPageData}
+        perPageData={limit}
+        rowsPerPage={limit}
+        isExportCSV={false}
+      />
+    </Box>
+  );
 
   return (
     <>
@@ -276,12 +330,16 @@ const LocationType = () => {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         formField={formField}
-        onChangeHandler={(e: any) => {
-          setFormField({ ...formField, value: e.target.value, error: "" });
-        }}
+        onChangeHandler={(e: ChangeEvent<HTMLInputElement>) =>
+          setFormField({
+            ...formField,
+            type: { value: e.target.value, error: "" },
+          })
+        }
         handleSave={addLocationTypeHandler}
         isLoading={isLoading}
         classes={{}}
+        edit={edit}
       />
     </>
   );

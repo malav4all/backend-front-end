@@ -11,20 +11,25 @@ export const entityTypeTableHeader = [
     name: "Created By",
     field: "createdBy",
   },
+
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
-export const entityTypeInsertField = () => {
+export const entityTypeInsertField = (data?: any) => {
   return {
-    name: {
-      value: "",
+    id: {
+      value: data?._id ?? "",
       error: "",
     },
-    code: {
-      value: [],
+    name: {
+      value: data?.name ?? "",
       error: "",
     },
     description: {
-      value: "",
+      value: data?.description ?? "",
       error: "",
     },
   } as any;
@@ -37,11 +42,6 @@ export const entityTypeValidation = (customerModuleFormData: any) => {
   if (!errors.name.value) {
     isValid = false;
     errors.name.error = "Please enter name";
-  }
-
-  if (errors.code.value.length < 1) {
-    isValid = false;
-    errors.code.error = "Please select module";
   }
 
   return { isValid, errors };

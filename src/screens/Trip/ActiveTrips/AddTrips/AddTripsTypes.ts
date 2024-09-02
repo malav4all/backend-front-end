@@ -38,6 +38,14 @@ export const tripInformationFormInitialState = (prevState?: any) => ({
     value: prevState?.remarks ?? "",
     error: "",
   },
+  driverName: {
+    value: prevState?.driverName ?? "",
+    error: "",
+  },
+  contactNumber: {
+    value: prevState?.contactNumber ?? "",
+    error: "",
+  },
 });
 
 export const alertConfigurationFormInitialState = (prevState?: any) => ({
@@ -47,14 +55,19 @@ export const alertConfigurationFormInitialState = (prevState?: any) => ({
       contact: prevState?.alertMedium?.sms?.contact ?? "",
       isEnable: prevState?.alertMedium?.sms?.isEnable ?? false,
     },
-    whatsapp: {
-      contact: prevState?.alertMedium?.whatsapp?.contact ?? "",
-      isEnable: prevState?.alertMedium?.whatsapp?.isEnable ?? false,
-    },
-    email: {
-      contact: prevState?.alertMedium?.email?.contact ?? "",
-      isEnable: prevState?.alertMedium?.email?.isEnable ?? false,
-    },
+    // whatsapp: {
+    //   contact: prevState?.alertMedium?.whatsapp?.contact ?? "",
+    //   isEnable: prevState?.alertMedium?.whatsapp?.isEnable ?? false,
+    // },
+    // email: {
+    //   contact: prevState?.alertMedium?.email?.contact ?? "",
+    //   isEnable: prevState?.alertMedium?.email?.isEnable ?? false,
+    // },
+  },
+  alertDetails: prevState?.alertDetails ?? {
+    overSpeeding: { speed: "", isEnabled: false },
+    lowBattery: { percentage: "", isEnabled: false },
+    overStopping: { duration: "", isEnabled: false },
   },
 });
 
@@ -73,3 +86,18 @@ export const dynamicFormInitialState = (prevState = []) => {
     }),
   }));
 };
+
+export const tripVerificationFormInitialState = (prevState?: any) => ({
+  vehicleNumberPlate: {
+    value: prevState?.vehicleNumberPlate ?? "",
+    error: "",
+  },
+  installedLockPhoto: {
+    value: prevState?.installedLockPhoto ?? "",
+    error: "",
+  },
+  permitPhoto: {
+    value: prevState?.permitPhoto ?? "",
+    error: "",
+  },
+});

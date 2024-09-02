@@ -51,64 +51,72 @@ export const entityTableHeader = [
     name: "Created By",
     field: "createdBy",
   },
+  {
+    name: "Action",
+    field: "action",
+  },
 ];
 
-export const entityInsertField = () => {
+export const entityInsertField = (data?: any) => {
   return {
+    id: {
+      value: data?._id ?? "",
+      error: "",
+    },
     name: {
-      value: "",
+      value: data?.name ?? "",
       error: "",
     },
     type: {
-      value: "",
+      value: data?.type ?? "",
       error: "",
     },
     tripTypeList: {
-      value: "",
+      value: data?.tripTypeList ?? "",
       error: "",
     },
     address: {
-      value: "",
+      value: data?.address ?? "",
       error: "",
     },
     city: {
-      value: "",
+      value: data?.city ?? "",
       error: "",
     },
     state: {
-      value: "",
+      value: data?.state ?? "",
       error: "",
     },
     area: {
-      value: "",
+      value: data?.area ?? "",
       error: "",
     },
     district: {
-      value: "",
+      value: data?.district ?? "",
       error: "",
     },
     pinCode: {
-      value: "",
+      value: data?.pinCode ?? "",
       error: "",
     },
     contactName: {
-      value: "",
+      value: data?.contactName ?? "",
       error: "",
     },
     contactEmail: {
-      value: "",
+      value: data?.contactEmail ?? "",
       error: "",
     },
     contactPhone: {
-      value: "",
+      value: data?.contactPhone ?? "",
       error: "",
     },
     gstIn: {
-      value: "",
+      value: data?.gstIn ?? "",
       error: "",
     },
     aadharCardNo: {
-      value: "",
+      value: data?.aadharCardNo ?? "",
       error: "",
     },
   } as any;
@@ -123,9 +131,24 @@ export const entityValidation = (customerModuleFormData: any) => {
     errors.name.error = "Please enter name";
   }
 
-  if (errors.code.value.length < 1) {
+  if (!errors.type.value) {
     isValid = false;
-    errors.code.error = "Please select module";
+    errors.name.error = "Please enter type";
+  }
+
+  if (!errors.tripTypeList.value) {
+    isValid = false;
+    errors.name.error = "Please enter Trip Type List";
+  }
+
+  if (!errors.contactName.value) {
+    isValid = false;
+    errors.name.error = "Please enter contactName";
+  }
+
+  if (!errors.contactPhone.value) {
+    isValid = false;
+    errors.name.error = "Please enter contactPhone";
   }
 
   return { isValid, errors };

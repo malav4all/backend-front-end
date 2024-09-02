@@ -114,10 +114,6 @@ const Users = () => {
     setPerPageData(event.target.value);
   };
 
-  const getRedirectionUrl = (_id: any) => {
-    return history.push(`/device-group/view/${_id}`);
-  };
-
   const tableDataShowHandler = (usersData: any) => {
     const source = usersData?.map((usersData: any, index: number) => {
       return {
@@ -126,6 +122,7 @@ const Users = () => {
             {usersData.email}
           </Typography>
         ),
+        accountName: usersData.accountName,
         firstName: usersData?.firstName,
         mobileNumber: usersData?.mobileNumber,
         createdBy: usersData?.createdBy,
@@ -213,10 +210,6 @@ const Users = () => {
     [edit]
   );
 
-  const showImeis = (imeiData: any) => {
-    setImeiListDialogHandler(true);
-    setSelectedImeiData(imeiData.deviceGroup.imeiData);
-  };
   const getUsersDetailTable = async () => {
     try {
       setIsLoading(true);

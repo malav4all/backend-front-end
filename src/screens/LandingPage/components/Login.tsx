@@ -15,7 +15,6 @@ import {
   openErrorNotification,
   openSuccessNotification,
 } from "../../../helpers/methods";
-// import { onLogin } from "../landingPageService";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { useAppDispatch } from "../../../utils/hooks";
 import loginStyles from "./Login.styles";
@@ -70,12 +69,12 @@ const Login = () => {
   }, []);
 
   const handleOnChangeInputField = (event: React.ChangeEvent<any>) => {
-    const newValue = event.target.value.trim();
+    const trimmedValue = event.target.value.trimStart(); // Trim spaces from the start
     setFormFields({
       ...formFields,
       [event.target.name]: {
         ...formFields[event.target.name],
-        value: newValue,
+        value: trimmedValue,
       },
     });
   };
@@ -84,8 +83,8 @@ const Login = () => {
     try {
       setIsLoading(true);
       if (handleValidation()) {
-        const email = formFields.email.value.toLowerCase();
-        const password = formFields.password.value;
+        const email = formFields.email.value.trim().toLowerCase(); // Trim spaces before submission
+        const password = formFields.password.value.trim(); // Trim spaces before submission
         const user: any = await onLogin({ input: { email, password } });
         if (user?.loginUser?.data?.success === 0) {
           openErrorNotification(user?.loginUser?.data?.message);
@@ -99,6 +98,10 @@ const Login = () => {
               email,
               authenticated: true,
               accessToken: user?.loginUser?.data?.data?.user.accessToken,
+              isSuperAdmin: user?.loginUser?.data?.data?.user.isSuperAdmin,
+              isAccountAdmin: user?.loginUser?.data?.data?.user.isAccountAdmin,
+              imeiList: user?.loginUser?.data?.data?.user.imeiList,
+              deviceGroup: user?.loginUser?.data?.data?.user.deviceGroup,
               userName: user?.loginUser?.data?.data?.user.name,
               role: user?.loginUser?.data?.data?.user?.roleId.name,
               resources: {},
@@ -172,16 +175,6 @@ const Login = () => {
                 !isTruthy(formFields.email.value) && formFields.email.error
               }
             />
-            {!emailRegex.test(formFields.email.value) &&
-            formFields.email.value.length > 0 ? (
-              <>
-                <FormHelperText error sx={classes.errorStyling}>
-                  Invalid email id
-                </FormHelperText>
-              </>
-            ) : (
-              <FormHelperText>{"\u00A0"}</FormHelperText>
-            )}
           </Box>
 
           <Box>
@@ -246,7 +239,7 @@ const Login = () => {
                 !emailRegex.test(formFields.email.value) ||
                 formFields.password?.value?.length < 8
               }
-              loading={isLoading}
+              // loading={isLoading}
               customClasses={classes.signBtn}
               id="login_button"
             />
@@ -263,19 +256,7 @@ const Login = () => {
     }
   };
 
-  return (
-    <Box>
-      {/* <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {getCategoryTabs()}
-      </Box> */}
-      {screenHandler()}
-    </Box>
-  );
+  return <Box>{screenHandler()}</Box>;
 };
 
-export default Login;
+export default React.memo(Login);

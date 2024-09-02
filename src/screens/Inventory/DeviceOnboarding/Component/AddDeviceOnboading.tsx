@@ -89,7 +89,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   const fetchAccountData = async () => {
     try {
       const res = await fetchAccountHandler({
-        input: { page: -1, limit: 0 },
+        input: { page: -1, limit: 10000 },
       });
       setAccountData(res?.fetchAccountModuleList?.data);
     } catch (error: any) {

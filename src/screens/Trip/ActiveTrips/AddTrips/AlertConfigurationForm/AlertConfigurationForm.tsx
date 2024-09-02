@@ -6,6 +6,9 @@ import {
   FormControlLabel,
   Checkbox,
   Stack,
+  MenuItem,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import useStyles from "../TransitTypeForm/TransitTypeForm.styles";
 import { SvgIcon } from "@mui/material";
@@ -164,18 +167,21 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
     { name: "Trip created", icon: <TripCreatedIcon /> },
     { name: "Trip ended", icon: <TripEndedIcon /> },
     { name: "Tamper Alert", icon: <TamperAlertIcon /> },
-    { name: "Overspeeding", icon: <OverspeedingIcon /> },
-    { name: "low battery", icon: <LowBatteryIcon /> },
+    { name: "overSpeeding", icon: <OverspeedingIcon /> },
+    { name: "lowBattery", icon: <LowBatteryIcon /> },
+    { name: "overStopping", icon: <OverspeedingIcon /> },
   ];
 
   const defaultAlertTypes = ["lock", "Unlock", "Geozone-In", "Geozone-out"];
 
   const getAlertOptions = [
     { name: "SMS", icon: <SmsIcon /> },
-    { name: "WhatsApp", icon: <WhatsAppIcon /> },
-    { name: "Email", icon: <EmailIcon /> },
+    // { name: "WhatsApp", icon: <WhatsAppIcon /> },
+    // { name: "Email", icon: <EmailIcon /> },
   ];
-
+  const speedOptions = ["80 km/h", "90 km/h", "100 km/h"];
+  const batteryOptions = ["40%", "50%", "60%"];
+  const overStopOptions = ["10 min", "20 min", "30 min"];
   useEffect(() => {
     if (alertConfigurationForm?.subscribedAlerts) {
       const updatedAlertTypes = new Set([
@@ -185,6 +191,20 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
       alertConfigurationForm.subscribedAlerts = Array.from(updatedAlertTypes);
     }
   }, [alertConfigurationForm?.subscribedAlerts]);
+
+  const handleSelectChange = (event: any) => {
+    const { name, value } = event.target;
+    setAlertConfigurationForm((prevFields: any) => ({
+      ...prevFields,
+      alertDetails: {
+        ...prevFields.alertDetails,
+        [name]: {
+          ...prevFields.alertDetails[name],
+          value: value,
+        },
+      },
+    }));
+  };
 
   const handleAlertDetailsChange = (event: any) => {
     const { name, value } = event.target;
@@ -212,8 +232,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           "Trip created",
           "Trip ended",
           "Tamper Alert",
-          "Overspeeding",
-          "low battery",
+          "overSpeeding",
+          "lowBattery",
+          "overStopping",
         ]?.includes(name)
       ) {
         const updatedField = checked
@@ -221,9 +242,27 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           : prevFields?.subscribedAlerts?.filter(
               (type: string) => type !== name
             );
+
+        // Update isEnabled for specific alerts
+        let updatedAlertDetails = { ...prevFields.alertDetails };
+        if (
+          name === "overSpeeding" ||
+          name === "lowBattery" ||
+          name === "overStopping"
+        ) {
+          updatedAlertDetails = {
+            ...updatedAlertDetails,
+            [name]: {
+              ...updatedAlertDetails[name],
+              isEnabled: checked, // Set isEnabled based on the checkbox state
+            },
+          };
+        }
+
         return {
           ...prevFields,
           subscribedAlerts: updatedField,
+          alertDetails: updatedAlertDetails,
         };
       } else if (["SMS", "WhatsApp", "Email"].includes(name)) {
         const updatedField = {
@@ -275,6 +314,117 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                   </Box>
                 }
               />
+              {alert.name === "overSpeeding" &&
+                alertConfigurationForm?.subscribedAlerts?.includes(
+                  "overSpeeding"
+                ) && (
+                  <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                    <Box>
+                      <Stack direction="column">
+                        <InputLabel className={classes.inputLabel} shrink>
+                          Speed
+                          <Box ml={0.4} color={"red"}>
+                            *
+                          </Box>
+                        </InputLabel>
+                        <Select
+                          className={classes.dropDownStyle}
+                          name="overSpeeding"
+                          value={
+                            alertConfigurationForm.alertDetails?.overSpeeding
+                              ?.value || ""
+                          }
+                          onChange={handleSelectChange}
+                          displayEmpty
+                        >
+                          {speedOptions.map((speed, index) => (
+                            <MenuItem
+                              key={index}
+                              value={speed}
+                              className={classes.dropDownOptionsStyle}
+                            >
+                              {speed}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Stack>
+                    </Box>
+                  </Grid>
+                )}
+              {alert.name === "lowBattery" &&
+                alertConfigurationForm?.subscribedAlerts?.includes(
+                  "lowBattery"
+                ) && (
+                  <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                    <Box>
+                      <Stack direction="column">
+                        <InputLabel className={classes.inputLabel} shrink>
+                          Battery Percentage
+                          <Box ml={0.4} color={"red"}>
+                            *
+                          </Box>
+                        </InputLabel>
+                        <Select
+                          className={classes.dropDownStyle}
+                          name="lowBattery"
+                          value={
+                            alertConfigurationForm.alertDetails.lowBattery
+                              .value || ""
+                          }
+                          onChange={handleSelectChange}
+                          displayEmpty
+                        >
+                          {batteryOptions.map((percentage, index) => (
+                            <MenuItem
+                              key={index}
+                              value={percentage}
+                              className={classes.dropDownOptionsStyle}
+                            >
+                              {percentage}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Stack>
+                    </Box>
+                  </Grid>
+                )}
+              {alert.name === "overStopping" &&
+                alertConfigurationForm?.subscribedAlerts?.includes(
+                  "overStopping"
+                ) && (
+                  <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                    <Box>
+                      <Stack direction="column">
+                        <InputLabel className={classes.inputLabel} shrink>
+                          Over stopping
+                          <Box ml={0.4} color={"red"}>
+                            *
+                          </Box>
+                        </InputLabel>
+                        <Select
+                          className={classes.dropDownStyle}
+                          name="overStopping"
+                          value={
+                            alertConfigurationForm.alertDetails.overStopping
+                              .value || ""
+                          }
+                          onChange={handleSelectChange}
+                          displayEmpty
+                        >
+                          {overStopOptions.map((duration, index) => (
+                            <MenuItem
+                              key={index}
+                              value={duration}
+                              className={classes.dropDownOptionsStyle}
+                            >
+                              {duration}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Stack>
+                    </Box>
+                  </Grid>
+                )}
             </Grid>
           ))}
         </Grid>

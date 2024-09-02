@@ -2,6 +2,7 @@ import {
   Box,
   InputAdornment,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -20,6 +21,7 @@ import {
   fetchEntityTableHandler,
   fetchTableHandler,
   searchTableHandler,
+  updateEntity,
 } from "./service/Entity.service";
 import {
   debounceEventHandler,
@@ -37,6 +39,8 @@ import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddEntity from "./component/AddEntity";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
+import { PiPencilSimpleBold } from "react-icons/pi";
+import { headerColor } from "../../../utils/styles";
 const Entity = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -58,11 +62,9 @@ const Entity = () => {
   const [tableData, setTableData] = useState([]);
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [file, setFile] = useState<any>();
   const [addEntityDialogHandler, setAddEntityDialogHandler] = useState(false);
-  const urlParams = new URLSearchParams(location.search);
-  const tabValueName = validateTabValue(urlParams.get("tabValue"));
-  const [tabValue, setTabValue] = useState<string>(tabValueName!);
 
   useEffect(() => {
     setPageNumber(1);
@@ -91,6 +93,33 @@ const Entity = () => {
     });
   };
 
+  const handleEditClick = (data: any): void => {
+    setAddEntityDialogHandler(true);
+    setEdit(true);
+    setEntityFormData(entityInsertField(data));
+  };
+
+  const tableDataRender = (res: any) => {
+    const finalData = res?.map((item: any) => {
+      return {
+        ...item,
+        action: (
+          <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+            <PiPencilSimpleBold
+              style={{
+                margin: "0px 8px -7px 0px",
+                cursor: "pointer",
+                color: headerColor,
+                fontSize: "20px",
+              }}
+            />
+          </Tooltip>
+        ),
+      };
+    });
+    return finalData;
+  };
+
   const fetchTableEntity = async () => {
     try {
       setIsLoading(true);
@@ -101,7 +130,8 @@ const Entity = () => {
           limit: perPageData,
         },
       });
-      setTableData(res?.fetchEntitesType?.data);
+      const finalData = tableDataRender(res?.fetchEntitesType?.data);
+      setTableData(finalData);
       setCount(res?.fetchEntitesType?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -115,12 +145,14 @@ const Entity = () => {
       setIsLoading(true);
       const res = await searchTableHandler({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchText,
           page: pageNumber,
           limit: perPageData,
         },
       });
-      setTableData(res?.searchEntity?.data);
+      const finalData = tableDataRender(res?.searchEntity?.data);
+      setTableData(finalData);
       setCount(res?.searchEntity?.paginatorInfo?.count);
       setIsLoading(false);
     } catch (error: any) {
@@ -161,17 +193,31 @@ const Entity = () => {
         code: entityFormData.code?.value,
         gstIn: entityFormData.gstIn?.value,
         aadharCardNo: entityFormData.aadharCardNo?.value,
-        createdBy: store.getState().auth.userName,
       };
-      setIsLoading(true);
+
       // if (handleValidation()) {
-      const res = await addEntity({
-        input: { ...payload },
-      });
+      setIsLoading(true);
+      if (edit) {
+        const res = await updateEntity({
+          input: {
+            ...payload,
+            _id: entityFormData?.id?.value,
+            updatedBy: store.getState().auth.userName,
+          },
+        });
+        openSuccessNotification(res?.updateEntityType?.message);
+      } else {
+        const res = await addEntity({
+          input: { ...payload, createdBy: store.getState().auth.userName },
+        });
+        openSuccessNotification(res.addEntitesType.message);
+      }
+
       setEntityFormData(entityInsertField());
       await fetchTableEntity();
-      openSuccessNotification(res.addEntitesType.message);
       setIsLoading(false);
+      setAddEntityDialogHandler(false);
+      setEdit(false);
       // }
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -248,7 +294,7 @@ const Entity = () => {
         id="role_mgmt_search_field"
         placeHolder="Search Entity Name"
         name="Role"
-        onChange={debounceEventHandler(handleSearchOnChange, 2000)}
+        onChange={debounceEventHandler(handleSearchOnChange, 700)}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
@@ -353,6 +399,7 @@ const Entity = () => {
         isTruthy={isTruthy}
         classes={classes}
         setEntityFormData={setEntityFormData}
+        edit={edit}
       />
       <CustomLoader isLoading={isLoading} />
     </Box>

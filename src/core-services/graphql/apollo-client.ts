@@ -1,14 +1,11 @@
-/* eslint-disable no-loop-func */
-/* eslint-disable no-console */
 import {
   ApolloProvider,
   ApolloClient,
   InMemoryCache,
   from,
-  Observable,
-  FetchResult,
   split,
   HttpLink,
+  FetchResult,
 } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
@@ -16,10 +13,11 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import { store } from "../../utils/store";
 import { REFRESH_TOKEN } from "../../screens/LandingPage/login-mutation";
 import { updateTokens } from "../../redux/authSlice";
-import { getMainDefinition } from "@apollo/client/utilities";
+import { getMainDefinition, Observable } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 import { removeTypenameFromVariables } from "@apollo/client/link/remove-typename";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+
 interface AccessToken {
   accessToken: string;
 }
@@ -27,6 +25,7 @@ interface AccessToken {
 const removeTypenameLink = removeTypenameFromVariables();
 
 let apiCount = 0;
+
 const customFetch = async (uri: any, options: any): Promise<any> => {
   try {
     apiCount++;
@@ -67,7 +66,7 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
-const UploadLink = createUploadLink({
+const uploadLink = createUploadLink({
   uri: getBaseUrl(process.env.REACT_APP_ENV),
   fetch: customFetch,
 });
@@ -76,13 +75,12 @@ const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }: any) => {
     console.log(graphQLErrors, networkError, operation);
 
-    // Handle GraphQLErrors
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
         console.log(err);
         switch (err.extensions.exception?.status) {
           case 401:
-            const observable = new Observable<FetchResult<Record<string, any>>>(
+            return new Observable<FetchResult<Record<string, any>>>(
               (observer) => {
                 (async () => {
                   try {
@@ -100,34 +98,29 @@ const errorLink = onError(
                         Authorization: `Bearer ${accessToken}`,
                       },
                     });
-                    return forward(operation).subscribe(subscriber);
+                    forward(operation).subscribe(subscriber);
                   } catch (err) {
                     observer.error(err);
                   }
                 })();
               }
             );
-
-            return observable;
           default:
             break;
         }
       }
     }
 
-    // Handle NetworkError
     if (networkError) {
       const resultErrors = networkError.result?.errors;
       if (resultErrors && resultErrors.length > 0) {
-        const graphqlError = resultErrors[0]; // Assuming you're interested in the first error
+        const graphqlError = resultErrors[0];
         const message = graphqlError.message || "An error occurred";
         const statusCode = graphqlError.extensions?.code || "Unknown code";
 
-        // Optionally, display or log the error
         console.error(`Network Error ${statusCode}: ${message}`);
         alert(`Network Error ${statusCode}: ${message}`);
 
-        // Optionally, rethrow the error with more context
         throw new Error(`Network Error ${statusCode}: ${message}`);
       } else if (networkError.message === "Failed to fetch") {
         alert("Backend Server is not responding. Please try again later.");
@@ -137,11 +130,6 @@ const errorLink = onError(
     }
   }
 );
-
-const httpLink = new HttpLink({
-  uri: getBaseUrl(process.env.REACT_APP_ENV),
-  fetch: customFetch,
-});
 
 const wsLink = new GraphQLWsLink(
   createClient({
@@ -158,7 +146,7 @@ const splitLink = split(
     );
   },
   wsLink,
-  from([removeTypenameLink, authLink.concat(httpLink), errorLink, UploadLink])
+  from([removeTypenameLink, authLink, uploadLink, errorLink])
 );
 
 const refreshToken = async () => {

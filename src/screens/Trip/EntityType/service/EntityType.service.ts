@@ -6,6 +6,7 @@ import {
   FETCH_CUSTOMER_MODULE,
   FETCH_ENTITY_TYPE,
   SEARCH_INDUSTRY_MODULE,
+  UPDATE_ENTITY_TYPE,
 } from "./EntityType.mutation";
 
 export const fetchTableHandler = async (variables: any): Promise<any> => {
@@ -25,6 +26,19 @@ export const addEntityType = async (data: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: ADD_ENTITY_TYPE,
+      variables: data,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const updateEntityType = async (data: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: UPDATE_ENTITY_TYPE,
       variables: data,
     });
 

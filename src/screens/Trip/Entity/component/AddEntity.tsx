@@ -40,6 +40,7 @@ const AddEntity = ({
   isLoading,
   MenuProps,
   setEntityFormData,
+  edit,
 }: any) => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -49,6 +50,12 @@ const AddEntity = ({
   const [zipCodeDate, setZipCodeData] = useState([]);
   const [tripType, setTripType] = useState<any>([]);
   const [selectedTripType, setSelectedTripType] = useState<any>([]);
+
+  useEffect(() => {
+    if (edit) {
+      setSelectedTripType(entityFormData?.tripTypeList?.value);
+    }
+  }, [edit]);
 
   const fetchZipCodeHandler = async (value: any) => {
     try {
@@ -67,7 +74,9 @@ const AddEntity = ({
   const addEntityDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Add Entity</Typography>
+        <Typography sx={classes.boldFonts}>
+          {edit ? "Update Entity" : "Add Entity"}
+        </Typography>
       </Box>
     );
   };
@@ -264,9 +273,9 @@ const AddEntity = ({
                 ))}
               </Select>
             </Box>
-            {!isTruthy(entityFormData.code?.value) && (
+            {!isTruthy(entityFormData.type?.value) && (
               <FormHelperText error sx={{ paddingLeft: "20px" }}>
-                {entityFormData.code?.error}
+                {entityFormData.type?.error}
               </FormHelperText>
             )}
           </Box>
@@ -535,9 +544,8 @@ const AddEntity = ({
           />
           <CustomButton
             id="add_entity_submit_button"
-            label="Add"
+            label={edit ? "Update" : "Add"}
             onClick={handleSave}
-            loading={isLoading}
           />
         </Box>
       </Grid>

@@ -465,6 +465,31 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           }}
         />
       </Grid>
+      <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <CustomInput
+          required
+          id="add_driver_name_field"
+          placeHolder="Enter Driver name"
+          name="driverName"
+          label="Driver Name"
+          onChange={handleFormDataChange}
+          value={tripInformationForm?.driverName?.value}
+          error={tripInformationForm?.driverName?.error}
+          propsToInputElement={{ maxLength: strings.USER_FIRST_NAME_LIMIT }}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
+        <CustomInput
+          label="Driver Contact Number"
+          name="contactNumber"
+          required={true}
+          id="add_driver_contact_number_filed"
+          value={tripInformationForm.contactNumber?.value}
+          placeHolder="Enter Your Driver Contact Number"
+          onChange={handleFormDataChange}
+          error={tripInformationForm?.contactNumber?.error}
+        />
+      </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         <CustomInput
           required

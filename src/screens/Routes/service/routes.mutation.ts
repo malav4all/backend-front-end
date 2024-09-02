@@ -51,32 +51,10 @@ export const SEARCH_ROUTES = gql`
       data {
         _id
         routeName
+        routeId
+        routeDetails
         totalDistance
         totalDuration
-        routeData {
-          _id
-          name
-          description
-          locationType
-          mobileNumber
-          finalAddress
-          address {
-            country
-            state
-            city
-            area
-            district
-            zipCode
-          }
-          geoCodeData {
-            type
-            geometry {
-              type
-              coordinates
-              radius
-            }
-          }
-        }
         createdBy
       }
     }
