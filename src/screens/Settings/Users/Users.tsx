@@ -494,6 +494,7 @@ const Users = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
+        paddingTop: "3.5rem",
       }}
     >
       {SettingsHeader()}

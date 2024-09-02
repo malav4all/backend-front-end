@@ -39,9 +39,6 @@ import {
 import notifiers from "../../global/constants/NotificationConstants";
 import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
-import EditIcon from "@mui/icons-material/Edit";
-import history from "../../utils/history";
-import { hasAccessTo } from "../../utils/AuthorizationManager";
 import { store } from "../../utils/store";
 
 const DeviceGroup = () => {

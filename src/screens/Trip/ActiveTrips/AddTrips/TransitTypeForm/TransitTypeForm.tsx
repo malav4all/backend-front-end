@@ -119,7 +119,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
         <Box>
           <Stack direction="column">
             <InputLabel className={classes.inputLabel} shrink>
-              Transit Type
+              Trip Type
               <Box ml={0.4} color={"red"}>
                 *
               </Box>
@@ -134,7 +134,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
               renderValue={() =>
                 transitTypeForm?.transitType?.value !== ""
                   ? transitTypeForm?.transitType?.value
-                  : "Select Transit Type"
+                  : "Select Trip Type"
               }
             >
               {tripTypeData?.map((item: any, index: any) => (

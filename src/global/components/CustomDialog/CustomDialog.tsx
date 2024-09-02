@@ -17,6 +17,7 @@ interface CustomProps {
   handleDialogClose?: any;
   closable?: boolean;
   width?: string;
+  height?: string;
   isDialogOpen: boolean;
   dialogTitleContent?: JSX.Element;
   dialogBodyContent: JSX.Element;
@@ -31,12 +32,15 @@ interface CustomProps {
 const CustomDialog = (props: CustomProps) => {
   const classes = customDialogStyles();
   const width = props.width ? props.width : "50%";
+  const height = props.height ? props.height : "auto";
   const radius = props.borderRadius ? props.borderRadius : borderRadius;
 
   const customStyles = makeStyles((theme: Theme) => ({
     dialogWidth: {
       width: width,
+      height: height,
       maxWidth: "none",
+      maxHeight: "80vh",
       borderRadius: radius,
       background: theme.palette.dialogColor.body,
       border: "3px solid",

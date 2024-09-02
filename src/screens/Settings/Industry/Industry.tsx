@@ -305,7 +305,11 @@ const Industry: React.FC = () => {
 
   return (
     <Box
-      sx={{ backgroundColor: theme.palette.background.paper, height: "100%" }}
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+        paddingTop: "3.5rem",
+      }}
     >
       <CustomAppHeader
         className={{

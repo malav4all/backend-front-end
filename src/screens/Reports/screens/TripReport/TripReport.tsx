@@ -564,7 +564,7 @@ const TripReport = () => {
     <Box
       sx={{
         backgroundColor: theme.palette.background.default,
-        paddingTop: "2.5rem",
+        paddingTop: "3.5rem",
       }}
     >
       {getDashboardHeader()}

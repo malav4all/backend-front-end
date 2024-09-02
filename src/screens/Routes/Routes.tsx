@@ -475,7 +475,7 @@ const Routes = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search Routes..."
+        placeHolder="Search Routes"
         id="assetAssingment_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -859,7 +859,7 @@ const Routes = () => {
           >
             <CustomButton
               id="users_add_button"
-              label={"Submit"}
+              label={"Create"}
               onClick={addRoutesHandler}
               customClasses={{
                 width: "150px",
@@ -878,8 +878,8 @@ const Routes = () => {
         xl={12}
         sx={{
           padding: "30px",
-          paddingTop: "2px",
-          marginTop: "10px",
+          paddingTop: "2.5px",
+          marginTop: "50px",
           [theme.breakpoints.down("md")]: {
             marginTop: theme.spacing(0),
           },

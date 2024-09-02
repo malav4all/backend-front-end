@@ -25,6 +25,7 @@ import { fetchEntityTypeTableHandler } from "../../EntityType/service/EntityType
 import { store } from "../../../../utils/store";
 import { getAddressDetailsByPincode } from "../../../Geozone/service/geozone.service";
 import { fetchTripTypeTableHandler } from "../../TripType/service/TripType.service";
+import EntityStyles from "../Entity.styles";
 
 const AddEntity = ({
   open,
@@ -38,12 +39,12 @@ const AddEntity = ({
   handleSave,
   isLoading,
   MenuProps,
-  classes,
   setEntityFormData,
 }: any) => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
   const checkedIcon = <CheckBoxIcon fontSize="small" />;
   const theme = useTheme();
+  const classes = EntityStyles;
   const [tableData, setTableData] = useState([]);
   const [zipCodeDate, setZipCodeData] = useState([]);
   const [tripType, setTripType] = useState<any>([]);
@@ -162,7 +163,7 @@ const AddEntity = ({
 
         <Grid item xs={12} sm={6} lg={6}>
           <Box>
-            <InputLabel sx={{ color: theme.palette.text.primary }} shrink>
+            <InputLabel sx={classes.inputLabel} shrink>
               Trip Type
             </InputLabel>
             <Autocomplete
@@ -213,6 +214,16 @@ const AddEntity = ({
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                   placeholder={
                     selectedTripType.length === 0 ? "Select Trip Type" : ""
                   }
@@ -270,12 +281,6 @@ const AddEntity = ({
               PinCode
             </InputLabel>
             <Autocomplete
-              sx={{
-                ...classes.emailDropDownStyle,
-                backgroundColor: theme.palette.background.paper,
-                color: theme.palette.text.primary,
-                borderRadius: "5px",
-              }}
               id="zipCode"
               options={
                 zipCodeDate?.map((item: any) => ({
@@ -302,6 +307,16 @@ const AddEntity = ({
                 <TextField
                   sx={classes.select}
                   {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    sx: {
+                      height: "47px",
+                      display: "flex",
+                      alignItems: "center",
+                      color: "white",
+                      backgroundColor: "#060b25",
+                    },
+                  }}
                   value={entityFormData.pinCode.value}
                   name="zipCode"
                   placeholder="Enter PinCode"

@@ -195,7 +195,7 @@ const LocationType = () => {
       >
         <Stack
           px={1}
-          mt={4}
+          mt={7}
           direction={{ lg: "row", xs: "column" }}
           justifyContent="space-between"
           alignItems={{ lg: "center" }}
@@ -255,7 +255,7 @@ const LocationType = () => {
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
-          height: "120%",
+          height: "100%",
         }}
       >
         {SettingsHeader()}

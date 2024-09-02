@@ -1,8 +1,7 @@
 import {
-  boldFont,
+  borderColor,
   inputLabelRequiredColor,
-  mediumFont,
-  pureWhiteColor,
+  regularFont,
   semiBoldFont,
 } from "../../../utils/styles";
 
@@ -13,9 +12,9 @@ const customInputStyles = {
     "& .MuiInputBase-input": {
       position: "relative",
       padding: "10px 12px",
-      // backgroundColor: "#ffffff",
+      backgroundColor: "#060b25",
       "&::placeholder": {
-        ...mediumFont,
+        ...regularFont,
       },
     },
     "& .MuiOutlinedInput-root": {

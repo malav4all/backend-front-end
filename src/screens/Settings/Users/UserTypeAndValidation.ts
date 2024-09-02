@@ -7,7 +7,7 @@ export const userTableHeader = [
     field: "firstName",
   },
   {
-    name: "User Email",
+    name: "Email",
     field: "email",
   },
   {

@@ -42,7 +42,7 @@ import urls from "../../../../global/constants/UrlConstants";
 import { store } from "../../../../utils/store";
 import DynamicForm from "./DynamicForm/DynamicForm";
 
-const steps = ["Transit Type", "Trip Information", "Alert Detail"];
+const steps = ["Trip Type", "Trip Information", "Alert Detail"];
 
 const AddTrip = (props: any) => {
   const classes = addTripStyles;

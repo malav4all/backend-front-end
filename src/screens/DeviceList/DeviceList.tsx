@@ -29,9 +29,7 @@ import {
   openErrorNotification,
   openSuccessNotification,
 } from "../../helpers/methods";
-import {
-  deviceListTable,
-} from "../Inventory/DeviceOnboarding/DeviceOnboarding.helpers";
+import { deviceListTable } from "../Inventory/DeviceOnboarding/DeviceOnboarding.helpers";
 import DeviceNameModal from "./Component/DevicenNameModal";
 import {
   fetchDeviceList,
@@ -112,7 +110,10 @@ const DeviceList = () => {
                 setEdit(true);
               }}
             >
-              <EditIcon />
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
             </Tooltip>
           </>
         ),
@@ -173,7 +174,7 @@ const DeviceList = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search text"
+        placeHolder="Search Device"
         id="users_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,

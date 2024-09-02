@@ -28,10 +28,7 @@ import {
 import strings from "../../../global/constants/StringConstants";
 import EditIcon from "@mui/icons-material/Edit";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-import {
-  deviceModelTableHeader,
-  deviceModuleInsertField,
-} from "./DeviceModelHelpers";
+import { deviceModelTableHeader } from "./DeviceModelHelpers";
 import {
   fetchDeviceModelTableHandler,
   searchTableHandler,
@@ -41,9 +38,6 @@ const DeviceModule = () => {
   const theme = useTheme();
   const classes = DeviceModelStyles;
   const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
-  const [deviceModelData, setdeviceModelData] = useState(
-    deviceModuleInsertField()
-  );
   const [edit, setEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -65,26 +59,13 @@ const DeviceModule = () => {
     }
   }, [pageNumber, perPageData, searchText]);
 
-  const addDeviceButton = () => {
-    return (
-      <CustomButton
-        id="device_add_button"
-        label={"Add Devices"}
-        onClick={() => setAddUserDialogHandler(true)}
-        customClasses={{
-          width: "150px",
-        }}
-      />
-    );
-  };
-
   const getHeader = () => {
     return (
       <Box>
         <Typography
           sx={{ ...classes.mainCardHeading, color: theme.palette.text.primary }}
         >
-          Device Module
+          Device Model
         </Typography>
       </Box>
     );
@@ -111,13 +92,17 @@ const DeviceModule = () => {
             <>
               <Tooltip
                 title="Edit"
+                placement="top"
                 onClick={() => {
                   setAddUserDialogHandler(true);
                   setSelectedRowData(item);
                   setEdit(true);
                 }}
               >
-                <EditIcon />
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
               </Tooltip>
             </>
           ),
@@ -170,7 +155,7 @@ const DeviceModule = () => {
   const getSearchBar = () => {
     return (
       <CustomInput
-        placeHolder="Search text"
+        placeHolder="Search Model"
         id="users_search_field"
         onChange={debounceEventHandler(
           handleSearchOnChange,
@@ -191,7 +176,7 @@ const DeviceModule = () => {
     return (
       <CustomButton
         id="users_add_button"
-        label={"Add Device"}
+        label={"Add Model"}
         onClick={() => setAddUserDialogHandler(true)}
         customClasses={{
           width: "150px",
@@ -202,6 +187,7 @@ const DeviceModule = () => {
 
   const closeAddUserDialogHandler = () => {
     setAddUserDialogHandler(false);
+    setEdit(false);
   };
 
   const addDeviceModelBox = () => {
@@ -246,7 +232,7 @@ const DeviceModule = () => {
     );
   };
 
-  const getUser = () => (
+  const getDeviceModule = () => (
     <Box
       sx={{
         backgroundColor: theme.palette.background.paper,
@@ -317,7 +303,7 @@ const DeviceModule = () => {
     </Box>
   );
 
-  return getUser();
+  return getDeviceModule();
 };
 
 export default DeviceModule;

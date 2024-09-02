@@ -108,9 +108,9 @@ const Account: React.FC = () => {
           }}
         >
           <EditIcon
-            htmlColor={headerColor}
-            style={{ margin: "0px 8px -7px 17px" }}
-          />
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
         </Tooltip>
       ),
     }));
@@ -307,7 +307,7 @@ const Account: React.FC = () => {
         margin: "auto",
         backgroundColor: theme.palette.background.paper,
         height: "100vh",
-        paddingTop: "2.5rem",
+        paddingTop: "3.5rem",
       }}
     >
       {renderSettingsHeader()}

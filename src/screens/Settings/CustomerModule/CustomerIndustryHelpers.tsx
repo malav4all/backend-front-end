@@ -1,10 +1,10 @@
 export const customerModuleTableHeader = [
   {
-    name: "Module Name",
+    name: "Name",
     field: "name",
   },
   {
-    name: "Module Code",
+    name: "Code",
     field: "code",
   },
   {

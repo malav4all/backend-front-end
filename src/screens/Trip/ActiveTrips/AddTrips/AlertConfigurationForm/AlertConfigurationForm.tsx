@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useEffect, ChangeEvent } from "react";
 import {
   Box,
   Grid,
@@ -12,27 +12,61 @@ import { SvgIcon } from "@mui/material";
 import { CustomInput } from "../../../../../global/components";
 
 export const LockIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-7h-1V7a5 5 0 0 0-10 0v3H6c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm-6-5a3 3 0 0 1 3 3v3H9V8a3 3 0 0 1 3-3z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 512 512"
+    height="20px"
+    width="20px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M368 192h-16v-80a96 96 0 1 0-192 0v80h-16a64.07 64.07 0 0 0-64 64v176a64.07 64.07 0 0 0 64 64h224a64.07 64.07 0 0 0 64-64V256a64.07 64.07 0 0 0-64-64zm-48 0H192v-80a64 64 0 1 1 128 0z"></path>
+  </svg>
 );
 
 export const UnlockIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-7h-1V7a5 5 0 0 0-9.9-1H8v3H6c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm-8-4a3 3 0 0 1 6 0v3H10V6z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 16 16"
+    height="20px"
+    width="20px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"></path>
+  </svg>
 );
 
 export const GeozoneInIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm1-12h-2v6h6v-2h-4z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 512 512"
+    height="22px"
+    width="22px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M256 48c-42.9 0-84.2 13-119.2 37.5-34.2 24-60.2 57.2-75.1 96.1L58 192h45.7l1.9-5c8.2-17.8 19.4-33.9 33.5-48 31.2-31.2 72.7-48.4 116.9-48.4s85.7 17.2 116.9 48.4c31.2 31.2 48.4 72.7 48.4 116.9 0 44.1-17.2 85.7-48.4 116.9-31.2 31.2-72.7 48.4-116.9 48.4-44.1 0-85.6-17.2-116.9-48.4-14-14-25.3-30.1-33.5-47.9l-1.9-5H58l3.6 10.4c14.9 38.9 40.9 72.1 75.1 96.1C171.8 451.1 213 464 256 464c114.7 0 208-93.3 208-208S370.7 48 256 48z"></path>
+    <path d="M48 277.4h189.7l-43.6 44.7L224 352l96-96-96-96-31 29.9 44.7 44.7H48v42.8z"></path>
+  </svg>
 );
 
 export const GeozoneOutIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm-1-12h2v6h-6v-2h4z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 512 512"
+    height="22px"
+    width="22px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M192 277.4h189.7l-43.6 44.7L368 352l96-96-96-96-31 29.9 44.7 44.7H192v42.8z"></path>
+    <path d="M255.7 421.3c-44.1 0-85.5-17.2-116.7-48.4-31.2-31.2-48.3-72.7-48.3-116.9 0-44.1 17.2-85.7 48.3-116.9 31.2-31.2 72.6-48.4 116.7-48.4 44 0 85.3 17.1 116.5 48.2l30.3-30.3c-8.5-8.4-17.8-16.2-27.7-23.2C339.7 61 298.6 48 255.7 48 141.2 48 48 141.3 48 256s93.2 208 207.7 208c42.9 0 84-13 119-37.5 10-7 19.2-14.7 27.7-23.2l-30.2-30.2c-31.1 31.1-72.5 48.2-116.5 48.2zM448.004 256.847l-.849-.848.849-.849.848.849z"></path>
+  </svg>
 );
 
 export const TripCreatedIcon = (props: any) => (
@@ -48,21 +82,47 @@ export const TripEndedIcon = (props: any) => (
 );
 
 export const TamperAlertIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm-1-10h2v-2h-2zm0 4h2v-2h-2z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 24 24"
+    height="20px"
+    width="20px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="m5.705 3.71-1.41-1.42C1 5.563 1 7.935 1 11h1l1-.063C3 8.009 3 6.396 5.705 3.71zm13.999-1.42-1.408 1.42C21 6.396 21 8.009 21 11l2-.063c0-3.002 0-5.374-3.296-8.647zM12 22a2.98 2.98 0 0 0 2.818-2H9.182A2.98 2.98 0 0 0 12 22zm7-7.414V10c0-3.217-2.185-5.927-5.145-6.742C13.562 2.52 12.846 2 12 2s-1.562.52-1.855 1.258C7.184 4.073 5 6.783 5 10v4.586l-1.707 1.707A.996.996 0 0 0 3 17v1a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-1a.996.996 0 0 0-.293-.707L19 14.586z"></path>
+  </svg>
 );
 
 export const OverspeedingIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1-8-8 8 8 0 0 1-8 8zm-1-10h2v-2h-2zm0 4h2v-2h-2z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    viewBox="0 0 256 256"
+    height="20px"
+    width="20px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M119.51,143.51l88-88a12,12,0,1,1,17,17l-88,88a12,12,0,1,1-17-17Zm14.23-43.2a12,12,0,1,0,2.62-23.85A75.15,75.15,0,0,0,128,76a76.08,76.08,0,0,0-76,76,12,12,0,0,0,24,0,52.06,52.06,0,0,1,52-52A54.75,54.75,0,0,1,133.74,100.31Zm101.54,7.5A12,12,0,0,0,213.09,117a92.47,92.47,0,0,1,2.58,63H40.34A92.23,92.23,0,0,1,128,60h.84a91.43,91.43,0,0,1,34.2,6.91,12,12,0,0,0,9.14-22.19A116.07,116.07,0,0,0,18.57,190.58,20.09,20.09,0,0,0,37.46,204H218.53a20.06,20.06,0,0,0,18.88-13.38,116.39,116.39,0,0,0-2.13-82.81Z"></path>
+  </svg>
 );
 
 export const LowBatteryIcon = (props: any) => (
-  <SvgIcon {...props}>
-    <path d="M15 7h-2V6a2 2 0 0 0-4 0v1H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM9 6a1 1 0 0 1 2 0v1H9zm6 8H7V9h8z" />
-  </SvgIcon>
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    stroke-width="0"
+    version="1.2"
+    baseProfile="tiny"
+    viewBox="0 0 24 24"
+    height="25px"
+    width="25px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M6 16c-.552 0-1-.447-1-1v-4c0-.553.448-1 1-1s1 .447 1 1v4c0 .553-.448 1-1 1zM19 10c0-1.654-1.346-3-3-3h-11c-1.654 0-3 1.346-3 3v6c0 1.654 1.346 3 3 3h11c1.654 0 3-1.346 3-3 1.104 0 2-.896 2-2v-2c0-1.104-.896-2-2-2zm-2 6c0 .552-.449 1-1 1h-11c-.551 0-1-.448-1-1v-6c0-.552.449-1 1-1h11c.551 0 1 .448 1 1v6z"></path>
+  </svg>
 );
 
 export const SmsIcon = (props: any) => (

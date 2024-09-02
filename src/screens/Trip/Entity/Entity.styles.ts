@@ -41,7 +41,36 @@ const EntityStyles = {
     ...boldFont,
     color: primaryHeadingColor,
   },
-
+  inputLabel: {
+    display: "flex",
+    color: "white",
+    fontSize: getRelativeFontSize(6),
+    variant: "standard",
+    ...boldFont,
+    "& .MuiTextField-root": {
+      color: "red",
+    },
+    "& .MuiInputLabel-root ": {
+      color: "red",
+    },
+    "&:focus": {
+      color: "red",
+    },
+    "& .MuiFormLabel-root-MuiInputLabel-root.Mui-focused": {
+      color: "red",
+    },
+  },
+  emailDropDownStyle: {
+    "& .MuiOutlinedInput-root": {
+      padding: "0, 9px",
+      height: "47px",
+      borderRadius: "5px",
+      backgroundColor: "white",
+      "&.Mui-focused fieldset": {
+        borderColor: "#4B0150",
+      },
+    },
+  },
   radioButtonlabel: {
     ...regularFont,
     fontSize: "16px",
@@ -150,6 +179,20 @@ const EntityStyles = {
     "& .MuiDropzoneArea-root": {
       width: "100%",
       minHeight: "10px",
+    },
+  },
+
+  select: {
+    "& .MuiOutlinedInput-root": {
+      height: "47px",
+      borderRadius: "5px",
+      fontSize: getRelativeFontSize(),
+      "&.Mui-focused fieldset": {
+        borderColor: "#0675f9",
+      },
+      "& .MuiAutocomplete-input  ": {
+        padding: "0px",
+      },
     },
   },
 

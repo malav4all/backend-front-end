@@ -1,6 +1,7 @@
 import {
   Box,
   Chip,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -14,7 +15,6 @@ import {
   CustomDialog,
   CustomInput,
 } from "../../../../global/components";
-import uploadUser from "../../../../assets/images/uploadUser.svg";
 import { theme } from "../../../../utils/styles";
 import {
   isTruthy,
@@ -28,7 +28,10 @@ import {
 } from "../service/deviceModule.service";
 import { store } from "../../../../utils/store";
 import DeviceOnboardingStyle from "../../DeviceOnboarding/DeviceOnboarding.styles";
-import { deviceModuleInsertField } from "../DeviceModelHelpers";
+import {
+  deviceModuleInsertField,
+  validateDeviceModelForm,
+} from "../DeviceModelHelpers";
 
 interface CustomProps {
   openAddUserDialog: boolean;
@@ -53,7 +56,7 @@ const AddDeviceModule = (props: CustomProps) => {
     setDeviceFields(deviceModuleInsertField());
     setCommandConfig([]);
     setCommandDetail([]);
-  }, [props.openAddUserDialog]);
+  }, [props.edit, props.openAddUserDialog]);
 
   useEffect(() => {
     if (props.edit && props.selectedRowData) {
@@ -66,22 +69,32 @@ const AddDeviceModule = (props: CustomProps) => {
   const onChangeHandler = (event: any) => {
     setDeviceFields({
       ...deviceFields,
-      [event.target.name]: {
+      [event?.target?.name]: {
         value: event.target.value,
         error: "",
       },
     });
   };
 
+  const handleValidation = () => {
+    const { isValid, errors } = validateDeviceModelForm(deviceFields);
+    setDeviceFields(errors);
+    return isValid;
+  };
+
   const addUserDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Add Device Model</Typography>
+        <Typography sx={{ ...classes.boldFonts, marginBottom: "1rem" }}>
+          {props.edit ? "Update Model" : "Add Model"}
+        </Typography>
       </Box>
     );
   };
 
   const addDeviceModelHandler = async () => {
+    if (!handleValidation()) return;
+
     try {
       const deviceModelPayload = {
         deviceModelName: deviceFields.deviceModelName.value,
@@ -144,14 +157,6 @@ const AddDeviceModule = (props: CustomProps) => {
     );
   };
 
-  const addUserHeaderImg = () => {
-    return (
-      <Box display={"flex"}>
-        <img src={uploadUser} alt="Add user not found!" />
-      </Box>
-    );
-  };
-
   const validateAccountConfig = () => {
     if (
       !isTruthy(deviceFields.deviceConfigKey.value) &&
@@ -200,10 +205,9 @@ const AddDeviceModule = (props: CustomProps) => {
         value: deviceFields.deviceConfigValue.value,
       });
 
-      // Remove '__typename' from each object in the array
       const filterValue: any = addedConfig.map((obj) => {
-        const { __typename, ...rest } = obj; // Destructure the object, excluding '__typename'
-        return rest; // Return object without '__typename'
+        const { __typename, ...rest } = obj;
+        return rest;
       });
 
       setCommandConfig(filterValue);
@@ -264,8 +268,8 @@ const AddDeviceModule = (props: CustomProps) => {
       });
 
       const filterValue: any = addedConfig.map((obj) => {
-        const { __typename, ...rest } = obj; // Destructure the object, excluding '__typename'
-        return rest; // Return object without '__typename'
+        const { __typename, ...rest } = obj;
+        return rest;
       });
       setCommandDetail(filterValue);
       setDeviceFields((prevData: any) => ({
@@ -286,18 +290,22 @@ const AddDeviceModule = (props: CustomProps) => {
               id="add_user_first_name_field"
               placeHolder="Enter Device Model Name"
               name="deviceModelName"
-              label="Device Name"
+              label="Device Model Name"
               onChange={onChangeHandler}
               value={deviceFields.deviceModelName.value}
+              error={deviceFields.deviceModelName.error}
             />
           </Grid>
+
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Box>
               <Stack direction="column">
-                <Box display={"flex"}>
-                  <Typography sx={classes.label}>Industry Module</Typography>
-                  <Typography sx={classes.star}>*</Typography>
-                </Box>
+                <InputLabel sx={classes.inputLabel} shrink>
+                  Device Model Type
+                  <Box ml={0.4} sx={classes.star}>
+                    *
+                  </Box>
+                </InputLabel>
                 <Select
                   sx={classes.dropDownStyle}
                   id="add_user_roles_dropdown"
@@ -331,6 +339,7 @@ const AddDeviceModule = (props: CustomProps) => {
               </Stack>
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
@@ -340,6 +349,7 @@ const AddDeviceModule = (props: CustomProps) => {
               label="Device Model"
               onChange={onChangeHandler}
               value={deviceFields.deviceModel.value}
+              error={deviceFields.deviceModel.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -351,6 +361,7 @@ const AddDeviceModule = (props: CustomProps) => {
               label="Device Ip Address"
               onChange={onChangeHandler}
               value={deviceFields.deviceModelIpAddress.value}
+              error={deviceFields.deviceModelIpAddress.error}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -362,8 +373,10 @@ const AddDeviceModule = (props: CustomProps) => {
               label="Device Port No"
               onChange={onChangeHandler}
               value={deviceFields.deviceModelPortNumber.value}
+              error={deviceFields.deviceModelPortNumber.error}
             />
           </Grid>
+
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Box>
               <Stack direction="column">
@@ -401,9 +414,21 @@ const AddDeviceModule = (props: CustomProps) => {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText
+                  error
+                  sx={{
+                    paddingLeft: "17px",
+                    fontWeight: "bolder",
+                    fontSize: "12px",
+                    letterSpacing: 0,
+                  }}
+                >
+                  {deviceFields.deviceModelNetworkType.error}
+                </FormHelperText>
               </Stack>
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <Box>
               <Stack direction="column">
@@ -441,9 +466,21 @@ const AddDeviceModule = (props: CustomProps) => {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText
+                  error
+                  sx={{
+                    paddingLeft: "17px",
+                    fontWeight: "bolder",
+                    fontSize: "12px",
+                    letterSpacing: 0,
+                  }}
+                >
+                  {deviceFields.deviceModelNetworkType.error}
+                </FormHelperText>
               </Stack>
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
             <CustomInput
               required
@@ -453,6 +490,7 @@ const AddDeviceModule = (props: CustomProps) => {
               label="Device Parser Name"
               onChange={onChangeHandler}
               value={deviceFields.deviceModelParser.value}
+              error={deviceFields.deviceModelParser.error}
             />
           </Grid>
         </Grid>
@@ -465,7 +503,6 @@ const AddDeviceModule = (props: CustomProps) => {
                 type="text"
                 name="deviceConfigKey"
                 placeHolder="Enter Device Config Key"
-                required
                 error={deviceFields.deviceConfigKey.error}
                 onChange={onChangeHandler}
                 value={deviceFields.deviceConfigKey.value}
@@ -478,7 +515,6 @@ const AddDeviceModule = (props: CustomProps) => {
                 type="text"
                 name="deviceConfigValue"
                 placeHolder="Enter Account value"
-                required
                 error={deviceFields.deviceConfigValue.error}
                 onChange={onChangeHandler}
                 value={deviceFields.deviceConfigValue.value}
@@ -537,7 +573,6 @@ const AddDeviceModule = (props: CustomProps) => {
                 type="text"
                 name="deviceCommandKey"
                 placeHolder="Enter Device Command Name"
-                required
                 error={deviceFields.deviceCommandKey.error}
                 onChange={onChangeHandler}
                 value={deviceFields.deviceCommandKey.value}
@@ -550,7 +585,6 @@ const AddDeviceModule = (props: CustomProps) => {
                 type="text"
                 name="deviceCommandValue"
                 placeHolder="Enter Device Command Name"
-                required
                 error={deviceFields.deviceCommandValue.error}
                 onChange={onChangeHandler}
                 value={deviceFields.deviceCommandValue.value}
@@ -603,6 +637,7 @@ const AddDeviceModule = (props: CustomProps) => {
       </>
     );
   };
+
   const getAddUserDialog = () => {
     return (
       <Grid container sx={classes.centerItemFlex}>
@@ -611,7 +646,7 @@ const AddDeviceModule = (props: CustomProps) => {
           closable
           closeButtonVisibility
           handleDialogClose={props.handleCloseAddUserDialog}
-          dialogHeaderContent={addUserHeaderImg()}
+          // dialogHeaderContent={addUserHeaderImg()}
           dialogTitleContent={addUserDialogTitle()}
           dialogBodyContent={addUserDialogBody()}
           dialogFooterContent={addUserDialogFooter()}

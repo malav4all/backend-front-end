@@ -244,7 +244,7 @@ const AlertConfig = () => {
                 backgroundColor: "#B0B0B0", // Grey track color when off
               },
               "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                backgroundColor: "#42A876", // Green track color when on
+                backgroundColor: "#42A876", 
               },
             }}
             disabled
@@ -260,7 +260,7 @@ const AlertConfig = () => {
               }}
             >
               <EditIcon
-                htmlColor={"#5F22E2"}
+                htmlColor={"#7C58CB"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
             </Tooltip>
@@ -323,16 +323,13 @@ const AlertConfig = () => {
           headers={alertConfigTableHeader}
           rows={userDataSource}
           paginationCount={count}
-          // handleRowClick={updateUserDetails}
           handlePageChange={handleChangePage}
           pageNumber={pageNumber}
           setPage={setPageNumber}
           isLoading={isLoading}
           handlePerPageData={handlePerPageData}
           perPageData={perPageData}
-          // rowsPerPage={perPageData}
           isExportCSV={false}
-          // onClickExportCSV={handleDownload}
         />
       </Box>
     );
@@ -343,7 +340,7 @@ const AlertConfig = () => {
       sx={{
         backgroundColor: theme.palette.background.paper,
         height: "100%",
-        paddingTop: "4.5rem",
+        paddingTop: "5.5rem",
       }}
     >
       <Grid container spacing={2} direction="column">

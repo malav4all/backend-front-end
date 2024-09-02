@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
-  Autocomplete,
   Box,
-  Checkbox,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from "@mui/material";
 import {
   CustomButton,
-  CustomInput,
   CustomDialog,
 } from "../../../../global/components";
 import {
@@ -23,14 +19,12 @@ import {
 } from "../service/UserAccess.service";
 import { store } from "../../../../utils/store";
 import {
-  isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../../../helpers/methods";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import MultiSelectAutocomplete from "./MultiSelectComponent";
-import notifiers from "../../../../global/constants/NotificationConstants";
 import { fetchDeviceGroup } from "../../../DeviceGroup/service/DeviceGroup.service";
 import { fetchDeviceOnboardingTableHandler } from "../../../Inventory/DeviceOnboarding/service/DeviceOnboarding.service";
 import { fetchEntityTableHandler } from "../../Entity/service/Entity.service";
@@ -39,14 +33,7 @@ const AddUserAccess = ({
   open,
   handleClose,
   userAccessFormData,
-  modulesData,
-  onChangeHandler,
-  handleModuleChange,
-  checkExitsRoleHandler,
-  handleFileChange,
-  handleSave,
   isLoading,
-  MenuProps,
   classes,
 }: any) => {
   const theme = useTheme();
@@ -198,6 +185,13 @@ const AddUserAccess = ({
             optionKey="deviceGroupName"
             icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
             checkedIcon={<CheckBoxIcon fontSize="small" />}
+            style={{
+              height: "47px",
+              display: "flex",
+              alignItems: "center",
+              color: "white",
+              backgroundColor: "#060b25",
+            }}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={12} lg={12} xl={12}>

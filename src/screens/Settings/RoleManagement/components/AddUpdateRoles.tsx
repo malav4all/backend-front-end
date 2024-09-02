@@ -447,7 +447,7 @@ const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
               fontWeight: "bold",
             }}
           >
-            {name === "Edit Role" ? "Edit Role" : "Create Role"}
+            {edit ? "Update Role" : "Create Role"} 
           </Typography>
         </Box>
       }
@@ -455,8 +455,8 @@ const AddUpdateRoles: React.FC<AddUpdateRolesProps> = ({
       dialogFooterContent={
         <Grid container sx={classes.centerItemFlex}>
           <Box sx={classes.pageFooter}>
-            <CustomButton
-              label={name === "Edit Role" ? "Update" : "Submit"}
+          <CustomButton
+              label={edit ? "Update" : "Submit"} 
               onClick={addRoleHandler}
               id="role_management_submit_button"
               loading={loading}

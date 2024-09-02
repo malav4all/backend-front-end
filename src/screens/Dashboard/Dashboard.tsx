@@ -163,7 +163,7 @@ const Dashboard = () => {
                       {" (" + moment(item.lastPing).fromNow() + ")"}
                     </>
                   ) : (
-                    " "
+                    "Never Connected"
                   ),
 
                 action:
@@ -211,7 +211,7 @@ const Dashboard = () => {
           xl={12}
           md={12}
           lg={12}
-          sx={{ margin: "auto", width: " 97%", marginTop: "2.5rem" }}
+          sx={{ margin: "auto", width: " 97%", paddingTop: "3.5rem" }}
         >
           <Grid item xs={12} md={12} lg={12} xl={12} mt={2}>
             <GetAlerts data={dataGraph?.deviceDashboardData} />

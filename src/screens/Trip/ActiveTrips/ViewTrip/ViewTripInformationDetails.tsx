@@ -24,9 +24,6 @@ const ViewTripInformationDetails = (props: CustomProps) => {
       <Card sx={classes.card}>
         <CardContent>
           <Stack direction="row" justifyContent="space-between">
-            <Typography variant="h3" sx={classes.jobDetailsText}>
-              Trip Information
-            </Typography>
             {/* <Box sx={classes.centerItemFlex}>
               <img src={EditIcon} alt="edit" />
             </Box> */}

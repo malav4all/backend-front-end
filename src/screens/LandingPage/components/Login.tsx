@@ -51,7 +51,6 @@ const Login = () => {
   const [formFields, setFormFields] = useState(loginForm);
   const [showPassword, setShowPassword] = useState(false);
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
-  const [loginAttempts, setLoginAttempts] = useState(0);
   const [loginTypeTab, setLoginTypeTab] = useState("login");
 
   useEffect(() => {
@@ -69,26 +68,6 @@ const Login = () => {
       });
     }
   }, []);
-
-  const handleCampaignCategoryTab = (event: any, newValue: string) => {
-    setLoginTypeTab(newValue);
-  };
-
-  const getCategoryTabs = () => (
-    <Tabs
-      sx={classes.categoryTabsSection}
-      value={loginTypeTab}
-      onChange={handleCampaignCategoryTab}
-    >
-      {Object.keys(loginType).map((type: string) => (
-        <Tab
-          sx={classes.categoryTab}
-          value={type}
-          label={loginType[type].label}
-        />
-      ))}
-    </Tabs>
-  );
 
   const handleOnChangeInputField = (event: React.ChangeEvent<any>) => {
     const newValue = event.target.value.trim();
@@ -148,10 +127,6 @@ const Login = () => {
 
   const forgetPassword = () => {
     history.push("/forgot-password");
-  };
-
-  const registerPage = () => {
-    // history.push(urls.registerViewPath);
   };
 
   const handleClickShowPassword = () => {
