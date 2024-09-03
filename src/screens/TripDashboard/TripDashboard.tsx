@@ -36,6 +36,7 @@ import { debounceEventHandler } from "../../helpers/methods";
 
 import axios from "axios";
 import { updateTripStatus } from "../Trip/ActiveTrips/TripServices";
+import { Link } from "react-router-dom";
 interface Trip {
   tripId: string;
   name: string;
@@ -124,7 +125,7 @@ const TripDashboard = () => {
   const unlockTrip = async (trip: Trip) => {
     try {
       const response = await axios.post(
-        "http://103.20.214.201:5030/send-command",
+        "http://192.168.1.23:5030/send-command",
         {
           imei: trip.tripData[0]["imei"][0],
           // imei: "688055894978",
@@ -225,7 +226,15 @@ const TripDashboard = () => {
             return (
               <ListItem
                 key={trip.tripId}
-                onClick={() => handleTripClick(trip)}
+                onClick={() => {
+                  history.push({
+                    pathname: "/live-tracking",
+                    state: {
+                      imei: trip?.tripData[0]["imei"][0],
+                      status: "Online",
+                    },
+                  });
+                }}
                 sx={{
                   border: "1px solid",
                   borderColor: theme.palette.divider,

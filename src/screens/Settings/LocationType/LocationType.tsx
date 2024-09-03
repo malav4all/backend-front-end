@@ -248,33 +248,33 @@ const LocationType: React.FC = () => {
           alignItems={{ lg: "center" }}
         >
           Location Type
-        </Typography>
-
-        <Stack
-          direction={{ sm: "row", xs: "column" }}
-          alignItems={{ sm: "center" }}
-          spacing={1}
-        >
-          <CustomInput
-            placeHolder="Search Location Type"
-            id="assetAssingment_search_field"
-            onChange={debounceEventHandler(
-              handleSearchOnChange,
-              strings.SEARCH_TIME_OUT
-            )}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <CustomButton
-            id="add_location_type_button"
-            label="Add Location Type"
-            onClick={() => setDialogOpen(true)}
-          />
+          {/* </Typography> */}
+          <Stack
+            direction={{ sm: "row", xs: "column" }}
+            alignItems={{ sm: "center" }}
+            spacing={1}
+          >
+            <CustomInput
+              placeHolder="Search Location Type"
+              id="assetAssingment_search_field"
+              onChange={debounceEventHandler(
+                handleSearchOnChange,
+                strings.SEARCH_TIME_OUT
+              )}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <CustomButton
+              id="add_location_type_button"
+              label="Add Location Type"
+              onClick={() => setDialogOpen(true)}
+            />
+          </Stack>
         </Stack>
       </Stack>
     </CustomAppHeader>

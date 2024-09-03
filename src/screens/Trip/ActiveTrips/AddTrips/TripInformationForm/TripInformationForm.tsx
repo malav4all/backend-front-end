@@ -207,7 +207,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
     try {
       const response = await checkBattery({
         input: {
-          accountId,
+          accountId: "IMZ113343",
           imei: imei,
           threshold,
         },
