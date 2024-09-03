@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -81,10 +81,10 @@ const AddTrip = (props: any) => {
     permitImg: "",
   });
   useEffect(() => {
-    if (transitTypeForm.transitType.value) {
+    if (transitTypeForm?.transitType?.value) {
       fetchDataAndSetOptions();
     }
-  }, [transitTypeForm.transitType.value]);
+  }, [transitTypeForm?.transitType?.value]);
 
   const fetchDataAndSetOptions = async () => {
     try {
@@ -174,7 +174,7 @@ const AddTrip = (props: any) => {
         ...field,
         extraAttributes: {
           ...field.extraAttributes,
-          value: field.extraAttributes.value || "",
+          value: field?.extraAttributes?.value || "",
         },
       })),
     }));
@@ -242,24 +242,64 @@ const AddTrip = (props: any) => {
     }));
   };
 
+  const handleValidation = () => {
+    let isValid = true;
+
+    switch (activeStep) {
+      case 0: {
+        const validation = validateTransitTypeForm(
+          transitTypeForm,
+          props?.edit
+        );
+        setTransitTypeForm(validation.errors);
+        isValid = validation.isValid;
+        console.log({ isValid });
+        return isValid;
+      }
+      case 1: {
+        const validation = validateTripInformationForm(
+          tripInformationForm,
+          props?.edit
+        );
+        setTripInformationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      case 2: {
+        const validation = validateAlertConfigurationForm(
+          alertConfigurationForm,
+          props?.edit
+        );
+        setAlertConfigurationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      default:
+        break;
+    }
+
+    return isValid;
+  };
+
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleNext = () => {
-    if (activeStep === dynamicSteps.length - 1) {
-      insertTripDetails();
-    } else {
-      // if (handleValidation()) {
+    if (handleValidation()) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      // }
+    }
+  };
+
+  const handleGoToClickedStep = (index: number) => {
+    if (handleValidation() || activeStep > index) {
+      setActiveStep(index);
     }
   };
 
   const insertTripDetails = async () => {
     try {
       const dynamicFormPayload = prepareDynamicFormPayload(dynamicForm);
-      console.log({ dynamicFormPayload });
       const insertTripBody = {
         accountId: store?.getState()?.auth?.tenantId,
         primaryAccount: store?.getState()?.auth?.tenantId,
@@ -341,26 +381,6 @@ const AddTrip = (props: any) => {
     }
   };
 
-  const handleValidation = () => {
-    const { isValid: transitValid, errors: transitErrors } =
-      validateTransitTypeForm(transitTypeForm, props?.edit);
-    setTransitTypeForm({ ...transitErrors });
-
-    const { isValid: tripValid, errors: tripErrors } =
-      validateTripInformationForm(tripInformationForm, props?.edit);
-    setTripInformationForm({ ...tripErrors });
-
-    const { isValid: alertValid, errors: alertErrors } =
-      validateAlertConfigurationForm(alertConfigurationForm, props?.edit);
-    setAlertConfigurationForm({ ...alertErrors });
-
-    return transitValid && tripValid && alertValid;
-  };
-
-  const handleGoToClickedStep = (index: number) => {
-    setActiveStep(index);
-  };
-
   const handleCancel = () => {
     history.push({
       pathname: urls?.tripsViewPath,
@@ -394,18 +414,16 @@ const AddTrip = (props: any) => {
                 />
               }
             >
-              {dynamicSteps.map((label, index) => {
-                return (
-                  <Step
-                    key={index}
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <StepLabel onClick={() => handleGoToClickedStep(index)}>
-                      {label}
-                    </StepLabel>
-                  </Step>
-                );
-              })}
+              {dynamicSteps?.map((label, index) => (
+                <Step
+                  key={index}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <StepLabel onClick={() => handleGoToClickedStep(index)}>
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
             </Stepper>
             <Stack
               direction={{ lg: "row", sm: "row", xs: "row" }}
@@ -447,7 +465,7 @@ const AddTrip = (props: any) => {
                 <CustomButton
                   buttonType="primaryBtn"
                   label={"Trip Start"}
-                  onClick={() => insertTripDetails()}
+                  onClick={insertTripDetails}
                 />
               ) : (
                 <CustomButton
