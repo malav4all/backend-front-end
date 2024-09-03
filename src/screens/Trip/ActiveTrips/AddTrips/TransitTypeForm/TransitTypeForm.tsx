@@ -7,6 +7,7 @@ import {
   MenuItem,
   Grid,
   SelectChangeEvent,
+  FormHelperText,
 } from "@mui/material";
 import { fetchTripTypeTableHandler } from "../../../TripType/service/TripType.service";
 import { openErrorNotification } from "../../../../../helpers/methods";
@@ -88,7 +89,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
       if (selectedRoute) {
         const startPoint = selectedRoute.routeDetails[0];
         const endPoint =
-          selectedRoute.routeDetails[selectedRoute.routeDetails.length - 1];
+          selectedRoute?.routeDetails[selectedRoute?.routeDetails?.length - 1];
 
         setTransitTypeForm((prevFields: any) => ({
           ...prevFields,
@@ -136,6 +137,10 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
                   ? transitTypeForm?.transitType?.value
                   : "Select Trip Type"
               }
+              error={
+                !transitTypeForm?.transitType?.value &&
+                transitTypeForm?.transitType?.error
+              }
             >
               {tripTypeData?.map((item: any, index: any) => (
                 <MenuItem
@@ -147,6 +152,11 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
                 </MenuItem>
               ))}
             </Select>
+            {transitTypeForm?.transitType?.error && (
+              <FormHelperText error className={classes.errorStyle}>
+                {transitTypeForm?.transitType?.error}
+              </FormHelperText>
+            )}
           </Stack>
         </Box>
       </Grid>
