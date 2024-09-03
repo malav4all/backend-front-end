@@ -248,7 +248,7 @@ const LocationType: React.FC = () => {
           alignItems={{ lg: "center" }}
         >
           Location Type
-        </Typography>
+        </Stack>
 
         <Stack
           direction={{ sm: "row", xs: "column" }}
