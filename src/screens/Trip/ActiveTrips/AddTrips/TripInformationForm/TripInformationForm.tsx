@@ -11,6 +11,7 @@ import {
   useTheme,
   Autocomplete,
   Checkbox,
+  FormHelperText,
 } from "@mui/material";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -247,6 +248,9 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           <Stack direction="column">
             <InputLabel className={classes.inputLabel} shrink>
               Start Point
+              <Box ml={0.4} color={"red"}>
+                *
+              </Box>
             </InputLabel>
             <Select
               className={classes.dropDownStyle}
@@ -261,6 +265,10 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                   ? tripInformationForm?.startPoint?.label
                   : "Select Start Point"
               }
+              error={
+                !tripInformationForm?.startPoint?.value &&
+                tripInformationForm?.startPoint?.error
+              }
             >
               {filterOptions(tripInformationForm?.endPoint?.value)?.map(
                 (item: any, index: any) => (
@@ -274,6 +282,11 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                 )
               )}
             </Select>
+            {tripInformationForm?.startPoint?.error && (
+              <FormHelperText error className={classes.errorStyle}>
+                {tripInformationForm?.startPoint?.error}
+              </FormHelperText>
+            )}
           </Stack>
         </Box>
       </Grid>
@@ -282,6 +295,9 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           <Stack direction="column">
             <InputLabel className={classes.inputLabel} shrink>
               End Point
+              <Box ml={0.4} color={"red"}>
+                *
+              </Box>
             </InputLabel>
             <Select
               className={classes.dropDownStyle}
@@ -296,6 +312,10 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                   ? tripInformationForm?.endPoint?.label
                   : "Select End Point"
               }
+              error={
+                !tripInformationForm?.endPoint?.value &&
+                tripInformationForm?.endPoint?.error
+              }
             >
               {filterOptions(tripInformationForm?.startPoint?.value)?.map(
                 (item: any, index: any) => (
@@ -309,6 +329,11 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                 )
               )}
             </Select>
+            {tripInformationForm?.endPoint?.error && (
+              <FormHelperText error className={classes.errorStyle}>
+                {tripInformationForm?.endPoint?.error}
+              </FormHelperText>
+            )}
           </Stack>
         </Box>
       </Grid>
@@ -423,6 +448,12 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               option?.deviceOnboardingIMEINumber ===
               value?.deviceOnboardingIMEINumber
             }
+            onChange={handleImeiChange}
+            value={imeiOptions?.filter((option: any) =>
+              tripInformationForm?.imeiNumber?.value?.includes(
+                option?.deviceOnboardingIMEINumber
+              )
+            )}
             renderOption={(props: any, option: any, { selected }: any) => (
               <li {...props}>
                 <Checkbox
@@ -434,14 +465,13 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
                 {option?.deviceOnboardingIMEINumber}
               </li>
             )}
-            onChange={handleImeiChange}
-            value={imeiOptions?.filter((option: any) =>
-              tripInformationForm?.imeiNumber?.value?.includes(
-                option?.deviceOnboardingIMEINumber
-              )
-            )}
             renderInput={(params) => (
-              <TextField {...params} placeholder="Select IMEIs" />
+              <TextField
+                {...params}
+                placeholder="Select IMEIs"
+                error={Boolean(tripInformationForm?.imeiNumber?.error)}
+                helperText={tripInformationForm?.imeiNumber?.error}
+              />
             )}
           />
         </Box>
@@ -492,14 +522,12 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         <CustomInput
-          required
           id="add_remarks"
           placeHolder="Enter Remarks"
           name="remarks"
           label="Remarks"
           onChange={handleFormDataChange}
           value={tripInformationForm?.remarks?.value}
-          error={tripInformationForm?.remarks?.error}
           propsToInputElement={{ maxLength: strings.USER_LAST_NAME_LIMIT }}
           sx={{
             input: {
