@@ -132,7 +132,8 @@ const Users = () => {
             label={usersData.status}
             size="small"
             sx={{
-              backgroundColor: usersData.status === "Active" ? "green" : "#FF4560",
+              backgroundColor:
+                usersData.status === "Active" ? "green" : "#FF4560",
               color: usersData.status === "Active" ? "white" : "white",
               border:
                 usersData.status === "Active"
@@ -150,18 +151,21 @@ const Users = () => {
             }}
           >
             <Tooltip title="Change Password">
-              <MdPassword
-                color={headerColor}
-                style={{
-                  margin: "0px 20px -7px 0px",
-                  cursor: "pointer",
-                  fontSize: "24px",
-                }}
-                onClick={() => {
-                  setChangePasswordModal(true);
-                  setSelectedEmailData(usersData.email);
-                }}
-              />
+              <span>
+                <MdPassword
+                  color={headerColor}
+                  style={{
+                    margin: "0px 20px -7px 0px",
+                    cursor: "pointer",
+                    fontSize: "24px",
+                    color: "#7c58cb",
+                  }}
+                  onClick={() => {
+                    setChangePasswordModal(true);
+                    setSelectedEmailData(usersData.email);
+                  }}
+                />
+              </span>
             </Tooltip>
             <Tooltip
               title="Edit"
@@ -170,14 +174,6 @@ const Users = () => {
               }}
             >
               <EditIcon sx={{ color: "#7c58cb" }} />
-              {/* <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: headerColor,
-                  fontSize: "20px",
-                }}
-              /> */}
             </Tooltip>
           </Box>
         ),

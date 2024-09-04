@@ -35,8 +35,7 @@ import {
 } from "./IndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddIndustry from "./component/AddIndustry";
-import { PiPencilSimpleBold } from "react-icons/pi";
-import { headerColor } from "../../../utils/styles";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface IndustryFormData {
   name: { value: string; error: string };
@@ -125,13 +124,9 @@ const Industry: React.FC = () => {
             description: item.description,
             action: (
               <Tooltip title="Edit" onClick={() => handleEditIndustry(item)}>
-                <PiPencilSimpleBold
-                  style={{
-                    margin: "0px 8px -7px 0px",
-                    cursor: "pointer",
-                    color: headerColor,
-                    fontSize: "20px",
-                  }}
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 />
               </Tooltip>
             ),
