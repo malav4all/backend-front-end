@@ -38,6 +38,8 @@ import AddUserAccess from "./component/AddUserAccess";
 import history from "../../../utils/history";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings from "../../../global/constants/StringConstants";
 const TripAccess = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -288,7 +290,7 @@ const TripAccess = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {getAddUserAccessBtn()}
+            {hasAccessTo(strings.TRIPS, strings.ADD) && getAddUserAccessBtn()}
           </Stack>
         </Stack>
       </CustomAppHeader>

@@ -41,6 +41,7 @@ import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import ExportCSV from "../../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 import { useLocation } from "react-router-dom";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 
 const DeviceOnboarding = () => {
   const classes = DeviceOnboardingStyle;
@@ -109,17 +110,19 @@ const DeviceOnboarding = () => {
         deviceOnboardingIMEINumber: item.deviceOnboardingIMEINumber,
         action: (
           <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editDeviceGroup(item);
-              }}
-            >
-              <EditIcon
-                htmlColor={"#7C58CB"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-              />
-            </Tooltip>
+            {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
+              <Tooltip
+                title="Edit"
+                onClick={() => {
+                  editDeviceGroup(item);
+                }}
+              >
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
           </>
         ),
       };
@@ -300,28 +303,32 @@ const DeviceOnboarding = () => {
           spacing={1}
         >
           {/* {getSearchBar()} */}
-          <CustomButton
-            id="groups_download_template_button"
-            label="Download&nbsp;Template"
-            onClick={ExportCSV(
-              ["imei,accountId,simno,businessmodel,location"],
-              "deviceassignment"
-            )}
-            customClasses={{
-              width: "200px",
-            }}
-          />
-          <CustomButton
-            id="groups_download_template_button"
-            label="Upload Bulk Device"
-            onClick={() => {
-              setUploadAsset(true);
-            }}
-            customClasses={{
-              width: "200px",
-            }}
-          />
-          {addUserButton()}
+          {hasAccessTo(strings.INVENTORY, strings.UPLOAD) && (
+            <CustomButton
+              id="groups_download_template_button"
+              label="Download&nbsp;Template"
+              onClick={ExportCSV(
+                ["imei,accountId,simno,businessmodel,location"],
+                "deviceassignment"
+              )}
+              customClasses={{
+                width: "200px",
+              }}
+            />
+          )}
+          {hasAccessTo(strings.INVENTORY, strings.UPLOAD) && (
+            <CustomButton
+              id="groups_download_template_button"
+              label="Upload Bulk Device"
+              onClick={() => {
+                setUploadAsset(true);
+              }}
+              customClasses={{
+                width: "200px",
+              }}
+            />
+          )}
+          {hasAccessTo(strings.INVENTORY, strings.ADD) && addUserButton()}
         </Stack>
       </Stack>
 

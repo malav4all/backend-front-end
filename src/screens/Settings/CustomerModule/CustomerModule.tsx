@@ -35,6 +35,8 @@ import {
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddCustomerModule from "./component/AddCustomerModule";
 import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings from "../../../global/constants/StringConstants";
 
 interface CustomerModuleFormData {
   name: { value: string; error: string };
@@ -139,16 +141,20 @@ const CustomerModule: React.FC = () => {
             code: item.code,
             description: item.description,
             action: (
-              <Tooltip
-                title="Edit"
-                key={item.id}
-                onClick={() => editModule(item)}
-              >
-                <EditIcon
-                  htmlColor={"#7C58CB"}
-                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                />
-              </Tooltip>
+              <>
+                {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
+                  <Tooltip
+                    title="Edit"
+                    key={item.id}
+                    onClick={() => editModule(item)}
+                  >
+                    <EditIcon
+                      htmlColor={"#7C58CB"}
+                      style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                    />
+                  </Tooltip>
+                )}
+              </>
             ),
           })
         );
@@ -304,7 +310,8 @@ const CustomerModule: React.FC = () => {
             spacing={1}
           >
             {renderSearchBar()}
-            {renderAddCustomerModuleButton()}
+            {hasAccessTo(strings.SETTINGS, strings.ADD) &&
+              renderAddCustomerModuleButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

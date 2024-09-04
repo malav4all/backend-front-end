@@ -65,9 +65,9 @@ export const GenerateMenu = (mainMenus: ListOfMenusType[]) => {
 };
 
 export const hasAccessTo = (resourceName: string, permission: string) => {
-  if (isAdmin()) {
-    return true;
-  }
+  // if (isAdmin()) {
+  //   return true;
+  // }
 
   const resources: any = store.getState().auth.resources;
 
@@ -123,7 +123,7 @@ export const doesUserHasAccessTo = (
 };
 
 export const isAdmin = () => {
-  const roleId = store.getState().auth.role;
+  const roleId = store.getState().auth.isSuperAdmin;
 
-  return roleId === "Master Admin" || "Admin" || "Super Admin";
+  return roleId 
 };

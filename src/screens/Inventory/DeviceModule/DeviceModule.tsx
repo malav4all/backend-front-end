@@ -34,6 +34,7 @@ import {
   searchTableHandler,
 } from "./service/deviceModule.service";
 import DeviceModelStyles from "./DeviceModule.styles";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 const DeviceModule = () => {
   const theme = useTheme();
   const classes = DeviceModelStyles;
@@ -90,20 +91,22 @@ const DeviceModule = () => {
           deviceModelType: item.deviceModelType,
           action: (
             <>
-              <Tooltip
-                title="Edit"
-                placement="top"
-                onClick={() => {
-                  setAddUserDialogHandler(true);
-                  setSelectedRowData(item);
-                  setEdit(true);
-                }}
-              >
-                <EditIcon
-                  htmlColor={"#7C58CB"}
-                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                />
-              </Tooltip>
+              {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
+                <Tooltip
+                  title="Edit"
+                  placement="top"
+                  onClick={() => {
+                    setAddUserDialogHandler(true);
+                    setSelectedRowData(item);
+                    setEdit(true);
+                  }}
+                >
+                  <EditIcon
+                    htmlColor={"#7C58CB"}
+                    style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                  />
+                </Tooltip>
+              )}
             </>
           ),
         };
@@ -268,7 +271,7 @@ const DeviceModule = () => {
             spacing={1}
           >
             {getSearchBar()}
-            {addUserButton()}
+            {hasAccessTo(strings.INVENTORY, strings.ADD) && addUserButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

@@ -32,6 +32,8 @@ import AddLocationTypeModal from "./component/AddLocationType";
 import LocationTypeStyles from "./LocationType.styles";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import EditIcon from "@mui/icons-material/Edit";
+import StringConstants from "../../../global/constants/StringConstants";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 interface LocationTypeFormField {
   id: {
     value: string;
@@ -151,15 +153,19 @@ const LocationType: React.FC = () => {
     return data.map((item) => ({
       type: item.type,
       action: (
-        <Tooltip
-          title="Edit"
-          onClick={() => handleEditClick(item._id, item.type)}
-        >
-          <EditIcon
-            htmlColor={"#7C58CB"}
-            style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-          />
-        </Tooltip>
+        <>
+          {hasAccessTo(StringConstants.LOCATION, StringConstants.UPDATE) && (
+            <Tooltip
+              title="Edit"
+              onClick={() => handleEditClick(item._id, item.type)}
+            >
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
+            </Tooltip>
+          )}
+        </>
       ),
     }));
   };
@@ -265,11 +271,13 @@ const LocationType: React.FC = () => {
               ),
             }}
           />
-          <CustomButton
-            id="add_location_type_button"
-            label="Add Location Type"
-            onClick={() => setDialogOpen(true)}
-          />
+          {hasAccessTo(StringConstants.LOCATION, StringConstants.ADD) && (
+            <CustomButton
+              id="add_location_type_button"
+              label="Add Location Type"
+              onClick={() => setDialogOpen(true)}
+            />
+          )}
         </Stack>
       </Stack>
     </CustomAppHeader>

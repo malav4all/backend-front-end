@@ -26,13 +26,14 @@ import {
 import AddAccountModal from "./Component/AddAccountModal";
 import {
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
 } from "../../../utils/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import { accountTableHeader } from "./Account.helper";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AccountStyles from "./Account.styles";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings from "../../../global/constants/StringConstants";
 
 interface AccountData {
   accountId: string;
@@ -99,19 +100,23 @@ const Account: React.FC = () => {
       accountType: item.industryType.name,
       deviceOnboardingIMEINumberCount: item.deviceOnboardingIMEINumberCount,
       action: (
-        <Tooltip
-          title="Edit"
-          onClick={() => {
-            setIsAddAccountDialogOpen(true);
-            setSelectedRowData(item);
-            setIsEditMode(true);
-          }}
-        >
-          <EditIcon
+        <>
+          {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
+            <Tooltip
+              title="Edit"
+              onClick={() => {
+                setIsAddAccountDialogOpen(true);
+                setSelectedRowData(item);
+                setIsEditMode(true);
+              }}
+            >
+              <EditIcon
                 htmlColor={"#7C58CB"}
                 style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
-        </Tooltip>
+            </Tooltip>
+          )}
+        </>
       ),
     }));
     return formattedTableData;
@@ -216,7 +221,8 @@ const Account: React.FC = () => {
           spacing={1}
         >
           {renderSearchBar()}
-          {renderAddAccountButton()}
+          {hasAccessTo(strings.SETTINGS, strings.ADD) &&
+            renderAddAccountButton()}
         </Stack>
       </Stack>
     </CustomAppHeader>

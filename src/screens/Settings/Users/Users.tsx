@@ -53,6 +53,7 @@ import { store } from "../../../utils/store";
 import ChangePassword from "./components/ChangePassword/ChangePassword";
 import uploadUser from "../../../assets/images/uploadUser.svg";
 import history from "../../../utils/history";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 
 const Users = () => {
   const theme = useTheme();
@@ -144,38 +145,42 @@ const Users = () => {
           />
         ),
         action: (
-          <Box
-            sx={{
-              display: "flex",
-              gap: "0.5rem",
-            }}
-          >
-            <Tooltip title="Change Password">
-              <span>
-                <MdPassword
-                  color={headerColor}
-                  style={{
-                    margin: "0px 20px -7px 0px",
-                    cursor: "pointer",
-                    fontSize: "24px",
-                    color: "#7c58cb",
-                  }}
+          <>
+            {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "0.5rem",
+                }}
+              >
+                <Tooltip title="Change Password">
+                  <span>
+                    <MdPassword
+                      color={headerColor}
+                      style={{
+                        margin: "0px 20px -7px 0px",
+                        cursor: "pointer",
+                        fontSize: "24px",
+                        color: "#7c58cb",
+                      }}
+                      onClick={() => {
+                        setChangePasswordModal(true);
+                        setSelectedEmailData(usersData.email);
+                      }}
+                    />
+                  </span>
+                </Tooltip>
+                <Tooltip
+                  title="Edit"
                   onClick={() => {
-                    setChangePasswordModal(true);
-                    setSelectedEmailData(usersData.email);
+                    editUser(usersData);
                   }}
-                />
-              </span>
-            </Tooltip>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editUser(usersData);
-              }}
-            >
-              <EditIcon sx={{ color: "#7c58cb" }} />
-            </Tooltip>
-          </Box>
+                >
+                  <EditIcon sx={{ color: "#7c58cb" }} />
+                </Tooltip>
+              </Box>
+            )}
+          </>
         ),
       };
     });
@@ -456,7 +461,7 @@ const Users = () => {
             spacing={1}
           >
             {getSearchBar()}
-            {addUserButton()}
+            {hasAccessTo(strings.SETTINGS, strings.ADD) && addUserButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

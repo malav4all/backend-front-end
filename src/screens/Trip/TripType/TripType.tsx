@@ -33,6 +33,10 @@ import AddTripType from "./component/AddTripType";
 import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
 import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings, {
+  StringConstants,
+} from "../../../global/constants/StringConstants";
 const TripType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -93,12 +97,16 @@ const TripType = () => {
         gstPercentage: item.gstPercentage,
         createdBy: item.createdBy,
         action: (
-          <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
-            <EditIcon
-              htmlColor={"#7C58CB"}
-              style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-            />
-          </Tooltip>
+          <>
+            {hasAccessTo(strings.TRIPS, strings.UPDATE) && (
+              <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
+          </>
         ),
       };
     });
@@ -287,7 +295,7 @@ const TripType = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {getAddTripTypeBtn()}
+            {hasAccessTo(strings.TRIPS, strings.ADD) && getAddTripTypeBtn()}
           </Stack>
         </Stack>
       </CustomAppHeader>

@@ -39,6 +39,8 @@ import AddEntity from "./component/AddEntity";
 import { useLocation } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import { store } from "../../../utils/store";
+import strings from "../../../global/constants/StringConstants";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 const Entity = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -102,12 +104,16 @@ const Entity = () => {
       return {
         ...item,
         action: (
-          <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
-            <EditIcon
-              htmlColor={"#7C58CB"}
-              style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-            />
-          </Tooltip>
+          <>
+            {hasAccessTo(strings.TRIPS, strings.UPDATE) && (
+              <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
+          </>
         ),
       };
     });
@@ -329,7 +335,7 @@ const Entity = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {getAddEntityBtn()}
+            {hasAccessTo(strings.TRIPS, strings.ADD) && getAddEntityBtn()}
           </Stack>
         </Stack>
       </CustomAppHeader>

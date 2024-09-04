@@ -34,6 +34,8 @@ import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import { store } from "../../utils/store";
 import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
+import StringConstants from "../../global/constants/StringConstants";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -128,20 +130,22 @@ const DeviceGroup = () => {
         ),
         action: (
           <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editDeviceGroup(item);
-              }}
-              sx={{
-                color: "#7C58CB",
-              }}
-            >
-              <EditIcon
-                htmlColor={"#7C58CB"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-              />
-            </Tooltip>
+            {hasAccessTo(StringConstants.DEVICE, StringConstants.UPDATE) && (
+              <Tooltip
+                title="Edit"
+                onClick={() => {
+                  editDeviceGroup(item);
+                }}
+                sx={{
+                  color: "#7C58CB",
+                }}
+              >
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
           </>
         ),
       };
@@ -351,7 +355,12 @@ const DeviceGroup = () => {
             spacing={1}
           >
             {getSearchBar()}
-            {addDeviceGroupButton()}
+            {hasAccessTo(
+              // "Devices",
+              // "Add"
+              StringConstants.DEVICE,
+              StringConstants.ADD
+            ) && addDeviceGroupButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

@@ -46,6 +46,7 @@ import { routesTableHeader, validateRoutesForm } from "./Routes.helper";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import { RiCloseCircleFill } from "react-icons/ri";
 import strings from "../../global/constants/StringConstants";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
 
 const Routes = () => {
   const classes = routesStyles;
@@ -341,30 +342,32 @@ const Routes = () => {
         totalDuration: formatDuration(item?.totalDuration),
         action: (
           <Box sx={{ display: "flex", gap: "1rem" }}>
-            <Tooltip
-              title={
-                <CustomPaper className={{ backgroundColor: "transparent" }}>
-                  <Typography sx={classes.liveTrackingTooltipText}>
-                    {"View Routes"}
-                  </Typography>
-                </CustomPaper>
-              }
-              placement="top"
-              arrow
-            >
-              <VisibilityIcon
-                style={{ color: primaryHeaderColor, cursor: "pointer" }}
-                onClick={() => {
-                  history.push({
-                    pathname: "/view-routes",
-                    state: {
-                      coordinates: coordinates,
-                      routeOrigin,
-                    },
-                  });
-                }}
-              />
-            </Tooltip>
+            {hasAccessTo(strings.ROUTES, strings.UPDATE) && (
+              <Tooltip
+                title={
+                  <CustomPaper className={{ backgroundColor: "transparent" }}>
+                    <Typography sx={classes.liveTrackingTooltipText}>
+                      {"View Routes"}
+                    </Typography>
+                  </CustomPaper>
+                }
+                placement="top"
+                arrow
+              >
+                <VisibilityIcon
+                  style={{ color: primaryHeaderColor, cursor: "pointer" }}
+                  onClick={() => {
+                    history.push({
+                      pathname: "/view-routes",
+                      state: {
+                        coordinates: coordinates,
+                        routeOrigin,
+                      },
+                    });
+                  }}
+                />
+              </Tooltip>
+            )}
           </Box>
         ),
       };
@@ -712,38 +715,40 @@ const Routes = () => {
             spacing={1}
           >
             {getSearchBar()}
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                flexWrap: "wrap",
-                backgroundColor: theme.palette.background.paper,
-              }}
-              mt={2}
-              mr={2}
-            >
-              {!isHideForm ? (
-                <CustomButton
-                  id="users_add_button"
-                  label="Create Routes"
-                  onClick={() => setIsHideForm(!isHideForm)}
-                  customClasses={{ width: "160px" }}
-                />
-              ) : (
-                <Box
-                  sx={{
-                    padding: "0rem 2rem",
-                    fontSize: "2rem",
-                    cursor: "pointer",
-                    borderRadius: "100%",
-                    color: theme.palette.text.primary,
-                  }}
-                  onClick={() => setIsHideForm(!isHideForm)}
-                >
-                  <RiCloseCircleFill />
-                </Box>
-              )}
-            </Box>
+            {hasAccessTo(strings.ROUTES, strings.ADD) && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  flexWrap: "wrap",
+                  backgroundColor: theme.palette.background.paper,
+                }}
+                mt={2}
+                mr={2}
+              >
+                {!isHideForm ? (
+                  <CustomButton
+                    id="users_add_button"
+                    label="Create Routes"
+                    onClick={() => setIsHideForm(!isHideForm)}
+                    customClasses={{ width: "160px" }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      padding: "0rem 2rem",
+                      fontSize: "2rem",
+                      cursor: "pointer",
+                      borderRadius: "100%",
+                      color: theme.palette.text.primary,
+                    }}
+                    onClick={() => setIsHideForm(!isHideForm)}
+                  >
+                    <RiCloseCircleFill />
+                  </Box>
+                )}
+              </Box>
+            )}
           </Stack>
         </Stack>
       </CustomAppHeader>

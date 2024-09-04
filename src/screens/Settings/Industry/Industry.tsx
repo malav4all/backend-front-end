@@ -36,6 +36,8 @@ import {
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddIndustry from "./component/AddIndustry";
 import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings from "../../../global/constants/StringConstants";
 
 interface IndustryFormData {
   name: { value: string; error: string };
@@ -123,12 +125,19 @@ const Industry: React.FC = () => {
             code: item.code.join(", "),
             description: item.description,
             action: (
-              <Tooltip title="Edit" onClick={() => handleEditIndustry(item)}>
-                <EditIcon
-                  htmlColor={"#7C58CB"}
-                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                />
-              </Tooltip>
+              <>
+                {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
+                  <Tooltip
+                    title="Edit"
+                    onClick={() => handleEditIndustry(item)}
+                  >
+                    <EditIcon
+                      htmlColor={"#7C58CB"}
+                      style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                    />
+                  </Tooltip>
+                )}
+              </>
             ),
           })
         );
@@ -333,7 +342,8 @@ const Industry: React.FC = () => {
             spacing={1}
           >
             {renderSearchBar()}
-            {renderAddIndustryButton()}
+            {hasAccessTo(strings.SETTINGS, strings.ADD) &&
+              renderAddIndustryButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>
