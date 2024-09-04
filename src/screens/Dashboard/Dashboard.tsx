@@ -143,6 +143,7 @@ const Dashboard = () => {
                       size="small"
                       sx={{
                         backgroundColor: "#FF4560",
+                        border: "1px solid #d32525",
                       }}
                     />
                   ) : (
@@ -150,7 +151,8 @@ const Dashboard = () => {
                       label={item.status}
                       size="small"
                       sx={{
-                        backgroundColor: "#00e396bd",
+                        backgroundColor: "green",
+                        border: "1px solid #37b071",
                       }}
                     />
                   ),

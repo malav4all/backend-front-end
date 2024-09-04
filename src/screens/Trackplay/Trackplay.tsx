@@ -126,12 +126,12 @@ const Trackplay = ({ location }: TrackPlayProps) => {
     polylines.forEach((polyline) => map?.addObject(polyline));
 
     // Zoom to fit the bounding box
-    // map.getViewModel()?.setLookAtData({
-    //   bounds: boundingBox,
-    // });
+    map.getViewModel()?.setLookAtData({
+      bounds: boundingBox,
+    });
 
     // Set a specific zoom level to zoom in as desired
-    // map.setZoom(12);
+    map.setZoom(12);
 
     const startIcon = new window.H.map.Icon(startSvgMarkup, {
       anchor: { x: 20, y: 24 }, // Adjust the anchor to move the icon left by 20px
@@ -167,6 +167,7 @@ const Trackplay = ({ location }: TrackPlayProps) => {
         endDate: trackPlayData?.endDate,
       },
     });
+    console.log(trackdata);
 
     addPolylineToMap(trackdata.getDistanceTrackPlay);
     // getReports(trackdata.getDistanceTrackPlay);
@@ -480,10 +481,10 @@ const Trackplay = ({ location }: TrackPlayProps) => {
       <Box
         sx={{
           position: "absolute",
-          top: "2rem",
-          right: "2rem",
+          top: "4rem",
+          right: "1.7rem",
           zIndex: "2",
-          backgroundColor: "white",
+          backgroundColor: "#060B25",
           boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
           padding: "1rem",
           borderRadius: "5px",

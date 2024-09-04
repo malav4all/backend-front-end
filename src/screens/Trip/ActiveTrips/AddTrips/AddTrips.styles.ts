@@ -29,15 +29,29 @@ const addTripStyles = {
     },
   },
   stepperStyle: {
+
     overflow: "auto",
     "& .MuiStepLabel-labelContainer": {
-      ...mediumFont,
-      fontSize: getRelativeFontSize(2),
-    },
-    "& .MuiStepLabel-label.Mui-completed": {
-      color: primaryColorBlack,
       ...boldFont,
       fontSize: getRelativeFontSize(2),
+      color: "#ffffff",
+    },
+    "& .MuiStepLabel-label.Mui-completed": {
+      color: "#aaaaaa",
+      ...mediumFont,
+      fontSize: getRelativeFontSize(1),
+    },
+    "& .MuiStepIcon-root": {
+      color: "#5A21D9", 
+    },
+    "& .MuiStepIcon-root.Mui-completed": {
+      color: "#4CAF50", 
+    },
+    "& .MuiStepIcon-text": {
+      fill: "#ffffff",
+    },
+    "& .MuiStepConnector-line": {
+      borderColor: "#303968",
     },
   },
 };

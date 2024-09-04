@@ -295,7 +295,7 @@ const CustomTableDashboard = (props: CustomProps) => {
 
   const getTable = () => {
     return (
-      <Box sx={{ overflowX: "scroll" }}>
+      <Box>
         {rowData?.length ? getTablePagination() : null}
         <Table
           sx={{
