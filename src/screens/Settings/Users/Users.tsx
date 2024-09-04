@@ -130,29 +130,14 @@ const Users = () => {
         status: (
           <Chip
             label={usersData.status}
+            size="small"
             sx={{
-              backgroundColor: usersData.status === "Active" ? "green" : "grey",
+              backgroundColor: usersData.status === "Active" ? "green" : "#FF4560",
               color: usersData.status === "Active" ? "white" : "white",
-              borderRadius: "5px",
               border:
                 usersData.status === "Active"
                   ? "1px solid #37b071"
                   : "1px solid white",
-              animation: "pulse 2s infinite",
-              "@keyframes pulse": {
-                "0%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-                "50%": {
-                  transform: "scale(1.1)",
-                  opacity: 0.75,
-                },
-                "100%": {
-                  transform: "scale(1)",
-                  opacity: 1,
-                },
-              },
             }}
             variant="filled"
           />

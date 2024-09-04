@@ -1,16 +1,12 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
-  Grid,
   Stack,
   Step,
   StepLabel,
   Stepper,
   Typography,
-  Select,
-  MenuItem,
   useTheme,
-  TextField,
   Divider,
 } from "@mui/material";
 import { CustomButton } from "../../../../global/components";
@@ -44,20 +40,20 @@ import { store } from "../../../../utils/store";
 import DynamicForm from "./DynamicForm/DynamicForm";
 import TripVerificationForm from "./TripVerification/TripVerificationForm";
 
-const steps = [
-  "Trip Type",
-  "Trip Information",
-  "Alert Detail",
-  "Verification Photos",
-];
-
 const AddTrip = (props: any) => {
   const classes = addTripStyles;
   const history = useHistory();
   const theme = useTheme();
   const redirectionState: any = props.location?.state;
   const [formData, setFormData] = useState({});
-  const [dynamicSteps, setDynamicSteps] = useState<string[]>(steps);
+
+  const [dynamicSteps, setDynamicSteps] = useState<string[]>([
+    "Trip Type",
+    "Trip Information",
+    "Alert Detail",
+    ...(redirectionState?.edit ? ["Verification Photos"] : []), // Conditionally include "Verification Photos" step
+  ]);
+
   const [activeStep, setActiveStep] = useState(0);
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
     transitTypeFormInitialState(redirectionState?.transitTypeForm)
@@ -74,17 +70,23 @@ const AddTrip = (props: any) => {
   const [dynamicForm, setDynamicForm] = useState(
     dynamicFormInitialState(redirectionState?.dynamicForm)
   );
-
+  console.log({ redirectionState });
+  console.log({ transitTypeForm });
+  console.log({ tripInformationForm });
   const [imgSrc, setImgSrc] = useState({
-    vehicleImg: "",
-    installLockImg: "",
-    permitImg: "",
+    vehicleImg: redirectionState?.imgSrc?.vehiclenumber ?? "",
+    installLockImg: redirectionState?.imgSrc?.installLock ?? "",
+    permitImg: redirectionState?.imgSrc?.permitNumber ?? "",
+    paymentProofImg: redirectionState?.imgSrc?.paymentProofImg ?? "",
   });
+  
   useEffect(() => {
     if (transitTypeForm?.transitType?.value) {
       fetchDataAndSetOptions();
     }
   }, [transitTypeForm?.transitType?.value]);
+
+  console.log(redirectionState?.edit, "edit");
 
   const fetchDataAndSetOptions = async () => {
     try {
@@ -144,7 +146,7 @@ const AddTrip = (props: any) => {
       openErrorNotification(error.message);
     }
   };
-
+  console.log({ imgSrc });
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
 
@@ -187,6 +189,7 @@ const AddTrip = (props: any) => {
           <TransitTypeForm
             transitTypeForm={transitTypeForm}
             setTransitTypeForm={setTransitTypeForm}
+            edit={redirectionState?.edit}
           />
         );
       case 1:
@@ -195,6 +198,7 @@ const AddTrip = (props: any) => {
             tripInformationForm={tripInformationForm}
             setTripInformationForm={setTripInformationForm}
             transitTypeForm={transitTypeForm}
+            edit={redirectionState?.edit}
           />
         );
       case 2:
@@ -202,9 +206,6 @@ const AddTrip = (props: any) => {
           <AlertConfigurationForm
             alertConfigurationForm={alertConfigurationForm}
             setAlertConfigurationForm={setAlertConfigurationForm}
-            handleFormDataChange={(event: any) =>
-              handleFormDataChange(event, setAlertConfigurationForm)
-            }
           />
         );
       case 3:
@@ -287,13 +288,13 @@ const AddTrip = (props: any) => {
 
   const handleNext = () => {
     if (handleValidation()) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
   const handleGoToClickedStep = (index: number) => {
     if (handleValidation() || activeStep > index) {
-      setActiveStep(index);
+    setActiveStep(index);
     }
   };
 
@@ -314,6 +315,9 @@ const AddTrip = (props: any) => {
           {
             imei: tripInformationForm?.imeiNumber?.value,
             vehicleNo: tripInformationForm?.vehicleNumber?.value,
+            driverName: tripInformationForm?.driverName?.value,
+            driverContactNumber:
+              tripInformationForm?.driverContactNumber?.value,
             tripDate: new Date(tripInformationForm?.tripStartDate?.value)
               .toISOString()
               .split("T")[0],
@@ -347,11 +351,13 @@ const AddTrip = (props: any) => {
           vehiclenumber: imgSrc.vehicleImg,
           installLock: imgSrc.installLockImg,
           permitNumber: imgSrc.permitImg,
+          paymentProof: imgSrc.paymentProofImg,
         },
+        transitType: transitTypeForm?.transitType.value,
       };
 
       console.log({ insertTripBody });
-      // if (handleValidation()) {
+      if (handleValidation()) {
       if (props?.edit) {
         // const res = await updateTrip({
         //   input: {
@@ -372,10 +378,10 @@ const AddTrip = (props: any) => {
         });
 
         openSuccessNotification(res?.createTrip?.message);
-        // history.goBack();
+        history.goBack();
         await props?.tableData?.();
       }
-      // }
+      }
     } catch (error: any) {
       openErrorNotification(error?.message || notifiers.GENERIC_ERROR);
     }
@@ -403,6 +409,7 @@ const AddTrip = (props: any) => {
             }}
             alignItems={{ lg: "center" }}
             mt={3}
+            ml={32}
             sx={{ [`@media screen and (max-width: ${1390}px)`]: { mt: 0.438 } }}
           >
             <Stepper
@@ -435,6 +442,7 @@ const AddTrip = (props: any) => {
               alignItems="center"
               spacing={1}
               mt={2}
+              mr={32}
             >
               {activeStep === 0 ? (
                 <CustomButton

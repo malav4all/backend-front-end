@@ -25,6 +25,7 @@ interface CustomProps {
   personId?: string;
   tabValue?: string;
   tripStatus?: string;
+  imgSrc?: any;
   onStatusChange?: (newStatus: string) => void;
 }
 
@@ -40,6 +41,7 @@ const ViewHeaderComponent = (props: CustomProps) => {
         alertConfigurationForm: props?.alertConfigurationForm,
         transitTypeForm: props?.transitTypeForm,
         dynamicForm: props?.dynamicForm,
+        imgSrc: props?.imgSrc,
         personId: props?.personId,
       },
     });
@@ -136,18 +138,18 @@ const ViewHeaderComponent = (props: CustomProps) => {
               spacing={1}
               sx={classes.viewHeaderLeft}
             >
-              {props.tripStatus !== "started" &&
+              {/* {props.tripStatus !== "started" &&
                 props.tripStatus !== "ended" &&
                 props.tripStatus !== "Closed" &&
                 props.tripStatus !== "created" &&
-                props.showEditButton && (
-                  <CustomButton
-                    label={strings.Edit}
-                    buttonType="primaryBtn"
-                    onClick={() => handleEdit()}
-                    // startIcon={<EditIcon />}
-                  />
-                )}
+                props.showEditButton && ( */}
+              <CustomButton
+                label={strings.Edit}
+                buttonType="primaryBtn"
+                onClick={() => handleEdit()}
+                // startIcon={<EditIcon />}
+              />
+              {/* )} */}
               {props?.tripStatus === "created" && (
                 <CustomButton
                   label="Start Trip"

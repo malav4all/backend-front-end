@@ -69,7 +69,7 @@ const FormBuilder: React.FC = () => {
     return (
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-20">
             <Typography variant="h6" className="truncate font-bold">
               {form?.name || "Test"}
             </Typography>
@@ -93,7 +93,7 @@ const FormBuilder: React.FC = () => {
               variant="outlined"
               fullWidth
             >
-              Edit form <FaEdit />
+              Edit form <FaEdit style={{ marginLeft: "0.5rem" }} />
             </Button>
           )}
         </CardContent>
