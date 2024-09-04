@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography, useTheme } from "@mui/material";
-import { DropzoneAreaBase } from "react-mui-dropzone";
+import { Box, Grid, Typography, Button, useTheme } from "@mui/material";
 import { ReactComponent as UploadIcon } from "../../../../../assets/icons/UploadIcon.svg";
-import ProfileIcon from "../../../../../assets/icons/ProfileIcon.svg";
+import { FiUpload } from "react-icons/fi";
 import TripVerificationFormStyles from "./TripVerificationForm.styles";
 import {
   isTruthy,
@@ -20,34 +19,38 @@ interface TripVerificationFormProps {
 }
 
 const TripVerificationForm: React.FC<TripVerificationFormProps> = ({
-  tripVerificationForm,
-  setTripVerificationForm,
   setImgSrc,
   imgSrc,
 }) => {
   const theme = useTheme();
   const classes = TripVerificationFormStyles(theme);
-
   const [loader, setLoader] = useState(false);
 
-  const handleVehiclePhotoChange = async (event: any) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    imgKey: string
+  ) => {
     try {
       setLoader(true);
+      const file = event.target.files?.[0];
 
-      const file = event[0].file;
+      if (!file) return;
 
       const response = await fileUpload({
         input: {
           file,
         },
       });
+
       openSuccessNotification(
         `${response?.fileUpload?.fileName}${response?.fileUpload?.message}`
       );
+
       setImgSrc({
         ...imgSrc,
-        vehicleImg: `http://localhost:6090/${response?.fileUpload?.fileName}`,
+        [imgKey]: `http://localhost:6090/${response?.fileUpload?.fileName}`,
       });
+
       setLoader(false);
     } catch (error: any) {
       setLoader(false);
@@ -56,146 +59,170 @@ const TripVerificationForm: React.FC<TripVerificationFormProps> = ({
       );
     }
   };
-  const handleinstallLockPhotoChange = async (event: any) => {
-    try {
-      setLoader(true);
 
-      const file = event[0].file;
-
-      const response = await fileUpload({
-        input: {
-          file,
-        },
-      });
-      openSuccessNotification(
-        `${response?.fileUpload?.fileName}${response?.fileUpload?.message}`
-      );
-      setImgSrc({
-        ...imgSrc,
-        installLockImg: `http://localhost:6090/${response?.fileUpload?.fileName}`,
-      });
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      openErrorNotification(
-        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
-      );
-    }
-  };
-  const handlePermitPhotoChange = async (event: any) => {
-    try {
-      setLoader(true);
-
-      const file = event[0].file;
-
-      const response = await fileUpload({
-        input: {
-          file,
-        },
-      });
-      openSuccessNotification(
-        `${response?.fileUpload?.fileName}${response?.fileUpload?.message}`
-      );
-      setImgSrc({
-        ...imgSrc,
-        permitImg: `http://localhost:6090/${response?.fileUpload?.fileName}`,
-      });
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      openErrorNotification(
-        isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
-      );
-    }
-  };
   return (
     <Grid container spacing={4} padding={5}>
-      {/* Vehicle Number Plate */}
-      <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={3} sm={3} md={3} lg={2} xl={2}>
+      {/* Vehicle Number Plate & Installed Lock Photo */}
+      <Grid container spacing={10} sx={{ marginTop: "0.8rem" }}>
+        <Grid item xs={12} sm={6}>
           <Typography variant="subtitle1" sx={classes.label}>
             Vehicle Number Plate
           </Typography>
           <Box sx={classes.imgDisplay}>
             <Box sx={classes.profileBox}>
-              {imgSrc && <img src={imgSrc.vehicleImg} alt="Uploaded Image" />}
+              {imgSrc?.vehicleImg && (
+                <img src={imgSrc.vehicleImg} alt="Uploaded Vehicle Image" />
+              )}
             </Box>
           </Box>
+          <input
+            accept="image/jpeg,image/png,image/bmp"
+            style={{ display: "none" }}
+            id="vehicle-upload"
+            type="file"
+            onChange={(e) => handleFileUpload(e, "vehicleImg")}
+          />
+          <label htmlFor="vehicle-upload">
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<FiUpload />}
+              sx={{
+                backgroundColor: "#6842EF",
+                color: "white",
+                marginTop: 1,
+                marginLeft: "9rem",
+                "&:hover": {
+                  backgroundColor: "#6842EF",
+                },
+              }}
+            >
+              Upload Vehicle Image
+            </Button>
+          </label>
         </Grid>
-        <Grid item xs={9} sm={9} md={9} lg={10} xl={10}>
-          <Box sx={classes.customDropZone}>
-            <DropzoneAreaBase
-              fileObjects={[]}
-              Icon={UploadIcon}
-              showAlerts={false}
-              acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
-              filesLimit={1}
-              onAdd={(event: React.ChangeEvent<any> | any) =>
-                handleVehiclePhotoChange(event)
-              }
-              dropzoneText={`Click and upload an image for profile. 200 x 200 or higher recommended. Max 2MB (png, jpg, jpeg)`}
-            />
-          </Box>
-        </Grid>
-      </Grid>
 
-      {/* Installed Lock Photo */}
-      <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={3} sm={3} md={3} lg={2} xl={2}>
+        <Grid item xs={12} sm={6}>
           <Typography variant="subtitle1" sx={classes.label}>
             Installed Lock Photo
           </Typography>
           <Box sx={classes.imgDisplay}>
             <Box sx={classes.profileBox}>
-              {imgSrc && (
-                <img src={imgSrc.installLockImg} alt="Uploaded Image" />
+              {imgSrc?.installLockImg && (
+                <img
+                  src={imgSrc.installLockImg}
+                  alt="Uploaded Installed Lock Image"
+                />
               )}
             </Box>
           </Box>
-        </Grid>
-        <Grid item xs={9} sm={9} md={9} lg={10} xl={10}>
-          <Box sx={classes.customDropZone}>
-            <DropzoneAreaBase
-              fileObjects={[]}
-              Icon={UploadIcon}
-              showAlerts={false}
-              acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
-              filesLimit={1}
-              onAdd={(event: React.ChangeEvent<any> | any) =>
-                handleinstallLockPhotoChange(event)
-              }
-              dropzoneText={`Click and upload an image for profile. 200 x 200 or higher recommended. Max 2MB (png, jpg, jpeg)`}
-            />
-          </Box>
+          <input
+            accept="image/jpeg,image/png,image/bmp"
+            style={{ display: "none" }}
+            id="lock-upload"
+            type="file"
+            onChange={(e) => handleFileUpload(e, "installLockImg")}
+          />
+          <label htmlFor="lock-upload">
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<FiUpload />}
+              sx={{
+                backgroundColor: "#6842EF",
+                color: "white",
+                marginTop: 1,
+                marginLeft: "9rem",
+                "&:hover": {
+                  backgroundColor: "#6842EF",
+                },
+              }}
+            >
+              Upload Lock Image
+            </Button>
+          </label>
         </Grid>
       </Grid>
 
-      {/* Permit Photo */}
-      <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={3} sm={3} md={3} lg={2} xl={2}>
+      {/* Permit Photo & Payment Proof */}
+      <Grid container spacing={10} sx={{ marginTop: "0.5rem" }}>
+        <Grid item xs={12} sm={6}>
           <Typography variant="subtitle1" sx={classes.label}>
             Permit Photo
           </Typography>
           <Box sx={classes.imgDisplay}>
             <Box sx={classes.profileBox}>
-              {imgSrc && <img src={imgSrc.permitImg} alt="Uploaded Image" />}
+              {imgSrc?.permitImg && (
+                <img src={imgSrc.permitImg} alt="Uploaded Permit Image" />
+              )}
             </Box>
           </Box>
+          <input
+            accept="image/jpeg,image/png,image/bmp"
+            style={{ display: "none" }}
+            id="permit-upload"
+            type="file"
+            onChange={(e) => handleFileUpload(e, "permitImg")}
+          />
+          <label htmlFor="permit-upload">
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<FiUpload />}
+              sx={{
+                backgroundColor: "#6842EF",
+                color: "white",
+                marginTop: 1,
+                marginLeft: "9rem",
+                "&:hover": {
+                  backgroundColor: "#6842EF",
+                },
+              }}
+            >
+              Upload Permit Image
+            </Button>
+          </label>
         </Grid>
-        <Grid item xs={9} sm={9} md={9} lg={10} xl={10}>
-          <Box sx={classes.customDropZone}>
-            <DropzoneAreaBase
-              fileObjects={[]}
-              Icon={UploadIcon}
-              showAlerts={false}
-              acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
-              filesLimit={1}
-              onAdd={(event: React.ChangeEvent<any> | any) =>
-                handlePermitPhotoChange(event)
-              }
-              dropzoneText={`Click and upload an image for profile. 200 x 200 or higher recommended. Max 2MB (png, jpg, jpeg)`}
-            />
+
+        <Grid item xs={12} sm={6}>
+          <Typography variant="subtitle1" sx={classes.label}>
+            Payment Proof
+          </Typography>
+          <Box sx={classes.imgDisplay}>
+            <Box sx={classes.profileBox}>
+              {imgSrc?.paymentProofImg && (
+                <img
+                  src={imgSrc.paymentProofImg}
+                  alt="Uploaded Payment Proof"
+                />
+              )}
+            </Box>
           </Box>
+          <input
+            accept="image/jpeg,image/png,image/bmp"
+            style={{ display: "none" }}
+            id="payment-proof-upload"
+            type="file"
+            onChange={(e) => handleFileUpload(e, "paymentProofImg")}
+          />
+          <label htmlFor="payment-proof-upload">
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<FiUpload />}
+              sx={{
+                backgroundColor: "#6842EF",
+                color: "white",
+                marginTop: 1,
+                marginLeft: "9rem",
+                "&:hover": {
+                  backgroundColor: "#6842EF",
+                },
+              }}
+            >
+              Upload Payment Proof
+            </Button>
+          </label>
         </Grid>
       </Grid>
     </Grid>

@@ -200,8 +200,8 @@ const ViewLiveTracking = () => {
         <div
           style={{
             position: "absolute",
-            top: "20%",
-            right: "0.5%",
+            top: "28%",
+            right: "0.4%",
             zIndex: 1000,
             boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
           }}

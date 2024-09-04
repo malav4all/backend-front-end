@@ -1,16 +1,12 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import {
   Box,
-  Grid,
   Stack,
   Step,
   StepLabel,
   Stepper,
   Typography,
-  Select,
-  MenuItem,
   useTheme,
-  TextField,
   Divider,
 } from "@mui/material";
 import { CustomButton } from "../../../../global/components";
@@ -79,6 +75,7 @@ const AddTrip = (props: any) => {
     vehicleImg: "",
     installLockImg: "",
     permitImg: "",
+    paymentProofImg: "",
   });
   useEffect(() => {
     if (transitTypeForm?.transitType?.value) {
@@ -287,13 +284,13 @@ const AddTrip = (props: any) => {
 
   const handleNext = () => {
     if (handleValidation()) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
   const handleGoToClickedStep = (index: number) => {
     if (handleValidation() || activeStep > index) {
-      setActiveStep(index);
+    setActiveStep(index);
     }
   };
 
@@ -347,11 +344,12 @@ const AddTrip = (props: any) => {
           vehiclenumber: imgSrc.vehicleImg,
           installLock: imgSrc.installLockImg,
           permitNumber: imgSrc.permitImg,
+          paymentProof: imgSrc.paymentProofImg,
         },
       };
 
       console.log({ insertTripBody });
-      // if (handleValidation()) {
+      if (handleValidation()) {
       if (props?.edit) {
         // const res = await updateTrip({
         //   input: {
@@ -375,7 +373,7 @@ const AddTrip = (props: any) => {
         // history.goBack();
         await props?.tableData?.();
       }
-      // }
+      }
     } catch (error: any) {
       openErrorNotification(error?.message || notifiers.GENERIC_ERROR);
     }
@@ -403,6 +401,7 @@ const AddTrip = (props: any) => {
             }}
             alignItems={{ lg: "center" }}
             mt={3}
+            ml={32}
             sx={{ [`@media screen and (max-width: ${1390}px)`]: { mt: 0.438 } }}
           >
             <Stepper
@@ -435,6 +434,7 @@ const AddTrip = (props: any) => {
               alignItems="center"
               spacing={1}
               mt={2}
+              mr={32}
             >
               {activeStep === 0 ? (
                 <CustomButton

@@ -185,6 +185,7 @@ const TripDashboard = () => {
               borderRadius: "8px",
               textTransform: "none",
               backgroundColor: theme.palette.primary.main,
+              fontSize: "14px",
               color: "#fff",
             }}
           />
@@ -252,17 +253,23 @@ const TripDashboard = () => {
                 }}
               >
                 <ListItemText
+                  sx={{
+                    height: "150px",
+                  }}
                   primary={
-                    <Typography
-                      sx={{
-                        fontFamily: "Geist_Bold",
-                        fontSize: "1.3rem",
-                        color: theme.palette.text.primary,
-                        marginBottom: "0.8rem",
-                      }}
-                    >
-                      {trip.tripData[0]?.vehicleNo}
-                    </Typography>
+                    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                      Vehicle Number:
+                      <Typography
+                        sx={{
+                          fontFamily: "Geist_Bold",
+                          fontSize: "1.3rem",
+                          color: theme.palette.text.primary,
+                          // marginBottom: "0.8rem",
+                        }}
+                      >
+                        {trip.tripData[0]?.vehicleNo}
+                      </Typography>
+                    </Box>
                   }
                   secondary={
                     <>
@@ -317,9 +324,11 @@ const TripDashboard = () => {
                       <Typography
                         sx={{
                           fontFamily: "Geist_Bold",
-                          fontSize: "1rem",
+                          fontSize: "0.9rem",
                           color: theme.palette.text.primary,
                           marginBottom: "12px",
+                          display: "flex",
+                          gap: 2,
                         }}
                       >
                         ETA: {formatDate(trip?.tripEndDate)}
@@ -330,7 +339,7 @@ const TripDashboard = () => {
                   }
                 />
 
-                <Box
+                {/* <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
@@ -358,7 +367,7 @@ const TripDashboard = () => {
                   >
                     {`${Math.round(progress)}%`}
                   </Typography>
-                </Box>
+                </Box> */}
               </ListItem>
             );
           })}
