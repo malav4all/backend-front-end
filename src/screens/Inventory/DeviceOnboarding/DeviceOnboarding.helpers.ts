@@ -84,14 +84,12 @@ export const deviceOnboardingTableHeaderTenant = [
 export const insertDeviceOnboardingField = (data?: any) => {
   return {
     deviceOnboardingAccount: {
-      value:
-        data?.deviceOnboardingAccount?._id ??
-        (data?.deviceOnboardingAccount?.accountName || ""),
+      value: data?.accountId ?? "",
       error: "",
     },
 
     locationId: {
-      value: "",
+      value: data?.location ?? "",
       error: "",
     },
 
@@ -100,7 +98,7 @@ export const insertDeviceOnboardingField = (data?: any) => {
       error: "",
     },
     businessModel: {
-      value: "",
+      value: data?.businessModel ?? "",
       error: "",
     },
     createdBy: {

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import DeviceOnboardingStyle from "./DeviceOnboarding.styles";
 import {
   Box,
@@ -26,9 +26,15 @@ import {
   primaryHeadingColor,
 } from "../../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import { deviceOnboardingTableHeader } from "./DeviceOnboarding.helpers";
+import {
+  deviceOnboardingTableHeader,
+  insertDeviceOnboardingField,
+} from "./DeviceOnboarding.helpers";
 import AddDeviceOnboarding from "./Component/AddDeviceOnboading";
-import { fetchDeviceOnboardingTableHandler } from "./service/DeviceOnboarding.service";
+import {
+  fetchDeviceOnboardingTableHandler,
+  searchDeviceOnboardingHandler,
+} from "./service/DeviceOnboarding.service";
 import EditIcon from "@mui/icons-material/Edit";
 import { store } from "../../../utils/store";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
@@ -39,6 +45,9 @@ import { useLocation } from "react-router-dom";
 const DeviceOnboarding = () => {
   const classes = DeviceOnboardingStyle;
   const theme = useTheme();
+  const [userDeviceFields, setDeviceFormFields] = useState<any>(
+    insertDeviceOnboardingField()
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [addUserDialogHandler, setAddUserDialogHandler] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState<any>();
@@ -53,9 +62,18 @@ const DeviceOnboarding = () => {
   const location = useLocation();
   const title =
     location.pathname === "/device-list" ? "Device List" : "Device Onboarding";
+
   useEffect(() => {
-    fetchDeviceOnboardingData();
-  }, [pageNumber, perPageData]);
+    setPageNumber(1);
+  }, [searchCampaigner]);
+
+  useEffect(() => {
+    if (searchCampaigner) {
+      searchDeviceOnboardingData();
+    } else {
+      fetchDeviceOnboardingData();
+    }
+  }, [pageNumber, perPageData, searchCampaigner]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -68,6 +86,16 @@ const DeviceOnboarding = () => {
     setSearchPageNumber(1);
     setPerPageData(event.target.value);
   };
+
+  const editDeviceGroup = useCallback(
+    (rowdata: any) => {
+      setAddUserDialogHandler(true);
+      setSelectedRowData(rowdata);
+      setEdit(true);
+      setDeviceFormFields(insertDeviceOnboardingField(rowdata));
+    },
+    [edit]
+  );
 
   const tableDataRender = (tableValue: string[]) => {
     const data = tableValue.map((item: any) => {
@@ -84,9 +112,7 @@ const DeviceOnboarding = () => {
             <Tooltip
               title="Edit"
               onClick={() => {
-                setAddUserDialogHandler(true);
-                setSelectedRowData(item);
-                setEdit(true);
+                editDeviceGroup(item);
               }}
             >
               <EditIcon
@@ -112,6 +138,30 @@ const DeviceOnboarding = () => {
         getAssetAssingmentDetailTable={() => {}}
       />
     );
+  };
+
+  const searchDeviceOnboardingData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchDeviceOnboardingHandler({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          search: searchCampaigner,
+          page: pageNumber,
+          limit: perPageData,
+        },
+      });
+      const finalTableData = tableDataRender(
+        res.searchDeviceOnboardingList.data
+      );
+
+      setTableData(finalTableData);
+      setCount(res.searchDeviceOnboardingList?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+      setIsLoading(false);
+    }
   };
 
   const fetchDeviceOnboardingData = async () => {
@@ -189,6 +239,8 @@ const DeviceOnboarding = () => {
         tableData={fetchDeviceOnboardingData}
         selectedRowData={selectedRowData}
         edit={edit}
+        setDeviceFormFields={setDeviceFormFields}
+        userDeviceFields={userDeviceFields}
       />
     );
   };

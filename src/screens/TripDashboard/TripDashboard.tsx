@@ -22,7 +22,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FlagIcon from "@mui/icons-material/Flag";
 import { CustomButton, CustomInput } from "../../global/components";
 import HereMap from "./components/HereMap";
-import { ListAllTrips } from "./service/TripDashboard.service";
+import { ListAllTrips, tripCount } from "./service/TripDashboard.service";
 import { BsFillUnlockFill } from "react-icons/bs";
 import { MdAccessTimeFilled, MdDateRange } from "react-icons/md";
 import { useSubscription } from "@apollo/client";
@@ -71,28 +71,12 @@ interface Stats {
 const TripDashboard = () => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [tripDashboardData, setTripDashboardData] = useState<Trip[]>([]);
+
   const [searchData, setSearchData] = useState<string>("");
   const [trips, setTrips] = useState<Trip[]>([]);
   const [totalActiveTrips, setTotalActiveTrips] = useState<number>(0);
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
-
-  const stats: Record<string, Stats> = {
-    executed: {
-      title: "Today's Trips",
-      value: 56,
-      resource: strings.campaign,
-      redirection: {
-        pathname: "",
-      },
-    },
-    outbounds: {
-      title: "Total Active Trips",
-      value: totalActiveTrips,
-      resource: strings.campaign,
-      redirection: {},
-    },
-  };
+  const [tripStats, setTripStats] = useState<any>();
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -111,8 +95,42 @@ const TripDashboard = () => {
         setIsLoading(false);
       }
     };
+
+    const fetchTripsCount = async () => {
+      try {
+        const variables = {
+          input: {
+            accountId: store.getState().auth.tenantId,
+          },
+        };
+        const response = await tripCount(variables);
+        setTripStats(response?.tripCount);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchTrips();
+    fetchTripsCount();
   }, []);
+
+  const stats: Record<string, Stats> = {
+    executed: {
+      title: "Today's Trips",
+      value: tripStats?.todayActiveTripsCount ?? 0,
+      resource: strings.campaign,
+      redirection: {
+        pathname: "",
+      },
+    },
+    outbounds: {
+      title: "Total Active Trips",
+      value: tripStats?.totalActiveTripsCount ?? 0,
+      resource: strings.campaign,
+      redirection: {},
+    },
+  };
 
   useEffect(() => {
     getOngoingTrips(trips);

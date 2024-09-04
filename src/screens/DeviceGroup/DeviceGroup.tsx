@@ -91,9 +91,6 @@ const DeviceGroup = () => {
               )}
               placement="top"
               arrow
-              // onClick={() => {
-              //   getRedirectionUrl(item?._id);
-              // }}
               sx={{
                 color: theme.palette.text.primary,
               }}
@@ -213,9 +210,10 @@ const DeviceGroup = () => {
       setIsLoading(true);
       const res = await searchDeviceGroup({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchDeviceGroups,
-          page: 1,
-          limit: 10,
+          page: page,
+          limit: rowsPerPage,
         },
       });
       tableRender(res?.searchDeviceGroup?.data);

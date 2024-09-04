@@ -19,10 +19,34 @@ export const FETCH_DEVICE_ONBOARDING = gql`
       message
       data {
         _id
+        businessModel
         deviceOnboardingSimNo
         deviceOnboardingIMEINumber
         accountId
         createdBy
+        location
+        deviceName
+      }
+    }
+  }
+`;
+
+export const SEARCH_DEVICE_ONBOARDING = gql`
+  mutation ($input: DeviceOnboardingSearchInput!) {
+    searchDeviceOnboardingList(input: $input) {
+      paginatorInfo {
+        count
+      }
+      success
+      message
+      data {
+        _id
+        businessModel
+        deviceOnboardingSimNo
+        deviceOnboardingIMEINumber
+        accountId
+        createdBy
+        deviceName
         location
       }
     }

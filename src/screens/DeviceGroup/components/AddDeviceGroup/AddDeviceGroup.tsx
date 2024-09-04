@@ -59,6 +59,8 @@ const AddDeviceGroup = (props: CustomProps) => {
   useEffect(() => {
     props.setEdit?.(false);
     setDeviceGroupFromFields(insertDeviceGroupField());
+
+    setSelectedImeis(props.selectedDeviceGroupRowData?.imeiData);
   }, [props.openAddDeviceGroupDialog]);
 
   useEffect(() => {
@@ -243,10 +245,10 @@ const AddDeviceGroup = (props: CustomProps) => {
                         icon={icon}
                         checkedIcon={checkedIcon}
                         style={{ marginRight: 8 }}
-                        checked={selectedImeis.length === imeiData.length}
+                        checked={selectedImeis?.length === imeiData?.length}
                         indeterminate={
-                          selectedImeis.length > 0 &&
-                          selectedImeis.length < imeiData.length
+                          selectedImeis?.length > 0 &&
+                          selectedImeis?.length < imeiData?.length
                         }
                         onChange={handleSelectAll}
                       />
@@ -279,7 +281,7 @@ const AddDeviceGroup = (props: CustomProps) => {
                       backgroundColor: "#060b25",
                     },
                   }}
-                  placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
+                  placeholder={selectedImeis?.length === 0 ? "Select IMEI" : ""}
                   error={
                     !isTruthy(deviceGroupFromFields.imeiList.value) &&
                     deviceGroupFromFields.imeiList.error

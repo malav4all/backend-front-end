@@ -9,6 +9,7 @@ import {
   FETCH_DEVICE_ONBOARDING,
   FETCH_GEOZONE,
   FILTER_RECORD,
+  SEARCH_DEVICE_ONBOARDING,
   UPDATE_DEVICE_ONBOARDING,
 } from "./DeviceOnboarding.mutation";
 
@@ -54,6 +55,21 @@ export const fetchAccountHandler = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
       mutation: FETCH_ACCOUNT,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const searchDeviceOnboardingHandler = async (
+  variables: any
+): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: SEARCH_DEVICE_ONBOARDING,
       variables,
     });
 
