@@ -33,7 +33,7 @@ const Dashboard = () => {
   useTitle(strings.DashboardTitle);
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [page, setPage] = useState(1);
   const [offlinePage, setOfflinePage] = useState(1);
   const [offlineLimit, setOfflineLimit] = useState(10);
   const [statData, setStatData] = useState<any>([]);
@@ -75,6 +75,76 @@ const Dashboard = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const dataRender = () => {
+    const startIndex = (page - 1) * 5;
+    const endIndex = startIndex + 5;
+    return dataGraph?.deviceDashboardData?.data
+      ?.slice(startIndex, endIndex)
+      .map((item: any) => {
+        return {
+          accountId: item.accountId,
+          imei: item.imei,
+          status:
+            item.status === "offline" ? (
+              <Chip
+                label={item.status}
+                size="small"
+                sx={{
+                  backgroundColor: "#FF4560",
+                }}
+              />
+            ) : (
+              <Chip
+                label={item.status}
+                size="small"
+                sx={{
+                  backgroundColor: "#00e396bd",
+                }}
+              />
+            ),
+          name: item?.name,
+          connectedTime:
+            item.lastPing && moment(item.lastPing).isValid() ? (
+              <>
+                {moment(item.lastPing).format("h:mm:ss a, DD-MM-YY")}
+                <br />
+                {" (" + moment(item.lastPing).fromNow() + ")"}
+              </>
+            ) : (
+              "Never Connected"
+            ),
+
+          action:
+            item.status === "offline" ? (
+              <span></span>
+            ) : (
+              <Link
+                to={{
+                  pathname: "/live-tracking",
+                  state: { imei: item.imei, status: item.status },
+                }}
+              >
+                <FaMapLocationDot
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "1.4rem",
+                    color: "#7c58cb",
+                    marginLeft: "1rem",
+                  }}
+                />
+              </Link>
+            ),
+        };
+      });
+  };
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
   };
 
   const getDeviceList = () => {
@@ -132,70 +202,14 @@ const Dashboard = () => {
               { name: "LAST PING", field: "connectedTime" },
               { name: "ACTION", field: "action" },
             ]}
-            rows={dataGraph?.deviceDashboardData?.data?.map((item: any) => {
-              return {
-                accountId: item.accountId,
-                imei: item.imei,
-                status:
-                  item.status === "offline" ? (
-                    <Chip
-                      label={item.status}
-                      size="small"
-                      sx={{
-                        backgroundColor: "#FF4560",
-                        border: "1px solid #d32525",
-                      }}
-                    />
-                  ) : (
-                    <Chip
-                      label={item.status}
-                      size="small"
-                      sx={{
-                        backgroundColor: "green",
-                        border: "1px solid #37b071",
-                      }}
-                    />
-                  ),
-                name: "DL1ZC3350",
-                connectedTime:
-                  item.lastPing && moment(item.lastPing).isValid() ? (
-                    <>
-                      {moment(item.lastPing).format("h:mm:ss a, DD-MM-YY")}
-                      <br />
-                      {" (" + moment(item.lastPing).fromNow() + ")"}
-                    </>
-                  ) : (
-                    "Never Connected"
-                  ),
-
-                action:
-                  item.status === "offline" ? (
-                    <span></span>
-                  ) : (
-                    <Link
-                      to={{
-                        pathname: "/live-tracking",
-                        state: { imei: item.imei, status: item.status },
-                      }}
-                    >
-                      <FaMapLocationDot
-                        style={{
-                          cursor: "pointer",
-                          fontSize: "1.4rem",
-                          color: "#7c58cb",
-                          marginLeft: "1rem",
-                        }}
-                      />
-                    </Link>
-                  ),
-              };
-            })}
-            isRowPerPageEnable={false}
-            rowsPerPage={offlineLimit}
-            perPageData={offlineLimit}
+            rows={dataRender()}
+            isRowPerPageEnable={true}
+            rowsPerPage={5}
+            // perPageData={offlineLimit}
             paginationCount={dataGraph?.deviceDashboardData?.data?.length}
-            pageNumber={offlinePage}
-            setPage={setOfflinePage}
+            pageNumber={page}
+            setPage={setPage}
+            handlePageChange={handleChangePage}
           />
         </Grid>
       </Grid>

@@ -97,7 +97,7 @@ const TripReport = () => {
           page,
           limit: rowsPerPage,
           accountId: store.getState().auth.tenantId,
-          status: "closed",
+          status: "ended",
         },
       });
 
