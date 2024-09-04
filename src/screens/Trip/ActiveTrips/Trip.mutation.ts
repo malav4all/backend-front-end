@@ -17,6 +17,8 @@ export const GET_ALL_TRIPS = gql`
         tripEndDate
         tripData {
           imei
+          driverName
+          driverContactNumber
           vehicleNo
           tripDate
           remarks
@@ -30,6 +32,7 @@ export const GET_ALL_TRIPS = gql`
         createdBy
         updatedBy
         createdAt
+        tripVerification
       }
     }
   }
@@ -77,6 +80,8 @@ export const FETCH_TRIP_BY_ID = gql`
           vehicleNo
           tripDate
           remarks
+          driverContactNumber
+          driverName
         }
         route
         alertConfig
@@ -86,6 +91,8 @@ export const FETCH_TRIP_BY_ID = gql`
         status
         tripId
         accountId
+        transitType
+        tripVerification
       }
     }
   }

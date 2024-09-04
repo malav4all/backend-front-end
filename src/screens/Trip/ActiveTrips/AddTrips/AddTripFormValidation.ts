@@ -1,11 +1,35 @@
 export const tripTableHeader = [
+  { name: "Trip Id", field: "tripId" },
+  {
+    name: "Account Name",
+    field: "accountName",
+  },
   {
     name: "IMEI Number",
     field: "imeiNumber",
   },
-  { name: "Trip Id", field: "tripId" },
-  { name: "Total Distance", field: "totalDistance" },
-  { name: "Total Duration", field: "totalDuration" },
+  {
+    name: "Vehicle Number",
+    field: "vehicleNumber",
+  },
+
+  {
+    name: "Source",
+    field: "source",
+  },
+  {
+    name: "Destination",
+    field: "destination",
+  },
+  {
+    name: "Driver Name",
+    field: "driverName",
+  },
+  {
+    name: "Driver Number",
+    field: "driverContactNumber",
+  },
+
   { name: "Trip Start Date", field: "tripStartDate" },
   { name: "Trip End Date", field: "tripEndDate" },
   { name: "Created By", field: "createdBy" },
@@ -76,12 +100,12 @@ export const validateAlertConfigurationForm = (form: any, isEdit: boolean) => {
 
   if (!form?.alertTypes?.value?.length) {
     errors.alertTypes.error = "At least one alert type is required";
-    isValid = false;
+    isValid = true;
   }
 
   if (!form?.getAlerts?.value?.length) {
     errors.getAlerts.error = "At least one alert method is required";
-    isValid = false;
+    isValid = true;
   }
 
   return { isValid, errors };

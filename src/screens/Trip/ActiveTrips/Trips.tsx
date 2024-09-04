@@ -184,6 +184,10 @@ const Trips = () => {
     const data = tableData?.map((item: any, index: number) => ({
       key: item._id,
       imeiNumber: item?.tripData[0]?.imei,
+      accountName: store.getState().auth.account,
+      driverName: item?.tripData[0]?.driverName,
+      driverContactNumber: item?.tripData[0]?.driverContactNumber,
+      vehicleNumber: item?.tripData[0]?.vehicleNo,
       totalDistance: item?.route?.totalDistance,
       totalDuration: item?.route?.totalDuration,
       tripStartDate: item?.tripStartDate,

@@ -31,6 +31,7 @@ import notifiers from "../../../../global/constants/NotificationConstants";
 import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
 import { useHistory } from "react-router-dom";
 import MapComponent from "./component/MapComponent";
+import moment from "moment";
 const ViewTrip = () => {
   const theme = useTheme();
   const history = useHistory();
@@ -46,6 +47,7 @@ const ViewTrip = () => {
     alertConfigurationFormInitialState()
   );
   const [dynamicForm, setDynamicForm] = useState<any>();
+  const [imgSrc, setImgSrc] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     getTrip();
@@ -65,14 +67,17 @@ const ViewTrip = () => {
       setTripInformationForm({
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
-        startPoint: tripData?.startPoint?.finalAddress || "",
-        endPoint: tripData?.endPoint?.finalAddress || "",
-        tripStartDate: tripData?.tripStartDate || "",
+        startPoint: tripData?.startPoint?.locationId || "",
+        endPoint: tripData?.endPoint?.locationId || "",
+        tripStartDate: tripData?.tripStartDate,
         tripEndDate: tripData?.tripEndDate || "",
         status: tripData?.status || "",
         remarks: tripData?.tripData[0]?.remarks || "",
         tripData: tripData?.tripData || [],
         vehicleNumber: tripData?.tripData[0]?.vehicleNo || "",
+        driverName: tripData?.tripData[0]?.driverName || "",
+        driverContactNumber: tripData?.tripData[0]?.driverContactNumber || "",
+        imeiNumber: tripData?.tripData[0]?.imei[0],
       });
 
       setAlertConfigurationForm({
@@ -98,9 +103,15 @@ const ViewTrip = () => {
       });
 
       setTransitTypeForm({
-        transitType: tripData?.route?.routeName || "",
+        transitType: tripData?.transitType || "",
         vehicleType: tripData?.tripData[0]?.vehicleNo || "",
         routeId: tripData?.route?.routeId,
+      });
+      setImgSrc({
+        vehiclenumber: tripData?.tripVerification?.vehiclenumber,
+        installLock: tripData?.tripVerification?.installLock,
+        permitNumber: tripData?.tripVerification?.permitNumber,
+        paymentProofImg: tripData?.tripVerification?.paymentProofImg,
       });
       setDynamicForm(dynamicFormInitialState(tripData?.metaData?.dynamicForm));
       setIsLoading(false);
@@ -111,7 +122,8 @@ const ViewTrip = () => {
       setIsLoading(false);
     }
   };
-
+  console.log({ imgSrc });
+  console.log({ tripInformationForm });
   const handleStatusChange = async (newStatus: string) => {
     try {
       const accountId = store.getState().auth.tenantId;
@@ -218,6 +230,7 @@ const ViewTrip = () => {
                   alertConfigurationForm={alertConfigurationForm}
                   transitTypeForm={transitTypeForm}
                   dynamicForm={dynamicForm}
+                  imgSrc={imgSrc}
                   personId={id}
                   onStatusChange={handleStatusChange}
                 />

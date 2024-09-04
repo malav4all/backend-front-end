@@ -40,20 +40,20 @@ import { store } from "../../../../utils/store";
 import DynamicForm from "./DynamicForm/DynamicForm";
 import TripVerificationForm from "./TripVerification/TripVerificationForm";
 
-const steps = [
-  "Trip Type",
-  "Trip Information",
-  "Alert Detail",
-  "Verification Photos",
-];
-
 const AddTrip = (props: any) => {
   const classes = addTripStyles;
   const history = useHistory();
   const theme = useTheme();
   const redirectionState: any = props.location?.state;
   const [formData, setFormData] = useState({});
-  const [dynamicSteps, setDynamicSteps] = useState<string[]>(steps);
+
+  const [dynamicSteps, setDynamicSteps] = useState<string[]>([
+    "Trip Type",
+    "Trip Information",
+    "Alert Detail",
+    ...(redirectionState?.edit ? ["Verification Photos"] : []), // Conditionally include "Verification Photos" step
+  ]);
+
   const [activeStep, setActiveStep] = useState(0);
   const [transitTypeForm, setTransitTypeForm] = useState<any>(
     transitTypeFormInitialState(redirectionState?.transitTypeForm)
@@ -70,18 +70,23 @@ const AddTrip = (props: any) => {
   const [dynamicForm, setDynamicForm] = useState(
     dynamicFormInitialState(redirectionState?.dynamicForm)
   );
-
+  console.log({ redirectionState });
+  console.log({ transitTypeForm });
+  console.log({ tripInformationForm });
   const [imgSrc, setImgSrc] = useState({
-    vehicleImg: "",
-    installLockImg: "",
-    permitImg: "",
-    paymentProofImg: "",
+    vehicleImg: redirectionState?.imgSrc?.vehiclenumber ?? "",
+    installLockImg: redirectionState?.imgSrc?.installLock ?? "",
+    permitImg: redirectionState?.imgSrc?.permitNumber ?? "",
+    paymentProofImg: redirectionState?.imgSrc?.paymentProofImg ?? "",
   });
+  
   useEffect(() => {
     if (transitTypeForm?.transitType?.value) {
       fetchDataAndSetOptions();
     }
   }, [transitTypeForm?.transitType?.value]);
+
+  console.log(redirectionState?.edit, "edit");
 
   const fetchDataAndSetOptions = async () => {
     try {
@@ -141,7 +146,7 @@ const AddTrip = (props: any) => {
       openErrorNotification(error.message);
     }
   };
-
+  console.log({ imgSrc });
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
 
@@ -184,6 +189,7 @@ const AddTrip = (props: any) => {
           <TransitTypeForm
             transitTypeForm={transitTypeForm}
             setTransitTypeForm={setTransitTypeForm}
+            edit={redirectionState?.edit}
           />
         );
       case 1:
@@ -192,6 +198,7 @@ const AddTrip = (props: any) => {
             tripInformationForm={tripInformationForm}
             setTripInformationForm={setTripInformationForm}
             transitTypeForm={transitTypeForm}
+            edit={redirectionState?.edit}
           />
         );
       case 2:
@@ -199,9 +206,6 @@ const AddTrip = (props: any) => {
           <AlertConfigurationForm
             alertConfigurationForm={alertConfigurationForm}
             setAlertConfigurationForm={setAlertConfigurationForm}
-            handleFormDataChange={(event: any) =>
-              handleFormDataChange(event, setAlertConfigurationForm)
-            }
           />
         );
       case 3:
@@ -311,6 +315,9 @@ const AddTrip = (props: any) => {
           {
             imei: tripInformationForm?.imeiNumber?.value,
             vehicleNo: tripInformationForm?.vehicleNumber?.value,
+            driverName: tripInformationForm?.driverName?.value,
+            driverContactNumber:
+              tripInformationForm?.driverContactNumber?.value,
             tripDate: new Date(tripInformationForm?.tripStartDate?.value)
               .toISOString()
               .split("T")[0],
@@ -346,6 +353,7 @@ const AddTrip = (props: any) => {
           permitNumber: imgSrc.permitImg,
           paymentProof: imgSrc.paymentProofImg,
         },
+        transitType: transitTypeForm?.transitType.value,
       };
 
       console.log({ insertTripBody });
@@ -370,7 +378,7 @@ const AddTrip = (props: any) => {
         });
 
         openSuccessNotification(res?.createTrip?.message);
-        // history.goBack();
+        history.goBack();
         await props?.tableData?.();
       }
       }

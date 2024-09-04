@@ -40,12 +40,14 @@ interface TripInformationProps {
   tripInformationForm: any;
   transitTypeForm: any;
   setTripInformationForm: Function;
+  edit?: boolean;
 }
 
 const TripInformationForm: React.FC<TripInformationProps> = ({
   tripInformationForm,
   setTripInformationForm,
   transitTypeForm,
+  edit,
 }) => {
   const theme = useTheme();
   const classes = transitTypeStyles();
@@ -118,10 +120,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
     );
   };
 
-  const handleFormDataChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    setState: Function
-  ) => {
+  const handleFormDataChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setTripInformationForm((prevFields: any) => ({
       ...prevFields,
@@ -208,7 +207,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
     try {
       const response = await checkBattery({
         input: {
-          accountId: "IMZ113343",
+          accountId,
           imei: imei,
           threshold,
         },
@@ -479,6 +478,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
         <CustomInput
           required
+          disabled={edit}
           id="add_device_group_name_field"
           placeHolder="Enter Vehicle Number"
           name="vehicleNumber"
@@ -498,6 +498,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
         <CustomInput
           required
+          disabled={edit}
           id="add_driver_name_field"
           placeHolder="Enter Driver name"
           name="driverName"
@@ -510,18 +511,20 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
       </Grid>
       <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
         <CustomInput
+          disabled={edit}
           label="Driver Contact Number"
-          name="contactNumber"
+          name="driverContactNumber"
           required={true}
           id="add_driver_contact_number_filed"
-          value={tripInformationForm.contactNumber?.value}
-          placeHolder="Enter Your Driver Contact Number"
+          value={tripInformationForm.driverContactNumber?.value}
+          placeHolder="Enter Driver Contact Number"
           onChange={handleFormDataChange}
-          error={tripInformationForm?.contactNumber?.error}
+          error={tripInformationForm?.driverContactNumber?.error}
         />
       </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
         <CustomInput
+          disabled={edit}
           id="add_remarks"
           placeHolder="Enter Remarks"
           name="remarks"

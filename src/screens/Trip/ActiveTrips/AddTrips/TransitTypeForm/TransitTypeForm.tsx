@@ -18,11 +18,13 @@ import { store } from "../../../../../utils/store";
 interface TransitTypeProps {
   setTransitTypeForm: any;
   transitTypeForm: any;
+  edit?: boolean;
 }
 
 const TransitTypeForm: React.FC<TransitTypeProps> = ({
   transitTypeForm,
   setTransitTypeForm,
+  edit,
 }) => {
   const classes = transitTypeStyles();
   const [tripTypeData, setTripTypeData] = useState([]);
@@ -126,6 +128,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
               </Box>
             </InputLabel>
             <Select
+              disabled={edit}
               className={classes.dropDownStyle}
               id="add_user_status_dropdown"
               name="transitType"
@@ -167,6 +170,7 @@ const TransitTypeForm: React.FC<TransitTypeProps> = ({
               Trip Route
             </InputLabel>
             <Select
+              disabled={edit}
               className={classes.dropDownStyle}
               id="routeId"
               name="routeId"
