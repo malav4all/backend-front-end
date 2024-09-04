@@ -136,6 +136,8 @@ export const DEVICE_DASHBOARD_ONLINE_OFFLINE_COUNT = gql`
         lastPing
         latitude
         longitude
+        gps
+        batteryPercentage
       }
     }
   }
