@@ -33,6 +33,8 @@ import notifiers from "../../global/constants/NotificationConstants";
 import { listAlertRecord, searchAlertRecord } from "./service/alert.service";
 import history from "../../utils/history";
 import { store } from "../../utils/store";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
+import StringConstants from "../../global/constants/StringConstants";
 
 const AlertConfig = () => {
   const classes = alertConfigStyles;
@@ -251,17 +253,22 @@ const AlertConfig = () => {
         createdBy: usersData?.createdBy,
         action: (
           <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editUser(usersData);
-              }}
-            >
-              <EditIcon
-                htmlColor={"#7C58CB"}
-                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-              />
-            </Tooltip>
+            {hasAccessTo(
+              StringConstants.ALERTS,
+              StringConstants.UPDATE
+            )(
+              <Tooltip
+                title="Edit"
+                onClick={() => {
+                  editUser(usersData);
+                }}
+              >
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
           </>
         ),
       };
@@ -371,7 +378,8 @@ const AlertConfig = () => {
                 spacing={1}
               >
                 {getSearchBar()}
-                {addFilterButton()}
+                {hasAccessTo(StringConstants.ALERTS, StringConstants.ADD) &&
+                  addFilterButton()}
               </Stack>
             </Stack>
           </CustomAppHeader>

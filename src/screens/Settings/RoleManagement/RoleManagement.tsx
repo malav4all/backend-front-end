@@ -37,7 +37,6 @@ import {
 } from "./service/RoleManagement.service";
 
 import { hasAccessTo } from "../../../utils/AuthorizationManager";
-import { headerColor } from "../../../utils/styles";
 
 export const RoleManagement = () => {
   useTitle(strings.RoleManagementTitle);
@@ -182,13 +181,15 @@ export const RoleManagement = () => {
         action: (
           <Box sx={{ display: "flex", cursor: "pointer" }}>
             <>
-              <Tooltip title="Edit Role" placement="top" arrow>
-                <EditIcon
-                  htmlColor={"#7C58CB"}
-                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
-                  onClick={() => handleEdit(role)}
-                />
-              </Tooltip>
+              {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
+                <Tooltip title="Edit Role" placement="top" arrow>
+                  <EditIcon
+                    htmlColor={"#7C58CB"}
+                    style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                    onClick={() => handleEdit(role)}
+                  />
+                </Tooltip>
+              )}
             </>
           </Box>
         ),

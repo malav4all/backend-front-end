@@ -101,12 +101,11 @@ export class StringConstants {
   PAGENOTFOUND = "Page Not Found";
   SOCIAL = "Social";
   TICKETS = "Tickets";
-  SETTINGS = "Settings";
   DEVICEHISTORY = "Device History";
   ASSETASSIGNMENT = "Asset Assignment";
-  LOCATIONTYPE = "Location Type ";
+  LOCATIONTYPE = "LocationType";
   DISTANCE = "Distance";
-  JROUNEY = "Routes";
+
   ALERT = "Alert";
   LIVE_MONITORING = "Live Monitoring";
   ALL_DEVICES = "All Devices";
@@ -249,25 +248,24 @@ export class StringConstants {
   EMAIL_REGULAR_CAMPAIGN = "regular";
   EMAIL_AB_CAMPAIGN = "ab";
   MODULE = "Module";
-  LOCATION = "Location";
-  ROUTES = "ROUTES";
+  ROUTES = "Routes";
   VIEW_ROUTES = "VIEW ROUTES";
   LIVE_TRACKING = "LIVE TRACKING";
   TRACK_PLAY = "TRACK PLAY";
-  REPORTS = "REPORTS";
   ALERT_REPORTS = "ALERT REPORTS";
   DISTANCE_REPORTS = "DISTANCE REPORTS";
   ROUTES_REPORTS = "DISTANCE REPORTS";
   VIEW_OFFLINE = "VIEW OFFLINE";
   ARCHIVED_ROUTES = "ARCHIVED ROUTES";
   ASSET_ASSIGNMENT = "ASSET ASSIGNMENT";
-  ALERT_CONFIG = "ALERTS";
+  ALERT_CONFIG = "Alerts";
   DEVICE_GROUP = "DEVICE GROUP";
   ACTIVE_TRIPS = "ACTIVE TRIPS";
   // MANAGE_TRIPS = "MANAGE TRIPS";
   ARCHIVED_TRIPS = "ARCHIVED TRIPS";
   FORM_BUILDER = "FORM BUILDER";
   TRIP = "Trip";
+
   DEVICE_MODULE = "DEVICE MODULE";
   DEVICE_HISTORY = "DEVICE HISTORY";
   DEVICE_ONBOARDING = "DEVICE ONBOARDING";
@@ -283,7 +281,6 @@ export class StringConstants {
   FORM_BUILD = "FORM BUILD";
   ADD_TRIPS = "ADD TRIPS";
   VIEW_TRIP = "VIEW TRIP";
-  TRIPS = "Trips";
   Cancel = "Cancel";
   Previous = "Previous";
   Save = "Save";
@@ -295,6 +292,18 @@ export class StringConstants {
   Ended = "Ended";
   Closed = "Closed";
   GEOZONE = "Geozone";
+  ADD = "Add";
+  UPDATE = "Update";
+  DELETE = "delete";
+  FETCH = "fetch";
+  UPLOAD = "upload";
+  ALERTS = "Alerts";
+  LOCATION = "Location";
+  DEVICE = "Devices";
+  TRIPS = "Trips";
+  INVENTORY = "Inventory";
+  SETTINGS = "Settings";
+  REPORTS = "Reports";
 }
 
 let strings = new StringConstants();
