@@ -172,9 +172,7 @@ const AlertConfig = () => {
         deviceGroupName: (
           <>
             <Tooltip
-              title={usersData?.alertConfig?.alertImeiGroup.forEach(
-                (item: any) => item
-              )}
+              title={""}
               placement="top"
               arrow
               // onClick={() => {
@@ -244,7 +242,7 @@ const AlertConfig = () => {
                 backgroundColor: "#B0B0B0", // Grey track color when off
               },
               "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                backgroundColor: "#42A876", 
+                backgroundColor: "#42A876",
               },
             }}
             disabled
