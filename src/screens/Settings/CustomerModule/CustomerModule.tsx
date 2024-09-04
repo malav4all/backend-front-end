@@ -34,8 +34,7 @@ import {
 } from "./CustomerIndustryHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddCustomerModule from "./component/AddCustomerModule";
-import { PiPencilSimpleBold } from "react-icons/pi";
-import { headerColor } from "../../../utils/styles";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface CustomerModuleFormData {
   name: { value: string; error: string };
@@ -145,13 +144,9 @@ const CustomerModule: React.FC = () => {
                 key={item.id}
                 onClick={() => editModule(item)}
               >
-                <PiPencilSimpleBold
-                  style={{
-                    margin: "0px 8px -7px 0px",
-                    cursor: "pointer",
-                    color: headerColor,
-                    fontSize: "20px",
-                  }}
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
                 />
               </Tooltip>
             ),
@@ -276,7 +271,11 @@ const CustomerModule: React.FC = () => {
 
   return (
     <Box
-      sx={{ backgroundColor: theme.palette.background.paper, height: "100%",  paddingTop: "3.5rem", }}
+      sx={{
+        backgroundColor: theme.palette.background.paper,
+        height: "100%",
+        paddingTop: "3.5rem",
+      }}
     >
       <CustomAppHeader
         className={{
@@ -304,8 +303,8 @@ const CustomerModule: React.FC = () => {
             alignItems={{ sm: "center" }}
             spacing={1}
           >
-             {renderSearchBar()}
-             {renderAddCustomerModuleButton()}
+            {renderSearchBar()}
+            {renderAddCustomerModuleButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

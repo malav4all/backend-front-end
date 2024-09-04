@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
 import moment from "moment-timezone";
 import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -19,6 +19,18 @@ import OnlinePieChart from "./components/Chart/OnlinePieChart";
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { store } from "../../utils/store";
+import {
+  Battery0Icon,
+  Battery1Icon,
+  Battery2Icon,
+  Battery3Icon,
+  Battery4Icon,
+  BatteryChargingIcon,
+  GpsFalseIcon,
+  GpsTrueIcon,
+  OfflineIcon,
+  OnlineIcon,
+} from "./components/DashbordIcons";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -86,24 +98,81 @@ const Dashboard = () => {
         return {
           accountId: item.accountId,
           imei: item.imei,
-          status:
-            item.status === "offline" ? (
-              <Chip
-                label={item.status}
-                size="small"
-                sx={{
-                  backgroundColor: "#FF4560",
-                }}
-              />
-            ) : (
-              <Chip
-                label={item.status}
-                size="small"
-                sx={{
-                  backgroundColor: "#00e396bd",
-                }}
-              />
-            ),
+          status: (
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Typography variant="body2">
+                <Tooltip
+                  title={item.status === "online" ? "Online" : "Offline"}
+                >
+                  <span>
+                    {item.status === "online" ? (
+                      <OnlineIcon />
+                    ) : (
+                      <OfflineIcon />
+                    )}
+                  </span>
+                </Tooltip>
+              </Typography>
+
+              <Typography variant="body2">
+                {item.batteryPercentage !== null &&
+                item.batteryPercentage !== undefined ? (
+                  <>
+                    {item.batteryPercentage >= 0 &&
+                      item.batteryPercentage <= 20 && (
+                        <Tooltip title={`${item.batteryPercentage}%`}>
+                          <span>
+                            {" "}
+                            <Battery0Icon />
+                          </span>
+                        </Tooltip>
+                      )}
+                    {item.batteryPercentage > 20 &&
+                      item.batteryPercentage <= 40 && (
+                        <Tooltip title={`${item.batteryPercentage}%`}>
+                          <span>
+                            <Battery1Icon />
+                          </span>
+                        </Tooltip>
+                      )}
+                    {item.batteryPercentage > 40 &&
+                      item.batteryPercentage <= 60 && (
+                        <Tooltip title={`${item.batteryPercentage}%`}>
+                          <span>
+                            <Battery2Icon />
+                          </span>
+                        </Tooltip>
+                      )}
+                    {item.batteryPercentage > 60 &&
+                      item.batteryPercentage <= 80 && (
+                        <Tooltip title={`${item.batteryPercentage}%`}>
+                          <span>
+                            {" "}
+                            <Battery3Icon />
+                          </span>
+                        </Tooltip>
+                      )}
+                    {item.batteryPercentage > 80 &&
+                      item.batteryPercentage <= 100 && (
+                        <Tooltip title={`${item.batteryPercentage}%`}>
+                          <span>
+                            <Battery4Icon />
+                          </span>
+                        </Tooltip>
+                      )}
+                  </>
+                ) : (
+                  "Not Available"
+                )}
+              </Typography>
+
+              <Typography variant="body2">
+                <Tooltip title={item.gps ? "GPS Enabled" : "GPS Disabled"}>
+                  <span> {item.gps ? <GpsTrueIcon /> : <GpsFalseIcon />}</span>
+                </Tooltip>
+              </Typography>
+            </Box>
+          ),
           name: item?.name,
           connectedTime:
             item.lastPing && moment(item.lastPing).isValid() ? (
@@ -139,6 +208,8 @@ const Dashboard = () => {
         };
       });
   };
+
+  console.log(dataGraph);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,

@@ -1,6 +1,5 @@
 import {
   Box,
-  Grid,
   InputAdornment,
   Stack,
   Tooltip,
@@ -12,11 +11,8 @@ import {
   boldFont,
   getRelativeFontSize,
   headerColor,
-  primaryHeadingColor,
   regularFont,
-  theme,
 } from "../../utils/styles";
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import {
   CustomAppHeader,
   CustomButton,
@@ -39,11 +35,10 @@ import {
 } from "./service/add-device.service";
 import { store } from "../../utils/store";
 import { addDevicetable } from "./AddDeviceValidation";
-import { PiPencilSimpleBold } from "react-icons/pi";
 import ExportCSV from "../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
-
+import EditIcon from "@mui/icons-material/Edit";
 const AddDevice = () => {
   const classes = DeviceOnboardingStyle;
   const theme = useTheme();
@@ -134,13 +129,9 @@ const AddDevice = () => {
                 editDevice(item);
               }}
             >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: headerColor,
-                  fontSize: "20px",
-                }}
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
             </Tooltip>
           </>
