@@ -130,9 +130,10 @@ const Layout = () => {
           location.pathname === "/location" ||
           location.pathname === "/geozone"
         ) && (
-          <Box sx={classes.navbarPosition}>
-            <HeaderNavbar />
-          </Box>
+          // <Box sx={classes.navbarPosition}>
+          //   <HeaderNavbar />
+          // </Box>
+          <></>
         )}
         <Switch>
           <PrivateRoute

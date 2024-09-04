@@ -40,18 +40,22 @@ const ViewAlertConfigurationDetails = (props: CustomProps) => {
               {props?.alertConfigurationForm?.alertMedium?.sms?.contact}
             </Typography>
           </Typography>
-          <Typography variant="body2" sx={classes.workStatus}>
-            WhatsApp:
-            <Typography variant="body2" ml={1}>
-              {props.alertConfigurationForm?.alertMedium?.whatsapp?.contact}
+          {props.alertConfigurationForm?.alertMedium?.whatsapp?.contact && (
+            <Typography variant="body2" sx={classes.workStatus}>
+              WhatsApp:
+              <Typography variant="body2" ml={1}>
+                {props.alertConfigurationForm?.alertMedium?.whatsapp?.contact}
+              </Typography>
             </Typography>
-          </Typography>
-          <Typography variant="body2" sx={classes.workStatus}>
-            Email:
-            <Typography variant="body2" ml={1}>
-              {props.alertConfigurationForm?.alertMedium?.email?.contact}
+          )}
+          {props.alertConfigurationForm?.alertMedium?.email?.contact && (
+            <Typography variant="body2" sx={classes.workStatus}>
+              Email:
+              <Typography variant="body2" ml={1}>
+                {props.alertConfigurationForm?.alertMedium?.email?.contact}
+              </Typography>
             </Typography>
-          </Typography>
+          )}
         </CardContent>
       </Card>
     );

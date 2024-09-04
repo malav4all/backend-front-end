@@ -42,8 +42,8 @@ export const tripInformationFormInitialState = (prevState?: any) => ({
     value: prevState?.driverName ?? "",
     error: "",
   },
-  contactNumber: {
-    value: prevState?.contactNumber ?? "",
+  driverContactNumber: {
+    value: prevState?.driverContactNumber ?? "",
     error: "",
   },
 });

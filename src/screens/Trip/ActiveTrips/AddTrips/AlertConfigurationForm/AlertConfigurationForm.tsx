@@ -32,13 +32,11 @@ import {
 interface AlertConfigurationProps {
   alertConfigurationForm: any;
   setAlertConfigurationForm: Function;
-  handleFormDataChange: any;
 }
 
 const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
   alertConfigurationForm,
   setAlertConfigurationForm,
-  handleFormDataChange,
 }) => {
   const classes = useStyles();
 
