@@ -28,7 +28,6 @@ import {
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import {
   entityInsertField,
@@ -38,9 +37,8 @@ import {
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddEntity from "./component/AddEntity";
 import { useLocation } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
 import { store } from "../../../utils/store";
-import { PiPencilSimpleBold } from "react-icons/pi";
-import { headerColor } from "../../../utils/styles";
 const Entity = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -105,13 +103,9 @@ const Entity = () => {
         ...item,
         action: (
           <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
-            <PiPencilSimpleBold
-              style={{
-                margin: "0px 8px -7px 0px",
-                cursor: "pointer",
-                color: headerColor,
-                fontSize: "20px",
-              }}
+            <EditIcon
+              htmlColor={"#7C58CB"}
+              style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
             />
           </Tooltip>
         ),

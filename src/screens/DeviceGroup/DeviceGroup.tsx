@@ -14,13 +14,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  headerColor,
-} from "../../utils/styles";
-import { PiPencilSimpleBold } from "react-icons/pi";
+import { getRelativeFontSize, boldFont } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   debounceEventHandler,
@@ -30,7 +24,6 @@ import {
 
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
-
 import deviceGroupStyles from "./DeviceGroup.styles";
 import {
   fetchDeviceGroup,
@@ -40,6 +33,7 @@ import notifiers from "../../global/constants/NotificationConstants";
 import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import { store } from "../../utils/store";
+import EditIcon from "@mui/icons-material/Edit";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -143,16 +137,12 @@ const DeviceGroup = () => {
                 editDeviceGroup(item);
               }}
               sx={{
-                color: theme.palette.text.primary,
+                color: "#7C58CB",
               }}
             >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: headerColor,
-                  fontSize: "20px",
-                }}
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
               />
             </Tooltip>
           </>
