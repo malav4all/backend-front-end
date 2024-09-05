@@ -58,6 +58,26 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
   const [limit, setLimit] = useState(10);
 
   useEffect(() => {
+    if (
+      tripInformationForm?.tripStartDate?.value &&
+      typeof tripInformationForm.tripStartDate.value === "string"
+    ) {
+      const startDate = new Date(tripInformationForm.tripStartDate.value);
+      handleTripDateChange("tripStartDate", startDate);
+    }
+
+    if (
+      tripInformationForm?.tripEndDate?.value &&
+      typeof tripInformationForm.tripEndDate.value === "string"
+    ) {
+      const endDate = new Date(tripInformationForm.tripEndDate.value);
+      handleTripDateChange("tripEndDate", endDate);
+    }
+  }, [
+    tripInformationForm?.tripStartDate?.value,
+    tripInformationForm?.tripEndDate?.value,
+  ]);
+  useEffect(() => {
     if (transitTypeForm?.startPoint && transitTypeForm?.endPoint) {
       setTripInformationForm((prevFields: any) => ({
         ...prevFields,
