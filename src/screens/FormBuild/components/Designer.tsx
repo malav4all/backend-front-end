@@ -109,7 +109,7 @@ const Designer = () => {
   });
 
   return (
-    <Box display="flex" width="100%" height="95vh">
+    <Box display="flex" width="100%" height="82.3vh" overflow={"hidden"}>
       <Box
         p={4}
         flex={1}
@@ -122,7 +122,7 @@ const Designer = () => {
           elevation={3}
           sx={{
             width: "100%",
-            height: "100%",
+            height: "85%",
             backgroundColor: "#09090B",
             borderRadius: 2,
             display: "flex",

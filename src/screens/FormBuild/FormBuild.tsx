@@ -3,7 +3,6 @@ import { CustomAppHeader } from "../../global/components";
 import {
   boldFont,
   getRelativeFontSize,
-  headerColor,
   primaryHeadingColor,
 } from "../../utils/styles";
 import {
