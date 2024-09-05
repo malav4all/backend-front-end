@@ -167,8 +167,6 @@ const Trackplay = ({ location }: TrackPlayProps) => {
         endDate: trackPlayData?.endDate,
       },
     });
-    console.log(trackdata);
-
     addPolylineToMap(trackdata.getDistanceTrackPlay);
     // getReports(trackdata.getDistanceTrackPlay);
     setRawData(trackdata.getDistanceTrackPlay);

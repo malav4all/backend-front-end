@@ -139,9 +139,6 @@ const AlertReport = () => {
       setLastSelectedRange({ startDate, endDate });
     }
 
-    console.log({ startDate });
-    console.log({ endDate });
-
     setDateFilter({
       startDate: startDate,
       endDate: endDate,

@@ -209,8 +209,6 @@ const Dashboard = () => {
       });
   };
 
-  console.log(dataGraph);
-
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number

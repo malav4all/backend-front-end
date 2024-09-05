@@ -108,8 +108,6 @@ const Layout = () => {
         `${trackJson?.alert}`,
         trackJson?.parsedData?.name
       );
-
-      console.log(trackJson);
     }
   }, [data]);
 

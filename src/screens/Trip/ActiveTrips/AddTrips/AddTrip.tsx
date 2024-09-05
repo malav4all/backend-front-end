@@ -70,9 +70,6 @@ const AddTrip = (props: any) => {
   const [dynamicForm, setDynamicForm] = useState(
     dynamicFormInitialState(redirectionState?.dynamicForm)
   );
-  console.log({ redirectionState });
-  console.log({ transitTypeForm });
-  console.log({ tripInformationForm });
   const [imgSrc, setImgSrc] = useState({
     vehicleImg: redirectionState?.imgSrc?.vehiclenumber ?? "",
     installLockImg: redirectionState?.imgSrc?.installLock ?? "",
@@ -85,8 +82,6 @@ const AddTrip = (props: any) => {
       fetchDataAndSetOptions();
     }
   }, [transitTypeForm?.transitType?.value]);
-
-  console.log(redirectionState?.edit, "edit");
 
   const fetchDataAndSetOptions = async () => {
     try {
@@ -146,7 +141,6 @@ const AddTrip = (props: any) => {
       openErrorNotification(error.message);
     }
   };
-  console.log({ imgSrc });
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
 
@@ -357,7 +351,6 @@ const AddTrip = (props: any) => {
         transitType: transitTypeForm?.transitType.value,
       };
 
-      console.log({ insertTripBody });
       if (handleValidation()) {
         if (props?.edit) {
           // const res = await updateTrip({

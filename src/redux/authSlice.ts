@@ -121,6 +121,10 @@ export const authSlice = createSlice({
     updateTokens: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
     },
+
+    setAccountId: (state, action: PayloadAction<string>) => {
+      state.tenantId = action.payload;
+    },
   },
 });
 
@@ -130,6 +134,7 @@ export const {
   addLoading,
   updateUserName,
   updateTokens,
+  setAccountId,
 } = authSlice.actions;
 
 export const selectAuthenticated = (state: RootState) =>

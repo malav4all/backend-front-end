@@ -75,7 +75,6 @@ export const dynamicFormInitialState = (prevState = []) => {
   return prevState.map((form: any) => ({
     ...form,
     content: form?.content?.map((field: any) => {
-      console.log("Field Before Update:", field);
       return {
         ...field,
         extraAttributes: {
