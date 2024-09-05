@@ -33,7 +33,6 @@ export const tripTableHeader = [
   { name: "Trip Start Date", field: "tripStartDate" },
   { name: "Trip End Date", field: "tripEndDate" },
   { name: "Created By", field: "createdBy" },
-  { name: "Action", field: "action" },
 ];
 export const validateTransitTypeForm = (form: any, isEdit: boolean) => {
   let isValid = true;

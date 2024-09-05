@@ -28,7 +28,7 @@ import CustomDatePicker from "../../../../global/components/CustomDatePicker/Cus
 import { MdFileDownload } from "react-icons/md";
 import { store } from "../../../../utils/store";
 import { fetchTrips } from "../../../Trip/ActiveTrips/TripServices";
-import { tripTableHeader } from "../../../Trip/ActiveTrips/AddTrips/AddTripFormValidation";
+
 import {
   disabledBackgroundColor,
   primaryHeaderColor,
@@ -39,7 +39,43 @@ interface CustomDateRange {
   fromDate: string;
   toDate: string;
 }
+const tripTableHeader = [
+  { name: "Trip Id", field: "tripId" },
+  {
+    name: "Account Name",
+    field: "accountName",
+  },
+  {
+    name: "IMEI Number",
+    field: "imeiNumber",
+  },
+  {
+    name: "Vehicle Number",
+    field: "vehicleNumber",
+  },
 
+  {
+    name: "Source",
+    field: "source",
+  },
+  {
+    name: "Destination",
+    field: "destination",
+  },
+  {
+    name: "Driver Name",
+    field: "driverName",
+  },
+  {
+    name: "Driver Number",
+    field: "driverContactNumber",
+  },
+
+  { name: "Trip Start Date", field: "tripStartDate" },
+  { name: "Trip End Date", field: "tripEndDate" },
+  { name: "Created By", field: "createdBy" },
+  { name: "Action", field: "action" },
+];
 const TripReport = () => {
   const theme = useTheme();
   const initialState: any = {

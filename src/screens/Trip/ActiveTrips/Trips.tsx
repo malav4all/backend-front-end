@@ -191,8 +191,8 @@ const Trips = () => {
       if (response?.verifyOtp?.success === 1) {
         openSuccessNotification("OTP verified successfully.");
 
-        await unlockTrip();
-        if (response?.statusCode === 200) {
+        const res: any = await unlockTrip();
+        if (res === 200) {
           await handleStatusChange("closed");
         } else {
           openErrorNotification(response?.message);
@@ -208,14 +208,14 @@ const Trips = () => {
   const unlockTrip = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.23:5030/send-command",
+        "http://192.168.1.20:5030/send-command",
         {
           imei: imei,
         }
       );
-
       if (response?.data?.statusCode === 200) {
         openSuccessNotification("Lock successfully unlocked!");
+        return response?.data?.statusCode;
       } else {
         openErrorNotification("Failed to unlock the lock.");
       }
