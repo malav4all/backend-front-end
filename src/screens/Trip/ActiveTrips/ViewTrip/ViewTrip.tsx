@@ -100,6 +100,7 @@ const ViewTrip = () => {
             contact: tripData?.alertConfig?.alertMedium?.sms?.contact || "",
             isEnable:
               tripData?.alertConfig?.alertMedium?.sms?.isEnable || false,
+            smsType: tripData?.alertConfig?.alertMedium?.sms?.smsType,
           },
           whatsapp: {
             contact:
@@ -111,6 +112,28 @@ const ViewTrip = () => {
             contact: tripData?.alertConfig?.alertMedium?.email?.contact || "",
             isEnable:
               tripData?.alertConfig?.alertMedium?.email?.isEnable || false,
+          },
+        },
+        alertDetails: {
+          overSpeeding: {
+            value:
+              tripData?.alertConfig?.alertDetails?.overSpeeding?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.overSpeeding?.isEnabled ||
+              false,
+          },
+          lowBattery: {
+            value: tripData?.alertConfig?.alertDetails?.lowBattery?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.lowBattery?.isEnabled ||
+              false,
+          },
+          overStopping: {
+            value:
+              tripData?.alertConfig?.alertDetails?.overStopping?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.overStopping?.isEnabled ||
+              false,
           },
         },
       });

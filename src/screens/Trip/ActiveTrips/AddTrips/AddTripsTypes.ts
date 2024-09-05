@@ -54,6 +54,7 @@ export const alertConfigurationFormInitialState = (prevState?: any) => ({
     sms: {
       contact: prevState?.alertMedium?.sms?.contact ?? "",
       isEnable: prevState?.alertMedium?.sms?.isEnable ?? false,
+      smsType: prevState?.alertMedium?.sms?.smsType ?? "",
     },
     // whatsapp: {
     //   contact: prevState?.alertMedium?.whatsapp?.contact ?? "",
@@ -64,10 +65,19 @@ export const alertConfigurationFormInitialState = (prevState?: any) => ({
     //   isEnable: prevState?.alertMedium?.email?.isEnable ?? false,
     // },
   },
-  alertDetails: prevState?.alertDetails ?? {
-    overSpeeding: { speed: "", isEnabled: false },
-    lowBattery: { percentage: "", isEnabled: false },
-    overStopping: { duration: "", isEnabled: false },
+  alertDetails: {
+    overSpeeding: {
+      value: prevState?.alertDetails?.overSpeeding?.value ?? "",
+      isEnabled: prevState?.alertDetails?.overSpeeding?.isEnable ?? false,
+    },
+    lowBattery: {
+      value: prevState?.alertDetails?.lowBattery?.value ?? "",
+      isEnabled: prevState?.alertDetails?.lowBattery?.isEnable ?? false,
+    },
+    overStopping: {
+      value: prevState?.alertDetails?.overStopping?.value ?? "",
+      isEnabled: prevState?.alertDetails?.overStopping?.isEnable ?? false,
+    },
   },
 });
 

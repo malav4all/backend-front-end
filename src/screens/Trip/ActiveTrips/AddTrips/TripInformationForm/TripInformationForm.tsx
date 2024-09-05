@@ -392,7 +392,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
             </InputLabel>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
-                disabled={true}
+                disabled={edit}
                 value={tripInformationForm?.tripStartDate?.value}
                 onChange={(date) => handleTripDateChange("tripStartDate", date)} // Use handleDateChange for date fields
                 format="dd/MM/yyyy hh:mm a"

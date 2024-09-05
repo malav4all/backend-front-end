@@ -46,18 +46,17 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
   const alertTypes = [
     { name: "Lock", icon: <LockIcon /> },
     { name: "Geozone-In", icon: <GeozoneInIcon /> },
-    { name: "LowBattery", icon: <LowBatteryIcon /> },
+    { name: "lowBattery", icon: <LowBatteryIcon /> },
     { name: "Unlock", icon: <UnlockIcon /> },
     { name: "Geozone-out", icon: <GeozoneOutIcon /> },
-    { name: "OverSpeeding", icon: <OverspeedingIcon /> },
+    { name: "overSpeeding", icon: <OverspeedingIcon /> },
     { name: "Tamper Alert", icon: <TamperAlertIcon /> },
     { name: "Trip ended", icon: <TripEndedIcon /> },
-    { name: "OverStopping", icon: <OverstopingIcon /> },
+    { name: "overStopping", icon: <OverstopingIcon /> },
     { name: "Trip created", icon: <TripCreatedIcon /> },
   ];
 
   const defaultAlertTypes = ["Lock", "Unlock", "Tamper Alert"];
-  console.log(store.getState().auth.account, "account");
   const getAlertOptions = [
     { name: "SMS", icon: <SmsIcon /> },
     // Add more options like WhatsApp, Email here if needed
@@ -90,25 +89,36 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
       },
     }));
   };
-  console.log(
-    store.getState().auth.accountContactMobile,
-    "accountContactMobile"
-  );
-  const handleAlertDetailsChange = (event: any) => {
+
+  const handleAlertDetailsChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setAlertConfigurationForm((prevFields: any) => ({
-      ...prevFields,
-      alertMedium: {
-        ...prevFields?.alertMedium,
-        [name.toLowerCase()]: {
-          ...prevFields?.alertMedium[name?.toLowerCase()],
-          contact: value,
+
+    setAlertConfigurationForm((prevFields: any) => {
+      if (name === "customNumber") {
+        return {
+          ...prevFields,
+          alertMedium: {
+            ...prevFields?.alertMedium,
+            sms: {
+              ...prevFields?.alertMedium?.sms,
+              contact: value,
+            },
+          },
+        };
+      }
+
+      return {
+        ...prevFields,
+        alertMedium: {
+          ...prevFields?.alertMedium,
+          [name?.toLowerCase()]: {
+            ...prevFields?.alertMedium[name?.toLowerCase()],
+            contact: value,
+          },
         },
-      },
-    }));
+      };
+    });
   };
-  console.log(tripInformationForm?.startPoint?.data?.mobileNumber);
-  console.log(tripInformationForm?.endPoint?.data?.mobileNumber);
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event?.target;
     setAlertConfigurationForm((prevFields: any) => {
@@ -121,9 +131,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           "Trip created",
           "Trip ended",
           "Tamper Alert",
-          "OverSpeeding",
-          "LowBattery",
-          "OverStopping",
+          "overSpeeding",
+          "lowBattery",
+          "overStopping",
         ]?.includes(name)
       ) {
         const updatedField = checked
@@ -135,9 +145,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
         // Update isEnabled for specific alerts
         let updatedAlertDetails = { ...prevFields.alertDetails };
         if (
-          name === "OverSpeeding" ||
-          name === "LowBattery" ||
-          name === "OverStopping"
+          name === "overSpeeding" ||
+          name === "lowBattery" ||
+          name === "overStopping"
         ) {
           updatedAlertDetails = {
             ...updatedAlertDetails,
@@ -243,9 +253,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                   </Box>
                 }
               />
-              {alert.name === "OverSpeeding" &&
+              {alert.name === "overSpeeding" &&
                 alertConfigurationForm?.subscribedAlerts?.includes(
-                  "OverSpeeding"
+                  "overSpeeding"
                 ) && (
                   <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box sx={{ width: "180px" }}>
@@ -257,7 +267,14 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                         <Select
                           className={classes.dropDownStyle}
                           sx={{ marginTop: "8px", width: "100px" }}
-                          name="OverSpeeding"
+                          name="overSpeeding"
+                          renderValue={() =>
+                            alertConfigurationForm?.alertDetails?.overSpeeding
+                              ?.value !== ""
+                              ? alertConfigurationForm?.alertDetails
+                                  ?.overSpeeding?.value
+                              : "Select Trip Type"
+                          }
                           value={
                             alertConfigurationForm.alertDetails?.overSpeeding
                               ?.value || ""
@@ -279,9 +296,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                     </Box>
                   </Grid>
                 )}
-              {alert.name === "LowBattery" &&
+              {alert.name === "lowBattery" &&
                 alertConfigurationForm?.subscribedAlerts?.includes(
-                  "LowBattery"
+                  "lowBattery"
                 ) && (
                   <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box sx={{ width: "180px" }}>
@@ -293,7 +310,14 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                         <Select
                           className={classes.dropDownStyle}
                           sx={{ marginLeft: "17px", width: "100px" }}
-                          name="LowBattery"
+                          name="lowBattery"
+                          renderValue={() =>
+                            alertConfigurationForm.alertDetails.lowBattery
+                              .value !== ""
+                              ? alertConfigurationForm.alertDetails.lowBattery
+                                  .value
+                              : "Select Trip Type"
+                          }
                           value={
                             alertConfigurationForm.alertDetails.lowBattery
                               .value || ""
@@ -315,9 +339,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                     </Box>
                   </Grid>
                 )}
-              {alert.name === "OverStopping" &&
+              {alert.name === "overStopping" &&
                 alertConfigurationForm?.subscribedAlerts?.includes(
-                  "OverStopping"
+                  "overStopping"
                 ) && (
                   <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                     <Box sx={{ width: "180px" }}>
@@ -333,7 +357,14 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                             width: "100px",
                             marginLeft: "5px",
                           }}
-                          name="OverStopping"
+                          name="overStopping"
+                          renderValue={() =>
+                            alertConfigurationForm?.alertDetails?.overStopping
+                              ?.value !== ""
+                              ? alertConfigurationForm?.alertDetails
+                                  ?.overStopping?.value
+                              : "Select Trip Type"
+                          }
                           value={
                             alertConfigurationForm.alertDetails.overStopping
                               .value || ""
