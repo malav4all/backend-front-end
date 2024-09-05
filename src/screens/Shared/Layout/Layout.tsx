@@ -66,6 +66,8 @@ import TripAccess from "../../Trip/UserAccess/UserAccess";
 import DeviceList from "../../DeviceList/DeviceList";
 import HeaderNavbar from "../../Dashboard/components/HeaderNavbar";
 import { RoleManagement } from "../../Settings/RoleManagement/RoleManagement";
+import TripTrackplay from "../../TripTrackplay/TripTrackplay";
+import TripAlertReport from "../../TripAlertReport/TripAlertReport";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -116,8 +118,6 @@ const Layout = () => {
     onIdle: handleOnIdle,
     debounce: 500,
   });
-
-  // console.log(data);
 
   const getContent = () => {
     return (
@@ -243,6 +243,20 @@ const Layout = () => {
             path={"/trackplay"}
             component={Trackplay}
             componentName={strings.ACTIVE_ROUTES}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/triptrackplay"}
+            component={TripTrackplay}
+            componentName={"TripTrackplay"}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/tripAlertReport"}
+            component={TripAlertReport}
+            componentName={"TripAlertReport"}
           />
           <PrivateRoute
             exact

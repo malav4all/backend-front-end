@@ -111,7 +111,7 @@ const ViewTrip = () => {
         vehiclenumber: tripData?.tripVerification?.vehiclenumber,
         installLock: tripData?.tripVerification?.installLock,
         permitNumber: tripData?.tripVerification?.permitNumber,
-        paymentProofImg: tripData?.tripVerification?.paymentProofImg,
+        paymentProofImg: tripData?.tripVerification?.paymentProof,
       });
       setDynamicForm(dynamicFormInitialState(tripData?.metaData?.dynamicForm));
       setIsLoading(false);

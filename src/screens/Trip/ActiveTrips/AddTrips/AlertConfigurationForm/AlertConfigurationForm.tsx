@@ -28,15 +28,18 @@ import {
   TripEndedIcon,
   UnlockIcon,
 } from "./AlertIcons";
+import { store } from "../../../../../utils/store";
 
 interface AlertConfigurationProps {
   alertConfigurationForm: any;
   setAlertConfigurationForm: Function;
+  tripInformationForm?: any;
 }
 
 const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
   alertConfigurationForm,
   setAlertConfigurationForm,
+  tripInformationForm,
 }) => {
   const classes = useStyles();
 
@@ -54,7 +57,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
   ];
 
   const defaultAlertTypes = ["Lock", "Unlock", "Tamper Alert"];
-
+  console.log(store.getState().auth.account, "account");
   const getAlertOptions = [
     { name: "SMS", icon: <SmsIcon /> },
     // Add more options like WhatsApp, Email here if needed
@@ -87,7 +90,10 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
       },
     }));
   };
-
+  console.log(
+    store.getState().auth.accountContactMobile,
+    "accountContactMobile"
+  );
   const handleAlertDetailsChange = (event: any) => {
     const { name, value } = event.target;
     setAlertConfigurationForm((prevFields: any) => ({
@@ -101,7 +107,8 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
       },
     }));
   };
-
+  console.log(tripInformationForm?.startPoint?.data?.mobileNumber);
+  console.log(tripInformationForm?.endPoint?.data?.mobileNumber);
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = event?.target;
     setAlertConfigurationForm((prevFields: any) => {
@@ -166,6 +173,24 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
 
   const handleRadioChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+
+    let contactNumber = "";
+
+    switch (value) {
+      case "accountNumber":
+        contactNumber = store.getState().auth.accountContactMobile;
+        break;
+      case "sourceNumber":
+        contactNumber =
+          tripInformationForm?.startPoint?.data?.mobileNumber || "";
+        break;
+      case "destinationNumber":
+        contactNumber = tripInformationForm?.endPoint?.data?.mobileNumber || "";
+        break;
+      default:
+        contactNumber = "";
+    }
+
     setAlertConfigurationForm((prevFields: any) => ({
       ...prevFields,
       alertMedium: {
@@ -173,6 +198,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
         sms: {
           ...prevFields?.alertMedium?.sms,
           smsType: value,
+          contact: contactNumber,
         },
       },
     }));
@@ -393,7 +419,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                       >
                         <FormControl component="fieldset">
                           <FormLabel sx={{ paddingY: "10px" }}>
-                            Send SMS to :
+                            Send SMS to:
                           </FormLabel>
                           <RadioGroup
                             name="smsType"
@@ -402,25 +428,31 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                                 ?.smsType || ""
                             }
                             onChange={handleRadioChange}
-                            row // This ensures the radio buttons are in a row
+                            row
                           >
                             <FormControlLabel
                               value="accountNumber"
                               control={<Radio />}
-                              label="Account Number"
+                              label={`Account Number (${
+                                store.getState().auth.accountContactMobile
+                              })`}
                             />
                             <FormControlLabel
                               value="sourceNumber"
                               control={<Radio />}
-                              label="Source Number"
+                              label={`Source Number (${
+                                tripInformationForm?.startPoint?.data
+                                  ?.mobileNumber || "N/A"
+                              })`}
                             />
                             <FormControlLabel
-                              value="distributorNumber"
+                              value="destinationNumber"
                               control={<Radio />}
-                              label="Distributor Number"
+                              label={`Destination Number (${
+                                tripInformationForm?.endPoint?.data
+                                  ?.mobileNumber || "N/A"
+                              })`}
                             />
-
-                            {/* Custom Number Radio with Input next to it */}
                             <FormControlLabel
                               value="customNumber"
                               control={<Radio />}
@@ -429,18 +461,14 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                             {alertConfigurationForm?.alertMedium?.sms
                               ?.smsType === "customNumber" && (
                               <CustomInput
-                                name={option?.name}
+                                name="customNumber"
                                 value={
-                                  alertConfigurationForm?.alertMedium?.[
-                                    option?.name.toLowerCase()
-                                  ]?.contact
+                                  alertConfigurationForm?.alertMedium?.sms
+                                    ?.contact || ""
                                 }
                                 onChange={handleAlertDetailsChange}
-                                placeHolder={`Enter Custom Number`}
-                                sx={{
-                                  width: "200px",
-                                  marginLeft: "10px", // Ensure spacing between radio and input
-                                }}
+                                placeHolder="Enter Custom Number"
+                                sx={{ width: "200px", marginLeft: "10px" }}
                               />
                             )}
                           </RadioGroup>

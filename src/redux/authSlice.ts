@@ -22,6 +22,7 @@ export interface AuthState {
   roleName: string;
   tenantId: string;
   sidebar: ListOfMenusType[];
+  accountContactMobile: string;
 }
 
 const initialState: AuthState = {
@@ -44,6 +45,7 @@ const initialState: AuthState = {
   isSuperAdmin: false,
   imeiList: [],
   deviceGroup: {},
+  accountContactMobile: "",
 };
 
 export const authSlice = createSlice({
@@ -70,6 +72,7 @@ export const authSlice = createSlice({
         isSuperAdmin: boolean;
         imeiList: Array<any>;
         deviceGroup: any;
+        accountContactMobile: string;
       }>
     ) => {
       state.authenticated = action.payload.authenticated;
@@ -89,6 +92,7 @@ export const authSlice = createSlice({
       state.isSuperAdmin = action.payload.isSuperAdmin;
       state.imeiList = action.payload.imeiList;
       state.deviceGroup = action.payload.deviceGroup;
+      state.accountContactMobile = action.payload.accountContactMobile;
     },
     addLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -112,6 +116,7 @@ export const authSlice = createSlice({
       state.isSuperAdmin = false;
       state.imeiList = [];
       state.deviceGroup = {};
+      state.accountContactMobile = "";
     },
     updateTokens: (state, action: PayloadAction<string>) => {
       state.accessToken = action.payload;
@@ -142,4 +147,6 @@ export const isAccountAdmin = (state: RootState) => state?.auth?.isAccountAdmin;
 export const isSuperAdmin = (state: RootState) => state?.auth?.isSuperAdmin;
 export const imeiList = (state: RootState) => state?.auth?.imeiList;
 export const deviceGroup = (state: RootState) => state?.auth?.deviceGroup;
+export const accountContactMobile = (state: RootState) =>
+  state?.auth?.accountContactMobile;
 export default authSlice.reducer;
