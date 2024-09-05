@@ -109,6 +109,9 @@ const Login = () => {
               userId: user?.loginUser?.data?.data?.user?._id,
               account: user?.loginUser?.data?.data?.user?.account?.accountName,
               accountId: user?.loginUser?.data?.data?.user?.account?._id,
+              accountContactMobile:
+                user?.loginUser?.data?.data?.user?.account
+                  ?.accountContactMobile,
               roleName: user?.loginUser?.data?.data?.user.roleId.name,
               tenantId:
                 user?.loginUser?.data?.data?.user?.account?.tenantId || "",

@@ -1,4 +1,9 @@
-import { boldFont, primaryHeadingColor, theme } from "../../../utils/styles";
+import {
+  boldFont,
+  mediumFont,
+  primaryHeadingColor,
+  theme,
+} from "../../../utils/styles";
 
 const tripStyles = {
   divderResponsive: {
@@ -117,6 +122,10 @@ const tripStyles = {
       width: "25px",
       height: "25px",
     },
+  },
+  titleDeleteStyle: {
+    
+    textAlign: "center",
   },
 };
 

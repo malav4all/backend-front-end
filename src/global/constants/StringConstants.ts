@@ -285,6 +285,7 @@ export class StringConstants {
   VIEW_TRIP = "VIEW TRIP";
   TRIPS = "Trips";
   Cancel = "Cancel";
+  Unlock = "Unlock";
   Previous = "Previous";
   Save = "Save";
   Next = "Next";

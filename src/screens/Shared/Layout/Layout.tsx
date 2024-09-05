@@ -69,6 +69,8 @@ import TripAccess from "../../Trip/UserAccess/UserAccess";
 import DeviceList from "../../DeviceList/DeviceList";
 import HeaderNavbar from "../../Dashboard/components/HeaderNavbar";
 import { RoleManagement } from "../../Settings/RoleManagement/RoleManagement";
+import TripTrackplay from "../../TripTrackplay/TripTrackplay";
+import TripAlertReport from "../../TripAlertReport/TripAlertReport";
 
 const Layout = () => {
   const classes = layoutStyles;
@@ -120,8 +122,6 @@ const Layout = () => {
     debounce: 500,
   });
 
-  // console.log(data);
-
   const getContent = () => {
     return (
       <Box sx={classes.content}>
@@ -130,10 +130,9 @@ const Layout = () => {
           location.pathname === "/location" ||
           location.pathname === "/geozone"
         ) && (
-          // <Box sx={classes.navbarPosition}>
-          //   <HeaderNavbar />
-          // </Box>
-          <></>
+          <Box sx={classes.navbarPosition}>
+            <HeaderNavbar />
+          </Box>
         )}
         <Switch>
           <PrivateRoute
@@ -247,6 +246,20 @@ const Layout = () => {
             path={"/trackplay"}
             component={Trackplay}
             componentName={strings.ACTIVE_ROUTES}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/triptrackplay"}
+            component={TripTrackplay}
+            componentName={"TripTrackplay"}
+          />
+          <PrivateRoute
+            exact
+            isLoggedIn={isAuthenticated}
+            path={"/tripAlertReport"}
+            component={TripAlertReport}
+            componentName={"TripAlertReport"}
           />
           <PrivateRoute
             exact

@@ -79,7 +79,7 @@ const AddTrip = (props: any) => {
     permitImg: redirectionState?.imgSrc?.permitNumber ?? "",
     paymentProofImg: redirectionState?.imgSrc?.paymentProofImg ?? "",
   });
-  
+
   useEffect(() => {
     if (transitTypeForm?.transitType?.value) {
       fetchDataAndSetOptions();
@@ -206,6 +206,7 @@ const AddTrip = (props: any) => {
           <AlertConfigurationForm
             alertConfigurationForm={alertConfigurationForm}
             setAlertConfigurationForm={setAlertConfigurationForm}
+            tripInformationForm={tripInformationForm}
           />
         );
       case 3:
@@ -246,38 +247,38 @@ const AddTrip = (props: any) => {
   const handleValidation = () => {
     let isValid = true;
 
-    switch (activeStep) {
-      case 0: {
-        const validation = validateTransitTypeForm(
-          transitTypeForm,
-          props?.edit
-        );
-        setTransitTypeForm(validation.errors);
-        isValid = validation.isValid;
-        console.log({ isValid });
-        return isValid;
-      }
-      case 1: {
-        const validation = validateTripInformationForm(
-          tripInformationForm,
-          props?.edit
-        );
-        setTripInformationForm(validation.errors);
-        isValid = validation.isValid;
-        return isValid;
-      }
-      case 2: {
-        const validation = validateAlertConfigurationForm(
-          alertConfigurationForm,
-          props?.edit
-        );
-        setAlertConfigurationForm(validation.errors);
-        isValid = validation.isValid;
-        return isValid;
-      }
-      default:
-        break;
-    }
+    // switch (activeStep) {
+    //   case 0: {
+    //     const validation = validateTransitTypeForm(
+    //       transitTypeForm,
+    //       props?.edit
+    //     );
+    //     setTransitTypeForm(validation.errors);
+    //     isValid = validation.isValid;
+    //     console.log({ isValid });
+    //     return isValid;
+    //   }
+    //   case 1: {
+    //     const validation = validateTripInformationForm(
+    //       tripInformationForm,
+    //       props?.edit
+    //     );
+    //     setTripInformationForm(validation.errors);
+    //     isValid = validation.isValid;
+    //     return isValid;
+    //   }
+    //   case 2: {
+    //     const validation = validateAlertConfigurationForm(
+    //       alertConfigurationForm,
+    //       props?.edit
+    //     );
+    //     setAlertConfigurationForm(validation.errors);
+    //     isValid = validation.isValid;
+    //     return isValid;
+    //   }
+    //   default:
+    //     break;
+    // }
 
     return isValid;
   };
@@ -288,13 +289,13 @@ const AddTrip = (props: any) => {
 
   const handleNext = () => {
     if (handleValidation()) {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
 
   const handleGoToClickedStep = (index: number) => {
     if (handleValidation() || activeStep > index) {
-    setActiveStep(index);
+      setActiveStep(index);
     }
   };
 
@@ -358,29 +359,29 @@ const AddTrip = (props: any) => {
 
       console.log({ insertTripBody });
       if (handleValidation()) {
-      if (props?.edit) {
-        // const res = await updateTrip({
-        //   input: {
-        //     _id: props?.selectedTripRowData?._id,
-        //     ...insertTripBody,
-        //     createdBy: store.getState().auth.userName,
-        //   },
-        // });
-        // openSuccessNotification(res?.updateTrip?.message);
-        await props?.tableData?.();
-      } else {
-        const res = await createTrip({
-          input: {
-            ...insertTripBody,
-            status: "started",
-            createdBy: store?.getState()?.auth?.userName,
-          },
-        });
+        if (props?.edit) {
+          // const res = await updateTrip({
+          //   input: {
+          //     _id: props?.selectedTripRowData?._id,
+          //     ...insertTripBody,
+          //     createdBy: store.getState().auth.userName,
+          //   },
+          // });
+          // openSuccessNotification(res?.updateTrip?.message);
+          await props?.tableData?.();
+        } else {
+          const res = await createTrip({
+            input: {
+              ...insertTripBody,
+              status: "started",
+              createdBy: store?.getState()?.auth?.userName,
+            },
+          });
 
-        openSuccessNotification(res?.createTrip?.message);
-        history.goBack();
-        await props?.tableData?.();
-      }
+          openSuccessNotification(res?.createTrip?.message);
+          history.goBack();
+          await props?.tableData?.();
+        }
       }
     } catch (error: any) {
       openErrorNotification(error?.message || notifiers.GENERIC_ERROR);
