@@ -11,7 +11,6 @@ import {
 
 export const fetchDeviceList = async (variables: any): Promise<any> => {
   try {
-    console.log({ variables });
     const response = await client.mutate({
       mutation: GET_ALL_DEVICE,
       variables,

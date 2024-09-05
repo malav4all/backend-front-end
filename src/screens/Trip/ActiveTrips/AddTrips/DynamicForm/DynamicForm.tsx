@@ -24,7 +24,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
   handleInputChange,
   formData,
 }) => {
-  console.log({ dynamicForm });
   const theme = useTheme();
   const renderDynamicFormFields = (form: any) => {
     return form?.content?.map((field: any) => (

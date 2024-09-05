@@ -80,13 +80,10 @@ const ViewLiveTracking = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      // console.log("Reverse Geocoding Data: ", data);
-
       if (data.items && data.items.length > 0) {
         const address = data.items[0].address.label;
         return address;
       } else {
-        // console.log("No address found for the given coordinates.");
         return "No address available";
       }
     } catch (error) {

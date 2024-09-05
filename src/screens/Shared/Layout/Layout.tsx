@@ -106,8 +106,6 @@ const Layout = () => {
         `${trackJson?.alert}`,
         trackJson?.parsedData?.name
       );
-
-      console.log(trackJson);
     }
   }, [data]);
 
@@ -116,8 +114,6 @@ const Layout = () => {
     onIdle: handleOnIdle,
     debounce: 500,
   });
-
-  // console.log(data);
 
   const getContent = () => {
     return (

@@ -122,8 +122,6 @@ const ViewTrip = () => {
       setIsLoading(false);
     }
   };
-  console.log({ imgSrc });
-  console.log({ tripInformationForm });
   const handleStatusChange = async (newStatus: string) => {
     try {
       const accountId = store.getState().auth.tenantId;

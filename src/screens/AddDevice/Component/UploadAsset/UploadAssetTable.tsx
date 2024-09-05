@@ -49,7 +49,6 @@ const UploadTableAsset = (props: Props) => {
           createdBy: store.getState().auth.userName,
         };
       });
-      // console.log(payload);
       const res = await bulkRoutesDeviceList({
         input: payload,
       });

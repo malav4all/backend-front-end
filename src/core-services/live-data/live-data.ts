@@ -94,7 +94,7 @@ const errorLink = onError(
 
 const refreshToken = async () => {
   try {
-    console.log("1");
+
     const refreshResolverResponse = await liveClient.mutate<{
       refreshToken: AccessToken;
     }>({
