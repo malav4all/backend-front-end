@@ -83,6 +83,9 @@ const FormBuilder: React.FC = () => {
           </Typography>
         </CardHeader>
         <CardContent className="h-[20px] truncate text-sm">
+          {form?.name || "No description"}
+        </CardContent>
+        <CardContent className="h-[20px] truncate text-sm">
           {form?.description || "No description"}
         </CardContent>
         <CardContent>
