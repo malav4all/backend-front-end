@@ -45,17 +45,23 @@ interface CustomProps {
   tableData?: Function;
   isLoading?: boolean;
   selectedRowData?: any;
+  setDeviceFormFields?: any;
+  userDeviceFields?: any;
 }
 
-const AddDeviceOnboarding = (props: CustomProps) => {
+const AddDeviceOnboarding = ({
+  openAddUserDialog,
+  edit,
+  handleCloseAddUserDialog,
+  isLoading,
+  selectedRowData,
+  setDeviceFormFields,
+  tableData,
+  userDeviceFields,
+}: CustomProps) => {
   const classes = DeviceOnboardingStyle;
-  const [userDeviceFields, setDeviceFormFields] = useState<any>(
-    insertDeviceOnboardingField(props?.selectedRowData)
-  );
-  const [uploadAsset, setUploadAsset] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [accountData, setAccountData] = useState<any>([]);
-  const [userData, setUserData] = useState([]);
   const [geozoneData, setGeozoneData] = useState([]);
   const [simNo, setSimNo] = useState([]);
   const [deviceModelData, setDeviceModelData] = useState([]);
@@ -69,22 +75,55 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   }, []);
 
   useEffect(() => {
+    if (edit && selectedRowData) {
+      setSimNo(selectedRowData?.deviceOnboardingSimNo);
+    }
+  }, [selectedRowData]);
+
+  useEffect(() => {
     if (userDeviceFields?.deviceOnboardingAccount?.value) {
       fetchGeozone();
     }
-  }, [userDeviceFields.deviceOnboardingAccount.value]);
+  }, [userDeviceFields?.deviceOnboardingAccount?.value]);
 
-  useEffect(() => {
-    setDeviceFormFields(insertDeviceOnboardingField());
-    setSimNo([]);
-  }, [props.openAddUserDialog]);
+  const handleValidation = () => {
+    let isValid = true;
 
-  useEffect(() => {
-    if (props.edit && props.selectedRowData) {
-      setDeviceFormFields(insertDeviceOnboardingField(props.selectedRowData));
-      setSimNo(props?.selectedRowData?.deviceOnboardingSimNo);
+    if (!isTruthy(userDeviceFields?.deviceOnboardingIMEINumber?.value)) {
+      setDeviceFormFields((prevData: any) => ({
+        ...prevData,
+        deviceOnboardingIMEINumber: {
+          ...prevData.deviceOnboardingIMEINumber,
+          error: "IMEI number is required.",
+        },
+      }));
+      isValid = false;
     }
-  }, [props.selectedRowData]);
+
+    if (!isTruthy(userDeviceFields?.deviceOnboardingAccount?.value)) {
+      setDeviceFormFields((prevData: any) => ({
+        ...prevData,
+        deviceOnboardingAccount: {
+          ...prevData.deviceOnboardingAccount,
+          error: "Account is required.",
+        },
+      }));
+      isValid = false;
+    }
+
+    if (!isTruthy(simNo.length)) {
+      setDeviceFormFields((prevData: any) => ({
+        ...prevData,
+        deviceOnboardingSimNo: {
+          ...prevData.deviceOnboardingSimNo,
+          error: "Sim No is required.",
+        },
+      }));
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const fetchAccountData = async () => {
     try {
@@ -111,17 +150,23 @@ const AddDeviceOnboarding = (props: CustomProps) => {
   const addUserDialogTitle = () => {
     return (
       <Box>
-        <Typography sx={classes.boldFonts}>Add Device Onboarding</Typography>
+        <Typography sx={classes.boldFonts}>
+          {edit ? "Update Device Onboarding" : "Add Device Onboarding"}
+        </Typography>
       </Box>
     );
   };
 
   const insertUserDetails = async () => {
+    if (!handleValidation()) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     // if (handleValidation()) {
     const insertUserBody: any = {
       location: userDeviceFields.locationId.value,
-      accountId: tenantId,
+      accountId: userDeviceFields?.deviceOnboardingAccount?.value,
       deviceOnboardingSimNo: simNo,
       createdBy: userDeviceFields.createdBy.value,
       deviceOnboardingIMEINumber:
@@ -130,10 +175,10 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     };
 
     try {
-      if (props.edit) {
+      if (edit) {
         const res = await updateDeviceOnboardingList({
           input: {
-            _id: props.selectedRowData._id,
+            _id: selectedRowData._id,
             ...insertUserBody,
           },
         });
@@ -146,8 +191,8 @@ const AddDeviceOnboarding = (props: CustomProps) => {
         });
         openSuccessNotification(res?.createDeviceOnboarding?.message);
       }
-      props.handleCloseAddUserDialog?.(false);
-      await props.tableData?.();
+      handleCloseAddUserDialog?.(false);
+      await tableData?.();
     } catch (error: any) {
       openErrorNotification(
         isTruthy(error.message) ? error.message : notifiers.GENERIC_ERROR
@@ -209,7 +254,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
       setLoading(true);
       const res = await fetchGeozoneHandler({
         input: {
-          accountId: tenantId,
+          accountId: userDeviceFields?.deviceOnboardingAccount?.value,
           page: -1,
           limit: 0,
         },
@@ -264,7 +309,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                 value={userDeviceFields.deviceOnboardingAccount.value}
                 onChange={(e) => {
                   const getTenantId = accountData.find(
-                    (item: any) => item._id === e.target.value
+                    (item: any) => item.accountId === e.target.value
                   );
                   setDeviceFormFields({
                     ...userDeviceFields,
@@ -272,7 +317,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                       value: e.target.value,
                     },
                   });
-                  setTenantId(getTenantId.tenantId);
+                  setTenantId(getTenantId?.tenantId);
                 }}
                 renderValue={
                   userDeviceFields.deviceOnboardingAccount.value !== ""
@@ -289,7 +334,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                 {accountData?.map((item: any, index: any) => (
                   <MenuItem
                     key={index}
-                    value={item._id}
+                    value={item.accountId}
                     sx={classes.dropDownOptionsStyle}
                   >
                     {item.accountId} - {item.accountName}
@@ -303,13 +348,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
           <>
             <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
               <Box>
-                <InputLabel
-                  sx={{
-                    ...classes.inputLabel,
-                    color: theme.palette.text.primary,
-                  }}
-                  shrink
-                >
+                <InputLabel sx={classes.inputLabel} shrink>
                   IMEI
                   <Box ml={0.4} sx={classes.star}>
                     *
@@ -326,21 +365,19 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                       value: item,
                     })) || []
                   }
+                  value={
+                    edit
+                      ? selectedRowData?.deviceOnboardingIMEINumber
+                      : userDeviceFields?.deviceOnboardingIMEINumber?.value
+                  }
                   onChange={(event, newValue) => handleOnChange(newValue)}
-                  renderInput={(params) => {
-                    const InputProps = { ...params.InputProps };
-                    InputProps.endAdornment = null;
-                    return (
-                      <TextField
-                        sx={classes.select}
-                        {...params}
-                        name="startLocation"
-                        placeholder="Select Imei"
-                        // onChange={handleOnChange}
-                        InputProps={InputProps}
-                      />
-                    );
-                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Select IMEI"
+                      sx={classes.select}
+                    />
+                  )}
                 />
               </Box>
             </Grid>
@@ -393,7 +430,7 @@ const AddDeviceOnboarding = (props: CustomProps) => {
                         marginTop: "8px",
                         borderRadius: "5px",
                         fontSize: "15px",
-                        backgroundColor: "#ECF9FF",
+                        backgroundColor: "red",
                       }}
                       variant="filled"
                       onDelete={() => removeSimNoHandler(index)}
@@ -502,12 +539,12 @@ const AddDeviceOnboarding = (props: CustomProps) => {
           <CustomButton
             id="add_user_cancel_button"
             label="Cancel"
-            onClick={() => props?.handleCloseAddUserDialog?.()}
+            onClick={() => handleCloseAddUserDialog?.()}
             customClasses={classes.cancelButtonStyle}
           />
           <CustomButton
             id="add_user_submit_button"
-            label={props.edit ? "Update" : "Add"}
+            label={edit ? "Update" : "Add"}
             onClick={insertUserDetails}
             loading={loading}
           />
@@ -528,10 +565,10 @@ const AddDeviceOnboarding = (props: CustomProps) => {
     return (
       <Grid container sx={classes.centerItemFlex}>
         <CustomDialog
-          isDialogOpen={props.openAddUserDialog}
+          isDialogOpen={openAddUserDialog}
           closable
           closeButtonVisibility
-          handleDialogClose={props.handleCloseAddUserDialog}
+          handleDialogClose={handleCloseAddUserDialog}
           dialogHeaderContent={addUserHeaderImg()}
           dialogTitleContent={addUserDialogTitle()}
           dialogBodyContent={addUserDialogBody()}

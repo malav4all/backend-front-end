@@ -47,6 +47,7 @@ export const SEARCH_DEVICE_GROUP = gql`
       data {
         _id
         deviceGroupName
+        imeiData
         createdBy
       }
     }

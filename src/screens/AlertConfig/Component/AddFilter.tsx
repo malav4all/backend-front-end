@@ -373,19 +373,28 @@ const AddFilter = (props: CustomProps) => {
   };
 
   const isOptionSelected = (option: any) => {
-    return deviceName?.includes(option?.imei);
+    return deviceName?.includes(option);
   };
 
   const handleSelectAll = (event: any) => {
-    if (event?.target?.checked) {
-      setDeviceName(imeiUser?.map((option: any) => option?.imei));
-      const newData = imeiUser?.map((option: any) => String(option?.imei));
+    if (event.target.checked) {
+      setSelectedImeis(imeiData);
       setDeviceGroupFromFields({
         ...deviceGroupFromFields,
-        imeiList: newData,
+        imeiList: {
+          value: imeiData,
+          error: "",
+        },
       });
     } else {
-      setDeviceName([]);
+      setSelectedImeis([]);
+      setDeviceGroupFromFields({
+        ...deviceGroupFromFields,
+        imeiList: {
+          value: [],
+          error: "",
+        },
+      });
     }
   };
 
@@ -420,14 +429,12 @@ const AddFilter = (props: CustomProps) => {
   };
 
   const handleChange = (event: any, value: any) => {
-    const filteredValues = value?.filter((v: any) => typeof v !== "string");
-    setDeviceName(filteredValues?.map((option: any) => option?.imei));
-    const filteredImeis = filteredValues?.map((option: any) =>
-      String(option?.imei)
-    );
+    const filteredValues = value.filter((v: any) => v !== "Select All");
+    setSelectedImeis(filteredValues);
+
     setDeviceGroupFromFields({
       ...deviceGroupFromFields,
-      imeiList: filteredImeis,
+      imeiList: filteredValues,
     });
 
     setUserFormFields((prev: any) => ({
@@ -482,25 +489,34 @@ const AddFilter = (props: CustomProps) => {
             <Autocomplete
               multiple
               id="checkboxes-tags-demo"
-              options={["Select All", ...imeiUser]}
+              options={["Select All", ...imeiData]}
               disableCloseOnSelect
-              getOptionLabel={(option: any) =>
-                typeof option === "string" ? option : option?.labelName
+              getOptionLabel={(option) =>
+                typeof option === "string" ? option : option
               }
-              value={deviceName?.map((imei: any) =>
-                imeiUser?.find((option: any) => option?.imei === imei)
-              )}
+              value={selectedImeis}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                borderRadius: "5px",
+                height: "47px",
+                overflowY: "hidden",
+              }}
               onChange={handleChange}
               placeholder="Enter Device Group Name"
               renderOption={(props, option, { selected }) => {
-                if (typeof option === "string") {
+                if (option === "Select All") {
                   return (
                     <li {...props}>
                       <Checkbox
                         icon={icon}
                         checkedIcon={checkedIcon}
                         style={{ marginRight: 8 }}
-                        checked={deviceName?.length === imeiUser?.length}
+                        checked={selectedImeis.length === imeiData.length}
+                        indeterminate={
+                          selectedImeis.length > 0 &&
+                          selectedImeis.length < imeiData.length
+                        }
                         onChange={handleSelectAll}
                       />
                       Select All
@@ -515,13 +531,14 @@ const AddFilter = (props: CustomProps) => {
                       style={{ marginRight: 8 }}
                       checked={isOptionSelected(option)}
                     />
-                    {option.labelName}
+                    {option}
                   </li>
                 );
               }}
               renderInput={(params) => (
                 <TextField
                   {...params}
+                  placeholder={selectedImeis.length === 0 ? "Select IMEI" : ""}
                   InputProps={{
                     ...params.InputProps,
                     sx: {
@@ -530,11 +547,9 @@ const AddFilter = (props: CustomProps) => {
                       alignItems: "center",
                       color: "white",
                       backgroundColor: "#060b25",
+                      padding: 0,
                     },
                   }}
-                  placeholder={
-                    deviceName?.length === 0 ? "Select Device Name" : ""
-                  }
                 />
               )}
             />

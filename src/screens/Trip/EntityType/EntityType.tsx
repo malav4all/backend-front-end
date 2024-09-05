@@ -17,9 +17,7 @@ import {
 import EntityTypeStyles from "./EntityType.styles";
 import {
   addEntityType,
-  checkExitsEntityType,
   fetchEntityTypeTableHandler,
-  fetchTableHandler,
   searchTableHandler,
   updateEntityType,
 } from "./service/EntityType.service";
@@ -28,7 +26,6 @@ import {
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
-  validateTabValue,
 } from "../../../helpers/methods";
 import {
   entityTypeInsertField,
@@ -37,11 +34,11 @@ import {
 } from "./EntityTypeHelpers";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
 import AddEntityType from "./component/AddEntityType";
-import history from "../../../utils/history";
-import { useLocation } from "react-router-dom";
 import { store } from "../../../utils/store";
-import { PiPencilSimpleBold } from "react-icons/pi";
-import { headerColor } from "../../../utils/styles";
+import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
+import strings from "../../../global/constants/StringConstants";
+
 const EntityType = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -105,16 +102,16 @@ const EntityType = () => {
         description: item.description,
         createdBy: item.createdBy,
         action: (
-          <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
-            <PiPencilSimpleBold
-              style={{
-                margin: "0px 8px -7px 0px",
-                cursor: "pointer",
-                color: headerColor,
-                fontSize: "20px",
-              }}
-            />
-          </Tooltip>
+          <>
+            {hasAccessTo(strings.TRIPS, strings.UPDATE) && (
+              <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
+          </>
         ),
       };
     });
@@ -292,7 +289,7 @@ const EntityType = () => {
             spacing={1}
           >
             {searchBarRole()}
-            {getAddEntityTypeBtn()}
+            {hasAccessTo(strings.TRIPS, strings.ADD) && getAddEntityTypeBtn()}
           </Stack>
         </Stack>
       </CustomAppHeader>

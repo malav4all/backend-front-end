@@ -26,7 +26,7 @@ export const insertDeviceGroupField = (data?: any) => {
       error: "",
     },
     imeiList: {
-      value: data?.imeiList ?? "",
+      value: data?.imeiData ?? "",
       error: "",
     },
     createdBy: {

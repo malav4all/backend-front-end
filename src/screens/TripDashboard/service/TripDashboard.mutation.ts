@@ -21,3 +21,12 @@ export const FETCH_TRIP_LIST = gql`
     }
   }
 `;
+
+export const TRIP_COUNT = gql`
+  mutation ($input: TripCountInput!) {
+    tripCount(input: $input) {
+      todayActiveTripsCount
+      totalActiveTripsCount
+    }
+  }
+`;

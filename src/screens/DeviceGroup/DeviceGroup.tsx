@@ -14,13 +14,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  getRelativeFontSize,
-  primaryHeadingColor,
-  boldFont,
-  headerColor,
-} from "../../utils/styles";
-import { PiPencilSimpleBold } from "react-icons/pi";
+import { getRelativeFontSize, boldFont } from "../../utils/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   debounceEventHandler,
@@ -30,7 +24,6 @@ import {
 
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
 import strings from "../../global/constants/StringConstants";
-
 import deviceGroupStyles from "./DeviceGroup.styles";
 import {
   fetchDeviceGroup,
@@ -40,6 +33,9 @@ import notifiers from "../../global/constants/NotificationConstants";
 import { deviceGroupTableHeader } from "./DeviceGroupTypeAndValidation";
 import AddDeviceGroup from "./components/AddDeviceGroup/AddDeviceGroup";
 import { store } from "../../utils/store";
+import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
+import StringConstants from "../../global/constants/StringConstants";
 
 const DeviceGroup = () => {
   const theme = useTheme();
@@ -91,9 +87,6 @@ const DeviceGroup = () => {
               )}
               placement="top"
               arrow
-              // onClick={() => {
-              //   getRedirectionUrl(item?._id);
-              // }}
               sx={{
                 color: theme.palette.text.primary,
               }}
@@ -137,24 +130,22 @@ const DeviceGroup = () => {
         ),
         action: (
           <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editDeviceGroup(item);
-              }}
-              sx={{
-                color: theme.palette.text.primary,
-              }}
-            >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: headerColor,
-                  fontSize: "20px",
+            {hasAccessTo(StringConstants.DEVICE, StringConstants.UPDATE) && (
+              <Tooltip
+                title="Edit"
+                onClick={() => {
+                  editDeviceGroup(item);
                 }}
-              />
-            </Tooltip>
+                sx={{
+                  color: "#7C58CB",
+                }}
+              >
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
           </>
         ),
       };
@@ -213,9 +204,10 @@ const DeviceGroup = () => {
       setIsLoading(true);
       const res = await searchDeviceGroup({
         input: {
+          accountId: store.getState().auth.tenantId,
           search: searchDeviceGroups,
-          page: 1,
-          limit: 10,
+          page: page,
+          limit: rowsPerPage,
         },
       });
       tableRender(res?.searchDeviceGroup?.data);
@@ -363,7 +355,12 @@ const DeviceGroup = () => {
             spacing={1}
           >
             {getSearchBar()}
-            {addDeviceGroupButton()}
+            {hasAccessTo(
+              // "Devices",
+              // "Add"
+              StringConstants.DEVICE,
+              StringConstants.ADD
+            ) && addDeviceGroupButton()}
           </Stack>
         </Stack>
       </CustomAppHeader>

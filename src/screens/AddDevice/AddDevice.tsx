@@ -1,6 +1,5 @@
 import {
   Box,
-  Grid,
   InputAdornment,
   Stack,
   Tooltip,
@@ -8,15 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  boldFont,
-  getRelativeFontSize,
-  headerColor,
-  primaryHeadingColor,
-  regularFont,
-  theme,
-} from "../../utils/styles";
-import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
+import { boldFont, getRelativeFontSize, regularFont } from "../../utils/styles";
 import {
   CustomAppHeader,
   CustomButton,
@@ -39,11 +30,11 @@ import {
 } from "./service/add-device.service";
 import { store } from "../../utils/store";
 import { addDevicetable } from "./AddDeviceValidation";
-import { PiPencilSimpleBold } from "react-icons/pi";
 import ExportCSV from "../../global/components/ExportCSV";
 import UploadAssetGroup from "./Component/UploadAsset/UploadAssetModal";
 import DeviceOnboardingStyle from "../Inventory/DeviceOnboarding/DeviceOnboarding.styles";
-
+import EditIcon from "@mui/icons-material/Edit";
+import { hasAccessTo } from "../../utils/AuthorizationManager";
 const AddDevice = () => {
   const classes = DeviceOnboardingStyle;
   const theme = useTheme();
@@ -128,21 +119,19 @@ const AddDevice = () => {
         createdBy: item.createdBy,
         action: (
           <>
-            <Tooltip
-              title="Edit"
-              onClick={() => {
-                editDevice(item);
-              }}
-            >
-              <PiPencilSimpleBold
-                style={{
-                  margin: "0px 8px -7px 0px",
-                  cursor: "pointer",
-                  color: headerColor,
-                  fontSize: "20px",
+            {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
+              <Tooltip
+                title="Edit"
+                onClick={() => {
+                  editDevice(item);
                 }}
-              />
-            </Tooltip>
+              >
+                <EditIcon
+                  htmlColor={"#7C58CB"}
+                  style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+                />
+              </Tooltip>
+            )}
           </>
         ),
       };
@@ -319,28 +308,34 @@ const AddDevice = () => {
   const AddLocationType = () => {
     return (
       <>
-        <CustomButton
-          id="add_location_type_button"
-          label="Add Device"
-          onClick={() => setDialogOpen(true)}
-        />
+        {hasAccessTo(strings.INVENTORY, strings.ADD) && (
+          <CustomButton
+            id="add_location_type_button"
+            label="Add Device"
+            onClick={() => setDialogOpen(true)}
+          />
+        )}
 
-        <CustomButton
-          id="groups_download_template_button"
-          label="Download&nbsp;Template"
-          onClick={ExportCSV(["imei,deviceModelCode"], "addDevice")}
-          customClasses={{
-            width: "190px",
-          }}
-        />
+        {hasAccessTo(strings.INVENTORY, strings.UPLOAD) && (
+          <CustomButton
+            id="groups_download_template_button"
+            label="Download&nbsp;Template"
+            onClick={ExportCSV(["imei,deviceModelCode"], "addDevice")}
+            customClasses={{
+              width: "190px",
+            }}
+          />
+        )}
 
-        <CustomButton
-          id="groups_download_template_button"
-          label="Upload Add Bulk Device"
-          onClick={() => {
-            setUploadAsset(true);
-          }}
-        />
+        {hasAccessTo(strings.INVENTORY, strings.UPLOAD) && (
+          <CustomButton
+            id="groups_download_template_button"
+            label="Upload Add Bulk Device"
+            onClick={() => {
+              setUploadAsset(true);
+            }}
+          />
+        )}
       </>
     );
   };

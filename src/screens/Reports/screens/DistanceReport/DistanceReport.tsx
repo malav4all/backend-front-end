@@ -35,6 +35,7 @@ import {
 } from "../../../../utils/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import history from "../../../../utils/history";
+import { hasAccessTo } from "../../../../utils/AuthorizationManager";
 interface CustomProps {
   isFromRoutesReport: boolean;
 }
@@ -163,39 +164,44 @@ const DistanceReport = (props: CustomProps) => {
         distance: formattedDistance,
         duration: calculateApproxTime(formattedDistance),
         action: (
-          <Tooltip
-            title={
-              <CustomPaper
-                className={{ backgroundColor: disabledBackgroundColor }}
-              >
-                <Typography>{"View Routes"}</Typography>
-              </CustomPaper>
-            }
-            placement="top"
-            arrow
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  background: "none",
-                },
-              },
-            }}
-          >
-            <VisibilityIcon
-              key={item._id}
-              style={{ color: primaryHeaderColor, cursor: "pointer" }}
-              onClick={() => {
-                history.push({
-                  pathname: "/trackplay",
-                  state: {
-                    imei: item.imei,
-                    startDate: dateFilter.startDate,
-                    endDate: dateFilter.endDate,
+          <>
+            {" "}
+            {hasAccessTo(strings.REPORTS, strings.UPDATE) && (
+              <Tooltip
+                title={
+                  <CustomPaper
+                    className={{ backgroundColor: disabledBackgroundColor }}
+                  >
+                    <Typography>{"View Routes"}</Typography>
+                  </CustomPaper>
+                }
+                placement="top"
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      background: "none",
+                    },
                   },
-                });
-              }}
-            />
-          </Tooltip>
+                }}
+              >
+                <VisibilityIcon
+                  key={item._id}
+                  style={{ color: primaryHeaderColor, cursor: "pointer" }}
+                  onClick={() => {
+                    history.push({
+                      pathname: "/trackplay",
+                      state: {
+                        imei: item.imei,
+                        startDate: dateFilter.startDate,
+                        endDate: dateFilter.endDate,
+                      },
+                    });
+                  }}
+                />
+              </Tooltip>
+            )}
+          </>
         ),
       };
     });
@@ -394,9 +400,7 @@ const DistanceReport = (props: CustomProps) => {
             md={12}
             lg={12}
             sx={{ display: "flex", margin: "1rem 0rem" }}
-          >
-            
-          </Grid>
+          ></Grid>
 
           <Grid
             item

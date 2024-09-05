@@ -90,9 +90,9 @@ const Login = () => {
           openErrorNotification(user?.loginUser?.data?.message);
           setIsLoading(false);
         } else {
-          const formattedResources = convertResourceToObjectFormat(
+          const formattedResources = 
             user?.loginUser?.data?.data?.user.roleId.resources
-          );
+          
           dispatch(
             loginAction({
               email,
@@ -104,7 +104,7 @@ const Login = () => {
               deviceGroup: user?.loginUser?.data?.data?.user.deviceGroup,
               userName: user?.loginUser?.data?.data?.user.name,
               role: user?.loginUser?.data?.data?.user?.roleId.name,
-              resources: {},
+              resources: formattedResources,
               roleId: user?.loginUser?.data?.data?.user.roleId._id,
               userId: user?.loginUser?.data?.data?.user?._id,
               account: user?.loginUser?.data?.data?.user?.account?.accountName,

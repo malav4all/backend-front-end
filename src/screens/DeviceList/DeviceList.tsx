@@ -35,6 +35,7 @@ import {
   fetchDeviceList,
   updateDeviceName,
 } from "./service/devicelist.service";
+import { searchDeviceOnboardingHandler } from "../Inventory/DeviceOnboarding/service/DeviceOnboarding.service";
 
 const DeviceList = () => {
   const classes = DeviceOnboardingStyle;
@@ -53,8 +54,16 @@ const DeviceList = () => {
   const title = "Device List";
 
   useEffect(() => {
-    fetchDeviceOnboardingData();
-  }, [pageNumber, perPageData]);
+    setPageNumber(1);
+  }, [searchCampaigner]);
+
+  useEffect(() => {
+    if (searchCampaigner) {
+      searchDeviceOnboardingData();
+    } else {
+      fetchDeviceOnboardingData();
+    }
+  }, [pageNumber, perPageData, searchCampaigner]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -136,6 +145,30 @@ const DeviceList = () => {
         }}
       />
     );
+  };
+
+  const searchDeviceOnboardingData = async () => {
+    try {
+      setIsLoading(true);
+      const res = await searchDeviceOnboardingHandler({
+        input: {
+          accountId: store.getState().auth.tenantId,
+          search: searchCampaigner,
+          page: pageNumber,
+          limit: perPageData,
+        },
+      });
+      const finalTableData = tableDataRender(
+        res.searchDeviceOnboardingList.data
+      );
+
+      setTableData(finalTableData);
+      setCount(res.searchDeviceOnboardingList?.paginatorInfo?.count);
+      setIsLoading(false);
+    } catch (error: any) {
+      openErrorNotification(error.message);
+      setIsLoading(false);
+    }
   };
 
   const fetchDeviceOnboardingData = async () => {

@@ -25,12 +25,9 @@ import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport"
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import { useSubscription } from "@apollo/client";
 import {
-  ALERT_DEVICE_DATA,
-  ALERTS_SUBSCRIPTION,
   DEVICE_DATA,
 } from "../../Dashboard/service/Dashboard.mutation";
 import {
-  openErrorAlertNotification,
   openWarningNotification,
 } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";

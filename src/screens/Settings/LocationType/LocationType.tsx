@@ -29,11 +29,11 @@ import {
 import { store } from "../../../utils/store";
 import { validateLocationTypeForm } from "./LocationTypeandValidations";
 import AddLocationTypeModal from "./component/AddLocationType";
-import { PiPencilSimpleBold } from "react-icons/pi";
-import { headerColor } from "../../../utils/styles";
 import LocationTypeStyles from "./LocationType.styles";
 import CustomLoader from "../../../global/components/CustomLoader/CustomLoader";
-
+import EditIcon from "@mui/icons-material/Edit";
+import StringConstants from "../../../global/constants/StringConstants";
+import { hasAccessTo } from "../../../utils/AuthorizationManager";
 interface LocationTypeFormField {
   id: {
     value: string;
@@ -71,7 +71,7 @@ const LocationType: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchPageNumber, setSearchPageNumber] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-
+  const title = "Location Type";
   useEffect(() => {
     fetchLocationTypeHandler();
   }, []);
@@ -153,19 +153,19 @@ const LocationType: React.FC = () => {
     return data.map((item) => ({
       type: item.type,
       action: (
-        <Tooltip
-          title="Edit"
-          onClick={() => handleEditClick(item._id, item.type)}
-        >
-          <PiPencilSimpleBold
-            style={{
-              margin: "0px 8px -7px 0px",
-              cursor: "pointer",
-              color: headerColor,
-              fontSize: "20px",
-            }}
-          />
-        </Tooltip>
+        <>
+          {hasAccessTo(StringConstants.LOCATION, StringConstants.UPDATE) && (
+            <Tooltip
+              title="Edit"
+              onClick={() => handleEditClick(item._id, item.type)}
+            >
+              <EditIcon
+                htmlColor={"#7C58CB"}
+                style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
+              />
+            </Tooltip>
+          )}
+        </>
       ),
     }));
   };
@@ -240,15 +240,16 @@ const LocationType: React.FC = () => {
         justifyContent="space-between"
         alignItems={{ lg: "center" }}
       >
-        <Stack
-          px={1}
-          mt={7}
-          direction={{ lg: "row", xs: "column" }}
-          justifyContent="space-between"
-          alignItems={{ lg: "center" }}
-        >
-          Location Type
-        </Stack>
+        <Box>
+          <Typography
+            sx={{
+              ...classes.mainCardHeading,
+              color: theme.palette.text.primary,
+            }}
+          >
+            {title}
+          </Typography>
+        </Box>
 
         <Stack
           direction={{ sm: "row", xs: "column" }}
@@ -270,11 +271,13 @@ const LocationType: React.FC = () => {
               ),
             }}
           />
-          <CustomButton
-            id="add_location_type_button"
-            label="Add Location Type"
-            onClick={() => setDialogOpen(true)}
-          />
+          {hasAccessTo(StringConstants.LOCATION, StringConstants.ADD) && (
+            <CustomButton
+              id="add_location_type_button"
+              label="Add Location Type"
+              onClick={() => setDialogOpen(true)}
+            />
+          )}
         </Stack>
       </Stack>
     </CustomAppHeader>
