@@ -63,12 +63,25 @@ const ViewTrip = () => {
       });
 
       const tripData = res?.fetchTripById?.data[0];
+      const formattedStartPoint = {
+        value: tripData?.startPoint?.locationId,
+        label: `${tripData?.startPoint?.name} - ${tripData?.startPoint?.locationId}`,
+        data: tripData?.startPoint,
+        error: "",
+      };
+
+      const formattedEndPoint = {
+        value: tripData?.endPoint?.locationId,
+        label: `${tripData?.endPoint?.name} - ${tripData?.endPoint?.locationId}`,
+        data: tripData?.endPoint,
+        error: "",
+      };
 
       setTripInformationForm({
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
-        startPoint: tripData?.startPoint?.locationId || "",
-        endPoint: tripData?.endPoint?.locationId || "",
+        startPoint: formattedStartPoint,
+        endPoint: formattedEndPoint,
         tripStartDate: tripData?.tripStartDate,
         tripEndDate: tripData?.tripEndDate || "",
         status: tripData?.status || "",
