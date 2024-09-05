@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../../utils/hooks";
 import { fetchAccountTableHandler } from "../../Settings/Account/service/account.service";
 import { openSuccessNotification } from "../../../helpers/methods";
 import { store } from "../../../utils/store";
-import { divide } from "lodash";
 
 type Account = {
   _id: string;
@@ -23,9 +22,10 @@ const HeaderNavbar = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userName = useAppSelector(selectName);
-  const dispatch = useAppDispatch(); // Dispatch for Redux
+  const dispatch = useAppDispatch();
 
   const handleLogout = () => {
     history.push("/");
@@ -75,10 +75,11 @@ const HeaderNavbar = () => {
     };
   }, [dropdownRef]);
 
-  // Handle account selection and update Redux store
   const handleAccountSelection = (accountId: string) => {
-    dispatch(setAccountId(accountId)); // Dispatch the action to update accountId in the Redux store
+    setSelectedAccount(accountId);
+    dispatch(setAccountId(accountId));
     openSuccessNotification("Account ID updated: ", accountId);
+    setShowDropdown(false);
   };
 
   return (
@@ -92,7 +93,7 @@ const HeaderNavbar = () => {
                   onClick={toggleDropdown}
                   className="flex w-full cursor-pointer select-none rounded-lg border p-2 px-3 text-sm text-gray-700 ring-blue-400"
                 >
-                  Select Account
+                  {selectedAccount ? selectedAccount : "Select Account"}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className={`ml-auto h-4 text-gray-600 transition ${
@@ -120,7 +121,7 @@ const HeaderNavbar = () => {
                           className="cursor-pointer px-3 py-2 text-sm text-gray-500 hover:bg-blue-500 hover:text-white"
                           onClick={() =>
                             handleAccountSelection(account.accountId)
-                          } // Dispatch Redux action on selection
+                          }
                         >
                           {account?.accountId}
                         </li>

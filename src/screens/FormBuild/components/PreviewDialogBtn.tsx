@@ -28,6 +28,9 @@ function PreviewDialogBtn() {
         variant="outlined"
         startIcon={<PreviewIcon />}
         onClick={handleOpen}
+        sx={{
+          
+        }}
       >
         Preview
       </Button>

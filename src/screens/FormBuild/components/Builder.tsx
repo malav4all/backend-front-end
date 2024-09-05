@@ -143,7 +143,7 @@ function Builder({ form }: { form: any }) {
   return (
     <DndContext sensors={sensors}>
       <Box className="flex flex-col w-full">
-        <Box className="flex justify-between border-b-2 p-4 gap-3 items-center">
+        <Box className="flex justify-between border-b-2 p-4 gap-3 items-center mt-[3.5rem] bg-[#15152E] -my-[3px]">
           {/* <Typography variant="h6" noWrap>
             <span className="text-muted-foreground mr-2">Form:</span>
             {form.name}
