@@ -282,6 +282,7 @@ export class StringConstants {
   ADD_TRIPS = "ADD TRIPS";
   VIEW_TRIP = "VIEW TRIP";
   Cancel = "Cancel";
+  Unlock = "Unlock";
   Previous = "Previous";
   Save = "Save";
   Next = "Next";

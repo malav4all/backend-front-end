@@ -110,3 +110,44 @@ export const TRIP_STATUS_CHANGE = gql`
     }
   }
 `;
+
+export const SEARCH_TRIP = gql`
+  mutation ($input: SearchTripInput!) {
+    searchTrip(input: $input) {
+      paginatorInfo {
+        count
+      }
+      success
+      message
+      data {
+        tripId
+        accountId
+        createdBy
+        tripStartDate
+        tripEndDate
+        vehicleNumber
+        driverName
+        driverContactNumber
+      }
+    }
+  }
+`;
+
+export const SENDOTP = gql`
+  mutation ($input: TripOtpInput!) {
+    sendTripOtp(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const VERIFYOTP = gql`
+  mutation ($input: VerifyTripOtpInput!) {
+    verifyOtp(input: $input) {
+      success
+      message
+      tripId
+    }
+  }
+`;

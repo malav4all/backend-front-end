@@ -5,7 +5,10 @@ import {
   FETCH_TRIP_METRICS,
   GET_ALL_TRIPS,
   SEARCH_DEVICE_GROUP,
+  SEARCH_TRIP,
+  SENDOTP,
   TRIP_STATUS_CHANGE,
+  VERIFYOTP,
 } from "./Trip.mutation";
 
 export const fetchTrips = async (variables: any): Promise<any> => {
@@ -24,7 +27,7 @@ export const fetchTrips = async (variables: any): Promise<any> => {
 export const searchTrip = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: SEARCH_DEVICE_GROUP,
+      mutation: SEARCH_TRIP,
       variables,
     });
     return response.data;
@@ -67,6 +70,31 @@ export const updateTripStatus = async (variables: any): Promise<any> => {
     });
 
     return response;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const generateOtps = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: SENDOTP,
+      variables,
+    });
+    console.log({ response });
+    return response;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};
+
+export const otpVerify = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: VERIFYOTP,
+      variables,
+    });
+    return response.data;
   } catch (error: any) {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }

@@ -57,12 +57,13 @@ const UploadTableAsset = (props: Props) => {
     return tableData
       ?.slice(startIndex, endIndex)
       ?.map((item: any, index: number) => {
+        console.log({ item });
         return {
           location: item?.location,
           accountId: item.accountId,
           deviceOnboardingSimNo: item.simno,
           deviceOnboardingIMEINumber: item.imei,
-          businessModel: item.businessModel,
+          businessModel: item.businessmodel,
           createdBy: store.getState().auth.userName,
         };
       });

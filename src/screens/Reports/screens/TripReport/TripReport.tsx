@@ -5,6 +5,7 @@ import {
   InputAdornment,
   MenuItem,
   Select,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -14,6 +15,7 @@ import {
   CustomInput,
   CustomTable,
   CustomButton,
+  CustomPaper,
 } from "../../../../global/components";
 import strings from "../../../../global/constants/StringConstants";
 import { debounceEventHandler } from "../../../../helpers/methods";
@@ -27,6 +29,12 @@ import { MdFileDownload } from "react-icons/md";
 import { store } from "../../../../utils/store";
 import { fetchTrips } from "../../../Trip/ActiveTrips/TripServices";
 import { tripTableHeader } from "../../../Trip/ActiveTrips/AddTrips/AddTripFormValidation";
+import {
+  disabledBackgroundColor,
+  primaryHeaderColor,
+} from "../../../../utils/styles";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import history from "../../../../utils/history";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -97,7 +105,7 @@ const TripReport = () => {
           page,
           limit: rowsPerPage,
           accountId: store.getState().auth.tenantId,
-          status: "ended",
+          status: "closed",
         },
       });
 
@@ -115,13 +123,92 @@ const TripReport = () => {
     return tripData.map((trip: any) => ({
       imeiNumber: trip.tripData[0]?.imei?.join(", ") || "N/A",
       tripId: trip.tripId || "N/A",
-      totalDistance: trip.route?.totalDistance || "N/A",
-      totalDuration: trip.route?.totalDuration || "N/A",
+      accountName: trip?.primaryAccount,
+      source: trip?.startPoint?.name,
+      destination: trip?.endPoint?.name,
+      driverName: trip?.tripData[0]?.driverName,
+      driverContactNumber: trip?.tripData[0]?.driverContactNumber,
+      vehicleNumber: trip?.tripData[0]?.vehicleNo,
       tripStartDate:
-        moment(trip.tripStartDate).format("YYYY-MM-DD HH:mm:ss") || "N/A",
+        moment(trip?.tripStartDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
+        "N/A",
       tripEndDate:
-        moment(trip.tripEndDate).format("YYYY-MM-DD HH:mm:ss") || "N/A",
+        moment(trip?.tripEndDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
+        "N/A",
       createdBy: trip.createdBy || "N/A",
+      action: (
+        <Box
+          sx={{
+            display: "flex",
+            gap: "0.5rem",
+          }}
+        >
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography>{"View Trackplay"}</Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
+              },
+            }}
+          >
+            <VisibilityIcon
+              style={{ color: primaryHeaderColor, cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: "/tripAlertReport",
+                  state: {
+                    imei: trip.tripData[0]?.imei[0],
+                    startDate: trip?.tripStartDate,
+                    endDate: trip?.tripEndDate,
+                  },
+                });
+              }}
+            />
+          </Tooltip>
+          <Tooltip
+            title={
+              <CustomPaper
+                className={{ backgroundColor: disabledBackgroundColor }}
+              >
+                <Typography>{"View Alert Report"}</Typography>
+              </CustomPaper>
+            }
+            placement="top"
+            arrow
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  background: "none",
+                },
+              },
+            }}
+          >
+            <VisibilityIcon
+              style={{ color: primaryHeaderColor, cursor: "pointer" }}
+              onClick={() => {
+                history.push({
+                  pathname: "/triptrackplay",
+                  state: {
+                    imei: trip.tripData[0]?.imei[0],
+                    startDate: trip?.tripStartDate,
+                    endDate: trip?.tripEndDate,
+                  },
+                });
+              }}
+            />
+          </Tooltip>
+        </Box>
+      ),
     }));
   };
 
