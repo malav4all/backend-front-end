@@ -90,9 +90,8 @@ const Login = () => {
           openErrorNotification(user?.loginUser?.data?.message);
           setIsLoading(false);
         } else {
-          const formattedResources = 
-            user?.loginUser?.data?.data?.user.roleId.resources
-          
+          const formattedResources =
+            user?.loginUser?.data?.data?.user?.roleId?.resources;
           dispatch(
             loginAction({
               email,

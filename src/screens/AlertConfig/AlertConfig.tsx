@@ -253,10 +253,7 @@ const AlertConfig = () => {
         createdBy: usersData?.createdBy,
         action: (
           <>
-            {hasAccessTo(
-              StringConstants.ALERTS,
-              StringConstants.UPDATE
-            )(
+            {hasAccessTo(strings.ALERTS, strings.UPDATE) && (
               <Tooltip
                 title="Edit"
                 onClick={() => {

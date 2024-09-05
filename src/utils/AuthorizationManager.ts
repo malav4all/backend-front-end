@@ -72,7 +72,7 @@ export const hasAccessTo = (resourceName: string, permission: string) => {
   const resources: any = store.getState().auth.resources;
 
   const resource: any = resources?.find(
-    (res: any) => res.name === resourceName
+    (res: any) => res?.name === resourceName
   );
 
   if (!resource) {
@@ -125,5 +125,5 @@ export const doesUserHasAccessTo = (
 export const isAdmin = () => {
   const roleId = store.getState().auth.isSuperAdmin;
 
-  return roleId 
+  return roleId;
 };
