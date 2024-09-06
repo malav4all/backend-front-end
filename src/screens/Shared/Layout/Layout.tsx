@@ -24,12 +24,8 @@ import Trackplay from "../../Trackplay/Trackplay";
 import DistanceReport from "../../Reports/screens/DistanceReport/DistanceReport";
 import AlertReport from "../../Reports/screens/AlertReport/AlertReport";
 import { useSubscription } from "@apollo/client";
-import {
-  DEVICE_DATA,
-} from "../../Dashboard/service/Dashboard.mutation";
-import {
-  openWarningNotification,
-} from "../../../helpers/methods";
+import { DEVICE_DATA } from "../../Dashboard/service/Dashboard.mutation";
+import { openWarningNotification } from "../../../helpers/methods";
 import Reports from "../../Reports/Report";
 import ViewOfflineDevice from "../../Dashboard/components/ViewOfflineDevice";
 import UpcomingRoutes from "../../Routes/screens/UpcomingRoutes/UpcomingRoutes";
@@ -106,7 +102,7 @@ const Layout = () => {
       const trackJson = JSON.parse(data.track);
       openWarningNotification(
         `${trackJson?.alert}`,
-        trackJson?.parsedData?.name
+        trackJson?.parsedData?.imei
       );
     }
   }, [data]);
