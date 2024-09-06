@@ -55,7 +55,7 @@ const AddTrip = (props: any) => {
     "Trip Type",
     "Trip Information",
     "Alert Detail",
-    ...(redirectionState?.edit ? ["Verification Photos"] : []), // Conditionally include "Verification Photos" step
+    ...(redirectionState?.edit ? ["Verification Photos"] : []),
   ]);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -139,7 +139,7 @@ const AddTrip = (props: any) => {
 
       setDynamicSteps((prevSteps) => [
         ...prevSteps,
-        ...forms.map((item: any) => item.name),
+        ...forms?.map((item: any) => item?.name),
       ]);
     } catch (error: any) {
       openErrorNotification(error.message);
