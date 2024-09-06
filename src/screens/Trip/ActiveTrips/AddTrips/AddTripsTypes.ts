@@ -10,6 +10,7 @@ export const transitTypeFormInitialState = (prevState?: any) => ({
 });
 
 export const tripInformationFormInitialState = (prevState?: any) => ({
+  _id: prevState?._id ?? "",
   startPoint: {
     value: prevState?.startPoint ?? "",
     error: "",

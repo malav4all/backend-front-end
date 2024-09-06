@@ -138,18 +138,18 @@ const ViewHeaderComponent = (props: CustomProps) => {
               spacing={1}
               sx={classes.viewHeaderLeft}
             >
-              {/* {props.tripStatus !== "started" &&
+              {props.tripStatus !== "started" &&
                 props.tripStatus !== "ended" &&
-                props.tripStatus !== "Closed" &&
-                props.tripStatus !== "created" &&
-                props.showEditButton && ( */}
-              <CustomButton
-                label={strings.Edit}
-                buttonType="primaryBtn"
-                onClick={() => handleEdit()}
-                // startIcon={<EditIcon />}
-              />
-              {/* )} */}
+                props.tripStatus !== "closed" &&
+                props.tripStatus == "created" &&
+                props.showEditButton && (
+                  <CustomButton
+                    label={strings.Edit}
+                    buttonType="primaryBtn"
+                    onClick={() => handleEdit()}
+                    // startIcon={<EditIcon />}
+                  />
+                )}
               {props?.tripStatus === "created" && (
                 <CustomButton
                   label="Start Trip"

@@ -55,7 +55,7 @@ const AddTrip = (props: any) => {
     "Trip Type",
     "Trip Information",
     "Alert Detail",
-    ...(redirectionState?.edit ? ["Verification Photos"] : []), // Conditionally include "Verification Photos" step
+    ...(redirectionState?.edit ? ["Verification Photos"] : []),
   ]);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -139,7 +139,7 @@ const AddTrip = (props: any) => {
 
       setDynamicSteps((prevSteps) => [
         ...prevSteps,
-        ...forms.map((item: any) => item.name),
+        ...forms?.map((item: any) => item?.name),
       ]);
     } catch (error: any) {
       openErrorNotification(error.message);
@@ -249,7 +249,7 @@ const AddTrip = (props: any) => {
     //   case 0: {
     //     const validation = validateTransitTypeForm(
     //       transitTypeForm,
-    //       props?.edit
+    //       redirectionState?.edit
     //     );
     //     setTransitTypeForm(validation.errors);
     //     isValid = validation.isValid;
@@ -259,7 +259,7 @@ const AddTrip = (props: any) => {
     //   case 1: {
     //     const validation = validateTripInformationForm(
     //       tripInformationForm,
-    //       props?.edit
+    //       redirectionState?.edit
     //     );
     //     setTripInformationForm(validation.errors);
     //     isValid = validation.isValid;
@@ -268,7 +268,7 @@ const AddTrip = (props: any) => {
     //   case 2: {
     //     const validation = validateAlertConfigurationForm(
     //       alertConfigurationForm,
-    //       props?.edit
+    //       redirectionState?.edit
     //     );
     //     setAlertConfigurationForm(validation.errors);
     //     isValid = validation.isValid;
@@ -296,7 +296,7 @@ const AddTrip = (props: any) => {
       setActiveStep(index);
     }
   };
-
+  console.log(props.edit);
   const insertTripDetails = async () => {
     try {
       const dynamicFormPayload = prepareDynamicFormPayload(dynamicForm);
@@ -356,21 +356,25 @@ const AddTrip = (props: any) => {
       };
 
       if (handleValidation()) {
-        if (props?.edit) {
+        if (redirectionState?.edit) {
           const res = await updateTrip({
             input: {
-              _id: props?.selectedTripRowData?._id,
+              _id: tripInformationForm?._id,
+              status: "started",
               ...insertTripBody,
               createdBy: store.getState().auth.userName,
             },
           });
-          openSuccessNotification(res?.updateTrip?.message);
+          openSuccessNotification(
+            res?.updateTrip?.message && "Trip has Started"
+          );
+          history.goBack();
           await props?.tableData?.();
         } else {
           const res = await createTrip({
             input: {
               ...insertTripBody,
-              status: "started",
+              status: "created",
               createdBy: store?.getState()?.auth?.userName,
             },
           });

@@ -74,7 +74,6 @@ const Trips = () => {
     { label: strings.Created, count: createdCount },
     { label: strings.Started, count: startedCount },
     { label: strings.Ended, count: endedCount },
-    { label: strings.Closed, count: closedCount },
   ];
   const [tripId, setTripId] = useState<string>("");
   const [imei, setImei] = useState<string>("");
@@ -341,8 +340,24 @@ const Trips = () => {
     );
   };
 
-  const getRedirectionUrl = (id: string) => {
-    history.push(`${urls.viewTripViewPath}/${id}`);
+  const getRedirectionUrl = (id: string, item: any) => {
+    history.push({
+      pathname: `${urls.viewTripViewPath}/${item?.tripId}`,
+      state: {
+        coordinates: [],
+        // eslint-disable-next-line no-sparse-arrays
+        routeOrigin: [
+          {
+            lat: item?.startPoint?.geoCodeData?.geometry?.coordinates[0],
+            lng: item?.startPoint?.geoCodeData?.geometry?.coordinates[1],
+          },
+          {
+            lat: item?.endPoint?.geoCodeData?.geometry?.coordinates[0],
+            lng: item?.endPoint?.geoCodeData?.geometry?.coordinates[1],
+          },
+        ],
+      },
+    });
   };
 
   const tableRender = (tableData: any) => {
@@ -367,7 +382,7 @@ const Trips = () => {
       tripId: (
         <Box
           sx={{ fontWeight: "bold", cursor: "pointer" }}
-          onClick={() => getRedirectionUrl(item?.tripId)}
+          onClick={() => getRedirectionUrl(item?.tripId, item)}
         >
           {item?.tripId}
         </Box>

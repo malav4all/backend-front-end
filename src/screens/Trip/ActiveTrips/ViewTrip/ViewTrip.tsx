@@ -32,7 +32,14 @@ import { dynamicFormInitialState } from "../AddTrips/AddTripsTypes";
 import { useHistory } from "react-router-dom";
 import MapComponent from "./component/MapComponent";
 import moment from "moment";
-const ViewTrip = () => {
+
+interface ViewTripProps {
+  location?: any;
+}
+const ViewTrip = (props: ViewTripProps) => {
+  const routeOrigin = props?.location?.state?.routeOrigin;
+  const coordinates = props?.location?.state?.coordinates;
+
   const theme = useTheme();
   const history = useHistory();
   const classes = viewTripStyle;
@@ -76,8 +83,8 @@ const ViewTrip = () => {
         data: tripData?.endPoint,
         error: "",
       };
-
       setTripInformationForm({
+        _id: tripData?._id,
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
         startPoint: formattedStartPoint,
@@ -293,7 +300,10 @@ const ViewTrip = () => {
                 >
                   Map View
                 </Typography>
-                <MapComponent />
+                <MapComponent
+                  routeOriginsss={routeOrigin}
+                  coordinatesss={coordinates}
+                />
               </CardContent>
             </Card>
           </Grid>

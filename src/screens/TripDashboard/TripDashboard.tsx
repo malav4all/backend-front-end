@@ -37,6 +37,7 @@ import { debounceEventHandler } from "../../helpers/methods";
 import axios from "axios";
 import { updateTripStatus } from "../Trip/ActiveTrips/TripServices";
 import { Link } from "react-router-dom";
+import urls from "../../global/constants/UrlConstants";
 interface Trip {
   tripId: string;
   name: string;
@@ -174,14 +175,36 @@ const TripDashboard = () => {
     setTotalActiveTrips(ongoingTrips.length);
   };
 
-  const buttonRender = (status: string, trip: Trip) => {
+  const buttonRender = (status: string, trip: any) => {
     switch (status) {
       case "started":
         return (
           <CustomButton
-            label="End"
-            startIcon={<BsFillUnlockFill />}
-            onClick={() => unlockTrip(trip)}
+            label="Detail View"
+            // startIcon={<BsFillUnlockFill />}
+            onClick={() => {
+              history.push({
+                pathname: `${urls.viewTripViewPath}/${trip.tripId}`,
+                state: {
+                  coordinates: [],
+                  // eslint-disable-next-line no-sparse-arrays
+                  routeOrigin: [
+                    {
+                      lat: trip?.startPoint?.geoCodeData?.geometry
+                        ?.coordinates[0],
+                      lng: trip?.startPoint?.geoCodeData?.geometry
+                        ?.coordinates[1],
+                    },
+                    {
+                      lat: trip?.endPoint?.geoCodeData?.geometry
+                        ?.coordinates[0],
+                      lng: trip?.endPoint?.geoCodeData?.geometry
+                        ?.coordinates[1],
+                    },
+                  ],
+                },
+              });
+            }}
             customClasses={{
               padding: "8px 16px",
               borderRadius: "8px",
@@ -246,13 +269,14 @@ const TripDashboard = () => {
               <ListItem
                 key={trip.tripId}
                 onClick={() => {
-                  history.push({
-                    pathname: "/live-tracking",
-                    state: {
-                      imei: trip?.tripData[0]["imei"][0],
-                      status: "Online",
-                    },
-                  });
+                  handleTripClick(trip?.tripData[0]["imei"][0]);
+                  // history.push({
+                  //   pathname: "/live-tracking",
+                  //   state: {
+                  //     imei: trip?.tripData[0]["imei"][0],
+                  //     status: "Online",
+                  //   },
+                  // });
                 }}
                 sx={{
                   border: "1px solid",

@@ -11,7 +11,7 @@ const HereMap = ({ selectedTrip }: any) => {
     variables: {
       topicType: "track",
       accountId: store.getState().auth.tenantId,
-      imeis: [selectedTrip?.tripData[0]?.imei[0]],
+      imeis: [selectedTrip],
     },
   });
 
@@ -20,7 +20,7 @@ const HereMap = ({ selectedTrip }: any) => {
       try {
         const trackJson = JSON.parse(data.track);
         const { latitude, longitude, bearing } = trackJson;
-
+        map.setZoom(15);
         if (map) {
           // If marker already exists, remove it from the map
           if (currentMarker) {
@@ -53,7 +53,7 @@ const HereMap = ({ selectedTrip }: any) => {
           );
 
           // Add the new marker to the map
-          // setCurrentMarker(newMarker);
+          setCurrentMarker(newMarker);
           map.addObject(newMarker);
 
           // Re-center the map on the new position
@@ -63,7 +63,7 @@ const HereMap = ({ selectedTrip }: any) => {
         console.error("Error parsing live tracking data:", error);
       }
     }
-  }, [data, map, currentMarker]);
+  }, [data]);
 
   useEffect(() => {
     const platform = new window.H.service.Platform({
