@@ -55,7 +55,6 @@ const AddTrip = (props: any) => {
     "Trip Type",
     "Trip Information",
     "Alert Detail",
-    ...(redirectionState?.edit ? ["Verification Photos"] : []),
   ]);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -87,7 +86,16 @@ const AddTrip = (props: any) => {
     }
   }, [transitTypeForm?.transitType?.value]);
 
-  const fetchDataAndSetOptions = async () => {
+  useEffect(() => {
+    const updatedSteps = ["Trip Type", "Trip Information", "Alert Detail"];
+
+    if (redirectionState?.edit) {
+      updatedSteps?.push("Verification Photos");
+    }
+
+    fetchDataAndSetOptions(updatedSteps);
+  }, [redirectionState?.edit]);
+  const fetchDataAndSetOptions = async (existingSteps?: string[]) => {
     try {
       const res = await GetForms({
         input: {
@@ -130,19 +138,21 @@ const AddTrip = (props: any) => {
                     );
                 }
               } catch (error: any) {
-                openErrorNotification(error.message);
+                // openErrorNotification(error.message);
               }
             }
           }
         }
-      }
 
-      setDynamicSteps((prevSteps) => [
-        ...prevSteps,
-        ...forms?.map((item: any) => item?.name),
-      ]);
+        const formNames = forms
+          ?.filter((item: any) => item?.name)
+          ?.map((item: any) => item?.name);
+
+        const finalSteps: any = [...existingSteps!, ...formNames];
+        setDynamicSteps(finalSteps);
+      }
     } catch (error: any) {
-      openErrorNotification(error.message);
+      // openErrorNotification(error.message);
     }
   };
   const handleInputChange = (event: any) => {
@@ -181,13 +191,38 @@ const AddTrip = (props: any) => {
   };
 
   const getContent = (step: number) => {
+    const isEditMode = redirectionState?.edit;
+    const isVerificationStep = isEditMode && step === dynamicSteps?.length - 2;
+    const isDynamicFormStep = step === dynamicSteps?.length - 1;
+
+    if (isVerificationStep) {
+      return (
+        <TripVerificationForm
+          tripVerificationForm={tripVerificationForm}
+          setTripVerificationForm={setTripVerificationForm}
+          setImgSrc={setImgSrc}
+          imgSrc={imgSrc}
+        />
+      );
+    }
+
+    if (isDynamicFormStep) {
+      return (
+        <DynamicForm
+          dynamicForm={dynamicFormInitialState(redirectionState?.dynamicForm)}
+          handleInputChange={handleInputChange}
+          formData={formData}
+        />
+      );
+    }
+
     switch (step) {
       case 0:
         return (
           <TransitTypeForm
             transitTypeForm={transitTypeForm}
             setTransitTypeForm={setTransitTypeForm}
-            edit={redirectionState?.edit}
+            edit={isEditMode}
           />
         );
       case 1:
@@ -196,7 +231,7 @@ const AddTrip = (props: any) => {
             tripInformationForm={tripInformationForm}
             setTripInformationForm={setTripInformationForm}
             transitTypeForm={transitTypeForm}
-            edit={redirectionState?.edit}
+            edit={isEditMode}
           />
         );
       case 2:
@@ -207,23 +242,8 @@ const AddTrip = (props: any) => {
             tripInformationForm={tripInformationForm}
           />
         );
-      case 3:
-        return (
-          <TripVerificationForm
-            tripVerificationForm={tripVerificationForm}
-            setTripVerificationForm={setTripVerificationForm}
-            setImgSrc={setImgSrc}
-            imgSrc={imgSrc}
-          />
-        );
       default:
-        return (
-          <DynamicForm
-            dynamicForm={dynamicFormInitialState(redirectionState?.dynamicForm)}
-            handleInputChange={handleInputChange}
-            formData={formData}
-          />
-        );
+        return null;
     }
   };
 
