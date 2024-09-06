@@ -35,7 +35,11 @@ import {
 } from "../../../../utils/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import history from "../../../../utils/history";
-import { RoutesIcon } from "../../../../utils/SidebarSvgConstant";
+import {
+  RoutesIcon,
+  ViewAlertReport,
+  ViewTrackPlay,
+} from "../../../../utils/SidebarSvgConstant";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -180,7 +184,7 @@ const TripReport = () => {
             gap: "0.5rem",
           }}
         >
-          <Tooltip title={"View Alert Report"} placement="top" arrow>
+          <Tooltip title={"View Trackplay"} placement="top" arrow>
             <span
               style={{ color: primaryHeaderColor, cursor: "pointer" }}
               onClick={() => {
@@ -190,16 +194,22 @@ const TripReport = () => {
                     imei: trip.tripData[0]?.imei[0],
                     startDate: trip?.tripStartDate,
                     endDate: trip?.tripEndDate,
+                    vehicleNumber: trip?.tripData[0]?.vehicleNo,
+                    tripStartDate:
+                    moment(trip?.tripStartDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
+                    "N/A",
+                  tripEndDate:
+                    moment(trip?.tripEndDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
+                    "N/A",
                   },
                 });
               }}
             >
-              <RoutesIcon />
+              <ViewTrackPlay />
             </span>
           </Tooltip>
-          <Tooltip title={"View Trackplay"} placement="top" arrow>
-            <VisibilityIcon
-              style={{ color: primaryHeaderColor, cursor: "pointer" }}
+          <Tooltip title={"View Alert Report"} placement="top" arrow>
+            <span
               onClick={() => {
                 history.push({
                   pathname: "/tripAlertReport",
@@ -210,7 +220,9 @@ const TripReport = () => {
                   },
                 });
               }}
-            />
+            >
+              <ViewAlertReport />
+            </span>
           </Tooltip>
         </Box>
       ),

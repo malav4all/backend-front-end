@@ -741,6 +741,82 @@ export const routesIcon = (fillColor: any) => {
   );
 };
 
+export const ViewTrackPlay = (fillColor: any) => {
+  return (
+    <>
+      <svg
+        width="24px"
+        height="24px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M6.96 4.13a.75.75 0 0 1 .369-1.264l4.767-1.045a.75.75 0 0 1 .893.893l-1.046 4.767a.75.75 0 0 1-1.262.37L6.959 4.129zm6.737 18.465a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM7.407 7.403a1 1 0 0 0-1.414 0L3.69 9.705a4.246 4.246 0 0 0 0 6.005l.004.003a4.253 4.253 0 0 0 6.01-.003l6.005-6.005c.88-.88 2.305-.88 3.185-.002.878.876.879 2.298.003 3.176l-.002.001-1.77 1.77a1 1 0 0 0 1.414 1.415l1.77-1.77.004-.004a4.246 4.246 0 0 0-.007-6.004 4.253 4.253 0 0 0-6.01.003L8.29 14.295c-.879.88-2.304.88-3.185 0a2.246 2.246 0 0 1 0-3.175l2.302-2.303a1 1 0 0 0 0-1.414z"
+          fill="#FFFF00"
+        />
+      </svg>
+    </>
+  );
+};
+
+export const PlayButton = (fillColor: any) => {
+  return (
+    <>
+      <svg
+        stroke="#90CAF9"
+        fill="#90CAF9"
+        stroke-width="0"
+        viewBox="0 0 512 512"
+        height="30px"
+        width="30px"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c7.6-4.2 16.8-4.1 24.3 .5l144 88c7.1 4.4 11.5 12.1 11.5 20.5s-4.4 16.1-11.5 20.5l-144 88c-7.4 4.5-16.7 4.7-24.3 .5s-12.3-12.2-12.3-20.9V168c0-8.7 4.7-16.7 12.3-20.9z"></path>
+      </svg>
+    </>
+  );
+};
+
+export const PauseButton = (fillColor: any) => {
+  return (
+    <>
+      <svg
+        stroke="#90CAF9"
+        fill="#90CAF9"
+        stroke-width="0"
+        viewBox="0 0 512 512"
+        height="20px"
+        width="20px"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM224 192V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V192c0-17.7 14.3-32 32-32s32 14.3 32 32zm128 0V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V192c0-17.7 14.3-32 32-32s32 14.3 32 32z"></path>
+      </svg>
+    </>
+  );
+};
+
+export const ViewAlertReport = (fillColor: any) => {
+  return (
+    <>
+      <svg
+        fill="#FFFF00"
+        width="24px"
+        height="24px"
+        viewBox="0 0 36 36"
+        version="1.1"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title>alert-solid</title>
+        <path d="M18,2.5c-8.82,0-16,6.28-16,14s7.18,14,16,14a18,18,0,0,0,4.88-.68l5.53,3.52a1,1,0,0,0,1.54-.84l0-6.73a13,13,0,0,0,4-9.27C34,8.78,26.82,2.5,18,2.5ZM16.93,9.13a1.41,1.41,0,1,1,2.81,0V18.9a1.41,1.41,0,1,1-2.81,0Zm1.41,17.35a1.87,1.87,0,1,1,1.87-1.87A1.87,1.87,0,0,1,18.34,26.47Z"></path>
+        <rect x="0" y="0" width="36" height="36" fill-opacity="0" />
+      </svg>
+    </>
+  );
+};
 export const RoutesIcon = (fillColor: any) => {
   return (
     <>
