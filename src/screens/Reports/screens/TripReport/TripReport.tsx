@@ -35,6 +35,7 @@ import {
 } from "../../../../utils/styles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import history from "../../../../utils/history";
+import { RoutesIcon } from "../../../../utils/SidebarSvgConstant";
 interface CustomDateRange {
   fromDate: string;
   toDate: string;
@@ -179,29 +180,12 @@ const TripReport = () => {
             gap: "0.5rem",
           }}
         >
-          <Tooltip
-            title={
-              <CustomPaper
-                className={{ backgroundColor: disabledBackgroundColor }}
-              >
-                <Typography>{"View Trackplay"}</Typography>
-              </CustomPaper>
-            }
-            placement="top"
-            arrow
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  background: "none",
-                },
-              },
-            }}
-          >
-            <VisibilityIcon
+          <Tooltip title={"View Alert Report"} placement="top" arrow>
+            <span
               style={{ color: primaryHeaderColor, cursor: "pointer" }}
               onClick={() => {
                 history.push({
-                  pathname: "/tripAlertReport",
+                  pathname: "/triptrackplay",
                   state: {
                     imei: trip.tripData[0]?.imei[0],
                     startDate: trip?.tripStartDate,
@@ -209,31 +193,16 @@ const TripReport = () => {
                   },
                 });
               }}
-            />
+            >
+              <RoutesIcon />
+            </span>
           </Tooltip>
-          <Tooltip
-            title={
-              <CustomPaper
-                className={{ backgroundColor: disabledBackgroundColor }}
-              >
-                <Typography>{"View Alert Report"}</Typography>
-              </CustomPaper>
-            }
-            placement="top"
-            arrow
-            componentsProps={{
-              tooltip: {
-                sx: {
-                  background: "none",
-                },
-              },
-            }}
-          >
+          <Tooltip title={"View Trackplay"} placement="top" arrow>
             <VisibilityIcon
               style={{ color: primaryHeaderColor, cursor: "pointer" }}
               onClick={() => {
                 history.push({
-                  pathname: "/triptrackplay",
+                  pathname: "/tripAlertReport",
                   state: {
                     imei: trip.tripData[0]?.imei[0],
                     startDate: trip?.tripStartDate,
@@ -481,7 +450,7 @@ const TripReport = () => {
     return (
       <Grid container spacing={2} sx={{ padding: "1rem" }}>
         <Grid item xs={12} sm={12} md={12} lg={4}></Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12} mt={-8}>
+        {/* <Grid item xs={12} sm={12} md={12} lg={12} mt={-8}>
           <Box
             sx={{
               padding: "2rem 1.5rem",
@@ -508,7 +477,7 @@ const TripReport = () => {
             </Typography>
             {getMap()}
           </Box>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={12} md={12} lg={12}>
           <Box
             sx={{
@@ -688,6 +657,7 @@ const TripReport = () => {
       sx={{
         backgroundColor: theme.palette.background.default,
         paddingTop: "3.5rem",
+        minHeight: "100vh",
       }}
     >
       {getDashboardHeader()}

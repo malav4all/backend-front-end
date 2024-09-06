@@ -19,7 +19,7 @@ export const OfflineIcon = (props: any) => (
 
 export const OnlineIcon = (props: any) => (
   <svg
-    stroke="green"
+    stroke="#00E396"
     fill="none"
     stroke-width="2"
     viewBox="0 0 24 24"
@@ -44,8 +44,8 @@ export const GpsTrueIcon = (props: any) => (
     viewBox="0 0 24 24"
     stroke-linecap="round"
     stroke-linejoin="round"
-    height="22px"
-    width="22px"
+    height="21px"
+    width="21px"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path d="M4 10a7.31 7.31 0 0 0 10 10Z"></path>
@@ -88,9 +88,23 @@ export const BatteryChargingIcon = (props: any) => (
   </svg>
 );
 
+export const BatteryNeverIcon = (props: any) => (
+  <svg
+    stroke="#b7b7b7"
+    fill="#b7b7b7"
+    stroke-width="0"
+    viewBox="0 0 256 256"
+    height="22px"
+    width="22px"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M196,52H28A28,28,0,0,0,0,80v96a28,28,0,0,0,28,28H196a28,28,0,0,0,28-28V80A28,28,0,0,0,196,52Zm4,124a4,4,0,0,1-4,4H28a4,4,0,0,1-4-4V80a4,4,0,0,1,4-4H196a4,4,0,0,1,4,4Zm-96-72v48a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Zm-40,0v48a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Zm192,0v48a12,12,0,0,1-24,0V104a12,12,0,0,1,24,0Z"></path>
+  </svg>
+);
+
 export const Battery0Icon = (props: any) => (
   <svg
-    stroke="currentColor"
+    stroke="red"
     fill="currentColor"
     stroke-width="0"
     viewBox="0 0 256 256"
@@ -104,8 +118,8 @@ export const Battery0Icon = (props: any) => (
 
 export const Battery1Icon = (props: any) => (
   <svg
-    stroke="currentColor"
-    fill="currentColor"
+    stroke="red"
+    fill="red"  
     stroke-width="0"
     viewBox="0 0 256 256"
     height="22px"
@@ -118,8 +132,8 @@ export const Battery1Icon = (props: any) => (
 
 export const Battery2Icon = (props: any) => (
   <svg
-    stroke="currentColor"
-    fill="currentColor"
+    stroke="#F97316"
+    fill="#F97316"
     stroke-width="0"
     viewBox="0 0 256 256"
     height="22px"
@@ -132,8 +146,8 @@ export const Battery2Icon = (props: any) => (
 
 export const Battery3Icon = (props: any) => (
   <svg
-    stroke="currentColor"
-    fill="currentColor"
+    stroke="#FACC15"
+    fill="#FACC15"
     stroke-width="0"
     viewBox="0 0 256 256"
     height="22px"
@@ -146,8 +160,8 @@ export const Battery3Icon = (props: any) => (
 
 export const Battery4Icon = (props: any) => (
   <svg
-    stroke="currentColor"
-    fill="currentColor"
+    stroke="#00E396"
+    fill="#00E396"
     stroke-width="0"
     viewBox="0 0 256 256"
     height="22px"

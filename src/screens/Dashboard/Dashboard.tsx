@@ -26,6 +26,7 @@ import {
   Battery3Icon,
   Battery4Icon,
   BatteryChargingIcon,
+  BatteryNeverIcon,
   GpsFalseIcon,
   GpsTrueIcon,
   OfflineIcon,
@@ -162,7 +163,11 @@ const Dashboard = () => {
                       )}
                   </>
                 ) : (
-                  "Not Available"
+                  <Tooltip title='Never Connected'>
+                    <span>
+                      <BatteryNeverIcon />
+                    </span>
+                  </Tooltip>
                 )}
               </Typography>
 
@@ -195,14 +200,18 @@ const Dashboard = () => {
                   state: { imei: item.imei, status: item.status },
                 }}
               >
-                <FaMapLocationDot
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "1.4rem",
-                    color: "#7c58cb",
-                    marginLeft: "1rem",
-                  }}
-                />
+                <Tooltip title={"Live View"}>
+                  <span>
+                    <FaMapLocationDot
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "1.4rem",
+                        color: "#7c58cb",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                  </span>
+                </Tooltip>
               </Link>
             ),
         };

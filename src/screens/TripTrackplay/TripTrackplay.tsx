@@ -76,10 +76,10 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
 
     // Initialize the bounding box with the first point
     let boundingBox = new window.H.geo.Rect(
-      Number(data[0].latitude),
-      Number(data[0].longitude),
-      Number(data[0].latitude),
-      Number(data[0].longitude)
+      Number(data[0]?.latitude),
+      Number(data[0]?.longitude),
+      Number(data[0]?.latitude),
+      Number(data[0]?.longitude)
     );
 
     for (let i = 0; i < data.length - 1; i++) {
@@ -98,22 +98,22 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
 
       const segmentLine = new window.H.geo.LineString();
       segmentLine.pushPoint({
-        lat: Number(point1.latitude),
-        lng: Number(point1.longitude),
+        lat: Number(point1?.latitude),
+        lng: Number(point1?.longitude),
       });
       segmentLine.pushPoint({
-        lat: Number(point2.latitude),
-        lng: Number(point2.longitude),
+        lat: Number(point2?.latitude),
+        lng: Number(point2?.longitude),
       });
 
       // Update the bounding box with the new points
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point1.latitude),
-        lng: Number(point1.longitude),
+        lat: Number(point1?.latitude),
+        lng: Number(point1?.longitude),
       });
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point2.latitude),
-        lng: Number(point2.longitude),
+        lat: Number(point2?.latitude),
+        lng: Number(point2?.longitude),
       });
 
       const polyline = new window.H.map.Polyline(segmentLine, {
@@ -142,7 +142,7 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
     });
     // Add start marker
     const startMarker = new window.H.map.Marker(
-      { lat: Number(data[0].latitude), lng: Number(data[0].longitude) },
+      { lat: Number(data[0]?.latitude), lng: Number(data[0]?.longitude) },
       { icon: startIcon }
     );
     map.addObject(startMarker);
@@ -150,8 +150,8 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
     // Add end marker
     const endMarker = new window.H.map.Marker(
       {
-        lat: Number(data[data.length - 1].latitude),
-        lng: Number(data[data.length - 1].longitude),
+        lat: Number(data[data.length - 1]?.latitude),
+        lng: Number(data[data.length - 1]?.longitude),
       },
       { icon: endIcon }
     );
@@ -226,13 +226,13 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
       const numInterpolations = 10;
       for (let j = 0; j < numInterpolations; j++) {
         const lat = interpolate(
-          parseFloat(start.latitude),
-          parseFloat(end.latitude),
+          parseFloat(start?.latitude),
+          parseFloat(end?.latitude),
           j / numInterpolations
         );
         const lng = interpolate(
-          parseFloat(start.longitude),
-          parseFloat(end.longitude),
+          parseFloat(start?.longitude),
+          parseFloat(end?.longitude),
           j / numInterpolations
         );
         const direction = interpolateDirection(
@@ -529,7 +529,7 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
           />
         </Box>
 
-        <Accordion>
+        <Accordion defaultExpanded>
           <AccordionSummary aria-controls="panel1-content" id="speed-scale">
             <Typography>Speed</Typography>
           </AccordionSummary>
