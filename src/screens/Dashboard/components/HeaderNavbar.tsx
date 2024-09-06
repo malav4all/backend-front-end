@@ -80,6 +80,7 @@ const HeaderNavbar = () => {
     dispatch(setAccountId(accountId));
     openSuccessNotification("Account ID updated: ", accountId);
     setShowDropdown(false);
+    window.location.reload();
   };
 
   return (
@@ -93,7 +94,9 @@ const HeaderNavbar = () => {
                   onClick={toggleDropdown}
                   className="flex w-full cursor-pointer select-none rounded-lg border p-2 px-3 text-sm text-white ring-blue-400"
                 >
-                  {selectedAccount ? selectedAccount : "Select Account"}
+                  {store.getState().auth.tenantId
+                    ? store.getState().auth.tenantId
+                    : "Select Account"}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className={`ml-auto h-4 text-gray-600 transition ${
