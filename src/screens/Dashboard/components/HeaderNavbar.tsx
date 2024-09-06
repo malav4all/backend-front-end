@@ -78,7 +78,7 @@ const HeaderNavbar = () => {
   const handleAccountSelection = (accountId: string) => {
     setSelectedAccount(accountId);
     dispatch(setAccountId(accountId));
-    openSuccessNotification("Account ID updated: ", accountId);
+    openSuccessNotification("Account access delegated to ", accountId);
     setShowDropdown(false);
     window.location.reload();
   };

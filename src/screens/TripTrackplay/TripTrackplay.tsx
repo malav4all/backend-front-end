@@ -11,6 +11,7 @@ import {
   Slider,
   Typography,
 } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import CustomButton from "../../global/components/CustomButton/CustomButton";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
@@ -26,6 +27,7 @@ import trackplayStyle from "./TripTrackplay.styles";
 import { CustomInput } from "../../global/components";
 import { RiFileExcel2Fill } from "react-icons/ri";
 import { store } from "../../utils/store";
+import { PauseButton, PlayButton } from "../../utils/SidebarSvgConstant";
 
 interface TrackPlayProps {
   location?: any;
@@ -53,6 +55,8 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
     { value: 3, label: "3X" },
     { value: 4, label: "4X" },
   ];
+  const [isStarted, setIsStarted] = useState(true);
+  const redirectionState = location.state;
 
   const startSvgMarkup = `<svg width="40px" height="40px" viewBox="-5.07 0 43.012 43.012" xmlns="http://www.w3.org/2000/svg">
   <path id="location" d="M406.185,260.012c-18.028-13.493-16.233-28.572-16.233-28.572h11.184a4.7,4.7,0,0,0-.142,1.1,5.378,5.378,0,0,0,.466,2.1,7.353,7.353,0,0,0,2.622,2.615,5,5,0,0,0,4.218,0,7.316,7.316,0,0,0,2.619-2.615,5.4,5.4,0,0,0,.465-2.105,4.728,4.728,0,0,0-.141-1.1h11.5S424.217,246.277,406.185,260.012Zm4.731-29.576a7.353,7.353,0,0,0-2.619-2.618,4.977,4.977,0,0,0-4.211,0,7.389,7.389,0,0,0-2.622,2.618,6.468,6.468,0,0,0-.326,1H389.966c0-7.972,7.335-14.435,16.383-14.435s16.383,6.463,16.383,14.435H411.242A6.523,6.523,0,0,0,410.915,230.436Z" transform="translate(-389.902 -217)" fill="#219C90"/>
@@ -76,10 +80,10 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
 
     // Initialize the bounding box with the first point
     let boundingBox = new window.H.geo.Rect(
-      Number(data[0].latitude),
-      Number(data[0].longitude),
-      Number(data[0].latitude),
-      Number(data[0].longitude)
+      Number(data[0]?.latitude),
+      Number(data[0]?.longitude),
+      Number(data[0]?.latitude),
+      Number(data[0]?.longitude)
     );
 
     for (let i = 0; i < data.length - 1; i++) {
@@ -98,22 +102,22 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
 
       const segmentLine = new window.H.geo.LineString();
       segmentLine.pushPoint({
-        lat: Number(point1.latitude),
-        lng: Number(point1.longitude),
+        lat: Number(point1?.latitude),
+        lng: Number(point1?.longitude),
       });
       segmentLine.pushPoint({
-        lat: Number(point2.latitude),
-        lng: Number(point2.longitude),
+        lat: Number(point2?.latitude),
+        lng: Number(point2?.longitude),
       });
 
       // Update the bounding box with the new points
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point1.latitude),
-        lng: Number(point1.longitude),
+        lat: Number(point1?.latitude),
+        lng: Number(point1?.longitude),
       });
       boundingBox = boundingBox.mergePoint({
-        lat: Number(point2.latitude),
-        lng: Number(point2.longitude),
+        lat: Number(point2?.latitude),
+        lng: Number(point2?.longitude),
       });
 
       const polyline = new window.H.map.Polyline(segmentLine, {
@@ -142,7 +146,7 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
     });
     // Add start marker
     const startMarker = new window.H.map.Marker(
-      { lat: Number(data[0].latitude), lng: Number(data[0].longitude) },
+      { lat: Number(data[0]?.latitude), lng: Number(data[0]?.longitude) },
       { icon: startIcon }
     );
     map.addObject(startMarker);
@@ -150,8 +154,8 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
     // Add end marker
     const endMarker = new window.H.map.Marker(
       {
-        lat: Number(data[data.length - 1].latitude),
-        lng: Number(data[data.length - 1].longitude),
+        lat: Number(data[data.length - 1]?.latitude),
+        lng: Number(data[data.length - 1]?.longitude),
       },
       { icon: endIcon }
     );
@@ -226,13 +230,13 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
       const numInterpolations = 10;
       for (let j = 0; j < numInterpolations; j++) {
         const lat = interpolate(
-          parseFloat(start.latitude),
-          parseFloat(end.latitude),
+          parseFloat(start?.latitude),
+          parseFloat(end?.latitude),
           j / numInterpolations
         );
         const lng = interpolate(
-          parseFloat(start.longitude),
-          parseFloat(end.longitude),
+          parseFloat(start?.longitude),
+          parseFloat(end?.longitude),
           j / numInterpolations
         );
         const direction = interpolateDirection(
@@ -358,6 +362,7 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
   const handleClick = () => {
     if (timeoutIds.length > 0) {
       timeoutIds.forEach((id) => clearTimeout(id));
+      setIsStarted((prevState) => !prevState);
     }
     test();
   };
@@ -493,66 +498,111 @@ const TripTrackplay = ({ location }: TrackPlayProps) => {
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             gap: "0.5rem",
             justifyContent: "space-between",
-            marginBottom: "0.5rem",
+            marginBottom: "1rem",
+            minWidth: "200px",
+
           }}
         >
-          <CustomButton
-            id="users_add_button"
-            label={"Plot"}
-            onClick={trackPlayApiHandler}
-            customClasses={{
-              width: "150px",
-            }}
-          />
-
-          <CustomButton
-            customClasses={{
-              backgroundColor: stop ? "#ffffff" : "#f0ad4e",
-              color: stop ? "#333" : "white",
-            }}
-            onClick={handleClick}
-            startIcon={
-              stop ? (
-                <Box
-                  sx={{ display: "flex", gap: "1rem", alignItems: "center" }}
-                >
-                  <Typography>Stop</Typography>
-                </Box>
-              ) : (
-                <Box sx={{ display: "flex", gap: "1rem" }}>
-                  <Typography>Start</Typography>
-                </Box>
-              )
-            }
-          />
+          <div className="text-white font-bold text-xl ">
+            {redirectionState
+              ? redirectionState.vehicleNumber
+              : redirectionState?.imei}
+          </div>
+          <div className="text-white flex flex-col ">
+            <div className="text-sm ">
+              Start Date:
+              <span className="text-sm opacity-70"> {redirectionState.tripStartDate}</span>
+            </div>
+            <div className="text-sm ">
+              End Date: <span className="text-sm opacity-70">  {redirectionState.tripEndDate}</span>
+            </div>
+          </div>
         </Box>
 
         <Accordion>
-          <AccordionSummary aria-controls="panel1-content" id="speed-scale">
+          <AccordionSummary  expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="speed-scale">
+            <Typography>Plot</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box
+              style={{
+                width: 150,
+                display: "flex",
+                gap: "0.3rem",
+                flexDirection: "column",
+              }}
+            >
+              <CustomButton
+                id="users_add_button"
+                label={"Speed"}
+                onClick={trackPlayApiHandler}
+                customClasses={{
+                  width: "170px",
+                }}
+              />
+              <CustomButton
+                id="users_add_button"
+                label={"Alerts"}
+                onClick={trackPlayApiHandler}
+                customClasses={{
+                  width: "170px",
+                }}
+              />
+              <CustomButton
+                id="users_add_button"
+                label={"GPS Strength"}
+                onClick={trackPlayApiHandler}
+                customClasses={{
+                  width: "170px",
+                }}
+              />
+              <CustomButton
+                id="users_add_button"
+                label={"GSM Strength"}
+                onClick={trackPlayApiHandler}
+                customClasses={{
+                  width: "170px",
+                }}
+              />
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+
+        
+
+        <Accordion defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1-content" id="speed-scale">
             <Typography>Speed</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ width: 150, margin: "auto" }}>
-              <Slider
-                aria-label="Restricted values"
-                value={speed}
-                onChange={handleSpeedChange}
-                valueLabelDisplay="auto"
-                defaultValue={0}
-                step={1}
-                marks={marks}
-                min={1}
-                max={4}
-                sx={{ height: 8 }}
-              />
+            <div className="flex">
+              <div onClick={handleClick} className="mr-5 mt-1 cursor-pointer ">
+                {isStarted ? <PlayButton /> : <PauseButton />}
+              </div>
+
+              <div style={{ width: 150, margin: "auto" }}>
+                <Slider
+                  aria-label="Restricted values"
+                  value={speed}
+                  onChange={handleSpeedChange}
+                  valueLabelDisplay="auto"
+                  defaultValue={0}
+                  step={1}
+                  marks={marks}
+                  min={1}
+                  max={4}
+                  sx={{ height: 8 }}
+                />
+              </div>
             </div>
           </AccordionDetails>
         </Accordion>
 
         <Accordion>
-          <AccordionSummary aria-controls="panel2-content" id="panel2-header">
+          <AccordionSummary   expandIcon={<ExpandMoreIcon />} aria-controls="panel2-content" id="panel2-header">
             <Typography>Reports</Typography>
           </AccordionSummary>
           <AccordionDetails>
