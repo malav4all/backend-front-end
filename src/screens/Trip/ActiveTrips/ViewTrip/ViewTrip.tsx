@@ -83,8 +83,8 @@ const ViewTrip = (props: ViewTripProps) => {
         data: tripData?.endPoint,
         error: "",
       };
-
       setTripInformationForm({
+        _id: tripData?._id,
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
         startPoint: formattedStartPoint,

@@ -113,3 +113,12 @@ export const UPLOAD_FILE = gql`
     }
   }
 `;
+
+export const UPDATE_TRIP = gql`
+  mutation ($input: UpdateTripInput!) {
+    updateTrip(input: $input) {
+      success
+      message
+    }
+  }
+`;

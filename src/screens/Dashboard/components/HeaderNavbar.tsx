@@ -91,7 +91,7 @@ const HeaderNavbar = () => {
               <div className="relative w-56" ref={dropdownRef}>
                 <div
                   onClick={toggleDropdown}
-                  className="flex w-full cursor-pointer select-none rounded-lg border p-2 px-3 text-sm text-gray-700 ring-blue-400"
+                  className="flex w-full cursor-pointer select-none rounded-lg border p-2 px-3 text-sm text-white ring-blue-400"
                 >
                   {selectedAccount ? selectedAccount : "Select Account"}
                   <svg
