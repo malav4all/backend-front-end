@@ -140,7 +140,7 @@ const ViewHeaderComponent = (props: CustomProps) => {
             >
               {props.tripStatus !== "started" &&
                 props.tripStatus !== "ended" &&
-                props.tripStatus !== "Closed" &&
+                props.tripStatus !== "closed" &&
                 props.tripStatus == "created" &&
                 props.showEditButton && (
                   <CustomButton
