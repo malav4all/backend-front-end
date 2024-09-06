@@ -87,3 +87,16 @@ export const fileUpload = async (variables: any): Promise<any> => {
     throw new ServiceResponse<any>(0, error.message, undefined);
   }
 };
+
+export const updateTrip = async (variables: any): Promise<any> => {
+  try {
+    const response = await client.mutate({
+      mutation: CREATE_TRIP,
+      variables,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new ServiceResponse<any>(0, error.message, undefined);
+  }
+};

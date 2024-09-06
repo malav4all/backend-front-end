@@ -62,9 +62,9 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
     // Add more options like WhatsApp, Email here if needed
   ];
 
-  const speedOptions = ["80 km/h", "90 km/h", "100 km/h"];
-  const batteryOptions = ["40%", "50%", "60%"];
-  const overStopOptions = ["10 min", "20 min", "30 min"];
+  const speedOptions = ["80", "90", "100"];
+  const batteryOptions = ["40", "50", "60"];
+  const overStopOptions = ["10", "20", "30"];
 
   useEffect(() => {
     if (alertConfigurationForm?.subscribedAlerts) {

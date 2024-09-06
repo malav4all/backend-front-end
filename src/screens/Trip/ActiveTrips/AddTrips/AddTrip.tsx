@@ -10,7 +10,11 @@ import {
   Divider,
 } from "@mui/material";
 import { CustomButton } from "../../../../global/components";
-import { createTrip, fetchEntityByTripTypeAndType } from "./AddTripService";
+import {
+  createTrip,
+  fetchEntityByTripTypeAndType,
+  updateTrip,
+} from "./AddTripService";
 import { GetForms } from "../../../FormBuild/formBuilder.service"; // Adjust the import path as needed
 import {
   openErrorNotification,
@@ -147,12 +151,12 @@ const AddTrip = (props: any) => {
     setDynamicForm((prevForm: any) =>
       prevForm.map((form: any) => ({
         ...form,
-        content: form.content.map((field: any) => {
-          if (field.extraAttributes.label === name) {
+        content: form?.content?.map((field: any) => {
+          if (field?.extraAttributes?.label === name) {
             return {
               ...field,
               extraAttributes: {
-                ...field.extraAttributes,
+                ...field?.extraAttributes,
                 value: value,
               },
             };
@@ -166,7 +170,7 @@ const AddTrip = (props: any) => {
   const prepareDynamicFormPayload = (dynamicForm: any) => {
     return dynamicForm.map((form: any) => ({
       ...form,
-      content: form.content.map((field: any) => ({
+      content: form?.content.map((field: any) => ({
         ...field,
         extraAttributes: {
           ...field.extraAttributes,
@@ -215,7 +219,7 @@ const AddTrip = (props: any) => {
       default:
         return (
           <DynamicForm
-            dynamicForm={dynamicForm}
+            dynamicForm={dynamicFormInitialState(redirectionState?.dynamicForm)}
             handleInputChange={handleInputChange}
             formData={formData}
           />
@@ -353,14 +357,14 @@ const AddTrip = (props: any) => {
 
       if (handleValidation()) {
         if (props?.edit) {
-          // const res = await updateTrip({
-          //   input: {
-          //     _id: props?.selectedTripRowData?._id,
-          //     ...insertTripBody,
-          //     createdBy: store.getState().auth.userName,
-          //   },
-          // });
-          // openSuccessNotification(res?.updateTrip?.message);
+          const res = await updateTrip({
+            input: {
+              _id: props?.selectedTripRowData?._id,
+              ...insertTripBody,
+              createdBy: store.getState().auth.userName,
+            },
+          });
+          openSuccessNotification(res?.updateTrip?.message);
           await props?.tableData?.();
         } else {
           const res = await createTrip({
