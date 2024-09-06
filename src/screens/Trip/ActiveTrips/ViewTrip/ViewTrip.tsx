@@ -63,12 +63,25 @@ const ViewTrip = () => {
       });
 
       const tripData = res?.fetchTripById?.data[0];
+      const formattedStartPoint = {
+        value: tripData?.startPoint?.locationId,
+        label: `${tripData?.startPoint?.name} - ${tripData?.startPoint?.locationId}`,
+        data: tripData?.startPoint,
+        error: "",
+      };
+
+      const formattedEndPoint = {
+        value: tripData?.endPoint?.locationId,
+        label: `${tripData?.endPoint?.name} - ${tripData?.endPoint?.locationId}`,
+        data: tripData?.endPoint,
+        error: "",
+      };
 
       setTripInformationForm({
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
-        startPoint: tripData?.startPoint?.locationId || "",
-        endPoint: tripData?.endPoint?.locationId || "",
+        startPoint: formattedStartPoint,
+        endPoint: formattedEndPoint,
         tripStartDate: tripData?.tripStartDate,
         tripEndDate: tripData?.tripEndDate || "",
         status: tripData?.status || "",
@@ -87,6 +100,7 @@ const ViewTrip = () => {
             contact: tripData?.alertConfig?.alertMedium?.sms?.contact || "",
             isEnable:
               tripData?.alertConfig?.alertMedium?.sms?.isEnable || false,
+            smsType: tripData?.alertConfig?.alertMedium?.sms?.smsType,
           },
           whatsapp: {
             contact:
@@ -98,6 +112,28 @@ const ViewTrip = () => {
             contact: tripData?.alertConfig?.alertMedium?.email?.contact || "",
             isEnable:
               tripData?.alertConfig?.alertMedium?.email?.isEnable || false,
+          },
+        },
+        alertDetails: {
+          overSpeeding: {
+            value:
+              tripData?.alertConfig?.alertDetails?.overSpeeding?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.overSpeeding?.isEnabled ||
+              false,
+          },
+          lowBattery: {
+            value: tripData?.alertConfig?.alertDetails?.lowBattery?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.lowBattery?.isEnabled ||
+              false,
+          },
+          overStopping: {
+            value:
+              tripData?.alertConfig?.alertDetails?.overStopping?.value || "",
+            isEnable:
+              tripData?.alertConfig?.alertDetails?.overStopping?.isEnabled ||
+              false,
           },
         },
       });

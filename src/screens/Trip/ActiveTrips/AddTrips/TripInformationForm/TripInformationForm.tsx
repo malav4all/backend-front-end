@@ -78,7 +78,24 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
     tripInformationForm?.tripEndDate?.value,
   ]);
   useEffect(() => {
-    if (transitTypeForm?.startPoint && transitTypeForm?.endPoint) {
+    if (edit) {
+      setTripInformationForm((prevFields: any) => ({
+        ...prevFields,
+        startPoint: {
+          ...tripInformationForm?.startPoint?.value,
+          ...tripInformationForm?.startPoint?.label,
+          ...tripInformationForm?.startPoint?.data,
+          error: "",
+        },
+        endPoint: {
+          ...tripInformationForm?.endPoint?.value,
+          ...tripInformationForm?.endPoint?.label,
+          ...tripInformationForm?.endPoint?.data,
+          error: "",
+        },
+      }));
+    }
+    if (transitTypeForm?.startPoint && transitTypeForm?.endPoint && !edit) {
       setTripInformationForm((prevFields: any) => ({
         ...prevFields,
         startPoint: {
@@ -278,7 +295,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               value={tripInformationForm?.startPoint?.value || ""}
               onChange={handleStartEndPointChange}
               displayEmpty
-              disabled={!!transitTypeForm?.startPoint}
+              disabled={!!transitTypeForm?.startPoint || edit}
               renderValue={(selected) =>
                 selected
                   ? tripInformationForm?.startPoint?.label
@@ -325,7 +342,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               value={tripInformationForm?.endPoint?.value || ""}
               onChange={handleStartEndPointChange}
               displayEmpty
-              disabled={!!transitTypeForm?.endPoint} // Disable if auto-populated
+              disabled={!!transitTypeForm?.endPoint || edit} // Disable if auto-populated
               renderValue={(selected) =>
                 selected
                   ? tripInformationForm?.endPoint?.label
@@ -375,6 +392,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
             </InputLabel>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
+                disabled={edit}
                 value={tripInformationForm?.tripStartDate?.value}
                 onChange={(date) => handleTripDateChange("tripStartDate", date)} // Use handleDateChange for date fields
                 format="dd/MM/yyyy hh:mm a"
@@ -417,6 +435,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
             </InputLabel>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
+                disabled={edit}
                 value={tripInformationForm?.tripEndDate?.value}
                 onChange={(date) => handleTripDateChange("tripEndDate", date)} // Use handleDateChange for date fields
                 format="dd/MM/yyyy hh:mm a"
