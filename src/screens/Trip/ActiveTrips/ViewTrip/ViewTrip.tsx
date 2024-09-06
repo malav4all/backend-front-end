@@ -76,8 +76,9 @@ const ViewTrip = () => {
         data: tripData?.endPoint,
         error: "",
       };
-
+      console.log(tripData?._id);
       setTripInformationForm({
+        _id: tripData?._id,
         tripName: tripData?.route?.routeName || "",
         tripId: tripData?.tripId || "",
         startPoint: formattedStartPoint,

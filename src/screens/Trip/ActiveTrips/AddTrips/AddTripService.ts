@@ -6,6 +6,7 @@ import {
   FETCH_ENTITY,
   FETCH_GEOZONE,
   GET_ALL_DEVICE,
+  UPDATE_TRIP,
   UPLOAD_FILE,
 } from "./AddTrip.mutation";
 
@@ -91,7 +92,7 @@ export const fileUpload = async (variables: any): Promise<any> => {
 export const updateTrip = async (variables: any): Promise<any> => {
   try {
     const response = await client.mutate({
-      mutation: CREATE_TRIP,
+      mutation: UPDATE_TRIP,
       variables,
     });
 
