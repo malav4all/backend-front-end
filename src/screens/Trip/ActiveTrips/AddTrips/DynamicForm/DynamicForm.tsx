@@ -129,7 +129,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       </Grid>
     ));
   };
-  console.log({ dynamicForm });
   return (
     <Grid container spacing={2} padding={5}>
       {dynamicForm?.map((form: any, index: any) => (
