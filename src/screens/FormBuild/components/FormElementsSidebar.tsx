@@ -57,9 +57,9 @@ const FormElementsSidebar = () => {
         <Grid item xs={6}>
           <SidebarBtnElement formElement={FormElements.EntityField} />
         </Grid>
-        <Grid item xs={6}>
+        {/* <Grid item xs={6}>
           <SidebarBtnElement formElement={FormElements.TripField} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </Box>
   );
