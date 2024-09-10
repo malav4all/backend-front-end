@@ -51,7 +51,7 @@ const AddTrip = (props: any) => {
   const redirectionState: any = props.location?.state;
   const [formData, setFormData] = useState({});
 
-  const [dynamicSteps, setDynamicSteps] = useState<string[]>([
+  const [dynamicSteps, setDynamicSteps] = useState<any>([
     "Trip Type",
     "Trip Information",
     "Alert Detail",
@@ -95,7 +95,7 @@ const AddTrip = (props: any) => {
 
     fetchDataAndSetOptions(updatedSteps);
   }, [redirectionState?.edit]);
-  const fetchDataAndSetOptions = async (existingSteps?: string[]) => {
+  const fetchDataAndSetOptions = async (existingSteps?: any) => {
     try {
       const res = await GetForms({
         input: {
@@ -105,7 +105,7 @@ const AddTrip = (props: any) => {
         },
       });
 
-      const forms = res?.fetchFormBuilder?.data;
+      const forms: any = res?.fetchFormBuilder?.data;
       setDynamicForm(forms);
 
       if (forms) {
@@ -115,7 +115,7 @@ const AddTrip = (props: any) => {
         const tripType = transitTypeForm?.transitType?.value;
         if (tripType) {
           for (const field of entityFields) {
-            if (field?.extraAttributes && field?.extraAttributes.entityType) {
+            if (field?.extraAttributes && field?.extraAttributes?.entityType) {
               const { entityType } = field?.extraAttributes;
               try {
                 const res = await fetchEntityByTripTypeAndType({
@@ -130,7 +130,7 @@ const AddTrip = (props: any) => {
 
                 if (res?.fetchEntityByTripTypeAndType?.data) {
                   field.extraAttributes.options =
-                    res.fetchEntityByTripTypeAndType.data.map(
+                    res?.fetchEntityByTripTypeAndType?.data?.map(
                       (entity: any) => ({
                         label: entity?.name,
                         value: entity?._id,
@@ -159,7 +159,7 @@ const AddTrip = (props: any) => {
     const { name, value } = event.target;
 
     setDynamicForm((prevForm: any) =>
-      prevForm.map((form: any) => ({
+      prevForm?.map((form: any) => ({
         ...form,
         content: form?.content?.map((field: any) => {
           if (field?.extraAttributes?.label === name) {
@@ -178,12 +178,12 @@ const AddTrip = (props: any) => {
   };
 
   const prepareDynamicFormPayload = (dynamicForm: any) => {
-    return dynamicForm.map((form: any) => ({
+    return dynamicForm?.map((form: any) => ({
       ...form,
-      content: form?.content.map((field: any) => ({
+      content: form?.content?.map((field: any) => ({
         ...field,
         extraAttributes: {
-          ...field.extraAttributes,
+          ...field?.extraAttributes,
           value: field?.extraAttributes?.value || "",
         },
       })),
@@ -209,7 +209,11 @@ const AddTrip = (props: any) => {
     if (isDynamicFormStep) {
       return (
         <DynamicForm
-          dynamicForm={dynamicFormInitialState(redirectionState?.dynamicForm)}
+          dynamicForm={
+            redirectionState?.edit
+              ? prepareDynamicFormPayload(redirectionState?.dynamicForm)
+              : dynamicForm
+          }
           handleInputChange={handleInputChange}
           formData={formData}
         />
@@ -265,38 +269,37 @@ const AddTrip = (props: any) => {
   const handleValidation = () => {
     let isValid = true;
 
-    // switch (activeStep) {
-    //   case 0: {
-    //     const validation = validateTransitTypeForm(
-    //       transitTypeForm,
-    //       redirectionState?.edit
-    //     );
-    //     setTransitTypeForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     console.log({ isValid });
-    //     return isValid;
-    //   }
-    //   case 1: {
-    //     const validation = validateTripInformationForm(
-    //       tripInformationForm,
-    //       redirectionState?.edit
-    //     );
-    //     setTripInformationForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     return isValid;
-    //   }
-    //   case 2: {
-    //     const validation = validateAlertConfigurationForm(
-    //       alertConfigurationForm,
-    //       redirectionState?.edit
-    //     );
-    //     setAlertConfigurationForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     return isValid;
-    //   }
-    //   default:
-    //     break;
-    // }
+    switch (activeStep) {
+      case 0: {
+        const validation = validateTransitTypeForm(
+          transitTypeForm,
+          redirectionState?.edit
+        );
+        setTransitTypeForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      case 1: {
+        const validation = validateTripInformationForm(
+          tripInformationForm,
+          redirectionState?.edit
+        );
+        setTripInformationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      case 2: {
+        const validation = validateAlertConfigurationForm(
+          alertConfigurationForm,
+          redirectionState?.edit
+        );
+        setAlertConfigurationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      default:
+        break;
+    }
 
     return isValid;
   };
@@ -316,7 +319,7 @@ const AddTrip = (props: any) => {
       setActiveStep(index);
     }
   };
-  console.log(props.edit);
+
   const insertTripDetails = async () => {
     try {
       const dynamicFormPayload = prepareDynamicFormPayload(dynamicForm);
@@ -443,7 +446,7 @@ const AddTrip = (props: any) => {
                 />
               }
             >
-              {dynamicSteps?.map((label, index) => (
+              {dynamicSteps?.map((label: any, index: any) => (
                 <Step
                   key={index}
                   sx={{ display: "flex", justifyContent: "center" }}

@@ -12,6 +12,7 @@ import {
   RadioGroup,
   FormLabel,
   Radio,
+  FormHelperText,
 } from "@mui/material";
 import useStyles from "../TransitTypeForm/TransitTypeForm.styles";
 import { CustomInput } from "../../../../../global/components";
@@ -102,6 +103,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
             sms: {
               ...prevFields?.alertMedium?.sms,
               contact: value,
+              error: value ? "" : prevFields.alertMedium?.sms?.error,
             },
           },
         };
@@ -114,6 +116,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           [name?.toLowerCase()]: {
             ...prevFields?.alertMedium[name?.toLowerCase()],
             contact: value,
+            error: value ? "" : prevFields.alertMedium?.sms?.error,
           },
         },
       };
@@ -209,6 +212,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
           ...prevFields?.alertMedium?.sms,
           smsType: value,
           contact: contactNumber,
+          error: value ? "" : prevFields.alertMedium?.sms?.error,
         },
       },
     }));
@@ -325,7 +329,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                           onChange={handleSelectChange}
                           displayEmpty
                         >
-                          {batteryOptions.map((percentage, index) => (
+                          {batteryOptions?.map((percentage, index) => (
                             <MenuItem
                               key={index}
                               value={percentage}
@@ -372,7 +376,7 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                           onChange={handleSelectChange}
                           displayEmpty
                         >
-                          {overStopOptions.map((duration, index) => (
+                          {overStopOptions?.map((duration, index) => (
                             <MenuItem
                               key={index}
                               value={duration}
@@ -509,6 +513,12 @@ const AlertConfigurationForm: React.FC<AlertConfigurationProps> = ({
                   </Box>
                 )}
               </Stack>
+              {alertConfigurationForm.alertMedium.sms?.error &&
+                !alertConfigurationForm.alertMedium.sms?.value && (
+                  <FormHelperText error style={{ marginTop: "100px" }}>
+                    {alertConfigurationForm.alertMedium.sms.error}
+                  </FormHelperText>
+                )}
             </Grid>
           ))}
         </Grid>

@@ -60,7 +60,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             name={field?.extraAttributes?.label}
             onChange={handleInputChange}
             value={
-              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+              formData?.[field?.id]?.value ||
+              field?.extraAttributes?.value ||
+              ""
             }
           />
         )}
@@ -71,7 +73,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
             name={field?.extraAttributes?.label}
             onChange={handleInputChange}
             value={
-              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+              formData?.[field?.id]?.value ||
+              field?.extraAttributes?.value ||
+              ""
             }
           />
         )}
@@ -81,7 +85,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           <Select
             name={field?.extraAttributes?.label}
             value={
-              formData?.[field.id]?.value || field?.extraAttributes?.value || ""
+              formData?.[field?.id]?.value ||
+              field?.extraAttributes?.value ||
+              ""
             }
             onChange={handleInputChange}
             displayEmpty
@@ -98,7 +104,7 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               value={
-                formData?.[field.id]?.value ||
+                formData?.[field?.id]?.value ||
                 field?.extraAttributes?.value ||
                 null
               }
@@ -123,7 +129,6 @@ const DynamicForm: React.FC<DynamicFormProps> = ({
       </Grid>
     ));
   };
-
   return (
     <Grid container spacing={2} padding={5}>
       {dynamicForm?.map((form: any, index: any) => (
