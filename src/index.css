@@ -50,7 +50,7 @@
 
 body {
   margin: 0;
-  background-color: "#15152E" + "!important";
+  background-color: "#15152E !important";
   font-family: Geist_Regular, Geist_Black, Geist_Bold, Geist_Medium,
     -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;

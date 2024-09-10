@@ -1,5 +1,4 @@
-import { useMediaQuery, Box, Grid, useTheme } from "@mui/material";
-import landingPageStyles from "./LandingPage.styles";
+import React, { useState, useEffect } from "react";
 import { useAppSelector } from "../../utils/hooks";
 import { selectAuthenticated } from "../../redux/authSlice";
 import history from "../../utils/history";
@@ -8,97 +7,111 @@ import strings from "../../global/constants/StringConstants";
 import Login from "./components/Login";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useRef } from "react";
 import ROUTEYE_LOGO from "../../assets/images/ROUTEYE_LOGO.png";
-import login_background from '../../assets/images/login_background.png'
-import { url } from "inspector";
+import login_background from "../../assets/images/login_background.avif";
+import login_background1 from "../../assets/images/login_background1.avif";
+import login_background2 from "../../assets/images/login_background2.avif";
+import login_background3 from "../../assets/images/login_background3.avif";
+import Mesh from "../../assets/images/mesh.jpg";
+
 interface CustomProps {
   location?: Location;
 }
 
 const LandingPage = (props: CustomProps) => {
-  const theme = useTheme();
-  const classes = landingPageStyles;
-  const siteKeyReCaptch = strings.siteKey;
-  const reRef = useRef<ReCAPTCHA | null>(null);
-  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
   const isAuthenticated = useAppSelector(selectAuthenticated);
+  const [currentBackgroundIndex, setCurrentBackgroundIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  // Backgrounds and corresponding text array
+  const backgrounds = [
+    login_background,
+    login_background1,
+    login_background2,
+    login_background3,
+  ];
+
+  const texts = [
+    "We outpace the competition with 10x the speed, consistently delivering new features while others are stuck managing technical debt.",
+    "Innovation is our core, driving your business forward with every step.",
+    "Experience cutting-edge technology with uninterrupted performance—always online, always ready.",
+    "Turn your ideas into reality at lightning speed. We make it happen.",
+  ];
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setCurrentBackgroundIndex(
+          (prevIndex) => (prevIndex + 1) % backgrounds.length
+        );
+        setFade(true);
+      }, 500); // Delay of 500ms
+    }, 4000); // Every 3 seconds,
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const getComponentBasedOnURL = () => {
     const location = props.location?.pathname?.split("/")[1].toLowerCase();
     switch (location) {
-      case strings.LOGIN: {
+      case strings.LOGIN:
         return <Login />;
-      }
-
-      case strings.FORGOT_PASSWORD: {
+      case strings.FORGOT_PASSWORD:
         return <ForgotPassword />;
-      }
-
-      case strings.RESET_PASSWORD: {
+      case strings.RESET_PASSWORD:
         return <ResetPassword />;
-      }
-
-      default: {
+      default:
         return <Login />;
-      }
     }
   };
 
   const getLandingPage = () => {
     return (
-      <Box>
-        <Grid
-          container
-          justifyContent="center"
-          sx={{
-            alignItems: "center",
-            height: "100vh",
-            backgroundImage: `url(${login_background})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+      <div className="flex flex-wrap h-screen w-screen overflow-hidden">
+        {/* Left section for login form */}
+        <div
+          className="w-full h-screen lg:w-1/3 flex justify-center items-center p-6 bg-fit"
+          style={{
+            backgroundImage: `url(${Mesh})`,
           }}
         >
-          <Grid
-            item
-            xs={12}
-            sm={10}
-            md={5}
-            lg={4}
-            xl={3}
-            style={{
-              background: theme.palette.dialogColor.body,
-              borderColor: theme.palette.dialogColor.border,
-              overflowY: "auto",
-              padding: "2rem",
-              width: "40px",
-              boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: "1.5rem",
-              }}
-            >
-              <Box
-                component="img"
+          <div className="w-full max-w-md bg-white p-8 shadow-lg rounded-lg">
+            <div className="flex justify-center items-center mb-6">
+              <img
                 src={ROUTEYE_LOGO}
-                height={"30px"}
-                sx={{ marginBottom: "1rem" }}
+                alt="Routeye Logo"
+                className="h-10 mb-4"
               />
-            </Box>
+            </div>
 
-            <Box>{getComponentBasedOnURL()}</Box>
-          </Grid>
-        </Grid>
-      </Box>
+            <div className="w-full">{getComponentBasedOnURL()}</div>
+          </div>
+        </div>
+
+        {/* Right section with changing background image and text */}
+        <div className="hidden lg:flex lg:w-2/3 bg-cover bg-center relative">
+          <div
+            className={`absolute inset-0 transition-opacity duration-500 ${
+              fade ? "opacity-100" : "opacity-20"
+            }`}
+            style={{
+              backgroundImage: `url(${backgrounds[currentBackgroundIndex]})`,
+            }}
+          ></div>
+
+          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+          <div className="flex flex-col justify-end text-white p-8 z-10 relative">
+            <div className="absolute inset-0 bg-gradient-to-t min-w-[100vw] from-black via-transparent to-transparent"></div>
+
+            {/* Changing Text */}
+            <p className="mb-12 text-4xl font-semibold leading-tight z-10 relative">
+              {texts[currentBackgroundIndex]}
+            </p>
+          </div>
+        </div>
+      </div>
     );
   };
 
@@ -106,6 +119,7 @@ const LandingPage = (props: CustomProps) => {
     history.push("/dashboard");
     return null;
   }
+
   return getLandingPage();
 };
 
