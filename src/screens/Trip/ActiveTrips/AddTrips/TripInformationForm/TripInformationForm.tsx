@@ -507,8 +507,8 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
               <TextField
                 {...params}
                 placeholder="Select IMEIs"
-                error={Boolean(tripInformationForm?.imeiNumber?.error)}
-                helperText={tripInformationForm?.imeiNumber?.error}
+                // error={Boolean(tripInformationForm?.imeiNumber?.error)}
+                // helperText={tripInformationForm?.imeiNumber?.error}
               />
             )}
           />
@@ -555,7 +555,7 @@ const TripInformationForm: React.FC<TripInformationProps> = ({
           name="driverContactNumber"
           required={true}
           id="add_driver_contact_number_filed"
-          value={tripInformationForm.driverContactNumber?.value}
+          value={tripInformationForm?.driverContactNumber?.value}
           placeHolder="Enter Driver Contact Number"
           onChange={handleFormDataChange}
           error={tripInformationForm?.driverContactNumber?.error}

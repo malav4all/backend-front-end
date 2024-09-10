@@ -269,38 +269,37 @@ const AddTrip = (props: any) => {
   const handleValidation = () => {
     let isValid = true;
 
-    // switch (activeStep) {
-    //   case 0: {
-    //     const validation = validateTransitTypeForm(
-    //       transitTypeForm,
-    //       redirectionState?.edit
-    //     );
-    //     setTransitTypeForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     console.log({ isValid });
-    //     return isValid;
-    //   }
-    //   case 1: {
-    //     const validation = validateTripInformationForm(
-    //       tripInformationForm,
-    //       redirectionState?.edit
-    //     );
-    //     setTripInformationForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     return isValid;
-    //   }
-    //   case 2: {
-    //     const validation = validateAlertConfigurationForm(
-    //       alertConfigurationForm,
-    //       redirectionState?.edit
-    //     );
-    //     setAlertConfigurationForm(validation.errors);
-    //     isValid = validation.isValid;
-    //     return isValid;
-    //   }
-    //   default:
-    //     break;
-    // }
+    switch (activeStep) {
+      case 0: {
+        const validation = validateTransitTypeForm(
+          transitTypeForm,
+          redirectionState?.edit
+        );
+        setTransitTypeForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      case 1: {
+        const validation = validateTripInformationForm(
+          tripInformationForm,
+          redirectionState?.edit
+        );
+        setTripInformationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      case 2: {
+        const validation = validateAlertConfigurationForm(
+          alertConfigurationForm,
+          redirectionState?.edit
+        );
+        setAlertConfigurationForm(validation.errors);
+        isValid = validation.isValid;
+        return isValid;
+      }
+      default:
+        break;
+    }
 
     return isValid;
   };

@@ -72,7 +72,7 @@ export const validateTripInformationForm = (form: any, isEdit: boolean) => {
 
   if (!form?.imeiNumber?.value?.length) {
     errors.imeiNumber.error = "At least one IMEI is required";
-    isValid = false;
+    isValid = true;
   }
 
   if (!form?.vehicleNumber?.value) {
@@ -85,26 +85,68 @@ export const validateTripInformationForm = (form: any, isEdit: boolean) => {
     isValid = false;
   }
 
-  if (!form?.contactNumber?.value) {
-    errors.contactNumber.error = "Contact number is required";
+  if (!form?.driverContactNumber?.value) {
+    errors.driverContactNumber.error = "Contact number is required";
     isValid = false;
   }
 
   return { isValid, errors };
 };
 
-export const validateAlertConfigurationForm = (form: any, isEdit: boolean) => {
+export const validateAlertConfigurationForm = (form: any, isEdit: any) => {
   let isValid = true;
   let errors = { ...form };
 
-  if (!form?.alertTypes?.value?.length) {
-    errors.alertTypes.error = "At least one alert type is required";
-    isValid = true;
+  // Validate alertTypes
+  if (!form?.subscribedAlerts?.length) {
+    errors.subscribedAlertsError = "At least one alert type is required";
+    isValid = false;
   }
 
-  if (!form?.getAlerts?.value?.length) {
-    errors.getAlerts.error = "At least one alert method is required";
-    isValid = true;
+  // Validate Get Alerts SMS
+  if (form?.alertMedium?.sms?.isEnable && !form?.alertMedium?.sms?.contact) {
+    errors.alertMedium = {
+      ...form?.alertMedium,
+      sms: {
+        ...form?.alertMedium?.sms,
+        error: "Please select a valid SMS number",
+      },
+    };
+    isValid = false;
+  }
+
+  // Validate lowBattery, overSpeeding, and overStopping
+  if (
+    form.subscribedAlerts?.includes("lowBattery") &&
+    !form.alertDetails?.lowBattery?.value
+  ) {
+    errors.alertDetails.lowBattery = {
+      ...form?.alertDetails?.lowBattery,
+      error: "Please select a battery threshold value",
+    };
+    isValid = false;
+  }
+
+  if (
+    form.subscribedAlerts?.includes("overSpeeding") &&
+    !form.alertDetails?.overSpeeding?.value
+  ) {
+    errors.alertDetails.overSpeeding = {
+      ...form?.alertDetails?.overSpeeding,
+      error: "Please select a speed threshold value",
+    };
+    isValid = false;
+  }
+
+  if (
+    form.subscribedAlerts?.includes("overStopping") &&
+    !form.alertDetails?.overStopping?.value
+  ) {
+    errors.alertDetails.overStopping = {
+      ...form?.alertDetails?.overStopping,
+      error: "Please select a stopping duration value",
+    };
+    isValid = false;
   }
 
   return { isValid, errors };
