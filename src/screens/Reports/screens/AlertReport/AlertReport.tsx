@@ -41,11 +41,7 @@ const AlertReport = () => {
   const classes = alertReportStyles;
   const [alertTableData, setAlertTableData] = useState([]);
   const [dateFilter, setDateFilter] = useState({
-    startDate: moment()
-      .utcOffset("+05:30")
-      .clone()
-      .subtract(1, "hour")
-      .toISOString(),
+    startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
   const [filterData, setFilterData] = useState<any[]>([]);
@@ -127,23 +123,15 @@ const AlertReport = () => {
         endDate = now.toISOString();
         break;
       case "Past 2d":
-        startDate = now
-          .clone()
-          .subtract(2, "days")
-          .startOf("day")
-          .toISOString();
-        endDate = now.endOf("day").toISOString();
+        startDate = now.clone().subtract(2, "days").toISOString();
+        endDate = now.toISOString();
         break;
       case "Past 30d":
-        startDate = now
-          .clone()
-          .subtract(30, "days")
-          .startOf("day")
-          .toISOString();
-        endDate = now.endOf("day").toISOString();
+        startDate = now.clone().subtract(30, "days").toISOString();
+        endDate = now.toISOString();
         break;
       default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
+        startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
         break;
     }

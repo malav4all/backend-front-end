@@ -207,7 +207,7 @@ const Trips = () => {
   const unlockTrip = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.23:5030/send-command",
+        "http://192.168.1.20:5030/send-command",
         {
           imei: imei,
         }

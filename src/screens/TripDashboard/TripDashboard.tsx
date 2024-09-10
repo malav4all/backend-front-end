@@ -144,10 +144,9 @@ const TripDashboard = () => {
   const unlockTrip = async (trip: Trip) => {
     try {
       const response = await axios.post(
-        "http://192.168.1.23:5030/send-command",
+        "http://192.168.1.20:5030/send-command",
         {
           imei: trip.tripData[0]["imei"][0],
-          // imei: "688055894978",
         }
       );
 

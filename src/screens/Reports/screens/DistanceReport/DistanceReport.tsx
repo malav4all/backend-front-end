@@ -48,7 +48,7 @@ const DistanceReport = (props: CustomProps) => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [dateFilter, setDateFilter] = useState({
-    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
   const [selectedRange, setSelectedRange] = useState("Past 1h");
@@ -118,7 +118,7 @@ const DistanceReport = (props: CustomProps) => {
         endDate = now.toISOString();
         break;
       default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
+        startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
         break;
     }
@@ -348,7 +348,7 @@ const DistanceReport = (props: CustomProps) => {
             <MenuItem value="Past 2d" sx={classes.optionStyle}>
               Past 2d
             </MenuItem>
-            <MenuItem value="Past 2d" sx={classes.optionStyle}>
+            <MenuItem value="Past 7d" sx={classes.optionStyle}>
               Past 7d
             </MenuItem>
             <MenuItem value="Past 30d" sx={classes.optionStyle}>

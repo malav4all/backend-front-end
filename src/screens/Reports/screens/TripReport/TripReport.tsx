@@ -94,7 +94,7 @@ const TripReport = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [page, setPage] = useState<number>(1);
   const [dateFilter, setDateFilter] = useState({
-    startDate: moment().clone().subtract(30, "minutes").toISOString(),
+    startDate: moment().clone().subtract(1, "hour").toISOString(),
     endDate: moment().toISOString(),
   });
   const [selectedRange, setSelectedRange] = useState("Past 30m");
@@ -196,11 +196,13 @@ const TripReport = () => {
                     endDate: trip?.tripEndDate,
                     vehicleNumber: trip?.tripData[0]?.vehicleNo,
                     tripStartDate:
-                    moment(trip?.tripStartDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
-                    "N/A",
-                  tripEndDate:
-                    moment(trip?.tripEndDate).utc().format("MM/DD/YYYY, h:mm:ss a") ||
-                    "N/A",
+                      moment(trip?.tripStartDate)
+                        .utc()
+                        .format("MM/DD/YYYY, h:mm:ss a") || "N/A",
+                    tripEndDate:
+                      moment(trip?.tripEndDate)
+                        .utc()
+                        .format("MM/DD/YYYY, h:mm:ss a") || "N/A",
                   },
                 });
               }}
@@ -243,22 +245,6 @@ const TripReport = () => {
     const now = moment();
     let startDate, endDate;
     switch (event.target.value) {
-      case "Past 1m":
-        startDate = now.clone().subtract(1, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 5m":
-        startDate = now.clone().subtract(5, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 15m":
-        startDate = now.clone().subtract(15, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
-      case "Past 30m":
-        startDate = now.clone().subtract(30, "minutes").toISOString();
-        endDate = now.toISOString();
-        break;
       case "Past 1h":
         startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
@@ -283,12 +269,16 @@ const TripReport = () => {
         startDate = now.clone().subtract(2, "days").toISOString();
         endDate = now.toISOString();
         break;
+      case "Past 7d":
+        startDate = now.clone().subtract(7, "days").toISOString();
+        endDate = now.toISOString();
+        break;
       case "Past 30d":
         startDate = now.clone().subtract(30, "days").toISOString();
         endDate = now.toISOString();
         break;
       default:
-        startDate = now.clone().subtract(30, "minutes").toISOString();
+        startDate = now.clone().subtract(1, "hour").toISOString();
         endDate = now.toISOString();
         break;
     }
@@ -418,7 +408,7 @@ const TripReport = () => {
           <Typography variant="h5" sx={classes.heading}>
             {getSearchBar()}
           </Typography>
-          <Select
+          {/* <Select
             id="campaigns_interval_dropdown"
             sx={{
               ...classes.dropDownStyle,
@@ -442,6 +432,9 @@ const TripReport = () => {
             <MenuItem value="Past 2d" sx={classes.optionStyle}>
               Past 2d
             </MenuItem>
+            <MenuItem value="Past 7d" sx={classes.optionStyle}>
+              Past 7d
+            </MenuItem>
             <MenuItem value="Past 30d" sx={classes.optionStyle}>
               Past 30d
             </MenuItem>
@@ -452,7 +445,7 @@ const TripReport = () => {
             >
               Custom
             </MenuItem>
-          </Select>
+          </Select> */}
         </Grid>
       </Grid>
     );
