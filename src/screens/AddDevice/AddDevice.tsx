@@ -121,6 +121,7 @@ const AddDevice = () => {
           <>
             {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
               <Tooltip
+                arrow
                 title="Edit"
                 onClick={() => {
                   editDevice(item);

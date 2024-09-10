@@ -77,6 +77,7 @@ const DeviceGroup = () => {
         deviceGroupName: (
           <>
             <Tooltip
+            arrow
               title={item?.deviceGroupName?.imeiData?.map(
                 (imei: any, index: any) => (
                   <span key={index}>
@@ -132,6 +133,7 @@ const DeviceGroup = () => {
           <>
             {hasAccessTo(StringConstants.DEVICE, StringConstants.UPDATE) && (
               <Tooltip
+              arrow
                 title="Edit"
                 onClick={() => {
                   editDeviceGroup(item);

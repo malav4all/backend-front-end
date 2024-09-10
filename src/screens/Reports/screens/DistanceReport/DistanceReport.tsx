@@ -167,24 +167,7 @@ const DistanceReport = (props: CustomProps) => {
           <>
             {" "}
             {hasAccessTo(strings.REPORTS, strings.UPDATE) && (
-              <Tooltip
-                title={
-                  <CustomPaper
-                    className={{ backgroundColor: disabledBackgroundColor }}
-                  >
-                    <Typography>{"View Routes"}</Typography>
-                  </CustomPaper>
-                }
-                placement="top"
-                arrow
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      background: "none",
-                    },
-                  },
-                }}
-              >
+              <Tooltip arrow title={"View Routes"} placement="top">
                 <VisibilityIcon
                   key={item._id}
                   style={{ color: primaryHeaderColor, cursor: "pointer" }}

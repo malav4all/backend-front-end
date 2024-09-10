@@ -153,7 +153,7 @@ const Users = () => {
                   gap: "0.5rem",
                 }}
               >
-                <Tooltip title="Change Password">
+                <Tooltip arrow title="Change Password">
                   <span>
                     <MdPassword
                       color={headerColor}
@@ -171,6 +171,7 @@ const Users = () => {
                   </span>
                 </Tooltip>
                 <Tooltip
+                arrow
                   title="Edit"
                   onClick={() => {
                     editUser(usersData);

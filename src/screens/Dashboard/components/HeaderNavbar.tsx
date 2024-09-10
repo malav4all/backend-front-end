@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { LuLogOut } from "react-icons/lu";
-import { FaSortDown } from "react-icons/fa";
+import {
+  FaCog,
+  FaMoon,
+  FaQuestionCircle,
+  FaSignOutAlt,
+  FaSortDown,
+  FaUser,
+} from "react-icons/fa";
 import {
   logOutAction,
   selectName,
@@ -149,24 +156,46 @@ const HeaderNavbar = () => {
                 onClick={toggleOptions}
               >
                 <div className="flex items-center">
-                  <p className="bg-[#5F22E1] p-3 rounded-full w-[30px] h-[30px] flex justify-center items-center text-xl text-white">
+                  <p className="bg-[#5F22E1] p-1 rounded-full w-[30px] h-[30px] flex justify-center items-center text-sm text-white">
                     {userName?.charAt(0)}
                   </p>
                 </div>
-                <p className="text-white">{userName}</p>
+                <div>
+                  <p className="text-white text-md">{userName}</p>
+                  <p className="text-white text-[10px] -mt-1 opacity-60">
+                    ({store.getState().auth.role})
+                  </p>
+                </div>
                 <FaSortDown className="text-white text-sm mb-2 ml-3" />
               </div>
 
               {showOptions && (
-                <div className="user-dropdown absolute right-0 mt-2 w-36 bg-[#15152E] border border-[#313147] rounded-lg shadow-lg z-20">
+                <div className="user-dropdown absolute right-0 mt-2 w-48 bg-white border border-[#313147] rounded-lg shadow-lg z-20">
                   <div className="dropdown-menu py-2">
+                    {/* Edit Profile */}
+                    <div className="dropdown-item px-4 py-2 flex items-center cursor-pointer hover:bg-gray-100">
+                      <FaUser className="mr-2 text-gray-600" />
+                      <span className="text-gray-700 font-regular mt-1">
+                        Edit Profile
+                      </span>
+                    </div>
+
+                    {/* Settings & Privacy */}
+                    <div className="dropdown-item px-4 py-2 flex items-center cursor-pointer hover:bg-gray-100">
+                      <FaCog className="mr-2 text-gray-600" />
+                      <span className="text-gray-700 font-regular mt-1">
+                        Settings & Privacy
+                      </span>
+                    </div>
+
+                    {/* Sign Out */}
                     <div
-                      className="dropdown-item logout px-4 py-2 flex items-center cursor-pointer"
+                      className="dropdown-item px-4 py-2 flex items-center cursor-pointer hover:bg-gray-100"
                       onClick={handleLogout}
                     >
-                      <LuLogOut className="mr-2 text-[#7C58CB] text-2xl" />
-                      <span className="text-[#7C58CB] font-semibold">
-                        Sign Out
+                      <FaSignOutAlt className="mr-2 text-[#5F22E1] " />
+                      <span className="text-[#5F22E1]  font-regular">
+                        Logout
                       </span>
                     </div>
                   </div>

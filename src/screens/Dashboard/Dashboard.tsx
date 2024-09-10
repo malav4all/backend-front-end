@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Chip, Grid, Tooltip, Typography } from "@mui/material";
+import { Box, Grid, Tooltip, Typography } from "@mui/material";
 import moment from "moment-timezone";
 import { useTheme } from "@mui/material/styles";
 import CustomLoader from "../../global/components/CustomLoader/CustomLoader";
@@ -103,6 +103,7 @@ const Dashboard = () => {
             <Box sx={{ display: "flex", gap: 2 }}>
               <Typography variant="body2">
                 <Tooltip
+                  arrow
                   title={item.status === "online" ? "Online" : "Offline"}
                 >
                   <span>
@@ -121,7 +122,8 @@ const Dashboard = () => {
                   <>
                     {item.batteryPercentage >= 0 &&
                       item.batteryPercentage <= 20 && (
-                        <Tooltip title={`${item.batteryPercentage}%`}>
+                        <Tooltip arrow title={`${item.batteryPercentage}%`}>
+                          
                           <span>
                             {" "}
                             <Battery0Icon />
@@ -138,7 +140,7 @@ const Dashboard = () => {
                       )}
                     {item.batteryPercentage > 40 &&
                       item.batteryPercentage <= 60 && (
-                        <Tooltip title={`${item.batteryPercentage}%`}>
+                        <Tooltip arrow title={`${item.batteryPercentage}%`}>
                           <span>
                             <Battery2Icon />
                           </span>
@@ -146,7 +148,7 @@ const Dashboard = () => {
                       )}
                     {item.batteryPercentage > 60 &&
                       item.batteryPercentage <= 80 && (
-                        <Tooltip title={`${item.batteryPercentage}%`}>
+                        <Tooltip arrow title={`${item.batteryPercentage}%`}>
                           <span>
                             {" "}
                             <Battery3Icon />
@@ -155,7 +157,7 @@ const Dashboard = () => {
                       )}
                     {item.batteryPercentage > 80 &&
                       item.batteryPercentage <= 100 && (
-                        <Tooltip title={`${item.batteryPercentage}%`}>
+                        <Tooltip arrow title={`${item.batteryPercentage}%`}>
                           <span>
                             <Battery4Icon />
                           </span>
@@ -163,7 +165,7 @@ const Dashboard = () => {
                       )}
                   </>
                 ) : (
-                  <Tooltip title='Never Connected'>
+                  <Tooltip arrow title="Never Connected">
                     <span>
                       <BatteryNeverIcon />
                     </span>
@@ -172,7 +174,7 @@ const Dashboard = () => {
               </Typography>
 
               <Typography variant="body2">
-                <Tooltip title={item.gps ? "GPS Enabled" : "GPS Disabled"}>
+                <Tooltip arrow title={item.gps ? "GPS Enabled" : "GPS Disabled"}>
                   <span> {item.gps ? <GpsTrueIcon /> : <GpsFalseIcon />}</span>
                 </Tooltip>
               </Typography>
@@ -200,7 +202,7 @@ const Dashboard = () => {
                   state: { imei: item.imei, status: item.status },
                 }}
               >
-                <Tooltip title={"Live View"}>
+                <Tooltip arrow title={"Live View"}>
                   <span>
                     <FaMapLocationDot
                       style={{

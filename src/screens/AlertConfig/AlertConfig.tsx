@@ -174,9 +174,10 @@ const AlertConfig = () => {
         deviceGroupName: (
           <>
             <Tooltip
+              arrow
               title={""}
               placement="top"
-              arrow
+
               // onClick={() => {
               //   getRedirectionUrl(
               //     usersData?.alertConfig?.alertImeiGroup?.deviceGroupId
@@ -255,6 +256,7 @@ const AlertConfig = () => {
           <>
             {hasAccessTo(strings.ALERTS, strings.UPDATE) && (
               <Tooltip
+                arrow
                 title="Edit"
                 onClick={() => {
                   editUser(usersData);

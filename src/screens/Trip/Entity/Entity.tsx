@@ -106,7 +106,7 @@ const Entity = () => {
         action: (
           <>
             {hasAccessTo(strings.TRIPS, strings.UPDATE) && (
-              <Tooltip title="Edit" onClick={() => handleEditClick(item)}>
+              <Tooltip arrow title="Edit" onClick={() => handleEditClick(item)}>
                 <EditIcon
                   htmlColor={"#7C58CB"}
                   style={{ margin: "0px 8px -7px 0px", cursor: "pointer" }}
