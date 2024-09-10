@@ -344,7 +344,6 @@ const Routes = () => {
           <Box sx={{ display: "flex", gap: "1rem" }}>
             {hasAccessTo(strings.ROUTES, strings.UPDATE) && (
               <Tooltip
-                arrow
                 title={
                   <CustomPaper className={{ backgroundColor: "transparent" }}>
                     <Typography sx={classes.liveTrackingTooltipText}>
