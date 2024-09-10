@@ -1,56 +1,31 @@
 import React, { useEffect, useState } from "react";
+import { IconButton, InputAdornment, useMediaQuery } from "@mui/material";
 import {
-  Box,
-  FormHelperText,
-  IconButton,
-  InputAdornment,
-  Tab,
-  Tabs,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
-import {
-  convertResourceToObjectFormat,
   isTruthy,
   openErrorNotification,
   openSuccessNotification,
 } from "../../../helpers/methods";
 import notifiers from "../../../global/constants/NotificationConstants";
 import { useAppDispatch } from "../../../utils/hooks";
-import loginStyles from "./Login.styles";
 import { loginAction } from "../../../redux/authSlice";
 import history from "../../../utils/history";
-import { regularFont, theme } from "../../../utils/styles";
-import { CustomButton, CustomInput } from "../../../global/components";
+import { theme } from "../../../utils/styles";
 import { loginForm, loginValidation } from "./LoginTypesAndValidation";
 import strings from "../../../global/constants/StringConstants";
 import hidePasswordIcon from "../../../assets/images/Hide.svg";
 import showPasswordIcon from "../../../assets/images/Show.svg";
 import { useTitle } from "../../../utils/UseTitle";
 import _ from "lodash";
-import { changeStatus, onLogin } from "../landingPageService";
-
-const loginType: any = {
-  ["login"]: {
-    label: "Login",
-    key: "login",
-  },
-  ["Otp"]: {
-    key: "otp",
-    label: "OTP Login",
-  },
-};
+import { onLogin } from "../landingPageService";
 
 const Login = () => {
   useTitle(strings.LoginTitle);
-  const classes = loginStyles;
   const emailRegex = strings.regex;
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [formFields, setFormFields] = useState(loginForm);
   const [showPassword, setShowPassword] = useState(false);
   const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
-  const [loginTypeTab, setLoginTypeTab] = useState("login");
 
   useEffect(() => {
     const host = window.location.hostname;
@@ -79,7 +54,8 @@ const Login = () => {
     });
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
     try {
       setIsLoading(true);
       if (handleValidation()) {
@@ -130,26 +106,15 @@ const Login = () => {
     }
   };
 
-  const forgetPassword = () => {
-    history.push("/forgot-password");
-  };
-
   const handleClickShowPassword = () => {
-    setShowPassword(showPassword);
-  };
-
-  const handleKeypress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleLogin();
-    }
+    setShowPassword(!showPassword);
   };
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    setShowPassword(!showPassword);
     event.preventDefault();
+    setShowPassword(!showPassword);
   };
 
   const handleValidation = () => {
@@ -158,107 +123,77 @@ const Login = () => {
     return isValid;
   };
 
-  const getLoginScreen = () => {
-    return (
-      <Box sx={classes.getLoginScreen}>
-        <Box mx={2}>
-          <Box my={1}>
-            <CustomInput
-              placeHolder="Enter Email Address"
-              id="email"
-              label="Email"
-              required
-              type="email"
-              name="email"
-              value={formFields.email.value}
-              onChange={handleOnChangeInputField}
-              onKeyPress={handleKeypress}
-              error={
-                !isTruthy(formFields.email.value) && formFields.email.error
-              }
-            />
-          </Box>
+  return (
+    <div className="flex flex-wrap">
+      <div className="flex w-full flex-col">
+        <div className="lg:w-[22rem] mx-auto my-auto flex flex-col justify-center pt-8 md:justify-start md:pt-0">
+          <p className="text-left text-2xl md:text-3xl font-bold">Login</p>
+          <p className="mt-2 text-left text-sm md:text-base text-gray-500">
+            Please enter your login details.
+          </p>
 
-          <Box>
-            <CustomInput
-              sx={classes.textRadious}
-              placeHolder="••••••••"
-              id="password"
-              required
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formFields.password.value}
-              onChange={handleOnChangeInputField}
-              onKeyPress={handleKeypress}
-              error={
-                !isTruthy(formFields.password.value) &&
-                formFields.password.error
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      <Box
-                        component="img"
-                        src={showPassword ? showPasswordIcon : hidePasswordIcon}
-                      />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Box>
+          <form className="flex flex-col pt-3 md:pt-8" onSubmit={handleLogin}>
+            <div className="flex flex-col pt-4 ">
+              <div className=" focus-within:border-b-gray-500 relative flex overflow-hidden border-b-2 transition">
+                <input
+                  type="email"
+                  id="login-email"
+                  className="w-full  flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-sm md:text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                  placeholder="Email"
+                  name="email"
+                  value={formFields.email.value}
+                  onChange={handleOnChangeInputField}
+                  required
+                />
+              </div>
+            </div>
 
-          <Box sx={classes.forgetPasswordWrapper}>
-            <Typography
-              sx={{
-                textDecoration: "none",
-                ...regularFont,
-                color: "black",
-                cursor: "pointer",
-                fontSize: "12px",
-                marginTop: "-0.8rem",
-              }}
-              onClick={forgetPassword}
-            >
-              Forgot Password
-            </Typography>
-          </Box>
+            <div className="mb-12 flex flex-col pt-4">
+              <div className="relative flex items-center border-b-2 border-gray-300 focus-within:border-b-gray-500 transition">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="login-password"
+                  className="w-full appearance-none bg-white px-4 py-2 text-sm md:text-base text-gray-700 placeholder-gray-400 focus:outline-none"
+                  placeholder="Password"
+                  name="password"
+                  value={formFields.password.value}
+                  onChange={handleOnChangeInputField}
+                  required
+                />
+                <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    className="focus:outline-none"
+                  >
+                    <img
+                      src={showPassword ? showPasswordIcon : hidePasswordIcon}
+                      alt="toggle password visibility"
+                      className="h-5 w-5"
+                    />
+                  </IconButton>
+                </div>
+              </div>
+            </div>
 
-          <Box mt={4}>
-            <CustomButton
-              label="Sign In"
-              onClick={handleLogin}
+            <button
+              type="submit"
+              className="w-full rounded-lg bg-[#5F22E1] px-4 py-2 text-center text-sm md:text-base font-semibold text-white ring-gray-500 ring-offset-2 transition focus:ring-2"
               disabled={
                 _.isEmpty(formFields.email.value) ||
                 _.isEmpty(formFields.password.value) ||
                 !emailRegex.test(formFields.email.value) ||
                 formFields.password?.value?.length < 8
               }
-              // loading={isLoading}
-              customClasses={classes.signBtn}
-              id="login_button"
-            />
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
-
-  const screenHandler = () => {
-    switch (loginTypeTab) {
-      case "login":
-        return getLoginScreen();
-    }
-  };
-
-  return <Box>{screenHandler()}</Box>;
+            >
+              Log in
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default React.memo(Login);
