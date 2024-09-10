@@ -235,7 +235,7 @@ const Trips = () => {
 
       if (response?.data?.updateTripStatus?.success === 1) {
         openSuccessNotification(`Trip status updated to ${newStatus}`);
-        history.goBack();
+        history.push("/trips");
       } else {
         openErrorNotification("Failed to update trip status.");
       }
