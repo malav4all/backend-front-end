@@ -103,6 +103,7 @@ const Account: React.FC = () => {
         <>
           {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
             <Tooltip
+              arrow
               title="Edit"
               onClick={() => {
                 setIsAddAccountDialogOpen(true);
@@ -142,7 +143,6 @@ const Account: React.FC = () => {
       setIsLoading(false);
     }
   };
-
 
   const handleSearchData = async () => {
     try {

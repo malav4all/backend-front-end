@@ -128,6 +128,7 @@ const Industry: React.FC = () => {
               <>
                 {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
                   <Tooltip
+                    arrow
                     title="Edit"
                     onClick={() => handleEditIndustry(item)}
                   >

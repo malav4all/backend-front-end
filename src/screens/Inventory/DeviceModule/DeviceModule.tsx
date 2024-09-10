@@ -93,6 +93,7 @@ const DeviceModule = () => {
             <>
               {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
                 <Tooltip
+                  arrow
                   title="Edit"
                   placement="top"
                   onClick={() => {

@@ -863,7 +863,7 @@ const Geozone = () => {
               marginTop: "1rem",
             }}
           >
-            <Tooltip title="Create Circle" placement="top">
+            <Tooltip arrow title="Create Circle" placement="top">
               <Button
                 onClick={handleCircleButtonClick}
                 sx={{
@@ -879,6 +879,7 @@ const Geozone = () => {
               </Button>
             </Tooltip>
             <Tooltip
+            arrow
               title={
                 geozonesVisible ? "Hide Geofence View" : "Show Geofence View"
               }
@@ -898,7 +899,7 @@ const Geozone = () => {
                 <RemoveRedEyeIcon sx={{ color: primaryHeaderColor }} />
               </Button>
             </Tooltip>
-            <Tooltip title="Create Location Point" placement="top">
+            <Tooltip arrow title="Create Location Point" placement="top">
               <Button
                 onClick={() => {
                   setPointCheck(!pointCheck);

@@ -112,6 +112,7 @@ const DeviceOnboarding = () => {
           <>
             {hasAccessTo(strings.INVENTORY, strings.UPDATE) && (
               <Tooltip
+                arrow
                 title="Edit"
                 onClick={() => {
                   editDeviceGroup(item);

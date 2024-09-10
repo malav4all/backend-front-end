@@ -144,6 +144,7 @@ const CustomerModule: React.FC = () => {
               <>
                 {hasAccessTo(strings.SETTINGS, strings.UPDATE) && (
                   <Tooltip
+                    arrow
                     title="Edit"
                     key={item.id}
                     onClick={() => editModule(item)}

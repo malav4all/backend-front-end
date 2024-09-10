@@ -112,6 +112,7 @@ const DeviceList = () => {
         action: (
           <>
             <Tooltip
+              arrow
               title="Edit"
               onClick={() => {
                 setAddUserDialogHandler(true);
